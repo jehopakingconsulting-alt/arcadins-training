@@ -113,10 +113,10 @@ function generateCertificate(user, certificate) {
       .lineWidth(1).stroke('#c9a84c');
 
     doc.font('Helvetica').fontSize(10).fillColor('#a0a8c0')
-      .text('pour avoir complété avec succès le programme de formation', 60, 229, { align: 'center', width: W - 120 });
+      .text('pour avoir complété avec succès le', 60, 229, { align: 'center', width: W - 120 });
 
     // Programme
-    const programme = certificate.programme || 'TEF & TCF Canada – Préparation Complète';
+    const programme = 'Programme de Tutorat en TEF & TCF Canada';
     doc.font('Helvetica-Bold').fontSize(14).fillColor('#ffffff')
       .text(programme, 60, 246, { align: 'center', width: W - 120 });
 
@@ -155,10 +155,21 @@ function generateCertificate(user, certificate) {
     doc.font('Helvetica').fontSize(7).fillColor('#a0a8c0')
       .text('Numéro de certificat', col3X, footerY + 16, { width: 160, align: 'center' });
 
+    // === LEGAL NOTE ===
+    const legalNote =
+      'NOTE LÉGALE : Ce certificat atteste uniquement que le titulaire a obtenu les notes de passage exigées dans le cadre ' +
+      'du Programme de Tutorat en TEF & TCF Canada d\'ARCADINS Training Center. Il ne constitue en aucune façon une ' +
+      'attestation de réussite à un examen officiel (TEF Canada ou TCF Canada), ne confère aucun droit ni reconnaissance ' +
+      'officielle auprès d\'un organisme gouvernemental ou d\'immigration, et ne remplace pas les résultats d\'un test certifié.';
+
+    doc.rect(65, H - 88, W - 130, 0.5).fill('#3a4060');
+    doc.font('Helvetica').fontSize(6).fillColor('#4a5070')
+      .text(legalNote, 65, H - 83, { align: 'justify', width: W - 130, lineGap: 1 });
+
     // === VERIFICATION URL ===
     const verifyUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/api/certificate/verify/${certificate.certificate_number}`;
-    doc.font('Helvetica').fontSize(7).fillColor('#5a6080')
-      .text(`Vérifiez ce certificat sur: ${verifyUrl}`, 60, H - 45, { align: 'center', width: W - 120 });
+    doc.font('Helvetica').fontSize(6.5).fillColor('#5a6080')
+      .text(`Vérification : ${verifyUrl}`, 65, H - 48, { align: 'center', width: W - 130 });
 
     // Bottom border
     doc.rect(60, H - 38, W - 120, 1).fill('#c9a84c');
