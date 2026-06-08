@@ -135,11 +135,12 @@ function generateCertificate(user, certificate) {
     const sigZoneX = W / 2 - 100; // centré, largeur 200
 
     // Signature image (si disponible)
-    const sigPath = path.join(__dirname, '..', 'assets', 'signature.png');
-    const sigPathJpg = path.join(__dirname, '..', 'assets', 'signature.jpg');
-    const sigFile = fs.existsSync(sigPath) ? sigPath : fs.existsSync(sigPathJpg) ? sigPathJpg : null;
+    const sigClean = path.join(__dirname, '..', 'assets', 'signature_clean.png');
+    const sigRaw   = path.join(__dirname, '..', 'assets', 'signature.jpg');
+    const sigFile  = fs.existsSync(sigClean) ? sigClean : fs.existsSync(sigRaw) ? sigRaw : null;
     if (sigFile) {
-      doc.image(sigFile, sigZoneX + 20, footerY - 38, { width: 160, height: 40 });
+      // Centre l'image au-dessus de la ligne de signature
+      doc.image(sigFile, sigZoneX + 10, footerY - 45, { width: 180, height: 45, fit: [180, 45] });
     }
 
     // Ligne signature (or)
