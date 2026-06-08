@@ -139,8 +139,8 @@ function generateCertificate(user, certificate) {
     const sigRaw   = path.join(__dirname, '..', 'assets', 'signature.jpg');
     const sigFile  = fs.existsSync(sigClean) ? sigClean : fs.existsSync(sigRaw) ? sigRaw : null;
     if (sigFile) {
-      // Centre l'image au-dessus de la ligne de signature
-      doc.image(sigFile, sigZoneX + 10, footerY - 45, { width: 180, height: 45, fit: [180, 45] });
+      // Image pleine largeur de la zone signature, bien centrée sur la ligne
+      doc.image(sigFile, sigZoneX - 10, footerY - 52, { width: 220, height: 52 });
     }
 
     // Ligne signature (or)
