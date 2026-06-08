@@ -121,7 +121,7 @@ async function init() {
       return;
     }
     const res = await CertAPI.my();
-    const cert = res.certificate;
+    const cert = (res.data || res).certificate || res.certificate;
     const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
 
     document.getElementById('certName').textContent = cert.prenom + ' ' + cert.nom;
