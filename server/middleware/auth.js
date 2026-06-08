@@ -5,11 +5,15 @@ const { getDb } = require('../database');
 
 function authMiddleware(req, res, next) {
   const authHeader = req.headers['authorization'];
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  // Also accept token as query param (for file download links)
+  const queryToken = req.query.token;
+  if (!authHeader && !queryToken) {
     return res.status(401).json({ success: false, message: 'Token manquant ou invalide.' });
   }
-
-  const token = authHeader.split(' ')[1];
+  const token = queryToken || (authHeader && authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null);
+  if (!token) {
+    return res.status(401).json({ success: false, message: 'Token manquant ou invalide.' });
+  }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'changeme_super_secret_jwt_key_arcadins_2024');
