@@ -1,0 +1,501 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Devenir Tuteur – ARCADINS Training Center</title>
+  <meta name="description" content="Devenez tuteur certifié ARCADINS Training Center. Accompagnez les candidats TEF & TCF Canada. Rémunération horaire, travail en ligne, frais de dossier 100$." />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    .tutor-hero { background: linear-gradient(135deg, #1a0050, #0033A0, #C9A84C); padding: 70px 24px; color: white; text-align: center; }
+    .tutor-card { background: white; border-radius: 18px; padding: 28px; box-shadow: var(--shadow); }
+    .condition-item { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--gray); }
+    .condition-item:last-child { border-bottom: none; }
+    .cond-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(0,51,160,.08); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .cond-text h4 { font-size: .92rem; font-weight: 700; color: var(--blue-dark); margin-bottom: 4px; }
+    .cond-text p { font-size: .82rem; color: var(--gray-text); }
+    .quiz-wrap-t { max-width: 800px; margin: auto; }
+    .quiz-box-t { background: white; border-radius: 18px; padding: 32px; box-shadow: var(--shadow); }
+    .opt-btn-t {
+      background: var(--gray-light); border: 2px solid var(--gray); border-radius: 10px;
+      padding: 12px 16px; text-align: left; cursor: pointer; font-size: .9rem;
+      font-family: inherit; color: var(--text); transition: var(--transition);
+      display: flex; align-items: center; gap: 10px; margin-bottom: 8px; width: 100%;
+    }
+    .opt-btn-t:hover:not(:disabled) { border-color: var(--blue); background: #eef2ff; }
+    .opt-btn-t.correct { background: #e8f5e9; border-color: #2e7d32; color: #1b5e20; }
+    .opt-btn-t.wrong { background: #ffebee; border-color: #c62828; color: #b71c1c; }
+    .opt-letter-t { width: 26px; height: 26px; border-radius: 50%; background: white; border: 2px solid var(--gray); display: flex; align-items: center; justify-content: center; font-size: .72rem; font-weight: 700; flex-shrink: 0; }
+    .opt-btn-t.correct .opt-letter-t { background: #2e7d32; border-color: #2e7d32; color: white; }
+    .opt-btn-t.wrong .opt-letter-t { background: #c62828; border-color: #c62828; color: white; }
+    .expl-t { display: none; margin-top: 10px; background: #fff8e1; border-left: 4px solid var(--gold); border-radius: 8px; padding: 10px 14px; font-size: .83rem; color: #5a4500; }
+    .expl-t.show { display: block; }
+    .result-tutor { display: none; background: white; border-radius: 18px; padding: 36px; box-shadow: var(--shadow); text-align: center; margin-top: 20px; }
+    .result-tutor.show { display: block; }
+    .form-tutor { background: white; border-radius: 18px; padding: 36px; box-shadow: var(--shadow); }
+    .remun-card { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); border-radius: 14px; padding: 24px; color: white; }
+    .tab-phase { display: none; }
+    .tab-phase.active { display: block; }
+  </style>
+</head>
+<body>
+<div class="topbar">🍁 Les Entreprises ARCADINS et ses Éditions · <a href="mailto:info@arcadins-training.com">info@arcadins-training.com</a> · 📞 514-451-3436</div>
+<nav>
+  <div class="nav-container">
+    <a href="../index.html" class="logo"><img src="../assets/img/logo-nav.svg" alt="ARCADINS Training Center" height="50" style="display:block;" /></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html" data-i18n="nav.home">Accueil</a></li>
+      <li><a href="tef-canada.html">TEF Canada</a></li>
+      <li><a href="tcf-canada.html">TCF Canada</a></li>
+      <li><a href="tests.html">Tests interactifs</a></li>
+      <li><a href="tarifs.html">Tarifs</a></li>
+      <li><a href="tuteur.html" style="color:var(--gold);font-weight:700;">Devenir Tuteur</a></li>
+      <li><a href="#" class="btn-login" onclick="openModal('login')">Connexion</a></li>
+      <li><a href="../index.html#inscription" class="btn-cta">S'inscrire</a></li>
+    </ul>
+    <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.3s;margin-right:8px;">🇬🇧 EN</button>
+    <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="tutor-hero">
+  <div class="container" style="max-width:820px;">
+    <div class="hero-badge" style="margin:0 auto 18px;background:rgba(201,168,76,.25);border-color:var(--gold);color:var(--gold-light);">🎓 Programme Tuteurs ARCADINS</div>
+    <h1 style="font-size:2.4rem;font-weight:900;margin-bottom:14px;">Devenez <span style="color:var(--gold-light);">Tuteur Certifié</span><br>ARCADINS Training Center</h1>
+    <p style="opacity:.9;max-width:620px;margin:0 auto 28px;font-size:1rem;line-height:1.7;">
+      Partagez vos connaissances en français et en préparation TEF & TCF Canada. Accompagnez nos apprenants, travaillez en ligne et soyez rémunéré à l'heure pour chaque session.
+    </p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <a href="#postuler" class="btn-primary">✏️ Postuler maintenant</a>
+      <a href="#test-tuteur" class="btn-gold">📝 Passer le test d'habilitation</a>
+    </div>
+  </div>
+</section>
+
+<!-- AVANTAGES -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Pourquoi devenir tuteur ARCADINS ?</span>
+      <h2>Un programme de tutorat professionnel et rémunéré</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#fff8e1;">💰</div>
+        <h3>Rémunération horaire</h3>
+        <p>Chaque tuteur ARCADINS reçoit une rémunération horaire compétitive pour chaque session de coaching ou d'accompagnement en ligne avec un apprenant. Les détails sont discutés lors de l'entretien de sélection.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#e8eef8;">🌍</div>
+        <h3>Travail 100% en ligne</h3>
+        <p>Accompagnez les candidats depuis n'importe où dans le monde via visioconférence. Horaires flexibles, aucun déplacement requis.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#e8f5e9;">🎓</div>
+        <h3>Programme de Tutorat disponible</h3>
+        <p>Vous n'avez pas encore toutes les compétences ? Nous offrons un programme de tutorat tuteur interne pour vous préparer aux standards ARCADINS avant votre habilitation.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#fce4ec;">📋</div>
+        <h3>Dossier et certification</h3>
+        <p>Un frais d'ouverture de dossier de <strong>100 CAD</strong> est requis. En échange, vous recevez votre badge de Tuteur ARCADINS et accès à notre espace tuteurs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONDITIONS -->
+<section style="background:var(--gray-light);">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;">
+      <div>
+        <div class="section-header" style="text-align:left;margin-bottom:28px;">
+          <span class="section-tag">Conditions d'accès</span>
+          <h2 style="font-size:1.6rem;">Qui peut devenir tuteur ?</h2>
+        </div>
+        <div class="tutor-card">
+          <div class="condition-item">
+            <div class="cond-icon">✅</div>
+            <div class="cond-text">
+              <h4>Maîtrise avancée du français</h4>
+              <p>Niveau B2 minimum (NCLC 7+). Idéalement natif ou quasi-natif avec une excellente maîtrise des règles grammaticales.</p>
+            </div>
+          </div>
+          <div class="condition-item">
+            <div class="cond-icon">📋</div>
+            <div class="cond-text">
+              <h4>Connaissance du TEF & TCF Canada</h4>
+              <p>Connaissance des épreuves, des critères NCLC et des standards requis pour l'immigration. Une expérience personnelle du test est un atout.</p>
+            </div>
+          </div>
+          <div class="condition-item">
+            <div class="cond-icon">🎓</div>
+            <div class="cond-text">
+              <h4>Programme de Tutorat pédagogique (atout)</h4>
+              <p>Expérience en enseignement, coaching ou formation est appréciée mais non obligatoire si le programme de tutorat tuteur ARCADINS est suivie.</p>
+            </div>
+          </div>
+          <div class="condition-item">
+            <div class="cond-icon">📝</div>
+            <div class="cond-text">
+              <h4>Test d'habilitation obligatoire</h4>
+              <p><strong>30 questions</strong> sur la grammaire, le vocabulaire, les stratégies TEF/TCF et la culture canadienne. <strong>Note de passage : 22/30</strong> en 30 minutes maximum.</p>
+            </div>
+          </div>
+          <div class="condition-item">
+            <div class="cond-icon">💰</div>
+            <div class="cond-text">
+              <h4>Frais d'ouverture de dossier</h4>
+              <p><strong>100 CAD</strong> payables après réussite du test. Ce frais couvre l'ouverture de votre dossier tuteur, votre badge et votre accès à l'espace tuteurs.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="section-header" style="text-align:left;margin-bottom:28px;">
+          <span class="section-tag">Rémunération</span>
+          <h2 style="font-size:1.6rem;">Ce que vous gagnez</h2>
+        </div>
+        <div class="remun-card">
+          <div style="font-size:.78rem;color:var(--gold-light);font-weight:700;margin-bottom:16px;text-transform:uppercase;letter-spacing:1px;">💰 Modèle de rémunération</div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="background:rgba(255,255,255,.1);border-radius:10px;padding:16px;">
+              <div style="font-weight:700;margin-bottom:4px;">Coaching oral individuel</div>
+              <div style="font-size:.82rem;opacity:.85;">Rémunération horaire — Tarif à discuter lors de l'entretien</div>
+            </div>
+            <div style="background:rgba(255,255,255,.1);border-radius:10px;padding:16px;">
+              <div style="font-weight:700;margin-bottom:4px;">Correction de productions écrites</div>
+              <div style="font-size:.82rem;opacity:.85;">Par document corrigé — Tarif à convenir selon le forfait</div>
+            </div>
+            <div style="background:rgba(255,255,255,.1);border-radius:10px;padding:16px;">
+              <div style="font-weight:700;margin-bottom:4px;">Sessions de groupe</div>
+              <div style="font-size:.82rem;opacity:.85;">Pour les forfaits Premium et VIP — Rémunération par session</div>
+            </div>
+            <div style="background:rgba(201,168,76,.2);border-radius:10px;padding:14px;border:1px solid var(--gold);">
+              <div style="font-size:.8rem;color:var(--gold-light);">📋 Note importante</div>
+              <div style="font-size:.78rem;opacity:.85;margin-top:4px;">La rémunération exacte et les conditions de collaboration sont discutées et formalisées dans une convention signée entre le tuteur et Les Entreprises ARCADINS et ses Éditions.</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px;background:white;border-radius:14px;padding:20px;box-shadow:var(--shadow);">
+          <h4 style="font-size:.95rem;font-weight:700;color:var(--blue-dark);margin-bottom:14px;">📌 Processus de sélection</h4>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;gap:10px;align-items:center;font-size:.85rem;">
+              <div style="width:24px;height:24px;background:var(--blue);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;">1</div>
+              <span>Soumettre le formulaire de candidature</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;font-size:.85rem;">
+              <div style="width:24px;height:24px;background:var(--blue);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;">2</div>
+              <span>Passer le test d'habilitation (30 questions / 30 min)</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;font-size:.85rem;">
+              <div style="width:24px;height:24px;background:var(--blue);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;">3</div>
+              <span>Entretien de sélection avec l'équipe ARCADINS</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;font-size:.85rem;">
+              <div style="width:24px;height:24px;background:var(--gold);color:var(--blue-dark);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;">4</div>
+              <span>Payer les frais de dossier (100 CAD) et signer la convention</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;font-size:.85rem;">
+              <div style="width:24px;height:24px;background:#2e7d32;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;">✓</div>
+              <span>Activation du badge Tuteur ARCADINS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEST D'HABILITATION -->
+<section id="test-tuteur" style="background:linear-gradient(135deg,#1a0050,#0033A0);">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" style="background:rgba(201,168,76,.2);color:var(--gold-light);">Test d'habilitation</span>
+      <h2 style="color:white;">Test Tuteur — 30 Questions · Note de passage : 22/30</h2>
+      <p style="color:rgba(255,255,255,.8);">Durée maximale : 30 minutes. Questions aléatoires sur la grammaire, le vocabulaire, les stratégies TEF/TCF et la culture canadienne.</p>
+    </div>
+
+    <div class="quiz-wrap-t" id="tuteurQuizWrap">
+      <div class="quiz-box-t" id="tuteurQuizBox">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+          <h3 style="font-size:1rem;color:var(--blue-dark);margin:0;">📝 Test d'habilitation TUTEUR</h3>
+          <div style="background:#fff0f0;border-radius:8px;padding:7px 16px;font-size:.9rem;font-weight:700;color:var(--red);">⏱️ <span id="tuteur-timer">30:00</span></div>
+        </div>
+        <p style="font-size:.82rem;color:var(--gray-text);margin-bottom:20px;">Note de passage : <strong>22 bonnes réponses sur 30</strong>. Questions générées aléatoirement. Bonne chance !</p>
+        <div style="display:flex;justify-content:space-between;font-size:.78rem;color:var(--gray-text);margin-bottom:6px;">
+          <span id="tuteur-prog-label">Question 1 / 30</span>
+          <span id="tuteur-prog-score">Score : 0 / 0</span>
+        </div>
+        <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="tuteur-prog-fill" style="width:0%"></div></div>
+        <div id="tuteur-question-area" style="margin-top:20px;"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px;flex-wrap:wrap;gap:10px;">
+          <span id="tuteur-feedback" style="font-size:.85rem;font-weight:600;"></span>
+          <button class="btn-next" id="tuteur-next-btn" onclick="tuteurNext()" style="display:none;">Question suivante →</button>
+        </div>
+      </div>
+      <div class="result-tutor" id="tuteur-result"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMULAIRE CANDIDATURE -->
+<section id="postuler">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Candidature</span>
+      <h2>Formulaire — Devenir Tuteur ARCADINS</h2>
+      <p>Remplissez ce formulaire complet. Notre équipe vous contactera sous 48h ouvrées.</p>
+    </div>
+    <div class="form-tutor" style="max-width:760px;margin:auto;">
+      <form id="tuteurForm" onsubmit="submitTuteurForm(event)">
+
+        <h4 style="color:var(--blue-dark);font-size:1rem;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--gray);">👤 Informations personnelles</h4>
+        <div class="form-grid">
+          <div class="form-group"><label>Nom complet *</label><input type="text" placeholder="Prénom + Nom" required /></div>
+          <div class="form-group"><label>Email *</label><input type="email" required /></div>
+          <div class="form-group"><label>Téléphone / WhatsApp *</label><input type="tel" required /></div>
+          <div class="form-group"><label>Pays de résidence *</label><select required><option value="">Sélectionnez</option><option>Canada</option><option>France</option><option>Maroc</option><option>Algérie</option><option>Tunisie</option><option>Sénégal</option><option>Autre</option></select></div>
+        </div>
+
+        <h4 style="color:var(--blue-dark);font-size:1rem;margin:24px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--gray);">🎓 Programme de Tutorat et compétences</h4>
+        <div class="form-grid">
+          <div class="form-group"><label>Niveau d'études *</label>
+            <select required><option value="">Sélectionnez</option><option>Baccalauréat</option><option>Licence / Bac+3</option><option>Maîtrise / Bac+5</option><option>Doctorat</option><option>Programme de formation professionnelle</option><option>Autre</option></select>
+          </div>
+          <div class="form-group"><label>Niveau de français *</label>
+            <select required><option value="">Sélectionnez</option><option>Natif (langue maternelle)</option><option>Quasi-natif (C2)</option><option>Courant (C1)</option><option>Avancé (B2)</option></select>
+          </div>
+          <div class="form-group"><label>Avez-vous passé le TEF ou TCF Canada ?</label>
+            <select><option value="">Sélectionnez</option><option>Oui — TEF Canada (score obtenu)</option><option>Oui — TCF Canada (score obtenu)</option><option>Oui — les deux</option><option>Non — mais je le connais bien</option><option>Non</option></select>
+          </div>
+          <div class="form-group"><label>Expérience en enseignement/coaching</label>
+            <select><option value="">Sélectionnez</option><option>Oui — plus de 3 ans</option><option>Oui — 1 à 3 ans</option><option>Oui — moins d'1 an</option><option>Non — débutant</option></select>
+          </div>
+        </div>
+
+        <h4 style="color:var(--blue-dark);font-size:1rem;margin:24px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--gray);">📋 Votre candidature</h4>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Pourquoi souhaitez-vous devenir tuteur ARCADINS ? *</label>
+            <textarea rows="4" placeholder="Décrivez votre motivation et ce que vous apporteriez à nos apprenants..." required style="border:2px solid var(--gray);border-radius:8px;padding:12px;font-family:inherit;resize:vertical;"></textarea>
+          </div>
+          <div class="form-group full">
+            <label>Décrivez votre expérience avec le TEF & TCF Canada ou l'immigration francophone</label>
+            <textarea rows="3" placeholder="Expérience personnelle, formation suivie, connaissance du domaine..." style="border:2px solid var(--gray);border-radius:8px;padding:12px;font-family:inherit;resize:vertical;"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Disponibilités hebdomadaires *</label>
+            <select required><option value="">Sélectionnez</option><option>5 à 10 heures/semaine</option><option>10 à 20 heures/semaine</option><option>20 à 30 heures/semaine</option><option>Plus de 30 heures/semaine</option></select>
+          </div>
+          <div class="form-group">
+            <label>Avez-vous besoin de le programme de tutorat tuteur ARCADINS ?</label>
+            <select><option value="">Sélectionnez</option><option>Non — je me sens prêt(e)</option><option>Oui — je souhaite être formé(e) d'abord</option><option>Je ne sais pas encore</option></select>
+          </div>
+        </div>
+
+        <div style="background:#fff8e1;border-left:4px solid var(--gold);border-radius:10px;padding:14px 18px;margin:20px 0;font-size:.82rem;color:#5a4500;">
+          <strong>⚠️ Conditions importantes :</strong><br>
+          • Note de passage au test d'habilitation : <strong>22/30 en 30 minutes</strong><br>
+          • Frais d'ouverture de dossier : <strong>100 CAD</strong> (après réussite du test et entretien)<br>
+          • La rémunération exacte est convenue dans une convention de collaboration signée<br>
+          • ARCADINS se réserve le droit de refuser toute candidature sans justification
+        </div>
+
+        <label style="display:flex;align-items:flex-start;gap:10px;font-size:.83rem;color:var(--gray-text);margin-bottom:20px;cursor:pointer;">
+          <input type="checkbox" required style="margin-top:3px;accent-color:var(--blue);" />
+          <span>J'accepte les conditions de participation au programme Tuteur ARCADINS, notamment le frais de dossier de 100 CAD après réussite du test, et je comprends que la rémunération sera formalisée dans une convention distincte.</span>
+        </label>
+
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;font-size:1rem;padding:16px;">
+          📨 Soumettre ma candidature
+        </button>
+        <p style="text-align:center;font-size:.78rem;color:#aaa;margin-top:10px;">Notre équipe vous contactera sous 48h ouvrées · info@arcadins-training.com</p>
+      </form>
+      <div id="tuteurFormSuccess" style="display:none;text-align:center;padding:32px 0;">
+        <div style="font-size:3rem;margin-bottom:14px;">🎓</div>
+        <h3 style="color:var(--blue-dark);margin-bottom:8px;">Candidature reçue !</h3>
+        <p style="color:var(--gray-text);">Notre équipe examine votre dossier et vous contactera sous 48h. N'oubliez pas de passer le <a href="#test-tuteur" style="color:var(--blue);">test d'habilitation</a> si ce n'est pas encore fait.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer style="background:var(--blue-dark);color:rgba(255,255,255,.7);text-align:center;padding:28px 24px;font-size:.85rem;">
+  © <span id="footerYear"></span> ARCADINS Training Center · Propulsé par <strong>Les Entreprises ARCADINS et ses Éditions</strong><br>
+  116 Albert Street, Suite 300, Ottawa, ON K1P 5G3 · 514-451-3436 (Appel &amp; WhatsApp)<br>
+  📍 116 Albert Street, Suite 300, Ottawa, ON K1P 5G3 · Canada<br>
+  <a href="confidentialite.html" style="color:var(--gold-light);">Confidentialité</a> ·
+  <a href="conditions.html" style="color:var(--gold-light);">Conditions</a> ·
+  <a href="../index.html" style="color:var(--gold-light);">Accueil</a>
+</footer>
+
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 data-i18n="auth.title">Bienvenue</h2><p data-i18n="auth.sub">Accédez à votre espace ARCADINS</p>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Connexion</button>
+      <button class="modal-tab" id="tabRegister" onclick="switchTab('register')">Créer un compte</button>
+    </div>
+    <form class="modal-form active" id="loginForm" onsubmit="handleAuth(event,'login')">
+      <div class="form-group"><label data-i18n="auth.email">Email</label><input type="email" required /></div>
+      <div class="form-group"><label data-i18n="auth.pass">Mot de passe</label><input type="password" required /></div>
+      <button type="submit" class="btn-primary" data-i18n="auth.loginBtn" style="width:100%;justify-content:center;">Se connecter</button>
+    </form>
+    <form class="modal-form" id="registerForm" onsubmit="handleAuth(event,'register')">
+      <div class="form-group"><label data-i18n="auth.fullname">Nom complet</label><input type="text" required /></div>
+      <div class="form-group"><label data-i18n="auth.email">Email</label><input type="email" required /></div>
+      <div class="form-group"><label data-i18n="auth.pass">Mot de passe</label><input type="password" required minlength="8" /></div>
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;background:var(--red);" data-i18n="auth.createBtn">Créer mon compte</button>
+    </form>
+  </div>
+</div>
+
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/questions.js"></script>
+<script src="../assets/js/main.js"></script>
+<script>
+// ===== TEST TUTEUR =====
+let tuteurState = { questions: [], current: 0, score: 0, answered: [], results: [], startTime: null, timerInterval: null };
+
+function initTuteurTest() {
+  tuteurState.questions = buildQuizQuestions('tuteur');
+  tuteurState.current = 0; tuteurState.score = 0;
+  tuteurState.answered = new Array(30).fill(false);
+  tuteurState.results = [];
+  tuteurState.startTime = Date.now();
+  startTuteurTimer();
+  renderTuteurQuestion();
+}
+
+function startTuteurTimer() {
+  let sec = 30 * 60;
+  tuteurState.timerInterval = setInterval(() => {
+    sec--;
+    const m = String(Math.floor(sec/60)).padStart(2,'0');
+    const s = String(sec%60).padStart(2,'0');
+    const el = document.getElementById('tuteur-timer');
+    if (el) el.textContent = m+':'+s;
+    if (sec <= 60) { if (el) el.parentElement.className = 'quiz-timer warning'; }
+    if (sec <= 0) { clearInterval(tuteurState.timerInterval); showTuteurResults(); }
+  }, 1000);
+}
+
+function renderTuteurQuestion() {
+  const q = tuteurState.questions[tuteurState.current];
+  const total = tuteurState.questions.length;
+  const pct = (tuteurState.current / total) * 100;
+  document.getElementById('tuteur-prog-fill').style.width = pct+'%';
+  document.getElementById('tuteur-prog-label').textContent = `Question ${tuteurState.current+1} / ${total}`;
+  document.getElementById('tuteur-prog-score').textContent = `Score : ${tuteurState.score} / ${tuteurState.current}`;
+  const letters = ['A','B','C','D'];
+  document.getElementById('tuteur-question-area').innerHTML = `
+    <div style="font-size:.7rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Question ${tuteurState.current+1} sur ${total}</div>
+    <div style="font-size:.97rem;font-weight:600;color:var(--text);margin-bottom:16px;">${q.q}</div>
+    ${q.opts.map((o,i) => `<button class="opt-btn-t" onclick="answerTuteur(${i})" id="tuteur-opt-${i}"><span class="opt-letter-t">${letters[i]}</span>${o}</button>`).join('')}
+    <div class="expl-t" id="tuteur-expl">${q.expl}</div>
+  `;
+  document.getElementById('tuteur-feedback').textContent = '';
+  document.getElementById('tuteur-next-btn').style.display = 'none';
+}
+
+function answerTuteur(chosen) {
+  if (tuteurState.answered[tuteurState.current]) return;
+  tuteurState.answered[tuteurState.current] = true;
+  const q = tuteurState.questions[tuteurState.current];
+  const correct = chosen === q.ans;
+  if (correct) tuteurState.score++;
+  tuteurState.results.push({ correct, chosen, ans: q.ans });
+  const letters = ['A','B','C','D'];
+  q.opts.forEach((_,i) => {
+    const btn = document.getElementById(`tuteur-opt-${i}`);
+    btn.disabled = true;
+    if (i===q.ans) btn.classList.add('correct');
+    else if (i===chosen && !correct) btn.classList.add('wrong');
+    else btn.style.opacity='.5';
+  });
+  document.getElementById('tuteur-expl').classList.add('show');
+  document.getElementById('tuteur-prog-score').textContent = `Score : ${tuteurState.score} / ${tuteurState.current+1}`;
+  document.getElementById('tuteur-feedback').innerHTML = correct
+    ? '<span style="color:#2e7d32;">✅ Bonne réponse !</span>'
+    : `<span style="color:#c62828;">❌ Incorrect — Bonne réponse : ${letters[q.ans]}</span>`;
+  const nextBtn = document.getElementById('tuteur-next-btn');
+  nextBtn.style.display = 'inline-flex';
+  nextBtn.textContent = tuteurState.current < tuteurState.questions.length-1 ? 'Question suivante →' : 'Voir mes résultats →';
+}
+
+function tuteurNext() {
+  if (tuteurState.current < tuteurState.questions.length-1) {
+    tuteurState.current++;
+    renderTuteurQuestion();
+  } else {
+    showTuteurResults();
+  }
+}
+
+function showTuteurResults() {
+  clearInterval(tuteurState.timerInterval);
+  const score = tuteurState.score;
+  const total = tuteurState.questions.length;
+  const passed = score >= 22;
+  const pct = Math.round((score/total)*100);
+  const elapsed = Math.floor((Date.now()-tuteurState.startTime)/1000);
+  const em = String(Math.floor(elapsed/60)).padStart(2,'0');
+  const es = String(elapsed%60).padStart(2,'0');
+
+  document.getElementById('tuteurQuizBox').style.display = 'none';
+  const result = document.getElementById('tuteur-result');
+  result.innerHTML = `
+    <div style="font-size:3rem;margin-bottom:12px;">${passed ? '🏆' : '📚'}</div>
+    <div style="font-size:2.8rem;font-weight:900;color:${passed ? '#2e7d32' : 'var(--red)'};">${pct}%</div>
+    <div style="font-size:1rem;color:var(--gray-text);margin-bottom:8px;">${score} / ${total} — ${passed ? '✅ RÉUSSI' : '❌ INSUFFISANT'}</div>
+    <div style="background:${passed ? 'linear-gradient(135deg,#1b5e20,#2e7d32)' : 'linear-gradient(135deg,#b71c1c,#c62828)'};color:white;border-radius:14px;padding:18px;margin:16px 0;">
+      <div style="font-size:1.1rem;font-weight:800;">${passed ? '🎉 Félicitations ! Vous avez réussi le test d\'habilitation TUTEUR !' : '📚 Note insuffisante — Note requise : 22/30'}</div>
+      <div style="font-size:.85rem;opacity:.9;margin-top:8px;">${passed ? 'Postulez maintenant pour compléter votre dossier et commencer votre carrière de tuteur ARCADINS.' : 'Vous pouvez retenter le test après une période de préparation. Notre programme de tutorat peut vous aider.'}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0;">
+      <div style="background:var(--gray-light);border-radius:10px;padding:14px;text-align:center;"><div style="font-size:1.5rem;font-weight:800;color:#2e7d32;">${score}</div><div style="font-size:.72rem;color:var(--gray-text);">✅ Bonnes réponses</div></div>
+      <div style="background:var(--gray-light);border-radius:10px;padding:14px;text-align:center;"><div style="font-size:1.5rem;font-weight:800;color:var(--red);">${total-score}</div><div style="font-size:.72rem;color:var(--gray-text);">❌ Erreurs</div></div>
+      <div style="background:var(--gray-light);border-radius:10px;padding:14px;text-align:center;"><div style="font-size:1.5rem;font-weight:800;color:var(--blue);">${em}:${es}</div><div style="font-size:.72rem;color:var(--gray-text);">⏱️ Temps</div></div>
+    </div>
+    ${passed
+      ? `<a href="#postuler" class="btn-primary" style="display:inline-flex;margin-top:8px;padding:13px 28px;">📨 Postuler maintenant →</a>`
+      : `<button onclick="retryTuteur()" class="btn-retry" style="margin-top:8px;">↺ Retenter après préparation</button>`
+    }
+  `;
+  result.classList.add('show');
+}
+
+function retryTuteur() {
+  document.getElementById('tuteur-result').classList.remove('show');
+  document.getElementById('tuteur-result').innerHTML = '';
+  document.getElementById('tuteurQuizBox').style.display = 'block';
+  initTuteurTest();
+}
+
+function submitTuteurForm(e) {
+  e.preventDefault();
+  document.getElementById('tuteurForm').style.display = 'none';
+  document.getElementById('tuteurFormSuccess').style.display = 'block';
+  showToast('Candidature envoyée ! Notre équipe vous contacte sous 48h.', 'success');
+}
+
+// Init test when section is visible
+const tuteurObs = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting && !tuteurState.startTime) {
+    initTuteurTest();
+    tuteurObs.disconnect();
+  }
+}, { threshold: 0.3 });
+const testSection = document.getElementById('test-tuteur');
+if (testSection) tuteurObs.observe(testSection);
+</script>
+</body>
+</html>
+
+
+
+

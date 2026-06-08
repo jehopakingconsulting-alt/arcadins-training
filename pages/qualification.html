@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test de Qualification – ARCADINS Training Center</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    .qual-hero { background:linear-gradient(135deg,#1a5c2e,#2e7d32); color:white; padding:48px 24px; text-align:center; }
+    .qual-hero h1 { font-size:2rem; font-weight:900; margin-bottom:10px; }
+    .quiz-container { max-width:760px; margin:40px auto; padding:0 24px 60px; }
+    .quiz-progress-bar { height:8px; background:#e0e6f0; border-radius:4px; margin-bottom:32px; overflow:hidden; }
+    .quiz-progress-fill { height:100%; background:linear-gradient(90deg,#2e7d32,var(--gold)); border-radius:4px; transition:.4s; }
+    .question-card { background:white; border-radius:16px; padding:32px; box-shadow:var(--shadow); margin-bottom:24px; }
+    .question-num { font-size:.78rem; font-weight:700; color:#2e7d32; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+    .question-text { font-size:1.1rem; font-weight:600; color:var(--blue-dark); margin-bottom:22px; line-height:1.5; }
+    .options-grid { display:flex; flex-direction:column; gap:10px; }
+    .option-btn { border:2px solid #e0e6f0; border-radius:10px; padding:12px 18px; background:white; text-align:left; cursor:pointer; font-family:inherit; font-size:.92rem; color:var(--text); transition:.25s; display:flex; align-items:center; gap:12px; }
+    .option-btn:hover { border-color:#2e7d32; background:#f0fff4; }
+    .option-btn.selected { border-color:#2e7d32; background:#e8f5e9; font-weight:600; }
+    .option-letter { width:28px; height:28px; border-radius:50%; background:var(--gray-light); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.8rem; flex-shrink:0; }
+    .quiz-nav { display:flex; justify-content:space-between; align-items:center; margin-top:24px; }
+    .result-card { background:white; border-radius:20px; padding:48px 36px; text-align:center; box-shadow:var(--shadow); }
+    .level-badge { display:inline-block; padding:10px 28px; border-radius:30px; font-size:1.1rem; font-weight:800; margin:16px 0; }
+    .level-debutant { background:#fff3e0; color:#e65100; }
+    .level-intermediaire { background:#e3f2fd; color:#1565c0; }
+    .level-avance { background:#e8f5e9; color:#2e7d32; }
+  </style>
+</head>
+<body>
+<div class="topbar" data-i18n="topbar">🍁 Programme de Tutorat 100% en ligne · TEF &amp; TCF Canada</div>
+<nav>
+  <div class="nav-container">
+    <a href="../index.html" class="logo"><img src="../assets/img/logo-nav.svg" alt="ARCADINS" height="50" style="display:block;"></a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;">🇬🇧 EN</button>
+    </div>
+  </div>
+</nav>
+
+<div class="qual-hero">
+  <span class="section-tag" style="background:rgba(201,168,76,.2);color:var(--gold-light);margin:0 auto 16px;display:inline-block;" data-i18n="qual.tag">Test de Qualification</span>
+  <h1 data-i18n="qual.h1">Test de Mise à Niveau</h1>
+  <p data-i18n="qual.p">20 questions · 30 minutes · Résultat immédiat · Adapte votre parcours de formation</p>
+</div>
+
+<div class="quiz-container" id="quizContainer">
+  <div id="loadingState" style="text-align:center;padding:60px 0;">⏳ <span data-i18n="trial.loading">Chargement...</span></div>
+  <div id="alreadyDone" style="display:none;text-align:center;padding:60px 0;">
+    <h2 data-i18n="qual.done.h">Test de qualification déjà effectué</h2>
+    <p data-i18n="qual.done.p">Vous pouvez commencer votre formation.</p>
+    <a href="formation.html" class="btn-primary" style="margin-top:20px;" data-i18n="qual.done.btn">Accéder à ma formation →</a>
+  </div>
+  <div id="quizArea" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:.85rem;color:var(--gray-text);">
+      <span id="questionCounter"></span>
+      <span>⏱️ <span id="timerDisplay">30:00</span></span>
+    </div>
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div id="questionWrap"></div>
+    <div class="quiz-nav">
+      <button id="prevBtn" class="btn-secondary" onclick="prevQ()" style="display:none;" data-i18n="quiz.prev">← Précédent</button>
+      <button id="nextBtn" class="btn-primary" onclick="nextQ()" data-i18n="quiz.next">Suivant →</button>
+      <button id="submitBtn" class="btn-primary" onclick="submitQual()" style="display:none;" data-i18n="quiz.submit">Terminer</button>
+    </div>
+  </div>
+  <div id="resultArea" style="display:none;">
+    <div class="result-card">
+      <div style="font-size:3rem;">🎓</div>
+      <h2 data-i18n="qual.result.h">Résultat du test de qualification</h2>
+      <div class="level-badge" id="levelBadge"></div>
+      <div style="font-size:2.5rem;font-weight:900;color:#2e7d32;margin:12px 0;"><span id="scoreDisplay">—</span>/20</div>
+      <p id="resultMsg" style="color:var(--gray-text);margin:12px 0 28px;line-height:1.7;"></p>
+      <div style="background:#f0fff4;border:2px solid #c8e6c9;border-radius:12px;padding:20px;margin-bottom:24px;text-align:left;">
+        <strong>🚀 <span data-i18n="qual.result.next.h">Vos modules sont maintenant débloqués</span></strong>
+        <p style="margin:8px 0 0;font-size:.9rem;color:var(--gray-text);" data-i18n="qual.result.next.p">Votre programme a été adapté à votre niveau. Vous pouvez commencer votre formation dès maintenant.</p>
+      </div>
+      <a href="formation.html" class="btn-primary" style="display:inline-flex;" data-i18n="qual.result.btn">Commencer ma formation →</a>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/api.js"></script>
+<script>
+let questions=[], currentQ=0, answers=[], timerInterval, secondsLeft=1800;
+
+async function init() {
+  const token = getToken();
+  if (!token) { window.location.href = 'acces.html'; return; }
+  try {
+    const me = await AuthAPI.me();
+    if (!me.user.payment_confirmed) { window.location.href = 'forfaits.html'; return; }
+    if (me.user.qualification_done) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('alreadyDone').style.display = 'block';
+      return;
+    }
+    const res = await QualAPI.questions();
+    questions = res.questions;
+    answers = new Array(questions.length).fill(null);
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('quizArea').style.display = 'block';
+    renderQ();
+    startTimer();
+  } catch(e) {
+    document.getElementById('loadingState').innerHTML = `<p style="color:red">${e.message}</p>`;
+  }
+}
+
+function renderQ() {
+  const q = questions[currentQ];
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+  const total = questions.length;
+  document.getElementById('questionCounter').textContent = `Question ${currentQ+1} / ${total}`;
+  document.getElementById('progressFill').style.width = ((currentQ+1)/total*100)+'%';
+  const opts = q.options[lang] || q.options.fr;
+  const letters = ['A','B','C','D'];
+  document.getElementById('questionWrap').innerHTML = `
+    <div class="question-card">
+      <div class="question-num">Question ${currentQ+1} · ${q.skill||''}</div>
+      <div class="question-text">${q.question[lang] || q.question.fr}</div>
+      <div class="options-grid">
+        ${opts.map((o,i)=>`<button class="option-btn ${answers[currentQ]===i?'selected':''}" onclick="selectA(${i})"><span class="option-letter">${letters[i]}</span>${o}</button>`).join('')}
+      </div>
+    </div>`;
+  document.getElementById('prevBtn').style.display = currentQ > 0 ? '' : 'none';
+  document.getElementById('nextBtn').style.display = currentQ < total-1 ? '' : 'none';
+  document.getElementById('submitBtn').style.display = currentQ === total-1 ? '' : 'none';
+}
+
+function selectA(idx) {
+  answers[currentQ] = idx;
+  document.querySelectorAll('.option-btn').forEach((b,i) => b.classList.toggle('selected', i===idx));
+}
+function nextQ() { if (currentQ < questions.length-1) { currentQ++; renderQ(); } }
+function prevQ() { if (currentQ > 0) { currentQ--; renderQ(); } }
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    const m=Math.floor(secondsLeft/60), s=secondsLeft%60;
+    document.getElementById('timerDisplay').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    if (secondsLeft <= 0) { clearInterval(timerInterval); submitQual(); }
+  }, 1000);
+}
+
+async function submitQual() {
+  clearInterval(timerInterval);
+  document.getElementById('quizArea').style.display = 'none';
+  try {
+    const res = await QualAPI.submit(answers);
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+    document.getElementById('resultArea').style.display = 'block';
+    document.getElementById('scoreDisplay').textContent = res.score;
+    const lv = res.level;
+    const lbls = { fr:{ Débutant:'Débutant (A1-A2)', Intermédiaire:'Intermédiaire (B1-B2)', Avancé:'Avancé (B2-C1)' }, en:{ Débutant:'Beginner (A1-A2)', Intermédiaire:'Intermediate (B1-B2)', Avancé:'Advanced (B2-C1)' } };
+    const badge = document.getElementById('levelBadge');
+    badge.textContent = lbls[lang][lv] || lv;
+    badge.className = 'level-badge level-' + lv.toLowerCase().replace('é','e').replace('è','e');
+    const msgs = {
+      fr:{ Débutant:'Votre parcours a été adapté pour un niveau débutant. Vous commencerez par les bases fondamentales du français.', Intermédiaire:'Très bien ! Votre parcours intermédiaire vous guidera vers NCLC 7-8 efficacement.', Avancé:'Excellent ! Votre parcours avancé vous permettra d\'atteindre NCLC 9+ rapidement.' },
+      en:{ Débutant:'Your program has been adapted for a beginner level.', Intermédiaire:'Great! Your intermediate program will guide you to NCLC 7-8 efficiently.', Avancé:'Excellent! Your advanced program will help you reach NCLC 9+ quickly.' }
+    };
+    document.getElementById('resultMsg').textContent = msgs[lang][lv] || '';
+  } catch(e) {
+    document.getElementById('resultArea').innerHTML = `<div class="result-card"><p style="color:red">${e.message}</p><a href="formation.html" class="btn-primary" style="margin-top:16px;">Continuer →</a></div>`;
+    document.getElementById('resultArea').style.display = 'block';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

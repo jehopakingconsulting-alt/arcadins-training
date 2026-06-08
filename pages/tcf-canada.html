@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accompagnement TCF Canada – ARCADINS Training Center</title>
+  <meta name="description" content="Préparez le TCF Canada avec ARCADINS Training Center. Accompagnement complet ARCADINS pour l'immigration au Canada et au Québec. Modules, simulations et stratégies NCLC." />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+<div class="topbar" data-i18n="topbar">🍁 Programme de Tutorat 100% en ligne · TEF & TCF Canada · <a href="mailto:info@arcadins-training.com">info@arcadins-training.com</a></div>
+<nav>
+  <div class="nav-container">
+    <a href="../index.html" class="logo"><img src="../assets/img/logo-nav.svg" alt="ARCADINS Training Center" height="50" style="display:block;" /></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html" data-i18n="nav.home">Accueil</a></li>
+      <li><a href="tef-canada.html" data-i18n="nav.tef">TEF Canada</a></li>
+      <li><a href="tcf-canada.html" style="color:var(--red);font-weight:700;">TCF Canada</a></li>
+      <li><a href="tests.html" data-i18n="nav.tests">Tests interactifs</a></li>
+      <li><a href="tarifs.html" data-i18n="nav.tarifs">Tarifs</a></li>
+      <li><a href="about.html" data-i18n="nav.about">À propos</a></li>
+      <li><a href="faq.html" data-i18n="nav.faq">FAQ</a></li>
+      <li><a href="tuteur.html" style="color:var(--gold);font-weight:700;">🎓 Devenir Tuteur</a></li><li><a href="#" class="btn-login" onclick="openModal('login')" data-i18n="nav.login">Connexion</a></li>
+      <li><a href="../index.html#inscription" class="btn-cta" data-i18n="nav.register">S'inscrire</a></li>
+    </ul>
+    <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.3s;margin-right:8px;" title="Switch language">🇬🇧 EN</button><div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- HERO TCF -->
+<section style="background:linear-gradient(135deg,#880000,#CC0000,#ff4444);color:white;padding:80px 24px;">
+  <div class="container" style="max-width:900px;text-align:center;">
+    <div class="hero-badge" style="margin:0 auto 20px;background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4);color:white;" data-i18n="tcf.hero.badge">📋 conforme aux standards du Canada &amp; MIFI Québec</div>
+    <h1 style="font-size:2.6rem;font-weight:900;margin-bottom:16px;" data-i18n="tcf.hero.h1">Programme de Tutorat <span style="color:#ffe08a;">TCF Canada</span></h1>
+    <p style="font-size:1.1rem;opacity:.9;max-width:660px;margin:0 auto 32px;line-height:1.7;" data-i18n="tcf.hero.p">
+      Préparez le Test de Connaissance du Français pour l'immigration au Canada et au Québec, le Programme de l'Expérience Québécoise (PEQ) et les études en milieu francophone.
+    </p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <a href="../index.html#inscription" class="btn-primary" style="background:white;color:var(--red);" data-i18n="tcf.hero.btn1">✏️ Je commence ma préparation TCF</a>
+      <a href="tests.html" class="btn-secondary" data-i18n="tcf.hero.btn2">🎯 Test d'essai libre</a>
+    </div>
+  </div>
+</section>
+
+<!-- QU'EST-CE QUE LE TCF CANADA -->
+<section>
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;">
+      <div>
+        <span class="section-tag" data-i18n="tcf.what.tag">Présentation</span>
+        <h2 style="font-size:1.8rem;font-weight:800;color:var(--blue-dark);margin:12px 0;" data-i18n="tcf.what.h2">Qu'est-ce que le TCF Canada ?</h2>
+        <p style="color:var(--gray-text);margin-bottom:16px;line-height:1.7;" data-i18n="tcf.what.p1">Le <strong>TCF Canada</strong> (Test de Connaissance du Français pour le Canada) est organisé par France Éducation international (anciennement CIEP). Il est reconnu par <strong>IRCC</strong> pour l'immigration au Canada et par le <strong>MIFI (Québec)</strong> pour les programmes d'immigration québécois.</p>
+        <p style="color:var(--gray-text);margin-bottom:16px;line-height:1.7;" data-i18n="tcf.what.p2">Les résultats sont valides <strong>2 ans</strong> et convertis en niveaux NCLC pour le Canada et en niveaux CECRL pour le Québec.</p>
+        <div style="background:var(--gray-light);border-radius:12px;padding:20px;margin-top:20px;">
+          <div style="font-weight:700;color:var(--blue-dark);margin-bottom:12px;" data-i18n="tcf.usedfor">🎯 Utilisé pour :</div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+            <li style="font-size:.9rem;" data-i18n="tcf.use1">✅ Express Entry – Entrée Express</li>
+            <li style="font-size:.9rem;" data-i18n="tcf.use2">✅ PEQ – Programme de l'Expérience Québécoise</li>
+            <li style="font-size:.9rem;" data-i18n="tcf.use3">✅ Programme des Travailleurs Qualifiés du Québec</li>
+            <li style="font-size:.9rem;" data-i18n="tcf.use4">✅ Résidence permanente au Canada</li>
+            <li style="font-size:.9rem;" data-i18n="tcf.use5">✅ Études dans les universités québécoises</li>
+          </ul>
+        </div>
+      </div>
+      <div style="background:linear-gradient(135deg,#CC0000,#ff6b6b);border-radius:20px;padding:36px;color:white;">
+        <h3 style="font-size:1.1rem;color:#ffe08a;margin-bottom:20px;font-weight:700;" data-i18n="tcf.struct.h">📊 Structure du TCF Canada</h3>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="background:rgba(255,255,255,.12);border-radius:10px;padding:14px;">
+            <div style="font-weight:700;margin-bottom:4px;">🎧 Compréhension orale (CO)</div>
+            <div style="font-size:.82rem;opacity:.85;">29 questions · ~35 minutes · niveaux A1–C2</div>
+          </div>
+          <div style="background:rgba(255,255,255,.12);border-radius:10px;padding:14px;">
+            <div style="font-weight:700;margin-bottom:4px;">📄 Maîtrise des structures de la langue (MSL)</div>
+            <div style="font-size:.82rem;opacity:.85;">18 questions · ~20 minutes · niveaux A1–C2</div>
+          </div>
+          <div style="background:rgba(255,255,255,.12);border-radius:10px;padding:14px;">
+            <div style="font-weight:700;margin-bottom:4px;">📖 Compréhension écrite (CE)</div>
+            <div style="font-size:.82rem;opacity:.85;">29 questions · ~45 minutes · niveaux A1–C2</div>
+          </div>
+          <div style="background:rgba(255,255,255,.12);border-radius:10px;padding:14px;">
+            <div style="font-weight:700;margin-bottom:4px;">✍️ Expression écrite (EE)</div>
+            <div style="font-size:.82rem;opacity:.85;">3 tâches · 60 minutes · niveaux A1–C2</div>
+          </div>
+          <div style="background:rgba(255,255,255,.12);border-radius:10px;padding:14px;">
+            <div style="font-weight:700;margin-bottom:4px;">🎤 Expression orale (EO)</div>
+            <div style="font-size:.82rem;opacity:.85;">4 tâches · ~12 minutes · niveaux A1–C2</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES TCF -->
+<section style="background:var(--gray-light);">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" data-i18n="tcf.mod.tag">Notre formation</span>
+      <h2 data-i18n="tcf.mod.h2">Modules de préparation TCF Canada</h2>
+      <p data-i18n="tcf.mod.p">Un parcours intensif couvrant toutes les épreuves du TCF Canada.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#fff0f0;">🎧</div>
+        <h3 data-i18n="tcf.card1.h">Compréhension orale</h3>
+        <p data-i18n="tcf.card1.p">Dialogues et documents sonores authentiques. Repérage d'informations, compréhension globale et sélective, écoute intensive.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#e8f5e9;">📖</div>
+        <h3 data-i18n="tcf.card2.h">Structures de la langue</h3>
+        <p data-i18n="tcf.card2.p">Grammaire contextuelle, conjugaison, accord, morphologie et syntaxe. Exercices ciblés par niveau CECRL.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#e8eef8;">📄</div>
+        <h3 data-i18n="tcf.card3.h">Compréhension écrite</h3>
+        <p data-i18n="tcf.card3.p">Textes variés (articles, publicités, emails, formulaires). Techniques de lecture rapide et compréhension en contexte québécois.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#fff8e1;">✍️</div>
+        <h3 data-i18n="tcf.card4.h">Expression écrite</h3>
+        <p data-i18n="tcf.card4.p">Message court (Tâche 1), message formel (Tâche 2), prise de position (Tâche 3). Structures et vocabulaire immigration.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#fce4ec;">🎤</div>
+        <h3 data-i18n="tcf.card5.h">Expression orale</h3>
+        <p data-i18n="tcf.card5.p">Interaction, monologue, argumentation. Prononciation, fluidité et richesse lexicale pour atteindre NCLC 7+.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#f3e5f5;">🏔️</div>
+        <h3 data-i18n="tcf.card6.h">Préparation Québec (PEQ)</h3>
+        <p data-i18n="tcf.card6.p">Vocabulaire et contextes spécifiques au Québec. Expressions québécoises, culture et institutions utiles pour le MIFI.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:linear-gradient(135deg,#880000,#CC0000);color:white;text-align:center;">
+  <div class="container" style="max-width:700px;">
+    <h2 style="font-size:2rem;font-weight:900;margin-bottom:16px;" data-i18n="tcf.cta.h2">Prêt à réussir votre TCF Canada ?</h2>
+    <p style="opacity:.9;margin-bottom:32px;font-size:1.05rem;" data-i18n="tcf.cta.p">Rejoignez ARCADINS Training Center et démarrez dès aujourd'hui.</p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <a href="../index.html#inscription" class="btn-primary" style="background:white;color:var(--red);" data-i18n="tcf.cta.btn1">✏️ Je m'inscris maintenant</a>
+      <a href="tarifs.html" class="btn-gold" data-i18n="tcf.cta.btn2">💰 Voir les tarifs</a>
+    </div>
+  </div>
+</section>
+
+<footer style="background:var(--blue-dark);color:rgba(255,255,255,.7);text-align:center;padding:28px 24px;font-size:.85rem;">
+  © 2024 ARCADINS Training Center · <a href="confidentialite.html" style="color:var(--gold-light);">Confidentialité</a> · <a href="conditions.html" style="color:var(--gold-light);">Conditions</a> · <a href="../index.html" style="color:var(--gold-light);">Accueil</a>
+</footer>
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 data-i18n="auth.title">Bienvenue</h2><p data-i18n="auth.sub">Accédez à votre espace ARCADINS</p>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Connexion</button>
+      <button class="modal-tab" id="tabRegister" onclick="switchTab('register')">Créer un compte</button>
+    </div>
+    <form class="modal-form active" id="loginForm" onsubmit="handleAuth(event,'login')">
+      <div class="form-group"><label data-i18n="auth.email">Email</label><input type="email" required /></div>
+      <div class="form-group"><label data-i18n="auth.pass">Mot de passe</label><input type="password" required /></div>
+      <button type="submit" class="btn-primary" data-i18n="auth.loginBtn" style="width:100%;justify-content:center;">Se connecter</button>
+    </form>
+    <form class="modal-form" id="registerForm" onsubmit="handleAuth(event,'register')">
+      <div class="form-group"><label data-i18n="auth.fullname">Nom complet</label><input type="text" required /></div>
+      <div class="form-group"><label data-i18n="auth.email">Email</label><input type="email" required /></div>
+      <div class="form-group"><label data-i18n="auth.pass">Mot de passe</label><input type="password" required minlength="8" /></div>
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;background:var(--red);" data-i18n="auth.createBtn">Créer mon compte</button>
+    </form>
+  </div>
+</div>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/access-popup.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

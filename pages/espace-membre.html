@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mon Espace – ARCADINS Training Center</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    * { box-sizing:border-box; }
+    body { background:#f0f4f8; }
+    .member-hero { background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:white; padding:40px 24px; text-align:center; }
+    .member-hero h1 { font-size:1.9rem; font-weight:900; margin-bottom:6px; }
+    .member-hero p { opacity:.85; font-size:.95rem; }
+    .dashboard-grid { max-width:1060px; margin:36px auto; padding:0 24px 60px; display:grid; grid-template-columns:320px 1fr; gap:24px; }
+    @media(max-width:768px) { .dashboard-grid{grid-template-columns:1fr;} }
+    .card { background:white; border-radius:16px; padding:24px; box-shadow:var(--shadow); }
+    .card h3 { font-size:.95rem; font-weight:800; color:var(--blue-dark); margin:0 0 16px; }
+    .progress-steps { display:flex; flex-direction:column; gap:0; }
+    .step-item { display:flex; align-items:flex-start; gap:12px; padding:12px 0; border-bottom:1px solid #f0f0f0; }
+    .step-item:last-child { border-bottom:none; }
+    .step-icon { width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+    .step-icon.done { background:#e8f5e9; }
+    .step-icon.current { background:#e3f2fd; animation:pulse 2s infinite; }
+    .step-icon.locked { background:#f0f0f0; filter:grayscale(1); }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(21,101,192,.3)} 50%{box-shadow:0 0 0 8px rgba(21,101,192,0)} }
+    .step-info { flex:1; }
+    .step-name { font-weight:700; font-size:.88rem; color:var(--blue-dark); }
+    .step-desc { font-size:.77rem; color:var(--gray-text); margin-top:2px; }
+    .step-action { margin-top:6px; }
+    .step-link { font-size:.78rem; font-weight:600; color:var(--blue); text-decoration:none; border:1.5px solid var(--blue); border-radius:6px; padding:3px 10px; }
+    .step-link:hover { background:var(--blue); color:white; }
+    .stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+    .mini-stat { background:var(--gray-light); border-radius:10px; padding:14px 16px; text-align:center; }
+    .mini-stat-num { font-size:1.6rem; font-weight:900; color:var(--blue-dark); }
+    .mini-stat-lbl { font-size:.72rem; color:var(--gray-text); margin-top:2px; }
+    .prog-bar-wrap { margin-bottom:16px; }
+    .prog-bar-label { display:flex; justify-content:space-between; font-size:.8rem; margin-bottom:5px; }
+    .prog-bar { height:10px; background:#e0e6f0; border-radius:5px; overflow:hidden; }
+    .prog-bar-fill { height:100%; border-radius:5px; background:linear-gradient(90deg,var(--blue-dark),var(--blue)); transition:.6s; }
+    .info-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #f0f4f8; font-size:.85rem; }
+    .info-row:last-child { border-bottom:none; }
+    .info-label { color:var(--gray-text); }
+    .info-value { font-weight:600; color:var(--blue-dark); }
+    .badge-pill { display:inline-block; padding:3px 10px; border-radius:12px; font-size:.72rem; font-weight:700; }
+    .pill-green { background:#e8f5e9; color:#2e7d32; }
+    .pill-blue { background:#e3f2fd; color:#1565c0; }
+    .pill-orange { background:#fff3e0; color:#e65100; }
+    .pill-gray { background:#f0f0f0; color:#666; }
+    .cert-preview-mini { border:2px solid var(--gold); border-radius:12px; padding:20px; text-align:center; background:linear-gradient(135deg,#fffbf0,white); }
+    .cert-preview-mini .cert-num { font-family:monospace; font-size:.72rem; color:#999; margin-top:8px; word-break:break-all; }
+  </style>
+</head>
+<body>
+<div class="topbar" data-i18n="topbar">🍁 Programme de Tutorat 100% en ligne · TEF &amp; TCF Canada</div>
+<nav>
+  <div class="nav-container">
+    <a href="../index.html" class="logo"><img src="../assets/img/logo-nav.svg" alt="ARCADINS" height="50" style="display:block;"></a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;">🇬🇧 EN</button>
+      <button onclick="doLogout()" style="background:transparent;border:2px solid #ccc;color:var(--gray-text);border-radius:8px;padding:5px 12px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:inherit;" data-i18n="nav.logout">Déconnexion</button>
+    </div>
+  </div>
+</nav>
+
+<div class="member-hero">
+  <span class="section-tag" style="background:rgba(255,255,255,.15);color:white;margin:0 auto 12px;display:inline-block;" data-i18n="member.tag">Mon Espace Membre</span>
+  <h1 id="heroName">Bonjour ! 👋</h1>
+  <p id="heroSub" data-i18n="member.hero.sub">Suivez votre progression et accédez à votre formation</p>
+</div>
+
+<div id="loadingState" style="text-align:center;padding:60px 0;">⏳</div>
+
+<div class="dashboard-grid" id="dashboardGrid" style="display:none;">
+  <!-- Left column -->
+  <div>
+    <div class="card" style="margin-bottom:24px;">
+      <h3>👤 Mon Profil</h3>
+      <div id="profileInfo"></div>
+    </div>
+    <div class="card">
+      <h3>🗺️ Mon Parcours</h3>
+      <div class="progress-steps" id="progressSteps"></div>
+    </div>
+  </div>
+
+  <!-- Right column -->
+  <div>
+    <div class="stat-grid">
+      <div class="mini-stat">
+        <div class="mini-stat-num" id="statModules">—</div>
+        <div class="mini-stat-lbl" data-i18n="member.stat.modules">Modules complétés</div>
+      </div>
+      <div class="mini-stat">
+        <div class="mini-stat-num" id="statScore">—</div>
+        <div class="mini-stat-lbl" data-i18n="member.stat.score">Score test final</div>
+      </div>
+    </div>
+
+    <!-- Module progress (if in training) -->
+    <div class="card" id="moduleCard" style="margin-bottom:24px;display:none;">
+      <h3>📚 Progression Formation</h3>
+      <div class="prog-bar-wrap">
+        <div class="prog-bar-label"><span data-i18n="member.prog.label">Avancement</span><span id="modulePercent">0%</span></div>
+        <div class="prog-bar"><div class="prog-bar-fill" id="moduleBar" style="width:0%"></div></div>
+      </div>
+      <div style="font-size:.85rem;color:var(--gray-text);margin-bottom:16px;" id="moduleStatus"></div>
+      <a href="formation.html" class="btn-primary" style="font-size:.85rem;" data-i18n="member.go.formation">Continuer ma formation →</a>
+    </div>
+
+    <!-- Certificate (if passed) -->
+    <div class="card" id="certCard" style="margin-bottom:24px;display:none;">
+      <h3>🏆 Mon Certificat</h3>
+      <div class="cert-preview-mini">
+        <div style="font-size:2.5rem;">🏅</div>
+        <div style="font-weight:800;color:var(--gold);font-size:1rem;margin:6px 0;" data-i18n="member.cert.title">Certificat de Réussite</div>
+        <div style="font-size:.85rem;color:var(--gray-text);" id="certInfo"></div>
+        <div class="cert-num" id="certNum"></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:14px;">
+        <a href="mon-certificat.html" class="btn-primary" style="font-size:.82rem;flex:1;justify-content:center;" data-i18n="member.cert.view">Voir le certificat</a>
+        <a id="certDownloadLink" href="#" class="btn-secondary" onclick="downloadCert(event)" style="font-size:.82rem;flex:1;justify-content:center;" data-i18n="member.cert.download">📥 PDF</a>
+      </div>
+    </div>
+
+    <!-- Test scores -->
+    <div class="card" id="scoresCard">
+      <h3>📊 Mes Résultats</h3>
+      <div id="scoresContent"></div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/api.js"></script>
+<script>
+async function init() {
+  const token = getToken();
+  if (!token) { window.location.href = 'acces.html'; return; }
+  try {
+    const res = await AuthAPI.me();
+    const u = res.user;
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('dashboardGrid').style.display = 'grid';
+
+    const greet = lang === 'fr' ? `Bonjour, ${u.prenom} ! 👋` : `Hello, ${u.prenom}! 👋`;
+    document.getElementById('heroName').textContent = greet;
+
+    // Profile
+    document.getElementById('profileInfo').innerHTML = `
+      <div class="info-row"><span class="info-label">${lang==='fr'?'Nom complet':'Full name'}</span><span class="info-value">${u.prenom} ${u.nom}</span></div>
+      <div class="info-row"><span class="info-label">Email</span><span class="info-value">${u.email}</span></div>
+      <div class="info-row"><span class="info-label">${lang==='fr'?'Pays':'Country'}</span><span class="info-value">${u.pays||'—'}</span></div>
+      <div class="info-row"><span class="info-label">${lang==='fr'?'Forfait':'Plan'}</span><span class="info-value">${u.payment_plan||'—'}</span></div>
+      <div class="info-row"><span class="info-label">${lang==='fr'?'Niveau':'Level'}</span><span class="info-value">${u.qualification_level||'—'}</span></div>
+      <div class="info-row"><span class="info-label">${lang==='fr'?'Inscrit le':'Member since'}</span><span class="info-value">${new Date(u.created_at).toLocaleDateString(lang==='fr'?'fr-CA':'en-CA')}</span></div>`;
+
+    // Steps
+    const steps = [
+      { key:'registered', label: lang==='fr'?'Inscription':'Registration', icon:'✅', done: true, link: null },
+      { key:'trial', label: lang==='fr'?'Essai gratuit':'Free trial', icon: u.trial_done?'✅':'🔵', done:!!u.trial_done, link: u.trial_done?null:'essai-gratuit.html', linkLabel: lang==='fr'?'Faire le test →':'Take test →' },
+      { key:'payment', label: lang==='fr'?'Paiement':'Payment', icon: u.payment_confirmed?'✅':'🔵', done:!!u.payment_confirmed, link: u.payment_confirmed||!u.trial_done?null:'forfaits.html', linkLabel: lang==='fr'?'Choisir un forfait →':'Choose plan →' },
+      { key:'qual', label: lang==='fr'?'Test de qualification':'Placement test', icon: u.qualification_done?'✅':u.payment_confirmed?'🔵':'🔒', done:!!u.qualification_done, link: u.qualification_done||!u.payment_confirmed?null:'qualification.html', linkLabel: lang==='fr'?'Passer le test →':'Take test →' },
+      { key:'formation', label: lang==='fr'?'Formation':'Training', icon: u.all_modules_done?'✅':u.qualification_done?'🔵':'🔒', done:!!u.all_modules_done, link: !u.qualification_done?null:'formation.html', linkLabel: lang==='fr'?'Ma formation →':'My training →' },
+      { key:'final', label: lang==='fr'?'Test final':'Final test', icon: u.final_test_passed?'✅':u.all_modules_done?'🔵':'🔒', done:!!u.final_test_passed, link: u.final_test_passed||!u.all_modules_done?null:'test-final.html', linkLabel: lang==='fr'?'Passer le test →':'Take test →' },
+      { key:'cert', label: lang==='fr'?'Certificat':'Certificate', icon: u.final_test_passed?'🏆':'🔒', done:!!u.final_test_passed, link: u.final_test_passed?'mon-certificat.html':null, linkLabel: lang==='fr'?'Mon certificat →':'My certificate →' },
+    ];
+    document.getElementById('progressSteps').innerHTML = steps.map(s=>`
+      <div class="step-item">
+        <div class="step-icon ${s.done?'done':s.link?'current':'locked'}">${s.icon}</div>
+        <div class="step-info">
+          <div class="step-name">${s.label}</div>
+          <div class="step-desc">${s.done?(lang==='fr'?'Complété':'Completed'):(s.link?lang==='fr'?'À faire':'To do':lang==='fr'?'Verrouillé':'Locked')}</div>
+          ${s.link&&!s.done?`<div class="step-action"><a href="${s.link}" class="step-link">${s.linkLabel}</a></div>`:''}
+        </div>
+      </div>`).join('');
+
+    // Module progress
+    if (u.qualification_done) {
+      const mod = document.getElementById('moduleCard');
+      mod.style.display = 'block';
+      const pct = Math.round((u.current_module||1)/14*100);
+      document.getElementById('modulePercent').textContent = pct+'%';
+      document.getElementById('moduleBar').style.width = pct+'%';
+      document.getElementById('moduleStatus').textContent = u.all_modules_done
+        ? (lang==='fr'?'✅ Formation terminée !':'✅ Training complete!')
+        : (lang==='fr'?`Module actuel : ${u.current_module||1} / 14`:`Current module: ${u.current_module||1} / 14`);
+    }
+
+    // Certificate
+    if (u.final_test_passed) {
+      document.getElementById('certCard').style.display = 'block';
+      try {
+        const cr = await CertAPI.my();
+        const c = cr.certificate;
+        document.getElementById('certInfo').textContent = lang==='fr'?`Score : ${Math.round(c.score)}%`:`Score: ${Math.round(c.score)}%`;
+        document.getElementById('certNum').textContent = c.certificate_number;
+      } catch(e) {}
+    }
+
+    // Scores summary
+    const scores = [];
+    if (u.trial_done) scores.push({ label: lang==='fr'?'Essai gratuit':'Free trial', val: `${u.trial_score||0}/10` });
+    if (u.qualification_done) scores.push({ label: lang==='fr'?'Qualification':'Placement', val: `${u.qualification_score||0}/20`, sub: u.qualification_level });
+    if (u.final_test_done) scores.push({ label: lang==='fr'?'Test final':'Final test', val: `${Math.round(u.final_test_score||0)}%`, pill: u.final_test_passed?'green':'orange' });
+
+    document.getElementById('statModules').textContent = u.qualification_done ? `${u.current_module||0}/14` : '—';
+    document.getElementById('statScore').textContent = u.final_test_done ? `${Math.round(u.final_test_score||0)}%` : '—';
+
+    document.getElementById('scoresContent').innerHTML = scores.length
+      ? scores.map(s=>`<div class="info-row"><span class="info-label">${s.label}</span><span class="info-value">${s.val} ${s.sub?`<span class="badge-pill pill-blue">${s.sub}</span>`:''}${s.pill?`<span class="badge-pill pill-${s.pill}">${s.pill==='green'?lang==='fr'?'Réussi':'Passed':lang==='fr'?'Échoué':'Failed'}</span>`:''}</span></div>`).join('')
+      : `<p style="color:var(--gray-text);font-size:.85rem;">${lang==='fr'?'Aucun score enregistré pour le moment.':'No scores recorded yet.'}</p>`;
+
+  } catch(e) {
+    document.getElementById('loadingState').innerHTML = `<p style="color:red;text-align:center;">${e.message}</p>`;
+  }
+}
+
+function downloadCert(e) {
+  e.preventDefault();
+  window.open(CertAPI.downloadUrl(), '_blank');
+}
+
+function doLogout() {
+  localStorage.removeItem('arc_token');
+  localStorage.removeItem('arc_user');
+  window.location.href = 'acces.html';
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

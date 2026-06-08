@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test d'Essai Gratuit – ARCADINS Training Center</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    .trial-hero { background: linear-gradient(135deg,var(--blue-dark),var(--blue)); color:white; padding:48px 24px; text-align:center; }
+    .trial-hero h1 { font-size:2rem; font-weight:900; margin-bottom:10px; }
+    .trial-hero p { opacity:.9; max-width:600px; margin:0 auto; }
+    .trial-meta { display:flex; gap:24px; justify-content:center; flex-wrap:wrap; margin-top:20px; }
+    .trial-meta span { background:rgba(255,255,255,.15); border-radius:20px; padding:6px 16px; font-size:.85rem; }
+    .quiz-container { max-width:760px; margin:40px auto; padding:0 24px; }
+    .quiz-progress-bar { height:8px; background:#e0e6f0; border-radius:4px; margin-bottom:32px; overflow:hidden; }
+    .quiz-progress-fill { height:100%; background:linear-gradient(90deg,var(--blue),var(--gold)); border-radius:4px; transition:.4s; }
+    .quiz-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-size:.85rem; color:var(--gray-text); }
+    .question-card { background:white; border-radius:16px; padding:32px; box-shadow:var(--shadow); margin-bottom:24px; }
+    .question-num { font-size:.78rem; font-weight:700; color:var(--blue); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+    .question-text { font-size:1.1rem; font-weight:600; color:var(--blue-dark); margin-bottom:22px; line-height:1.5; }
+    .options-grid { display:flex; flex-direction:column; gap:10px; }
+    .option-btn { border:2px solid #e0e6f0; border-radius:10px; padding:12px 18px; background:white; text-align:left; cursor:pointer; font-family:inherit; font-size:.92rem; color:var(--text); transition:.25s; display:flex; align-items:center; gap:12px; }
+    .option-btn:hover { border-color:var(--blue); background:#f0f5ff; }
+    .option-btn.selected { border-color:var(--blue); background:#e8f0ff; font-weight:600; }
+    .option-btn.correct { border-color:#2e7d32; background:#e8f5e9; color:#2e7d32; }
+    .option-btn.wrong { border-color:var(--red); background:#fff0f0; color:var(--red); }
+    .option-letter { width:28px; height:28px; border-radius:50%; background:var(--gray-light); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.8rem; flex-shrink:0; }
+    .quiz-nav { display:flex; justify-content:space-between; align-items:center; margin-top:24px; }
+    .timer-box { background:var(--blue-dark); color:white; border-radius:10px; padding:8px 18px; font-size:1rem; font-weight:700; display:inline-flex; align-items:center; gap:8px; }
+    .timer-box.urgent { background:var(--red); animation:pulse .8s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.7} }
+    .result-card { background:white; border-radius:20px; padding:48px 36px; text-align:center; box-shadow:var(--shadow); max-width:600px; margin:40px auto; }
+    .result-score { font-size:4rem; font-weight:900; color:var(--blue); margin:20px 0; }
+    .result-badge { display:inline-block; background:var(--gray-light); border-radius:20px; padding:8px 20px; font-size:.9rem; font-weight:600; margin-bottom:16px; }
+    .already-done { background:var(--gray-light); border-radius:16px; padding:32px; text-align:center; max-width:600px; margin:40px auto; }
+    .already-done h2 { color:var(--blue-dark); margin-bottom:12px; }
+  </style>
+</head>
+<body>
+<div class="topbar" data-i18n="topbar">🍁 Programme de Tutorat 100% en ligne · TEF &amp; TCF Canada</div>
+<nav>
+  <div class="nav-container">
+    <a href="../index.html" class="logo"><img src="../assets/img/logo-nav.svg" alt="ARCADINS" height="50" style="display:block;" /></a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;">🇬🇧 EN</button>
+      <a href="#" onclick="AuthAPI && AuthAPI.logout()" style="font-size:.8rem;color:var(--gray-text);" data-i18n="nav.logout">Déconnexion</a>
+    </div>
+  </div>
+</nav>
+
+<div class="trial-hero">
+  <span class="section-tag" style="background:rgba(201,168,76,.2);color:var(--gold-light);margin:0 auto 16px;display:inline-block;" data-i18n="trial.tag">Test d'essai gratuit</span>
+  <h1 data-i18n="trial.h1">Test de Niveau Initial</h1>
+  <p data-i18n="trial.p">Évaluez votre niveau de français actuel. 10 questions · Résultats immédiats · Gratuit</p>
+  <div class="trial-meta">
+    <span>⏱️ <span data-i18n="trial.meta1">10 minutes max</span></span>
+    <span>📋 <span data-i18n="trial.meta2">10 questions</span></span>
+    <span>🎯 <span data-i18n="trial.meta3">Score NCLC estimé</span></span>
+  </div>
+</div>
+
+<div class="quiz-container" id="quizContainer">
+  <div id="loadingState" style="text-align:center;padding:60px 0;">
+    <div style="font-size:2rem;">⏳</div>
+    <p data-i18n="trial.loading">Chargement des questions...</p>
+  </div>
+  <div id="alreadyDone" class="already-done" style="display:none;">
+    <div style="font-size:3rem;">✅</div>
+    <h2 data-i18n="trial.done.h">Test déjà effectué</h2>
+    <p data-i18n="trial.done.p">Vous avez déjà passé votre test d'essai gratuit. Choisissez votre forfait pour continuer votre préparation.</p>
+    <a href="forfaits.html" class="btn-primary" style="margin-top:20px;" data-i18n="trial.done.btn">Choisir mon forfait →</a>
+  </div>
+  <div id="quizArea" style="display:none;">
+    <div class="quiz-header">
+      <span id="questionCounter"></span>
+      <div class="timer-box" id="timerBox">⏱️ <span id="timerDisplay">10:00</span></div>
+    </div>
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div id="questionWrap"></div>
+    <div class="quiz-nav">
+      <button id="prevBtn" class="btn-secondary" onclick="prevQuestion()" style="display:none;" data-i18n="quiz.prev">← Précédent</button>
+      <button id="nextBtn" class="btn-primary" onclick="nextQuestion()" data-i18n="quiz.next">Suivant →</button>
+      <button id="submitBtn" class="btn-primary" onclick="submitTest()" style="display:none;" data-i18n="quiz.submit">Terminer le test</button>
+    </div>
+  </div>
+  <div id="resultArea" style="display:none;">
+    <div class="result-card">
+      <div style="font-size:3rem;">🎯</div>
+      <h2 data-i18n="trial.result.h">Résultat de votre test</h2>
+      <div class="result-score"><span id="scoreDisplay">—</span>/10</div>
+      <div class="result-badge" id="levelBadge"></div>
+      <p id="resultMessage" style="color:var(--gray-text);margin:16px 0 24px;line-height:1.7;"></p>
+      <div style="background:var(--gray-light);border-radius:12px;padding:20px;margin-bottom:24px;text-align:left;">
+        <strong data-i18n="trial.result.next.h">🚀 Prochaine étape</strong>
+        <p style="margin:8px 0 0;font-size:.9rem;color:var(--gray-text);" data-i18n="trial.result.next.p">
+          Votre essai gratuit est terminé. Pour accéder à la formation complète et au programme en ligne, veuillez choisir un forfait adapté à votre objectif.
+        </p>
+      </div>
+      <a href="forfaits.html" class="btn-primary" style="display:inline-flex;margin:0 auto;" data-i18n="trial.result.btn">Choisir mon forfait →</a>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/api.js"></script>
+<script>
+let questions = [], currentQ = 0, answers = [], timerInterval, secondsLeft = 600;
+
+async function init() {
+  const token = getToken();
+  if (!token) { window.location.href = 'acces.html'; return; }
+  try {
+    const res = await TrialAPI.questions();
+    if (res.already_done) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('alreadyDone').style.display = 'block';
+      return;
+    }
+    questions = res.questions;
+    answers = new Array(questions.length).fill(null);
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('quizArea').style.display = 'block';
+    renderQuestion();
+    startTimer();
+  } catch(e) {
+    document.getElementById('loadingState').innerHTML = `<p style="color:red">${e.message}</p><a href="acces.html">← Retour</a>`;
+  }
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+  const total = questions.length;
+  document.getElementById('questionCounter').textContent = `Question ${currentQ+1} / ${total}`;
+  document.getElementById('progressFill').style.width = ((currentQ+1)/total*100)+'%';
+  const opts = q.options[lang] || q.options.fr;
+  const letters = ['A','B','C','D'];
+  document.getElementById('questionWrap').innerHTML = `
+    <div class="question-card">
+      <div class="question-num">Question ${currentQ+1}</div>
+      <div class="question-text">${q.question[lang] || q.question.fr}</div>
+      <div class="options-grid">
+        ${opts.map((o,i) => `
+          <button class="option-btn ${answers[currentQ]===i?'selected':''}" onclick="selectAnswer(${i})">
+            <span class="option-letter">${letters[i]}</span>${o}
+          </button>`).join('')}
+      </div>
+    </div>`;
+  document.getElementById('prevBtn').style.display = currentQ > 0 ? '' : 'none';
+  document.getElementById('nextBtn').style.display = currentQ < total-1 ? '' : 'none';
+  document.getElementById('submitBtn').style.display = currentQ === total-1 ? '' : 'none';
+}
+
+function selectAnswer(idx) {
+  answers[currentQ] = idx;
+  document.querySelectorAll('.option-btn').forEach((b,i) => b.classList.toggle('selected', i===idx));
+}
+
+function nextQuestion() { if (currentQ < questions.length-1) { currentQ++; renderQuestion(); } }
+function prevQuestion() { if (currentQ > 0) { currentQ--; renderQuestion(); } }
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    const m = Math.floor(secondsLeft/60), s = secondsLeft%60;
+    document.getElementById('timerDisplay').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    if (secondsLeft <= 60) document.getElementById('timerBox').classList.add('urgent');
+    if (secondsLeft <= 0) { clearInterval(timerInterval); submitTest(); }
+  }, 1000);
+}
+
+async function submitTest() {
+  clearInterval(timerInterval);
+  document.getElementById('quizArea').style.display = 'none';
+  try {
+    const res = await TrialAPI.submit(answers);
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+    document.getElementById('resultArea').style.display = 'block';
+    document.getElementById('scoreDisplay').textContent = res.score;
+    const levels = { fr: {low:'Débutant (A1-A2)',mid:'Intermédiaire (B1)',high:'Avancé (B2-C1)'}, en: {low:'Beginner (A1-A2)',mid:'Intermediate (B1)',high:'Advanced (B2-C1)'} };
+    const level = res.score <= 3 ? 'low' : res.score <= 7 ? 'mid' : 'high';
+    document.getElementById('levelBadge').textContent = levels[lang][level];
+    const msgs = {
+      fr: { low:'Votre niveau de départ est débutant. Notre programme complet vous accompagnera pas à pas vers votre objectif NCLC.', mid:'Bon niveau de base ! Avec notre programme, vous pouvez atteindre NCLC 7 ou 8 en quelques semaines.', high:'Excellent niveau ! Notre formation avancée vous permettra d\'atteindre NCLC 9+ et maximiser votre score Express Entry.' },
+      en: { low:'Your starting level is beginner. Our complete program will guide you step by step to your NCLC goal.', mid:'Good foundation! With our program, you can reach NCLC 7 or 8 in a few weeks.', high:'Excellent level! Our advanced training will help you reach NCLC 9+ and maximize your Express Entry score.' }
+    };
+    document.getElementById('resultMessage').textContent = msgs[lang][level];
+  } catch(e) {
+    document.getElementById('resultArea').style.display = 'block';
+    document.getElementById('resultArea').innerHTML = `<div class="result-card"><p style="color:red">${e.message}</p><a href="forfaits.html" class="btn-primary" style="margin-top:16px;">Continuer →</a></div>`;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

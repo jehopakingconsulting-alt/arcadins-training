@@ -1,0 +1,362 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog – Immigration Canada, TEF & TCF | ARCADINS Training Center</title>
+  <meta name="description" content="Conseils immigration Express Entry, différences TEF Canada vs TCF Canada, scores NCLC, programmes Québec. Ressources gratuites ARCADINS Training Center." />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    .article-hero { background: linear-gradient(135deg,var(--blue-dark),var(--blue)); color:white; padding:60px 24px; text-align:center; }
+    .article-content { max-width: 780px; margin: auto; padding: 48px 24px; line-height: 1.85; }
+    .article-content h2 { font-size:1.3rem; font-weight:800; color:var(--blue-dark); margin:32px 0 12px; }
+    .article-content h3 { font-size:1.05rem; font-weight:700; color:var(--blue); margin:24px 0 8px; }
+    .article-content p { color:var(--gray-text); margin-bottom:14px; font-size:.93rem; }
+    .article-content ul { margin:12px 0 16px 20px; color:var(--gray-text); font-size:.93rem; }
+    .article-content ul li { margin-bottom:6px; }
+    .article-content .highlight { background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:white; border-radius:14px; padding:20px 24px; margin:24px 0; }
+    .article-content .highlight p { color:rgba(255,255,255,.9); margin:0; }
+    .article-content .tip { background:#fff8e1; border-left:4px solid var(--gold); border-radius:8px; padding:14px 18px; margin:20px 0; font-size:.88rem; color:#5a4500; }
+    .article-nav { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:32px; }
+    .article-nav-btn { padding:8px 18px; border-radius:20px; background:var(--gray-light); border:2px solid var(--gray); font-size:.82rem; font-weight:600; cursor:pointer; font-family:inherit; color:var(--text); transition:var(--transition); }
+    .article-nav-btn.active, .article-nav-btn:hover { background:var(--blue); color:white; border-color:var(--blue); }
+    .article-block { display:none; }
+    .article-block.active { display:block; }
+    .nclc-table { width:100%; border-collapse:collapse; font-size:.85rem; margin:16px 0; }
+    .nclc-table th { background:var(--blue); color:white; padding:10px 14px; text-align:center; }
+    .nclc-table td { padding:10px 14px; border-bottom:1px solid var(--gray); text-align:center; }
+    .nclc-table tr:nth-child(even) { background:var(--gray-light); }
+    .share-bar { display:flex; gap:10px; align-items:center; margin-top:32px; padding-top:24px; border-top:1px solid var(--gray); flex-wrap:wrap; }
+    .share-btn { padding:8px 18px; border-radius:8px; font-size:.82rem; font-weight:700; cursor:pointer; border:none; font-family:inherit; }
+  </style>
+</head>
+<body>
+<div class="topbar">🍁 Programme de Tutorat 100% en ligne · TEF & TCF Canada · <a href="mailto:info@arcadins-training.com">info@arcadins-training.com</a> · 📞 514-451-3436</div>
+<nav>
+  <div class="nav-container">
+    <a href="../index.html" class="logo"><img src="../assets/img/logo-nav.svg" alt="ARCADINS Training Center" height="50" style="display:block;" /></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html" data-i18n="nav.home">Accueil</a></li>
+      <li><a href="tef-canada.html" data-i18n="nav.tef">TEF Canada</a></li>
+      <li><a href="tcf-canada.html" data-i18n="nav.tcf">TCF Canada</a></li>
+      <li><a href="tests.html" data-i18n="nav.tests">Tests interactifs</a></li>
+      <li><a href="tarifs.html" data-i18n="nav.tarifs">Tarifs</a></li>
+      <li><a href="about.html" data-i18n="nav.about">À propos</a></li>
+      <li><a href="faq.html" data-i18n="nav.faq">FAQ</a></li>
+      <li><a href="tuteur.html" style="color:var(--gold);font-weight:700;">🎓 Devenir Tuteur</a></li><li><a href="#" class="btn-login" onclick="openModal('login')" data-i18n="nav.login">Connexion</a></li>
+      <li><a href="../index.html#inscription" class="btn-cta" data-i18n="nav.register">S'inscrire</a></li>
+    </ul>
+    <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.3s;margin-right:8px;" title="Switch language">🇬🇧 EN</button><div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<section class="article-hero">
+  <div class="container" style="max-width:800px;">
+    <span class="section-tag" style="background:rgba(201,168,76,.2);color:var(--gold-light);">📚 Ressources & Conseils</span>
+    <h1 style="font-size:2rem;font-weight:900;margin:14px 0 10px;">Blog ARCADINS — Immigration Canada</h1>
+    <p style="opacity:.85;">Guides pratiques, astuces TEF/TCF, actualités IRCC et stratégies pour réussir votre projet d'immigration.</p>
+  </div>
+</section>
+
+<section style="background:var(--gray-light);padding:28px 24px;">
+  <div class="container">
+    <div class="article-nav">
+      <button class="article-nav-btn active" onclick="showArticle('art1',this)">🍁 CRS & Français</button>
+      <button class="article-nav-btn" onclick="showArticle('art2',this)">📋 TEF vs TCF</button>
+      <button class="article-nav-btn" onclick="showArticle('art3',this)">🏔️ Québec</button>
+      <button class="article-nav-btn" onclick="showArticle('art4',this)">📊 Scores NCLC</button>
+      <button class="article-nav-btn" onclick="showArticle('art5',this)">⏱️ Se préparer</button>
+    </div>
+  </div>
+</section>
+
+<div class="article-content">
+
+  <!-- ARTICLE 1 -->
+  <div class="article-block active" id="art1">
+    <div class="blog-cat">Express Entry · Mis à jour juin 2024 · 5 min de lecture</div>
+    <h1 style="font-size:1.6rem;font-weight:900;color:var(--blue-dark);margin:12px 0 20px;">Comment maximiser votre score CRS grâce au français ?</h1>
+    <div class="highlight"><p>💡 Un NCLC 9 dans les 4 compétences du TEF ou TCF Canada peut vous rapporter jusqu'à <strong>50 points supplémentaires</strong> dans votre score CRS Express Entry.</p></div>
+
+    <h2>Qu'est-ce que le CRS ?</h2>
+    <p>Le <strong>Comprehensive Ranking System (CRS)</strong>, ou Système de classement global, est le système de pointage utilisé par IRCC dans le cadre d'Express Entry. Chaque candidat reçoit un score CRS en fonction de son âge, son niveau d'études, son expérience professionnelle, ses compétences linguistiques et d'autres facteurs.</p>
+    <p>Les candidats ayant les scores CRS les plus élevés reçoivent une <strong>Invitation à présenter une demande (IPD)</strong> lors des rondes de sélection. Plus votre score CRS est élevé, plus vos chances d'être invité sont grandes.</p>
+
+    <h2>Quelle est la contribution du français dans le CRS ?</h2>
+    <p>Le français est la <strong>deuxième langue officielle du Canada</strong>. IRCC accorde des points bonus significatifs aux candidats qui démontrent de solides compétences en français, même s'ils maîtrisent déjà bien l'anglais.</p>
+
+    <h3>Points pour le français seul (profil unilingue francophone)</h3>
+    <table class="nclc-table">
+      <thead><tr><th>Niveau NCLC (4 compétences)</th><th>Points CRS ajoutés</th></tr></thead>
+      <tbody>
+        <tr><td>NCLC 7 (toutes compétences)</td><td>+16 pts</td></tr>
+        <tr><td>NCLC 9+ (toutes compétences)</td><td>+24 pts</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Points supplémentaires si vous parlez aussi anglais</h3>
+    <table class="nclc-table">
+      <thead><tr><th>Français NCLC + Anglais CLB</th><th>Points bonus</th></tr></thead>
+      <tbody>
+        <tr><td>NCLC 7+ en français + CLB 5+ en anglais</td><td>+25 pts</td></tr>
+        <tr><td>NCLC 7+ en français + CLB 7+ en anglais</td><td>+50 pts</td></tr>
+      </tbody>
+    </table>
+
+    <div class="tip">⚠️ Ces chiffres sont indicatifs et peuvent évoluer selon les mises à jour d'IRCC. Consultez toujours le site officiel canada.ca pour les informations actualisées.</div>
+
+    <h2>Comment atteindre NCLC 9 avec ARCADINS Training Center ?</h2>
+    <ul>
+      <li>Commencez par notre <strong>test de niveau gratuit</strong> pour identifier vos points faibles</li>
+      <li>Travaillez chaque compétence avec nos modules ciblés (CO, CE, EO, EE)</li>
+      <li>Entraînez-vous avec nos <strong>simulations chronométrées</strong> pour vous habituer aux conditions du test</li>
+      <li>Visez d'abord NCLC 7, puis progressez vers NCLC 9 avec nos exercices avancés</li>
+      <li>Optez pour le <strong>coaching VIP</strong> si vous êtes à NCLC 7 et visez NCLC 9+</li>
+    </ul>
+
+    <div class="share-bar">
+      <span style="font-size:.85rem;color:var(--gray-text);font-weight:600;">Partager :</span>
+      <button class="share-btn" style="background:#1877f2;color:white;" onclick="showToast('Lien copié !','success')">Facebook</button>
+      <button class="share-btn" style="background:#1da1f2;color:white;" onclick="showToast('Lien copié !','success')">Twitter</button>
+      <button class="share-btn" style="background:#25D366;color:white;" onclick="showToast('Lien copié !','success')">WhatsApp</button>
+      <button class="share-btn" style="background:var(--gray-light);color:var(--text);" onclick="showToast('Lien copié !','success')">🔗 Copier le lien</button>
+    </div>
+  </div>
+
+  <!-- ARTICLE 2 -->
+  <div class="article-block" id="art2">
+    <div class="blog-cat">TEF vs TCF · Mis à jour juin 2024 · 7 min de lecture</div>
+    <h1 style="font-size:1.6rem;font-weight:900;color:var(--blue-dark);margin:12px 0 20px;">TEF & TCF Canada : lequel choisir pour votre dossier d'immigration ?</h1>
+    <div class="highlight"><p>💡 Les deux tests sont reconnus par IRCC. Le choix dépend principalement de la <strong>disponibilité des centres de passage</strong> dans votre pays et de la <strong>structure du test</strong> qui vous convient le mieux.</p></div>
+
+    <h2>Présentation des deux tests</h2>
+    <h3>Le TEF Canada</h3>
+    <p>Le <strong>Test d'Évaluation de Français Canada</strong> est organisé par la Chambre de Commerce et d'Industrie de Paris (CCI Paris Île-de-France). Il est conforme aux standards du Canada pour tous les programmes d'immigration fédéraux (Express Entry, Travailleurs Qualifiés, etc.).</p>
+    <ul>
+      <li><strong>4 épreuves obligatoires :</strong> Compréhension Orale, Compréhension Écrite, Expression Orale, Expression Écrite</li>
+      <li><strong>Durée totale :</strong> environ 3h30</li>
+      <li><strong>Résultats :</strong> sous 3 à 4 semaines</li>
+      <li><strong>Valide :</strong> 2 ans</li>
+    </ul>
+
+    <h3>Le TCF Canada</h3>
+    <p>Le <strong>Test de Connaissance du Français pour le Canada</strong> est organisé par France Éducation international. Il est conforme aux standards du Canada et par le MIFI (Québec) pour les programmes québécois.</p>
+    <ul>
+      <li><strong>5 épreuves :</strong> Compréhension Orale, Maîtrise des Structures de la Langue (MSL), Compréhension Écrite, Expression Orale, Expression Écrite</li>
+      <li><strong>Durée totale :</strong> environ 2h30</li>
+      <li><strong>Résultats :</strong> sous 2 à 3 semaines</li>
+      <li><strong>Valide :</strong> 2 ans</li>
+    </ul>
+
+    <h2>Tableau comparatif</h2>
+    <table class="nclc-table">
+      <thead><tr><th>Critère</th><th>TEF Canada</th><th>TCF Canada</th></tr></thead>
+      <tbody>
+        <tr><td>Organisateur</td><td>CCI Paris (CCIP)</td><td>France Éducation international</td></tr>
+        <tr><td>Reconnu IRCC</td><td>✅ Oui</td><td>✅ Oui</td></tr>
+        <tr><td>Reconnu MIFI (Québec)</td><td>✅ Oui</td><td>✅ Oui</td></tr>
+        <tr><td>Nb d'épreuves</td><td>4</td><td>5 (dont MSL)</td></tr>
+        <tr><td>Durée</td><td>~3h30</td><td>~2h30</td></tr>
+        <tr><td>Validité</td><td>2 ans</td><td>2 ans</td></tr>
+      </tbody>
+    </table>
+
+    <div class="tip">💡 Si votre objectif est le <strong>Québec uniquement</strong> (PEQ, PRTQ), le TCF Canada est souvent privilégié car les centres de passage sont nombreux dans les pays francophones d'Afrique et du Maghreb.</div>
+
+    <div class="share-bar">
+      <span style="font-size:.85rem;color:var(--gray-text);font-weight:600;">Partager :</span>
+      <button class="share-btn" style="background:#25D366;color:white;" onclick="showToast('Lien copié !','success')">WhatsApp</button>
+      <button class="share-btn" style="background:var(--gray-light);color:var(--text);" onclick="showToast('Lien copié !','success')">🔗 Copier le lien</button>
+    </div>
+  </div>
+
+  <!-- ARTICLE 3 -->
+  <div class="article-block" id="art3">
+    <div class="blog-cat">Québec · Mis à jour juin 2024 · 6 min de lecture</div>
+    <h1 style="font-size:1.6rem;font-weight:900;color:var(--blue-dark);margin:12px 0 20px;">PEQ, PTQE, PRTQ : les programmes d'immigration au Québec expliqués</h1>
+    <div class="highlight"><p>🏔️ Le Québec gère sa propre immigration. Pour obtenir un <strong>Certificat de Sélection du Québec (CSQ)</strong>, il faut passer par le MIFI et démontrer des compétences en français — souvent via le TCF Canada ou le TEF Canada.</p></div>
+
+    <h2>Les principaux programmes du Québec</h2>
+    <h3>PEQ — Programme de l'Expérience Québécoise</h3>
+    <p>Le PEQ s'adresse aux travailleurs temporaires et aux diplômés d'établissements d'enseignement québécois qui souhaitent obtenir la résidence permanente au Québec. Il est rapide (traitement prioritaire) et exige un niveau de français minimal.</p>
+    <ul>
+      <li>Niveau de français requis : TCF Canada ou TEF Canada</li>
+      <li>Score minimum : généralement NCLC 7 (compétences orales) et NCLC 5 (compétences écrites)</li>
+    </ul>
+
+    <h3>PTQE — Programme des Travailleurs Qualifiés (Expérience)</h3>
+    <p>Pour les travailleurs étrangers ayant une expérience professionnelle qualifiée acquise au Québec. La maîtrise du français est un atout majeur dans le système de sélection par points du Québec.</p>
+
+    <h3>PRTQ — Programme Régulier des Travailleurs Qualifiés</h3>
+    <p>Ce programme utilise une grille de sélection avec des points accordés selon l'âge, les études, l'expérience, l'adaptabilité et la compétence en français. Un score élevé au TCF Canada ou TEF Canada peut vous rapporter jusqu'à <strong>16 points</strong> dans la grille.</p>
+
+    <h2>Quel niveau de français faut-il pour immigrer au Québec ?</h2>
+    <table class="nclc-table">
+      <thead><tr><th>Programme</th><th>CO minimum</th><th>CE minimum</th><th>EO minimum</th><th>EE minimum</th></tr></thead>
+      <tbody>
+        <tr><td>PEQ (travailleur)</td><td>NCLC 7</td><td>NCLC 5</td><td>NCLC 7</td><td>NCLC 5</td></tr>
+        <tr><td>PEQ (diplômé QC)</td><td>NCLC 5</td><td>NCLC 5</td><td>NCLC 5</td><td>NCLC 5</td></tr>
+        <tr><td>PRTQ (points max)</td><td>NCLC 9+</td><td>NCLC 9+</td><td>NCLC 9+</td><td>NCLC 9+</td></tr>
+      </tbody>
+    </table>
+    <div class="tip">⚠️ Les critères peuvent évoluer. Consultez toujours le site officiel du MIFI (immigration-quebec.gouv.qc.ca) pour les informations actualisées.</div>
+
+    <div class="share-bar">
+      <span style="font-size:.85rem;color:var(--gray-text);font-weight:600;">Partager :</span>
+      <button class="share-btn" style="background:#25D366;color:white;" onclick="showToast('Lien copié !','success')">WhatsApp</button>
+      <button class="share-btn" style="background:var(--gray-light);color:var(--text);" onclick="showToast('Lien copié !','success')">🔗 Copier le lien</button>
+    </div>
+  </div>
+
+  <!-- ARTICLE 4 -->
+  <div class="article-block" id="art4">
+    <div class="blog-cat">Scores NCLC · Mis à jour juin 2024 · 4 min de lecture</div>
+    <h1 style="font-size:1.6rem;font-weight:900;color:var(--blue-dark);margin:12px 0 20px;">Comment fonctionne l'échelle NCLC et quel score viser ?</h1>
+    <div class="highlight"><p>📊 Le <strong>NCLC</strong> (Niveaux de Compétence Linguistique Canadiens) va de 1 à 12. Pour Express Entry, les niveaux clés sont <strong>NCLC 5, 7, 9 et 10+</strong>. Chaque palier correspond à des points CRS supplémentaires.</p></div>
+
+    <h2>Comprendre l'échelle NCLC</h2>
+    <p>Le NCLC évalue 4 compétences séparément : Compréhension Orale (CO), Compréhension Écrite (CE), Expression Orale (EO) et Expression Écrite (EE). Chaque compétence reçoit un score indépendant.</p>
+    <table class="nclc-table">
+      <thead><tr><th>NCLC</th><th>Équivalent CECRL</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>NCLC 4–5</td><td>B1</td><td>Intermédiaire — Communication quotidienne</td></tr>
+        <tr><td>NCLC 6–7</td><td>B2</td><td>Avancé — Autonomie professionnelle</td></tr>
+        <tr><td>NCLC 8–9</td><td>C1</td><td>Courant — Maîtrise avancée</td></tr>
+        <tr><td>NCLC 10–12</td><td>C2</td><td>Expert — Niveau quasi-natif</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Quel NCLC viser selon votre programme ?</h2>
+    <ul>
+      <li><strong>Express Entry (Entrée Express) :</strong> Minimum NCLC 7 dans les 4 compétences pour recevoir des points. NCLC 9 maximise votre bonus.</li>
+      <li><strong>Travailleurs Qualifiés Fédéraux :</strong> Minimum NCLC 7</li>
+      <li><strong>Expérience Canadienne :</strong> Minimum NCLC 5 (postes NOC TEER 2-3) ou NCLC 7 (postes NOC TEER 0-1)</li>
+      <li><strong>PEQ Québec :</strong> Minimum NCLC 7 (CO et EO) et NCLC 5 (CE et EE)</li>
+    </ul>
+
+    <div class="tip">🎯 Nos programmes de tutorat ARCADINS ciblent précisément les paliers NCLC 7, 8 et 9+ selon votre plan d'immigration.</div>
+
+    <div style="text-align:center;margin-top:28px;">
+      <a href="tests.html" class="btn-primary">🎯 Faire mon test de niveau gratuit</a>
+    </div>
+    <div class="share-bar">
+      <span style="font-size:.85rem;color:var(--gray-text);font-weight:600;">Partager :</span>
+      <button class="share-btn" style="background:#25D366;color:white;" onclick="showToast('Lien copié !','success')">WhatsApp</button>
+      <button class="share-btn" style="background:var(--gray-light);color:var(--text);" onclick="showToast('Lien copié !','success')">🔗 Copier le lien</button>
+    </div>
+  </div>
+
+  <!-- ARTICLE 5 -->
+  <div class="article-block" id="art5">
+    <div class="blog-cat">Préparation · Mis à jour juin 2024 · 5 min de lecture</div>
+    <h1 style="font-size:1.6rem;font-weight:900;color:var(--blue-dark);margin:12px 0 20px;">Comment bien se préparer au TEF & TCF Canada en 8 semaines ?</h1>
+    <div class="highlight"><p>⏱️ 8 semaines à raison d'<strong>1h30 par jour</strong> suffisent pour passer de NCLC 5-6 à NCLC 7-8, à condition de suivre un plan structuré et ciblé.</p></div>
+
+    <h2>Semaine 1–2 : Évaluation et fondations</h2>
+    <ul>
+      <li>Faites le test de niveau ARCADINS pour identifier vos points faibles</li>
+      <li>Révisez la grammaire essentielle (subjonctif, conditionnel, accord du participe)</li>
+      <li>Enrichissez votre vocabulaire lié à l'immigration (50 mots/jour)</li>
+    </ul>
+
+    <h2>Semaine 3–4 : Compréhension orale et écrite</h2>
+    <ul>
+      <li>Exercices quotidiens d'écoute (dialogues, monologues, annonces)</li>
+      <li>Lecture de textes informatifs, publicitaires et administratifs</li>
+      <li>Techniques de repérage d'informations et de lecture rapide</li>
+    </ul>
+
+    <h2>Semaine 5–6 : Expression écrite et orale</h2>
+    <ul>
+      <li>Rédaction de lettres formelles et de textes argumentatifs</li>
+      <li>Entraînement à la prise de parole avec minuterie (2–3 min)</li>
+      <li>Correction des productions par un formateur (plan VIP)</li>
+    </ul>
+
+    <h2>Semaine 7–8 : Simulations et stratégies finales</h2>
+    <ul>
+      <li>2 simulations chronométrées complètes par semaine</li>
+      <li>Analyse des erreurs et travail ciblé sur les points faibles</li>
+      <li>Gestion du stress et préparation mentale à l'examen</li>
+    </ul>
+
+    <div class="tip">💡 Le secret : régularité > intensité. 1h30 tous les jours vaut mieux que 6h le week-end.</div>
+
+    <div style="text-align:center;margin-top:28px;">
+      <a href="../index.html#inscription" class="btn-primary">✏️ Commencer ma préparation ARCADINS</a>
+    </div>
+    <div class="share-bar">
+      <span style="font-size:.85rem;color:var(--gray-text);font-weight:600;">Partager :</span>
+      <button class="share-btn" style="background:#25D366;color:white;" onclick="showToast('Lien copié !','success')">WhatsApp</button>
+      <button class="share-btn" style="background:var(--gray-light);color:var(--text);" onclick="showToast('Lien copié !','success')">🔗 Copier le lien</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- CTA -->
+<section style="background:linear-gradient(135deg,var(--blue-dark),var(--blue));color:white;text-align:center;padding:60px 24px;">
+  <div class="container" style="max-width:640px;">
+    <h2 style="font-size:1.8rem;font-weight:900;margin-bottom:12px;">Prêt à passer à l'action ?</h2>
+    <p style="opacity:.9;margin-bottom:28px;">Commencez par un test de niveau gratuit et découvrez votre niveau NCLC actuel.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <a href="tests.html" class="btn-primary">🎯 Test gratuit</a>
+      <a href="tarifs.html" class="btn-gold">💰 Voir les tarifs</a>
+    </div>
+  </div>
+</section>
+
+<footer style="background:var(--blue-dark);color:rgba(255,255,255,.7);text-align:center;padding:28px 24px;font-size:.85rem;">
+  © 2024 ARCADINS Training Center · 116 Albert Street, Suite 300, Ottawa (Ontario) Canada · 514-451-3436 (Appel &amp; WhatsApp)<br>
+  📍 116 Albert Street, Suite 300, Ottawa, ON K1P 5G3 · Canada<br>
+  <a href="confidentialite.html" style="color:var(--gold-light);">Confidentialité</a> ·
+  <a href="conditions.html" style="color:var(--gold-light);">Conditions</a> ·
+  <a href="../index.html" style="color:var(--gold-light);">Accueil</a>
+</footer>
+
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 data-i18n="auth.title">Bienvenue</h2><p data-i18n="auth.sub">Accédez à votre espace ARCADINS</p>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Connexion</button>
+      <button class="modal-tab" id="tabRegister" onclick="switchTab('register')">Créer un compte</button>
+    </div>
+    <form class="modal-form active" id="loginForm" onsubmit="handleAuth(event,'login')">
+      <div class="form-group"><label data-i18n="auth.email">Email</label><input type="email" required /></div>
+      <div class="form-group"><label data-i18n="auth.pass">Mot de passe</label><input type="password" required /></div>
+      <button type="submit" class="btn-primary" data-i18n="auth.loginBtn" style="width:100%;justify-content:center;">Se connecter</button>
+    </form>
+    <form class="modal-form" id="registerForm" onsubmit="handleAuth(event,'register')">
+      <div class="form-group"><label data-i18n="auth.fullname">Nom complet</label><input type="text" required /></div>
+      <div class="form-group"><label data-i18n="auth.email">Email</label><input type="email" required /></div>
+      <div class="form-group"><label data-i18n="auth.pass">Mot de passe</label><input type="password" required minlength="8" /></div>
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;background:var(--red);" data-i18n="auth.createBtn">Créer mon compte</button>
+    </form>
+  </div>
+</div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/main.js"></script>
+<script>
+function showArticle(id, btn) {
+  document.querySelectorAll('.article-block').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.article-nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: 300, behavior: 'smooth' });
+}
+</script>
+<script src="../assets/js/access-popup.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

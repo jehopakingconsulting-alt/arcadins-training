@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ma Formation – ARCADINS Training Center</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    .formation-layout { display:grid; grid-template-columns:300px 1fr; gap:0; min-height:calc(100vh - 60px); }
+    .sidebar { background:var(--blue-dark); color:white; padding:28px 20px; overflow-y:auto; }
+    .sidebar h3 { font-size:.95rem; font-weight:700; margin-bottom:20px; opacity:.8; }
+    .module-item { display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:10px; margin-bottom:8px; cursor:pointer; transition:.25s; }
+    .module-item:hover { background:rgba(255,255,255,.08); }
+    .module-item.active { background:rgba(255,255,255,.15); }
+    .module-item.locked { opacity:.35; cursor:not-allowed; }
+    .module-num { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:700; flex-shrink:0; }
+    .status-not_started .module-num { background:rgba(255,255,255,.15); }
+    .status-in_progress .module-num { background:var(--gold); color:var(--blue-dark); }
+    .status-completed .module-num { background:#4caf50; color:white; }
+    .status-locked .module-num { background:rgba(255,255,255,.08); }
+    .module-info { flex:1; }
+    .module-name { font-size:.83rem; font-weight:600; }
+    .module-status-label { font-size:.7rem; opacity:.6; }
+    .status-completed .module-status-label { color:#a5d6a7; opacity:1; }
+    .main-content { background:#f8fafc; padding:40px; overflow-y:auto; }
+    .progress-header { background:white; border-radius:16px; padding:24px 28px; margin-bottom:28px; box-shadow:var(--shadow); }
+    .progress-bar-wrap { margin-top:16px; }
+    .progress-bar { height:10px; background:#e0e6f0; border-radius:5px; overflow:hidden; }
+    .progress-fill { height:100%; background:linear-gradient(90deg,var(--blue),var(--gold)); border-radius:5px; transition:.5s; }
+    .progress-stats { display:flex; gap:24px; margin-top:12px; flex-wrap:wrap; }
+    .progress-stat { font-size:.82rem; color:var(--gray-text); }
+    .progress-stat strong { color:var(--blue-dark); }
+    .module-content { background:white; border-radius:16px; padding:36px; box-shadow:var(--shadow); }
+    .module-content h2 { font-size:1.5rem; font-weight:800; color:var(--blue-dark); margin-bottom:8px; }
+    .module-content .module-desc { color:var(--gray-text); margin-bottom:24px; line-height:1.7; }
+    .content-blocks { display:flex; flex-direction:column; gap:20px; margin-bottom:32px; }
+    .content-block { background:var(--gray-light); border-radius:12px; padding:20px 24px; }
+    .content-block h4 { color:var(--blue-dark); margin-bottom:10px; }
+    .content-block p { color:var(--gray-text); font-size:.9rem; line-height:1.6; margin:0; }
+    .quiz-mini { background:linear-gradient(135deg,var(--blue),var(--blue-dark)); border-radius:14px; padding:24px; color:white; }
+    .quiz-mini h4 { margin-bottom:16px; }
+    .mini-q { margin-bottom:16px; }
+    .mini-q p { margin-bottom:10px; font-size:.9rem; }
+    .mini-opts { display:flex; flex-direction:column; gap:8px; }
+    .mini-opt { background:rgba(255,255,255,.12); border:1.5px solid rgba(255,255,255,.2); border-radius:8px; padding:9px 14px; cursor:pointer; font-size:.85rem; transition:.2s; text-align:left; font-family:inherit; color:white; }
+    .mini-opt:hover { background:rgba(255,255,255,.2); }
+    .mini-opt.selected { background:rgba(255,255,255,.25); border-color:var(--gold); }
+    .locked-overlay { text-align:center; padding:80px 40px; }
+    .locked-overlay .lock-icon { font-size:4rem; margin-bottom:20px; }
+    .completed-badge { display:inline-flex; align-items:center; gap:8px; background:#e8f5e9; color:#2e7d32; border-radius:20px; padding:8px 20px; font-size:.88rem; font-weight:700; margin-bottom:20px; }
+    @media(max-width:768px) { .formation-layout{grid-template-columns:1fr;} .sidebar{display:none;} .main-content{padding:20px;} }
+  </style>
+</head>
+<body>
+<nav style="background:var(--blue-dark);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;">
+  <a href="../index.html" class="logo"><img src="../assets/img/logo-nav.svg" alt="ARCADINS" height="42" style="display:block;filter:brightness(10);"></a>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <span id="userDisplayName" style="color:white;font-size:.85rem;font-weight:600;"></span>
+    <button id="langToggle" onclick="switchLang()" style="background:transparent;border:1.5px solid rgba(255,255,255,.4);color:white;border-radius:8px;padding:4px 12px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;">🇬🇧 EN</button>
+    <a href="espace-membre.html" style="color:rgba(255,255,255,.7);font-size:.82rem;" data-i18n="nav.dashboard">Mon espace</a>
+  </div>
+</nav>
+
+<div class="formation-layout">
+  <!-- Sidebar modules -->
+  <div class="sidebar" id="sidebar">
+    <h3 data-i18n="form.sidebar.h">📚 Mes modules</h3>
+    <div id="moduleList"></div>
+  </div>
+
+  <!-- Main content -->
+  <div class="main-content">
+    <div class="progress-header">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div>
+          <h2 style="font-size:1.2rem;font-weight:800;color:var(--blue-dark);margin:0;" data-i18n="form.progress.h">Ma progression</h2>
+          <span id="userStepDisplay" style="font-size:.82rem;color:var(--gray-text);"></span>
+        </div>
+        <div id="completedBadge" style="display:none;" class="completed-badge">✅ <span data-i18n="form.all.done">Tous les modules terminés !</span></div>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        <div class="progress-stats">
+          <div class="progress-stat"><strong id="statDone">0</strong> / <span id="statTotal">14</span> <span data-i18n="form.stat.done">modules terminés</span></div>
+          <div class="progress-stat"><strong id="statPct">0%</strong> <span data-i18n="form.stat.pct">complété</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-content" id="moduleContent">
+      <div style="text-align:center;padding:60px 0;">⏳ <span data-i18n="trial.loading">Chargement...</span></div>
+    </div>
+
+    <div id="allDonePanel" style="display:none;text-align:center;padding:40px;background:white;border-radius:16px;box-shadow:var(--shadow);">
+      <div style="font-size:4rem;">🎉</div>
+      <h2 style="color:var(--blue-dark);margin:16px 0 8px;" data-i18n="form.done.h">Formation complétée !</h2>
+      <p style="color:var(--gray-text);margin-bottom:24px;" data-i18n="form.done.p">Félicitations ! Vous avez complété tous les modules. Vous êtes maintenant invité à passer le Test d'Évaluation Finale.</p>
+      <a href="test-final.html" class="btn-primary" data-i18n="form.done.btn">Passer le test final →</a>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/api.js"></script>
+<script>
+const MODULE_NAMES = {
+  fr: ['Test de niveau initial','Compréhension orale','Compréhension écrite','Expression écrite','Expression orale','Grammaire essentielle','Vocabulaire immigration','Stratégies NCLC 5→9+','Simulations chronométrées','Banque de questions','Corrections & explications','Tableau de progression','Certificat ARCADINS','Coaching formateur (option)'],
+  en: ['Initial level test','Listening comprehension','Reading comprehension','Written expression','Oral expression','Essential grammar','Immigration vocabulary','NCLC 5→9+ strategies','Timed simulations','Question bank','Corrections & explanations','Progress dashboard','ARCADINS certificate','Trainer coaching (option)']
+};
+const MODULE_ICONS = ['📊','🎧','📖','✍️','🎤','📝','🗣️','🎯','⏱️','📋','✅','📈','🏆','👨‍🏫'];
+const MODULE_CONTENT = {
+  fr: [
+    { desc:'Évaluez votre niveau de départ avec un test complet.', blocks:[{h:'📊 Votre niveau de départ',p:'Ce premier module établit votre niveau de base en français selon les 4 compétences évaluées au TEF & TCF Canada : compréhension orale, compréhension écrite, expression orale et expression écrite.'},{h:'🎯 Objectif',p:'Obtenir un profil NCLC précis pour adapter votre parcours de formation et maximiser votre progression.'}] },
+    { desc:'Maîtrisez les stratégies d\'écoute pour le TEF et TCF Canada.', blocks:[{h:'🎧 Techniques d\'écoute active',p:'Apprenez à identifier les informations clés dans les documents audio. Exercices avec dialogues, monologues et annonces de niveau A2 à C1.'},{h:'📝 Repérage et prise de notes',p:'Techniques de repérage des mots-clés, anticipation des réponses et gestion du temps pendant l\'épreuve.'}] },
+    { desc:'Développez vos compétences de lecture en contexte québécois.', blocks:[{h:'📖 Lecture rapide et efficace',p:'Techniques de survol, lecture en diagonale et identification des idées principales dans des textes variés : articles, publicités, formulaires IRCC.'},{h:'🇨🇦 Vocabulaire canadien',p:'Expressions et termes spécifiques aux documents officiels canadiens, aux formulaires d\'immigration et aux textes institutionnels.'}] },
+    { desc:'Maîtrisez la rédaction formelle pour le TEF & TCF Canada.', blocks:[{h:'✍️ Structure de rédaction',p:'Apprenez à rédiger une lettre formelle (Tâche 1) et un texte argumentatif (Tâche 2). Connecteurs logiques, vocabulaire de position, formules d\'ouverture et de clôture.'},{h:'📋 Grille d\'évaluation',p:'Comprendre les 4 critères d\'évaluation : adéquation, cohérence, lexique, morphosyntaxe. Exemples de productions notées 8/10 et 10/10.'}] },
+    { desc:'Préparez-vous à l\'épreuve orale du TEF et TCF Canada.', blocks:[{h:'🎤 Structure du discours',p:'Techniques d\'introduction, développement et conclusion pour l\'interaction, le monologue et l\'argumentation. Gestion du stress et de la fluidité.'},{h:'🗣️ Prononciation et rythme',p:'Améliorer votre accentuation, votre prosodie et votre débit pour atteindre les niveaux NCLC 7 et au-delà.'}] },
+    { desc:'Consolidez vos bases grammaticales pour maximiser votre score.', blocks:[{h:'📝 Points essentiels',p:'Conjugaison aux temps principaux, accord des participes, subjonctif, conditionnel, voix passive. Exercices contextualisés TEF/TCF.'},{h:'⚠️ Erreurs fréquentes',p:'Les 20 erreurs grammaticales les plus pénalisantes au TEF & TCF Canada et comment les éviter systématiquement.'}] },
+    { desc:'Maîtrisez le vocabulaire de l\'immigration canadienne.', blocks:[{h:'🗺️ Lexique IRCC',p:'Terminologie officielle : Express Entry, NCLC, CLB, résidence permanente, PEQ, PTQE, LMIA, CAQ, parrainage.'},{h:'🏛️ Institutions et programmes',p:'IRCC, MIFI, MIDI, CLÉO, OFII — comprendre les acronymes et les rôles de chaque organisme dans votre démarche d\'immigration.'}] },
+    { desc:'Apprenez à cibler précisément votre score NCLC.', blocks:[{h:'🎯 Barème et stratégie',p:'Comprendre la conversion de vos scores TEF/TCF en NCLC. Comment 5 points supplémentaires au TEF peuvent vous faire passer de NCLC 7 à NCLC 8.'},{h:'📈 Plan de progression',p:'Créez votre plan de travail personnalisé pour atteindre NCLC 7, 8 ou 9 selon votre niveau de départ et votre date d\'examen.'}] },
+    { desc:'Reproduisez les conditions exactes de l\'examen.', blocks:[{h:'⏱️ Simulations complètes',p:'Accédez à 3 simulations complètes reproduisant fidèlement le format et la durée du TEF & TCF Canada. Chronométré, noté, corrigé.'},{h:'📊 Analyse des résultats',p:'Après chaque simulation, consultez votre analyse détaillée par compétence et identifiez vos axes d\'amélioration prioritaires.'}] },
+    { desc:'Accédez à notre banque de 200+ questions d\'entraînement.', blocks:[{h:'📋 Questions par compétence',p:'50+ questions par compétence (CO, CE, EO, EE). Difficulté croissante de A2 à C1. Corrections immédiate avec explication pédagogique.'},{h:'🎯 Mode entraînement ciblé',p:'Choisissez de travailler uniquement les questions correspondant à votre point faible identifié lors du test de qualification.'}] },
+    { desc:'Comprenez vos erreurs et progressez plus vite.', blocks:[{h:'✅ Corrections détaillées',p:'Chaque exercice est accompagné d\'une correction complète, d\'une explication de la règle grammaticale et d\'exemples supplémentaires.'},{h:'📚 Fiches de révision',p:'Téléchargez vos fiches de révision personnalisées en PDF : règles grammaticales, vocabulaire ciblé, structures de rédaction.'}] },
+    { desc:'Visualisez votre évolution et restez motivé.', blocks:[{h:'📈 Votre tableau de bord',p:'Consultez votre progression graphique module par module, vos scores par compétence, et votre évolution du score NCLC estimé semaine après semaine.'},{h:'🏅 Badges de progression',p:'Débloquez des badges de réussite à chaque étape franchie. Un système de motivation gamifié pour maintenir votre engagement.'}] },
+    { desc:'Votre certificat ARCADINS vous attend à l\'issue du test final.', blocks:[{h:'🏆 Certificat de réussite',p:'Après réussite du test final, votre certificat PDF est généré automatiquement avec votre nom, votre score NCLC estimé, la date et un numéro unique de vérification.'},{h:'📧 Envoi automatique',p:'Le certificat vous est envoyé par email et archivé dans votre espace membre. Il peut être partagé avec les employeurs ou utilisé comme preuve de formation.'}] },
+    { desc:'(Option VIP) Séances individuelles avec un formateur expert.', blocks:[{h:'👨‍🏫 Coaching personnalisé',p:'Pour les titulaires du plan VIP : 4 heures de coaching individuel par visioconférence avec un formateur certifié FLE spécialisé TEF & TCF Canada.'},{h:'📝 Correction productions',p:'Vos productions écrites et orales sont corrigées et annotées par le formateur. Retours précis sur la prononciation, le lexique et la structure.'}] }
+  ],
+  en: [
+    { desc:'Assess your starting level with a comprehensive test.', blocks:[{h:'📊 Your starting level',p:'This first module establishes your baseline French level according to the 4 skills assessed in TEF & TCF Canada.'},{h:'🎯 Goal',p:'Obtain a precise NCLC profile to adapt your learning path.'}] },
+    { desc:'Master listening strategies for TEF and TCF Canada.', blocks:[{h:'🎧 Active listening techniques',p:'Learn to identify key information in audio documents. Exercises with dialogues, monologues and announcements from A2 to C1 level.'},{h:'📝 Note-taking and spotting',p:'Key word spotting techniques, anticipating answers and time management during the test.'}] },
+    { desc:'Develop your reading skills in a Quebec context.', blocks:[{h:'📖 Fast and effective reading',p:'Scanning and skimming techniques, identifying main ideas in varied texts: articles, ads, IRCC forms.'},{h:'🇨🇦 Canadian vocabulary',p:'Expressions and terms specific to Canadian official documents and immigration forms.'}] },
+    { desc:'Master formal writing for TEF & TCF Canada.', blocks:[{h:'✍️ Writing structure',p:'Learn to write a formal letter (Task 1) and an argumentative text (Task 2).'},{h:'📋 Evaluation criteria',p:'Understand the 4 evaluation criteria: adequacy, coherence, lexicon, morphosyntax.'}] },
+    { desc:'Prepare for the oral component of TEF and TCF Canada.', blocks:[{h:'🎤 Speech structure',p:'Introduction, development and conclusion techniques for interaction, monologue and argumentation.'},{h:'🗣️ Pronunciation and rhythm',p:'Improve your accentuation, prosody and delivery to reach NCLC 7 and beyond.'}] },
+    { desc:'Consolidate your grammar foundations to maximize your score.', blocks:[{h:'📝 Essential points',p:'Conjugation, participle agreement, subjunctive, conditional, passive voice.'},{h:'⚠️ Common errors',p:'The 20 most penalized grammar errors in TEF & TCF Canada and how to avoid them.'}] },
+    { desc:'Master Canadian immigration vocabulary.', blocks:[{h:'🗺️ IRCC lexicon',p:'Official terminology: Express Entry, NCLC, CLB, permanent residence, PEQ.'},{h:'🏛️ Institutions and programs',p:'IRCC, MIFI — understanding each organization\'s role in your immigration process.'}] },
+    { desc:'Learn to precisely target your NCLC score.', blocks:[{h:'🎯 Scale and strategy',p:'Understanding score conversion from TEF/TCF to NCLC.'},{h:'📈 Progress plan',p:'Create your personalized study plan to reach NCLC 7, 8 or 9.'}] },
+    { desc:'Reproduce the exact exam conditions.', blocks:[{h:'⏱️ Full simulations',p:'Access 3 complete simulations faithfully reproducing TEF Canada or TCF Canada format. Timed, scored, corrected.'},{h:'📊 Results analysis',p:'After each simulation, view your detailed analysis by skill.'}] },
+    { desc:'Access our bank of 200+ practice questions.', blocks:[{h:'📋 Questions by skill',p:'50+ questions per skill (CO, CE, EO, EE). Increasing difficulty from A2 to C1.'},{h:'🎯 Targeted practice mode',p:'Choose to work only the questions corresponding to your weak point.'}] },
+    { desc:'Understand your errors and progress faster.', blocks:[{h:'✅ Detailed corrections',p:'Each exercise includes a complete correction and grammatical rule explanation.'},{h:'📚 Study sheets',p:'Download your personalized PDF study sheets.'}] },
+    { desc:'Visualize your progress and stay motivated.', blocks:[{h:'📈 Your dashboard',p:'View your module-by-module progress and your estimated NCLC score evolution.'},{h:'🏅 Progress badges',p:'Unlock achievement badges at each milestone.'}] },
+    { desc:'Your ARCADINS certificate awaits after the final test.', blocks:[{h:'🏆 Certificate of achievement',p:'After passing the final test, your PDF certificate is automatically generated.'},{h:'📧 Automatic delivery',p:'The certificate is sent by email and archived in your member space.'}] },
+    { desc:'(VIP option) Individual sessions with an expert trainer.', blocks:[{h:'👨‍🏫 Personalized coaching',p:'For VIP plan holders: 4 hours of individual coaching by video conference.'},{h:'📝 Production corrections',p:'Your written and oral productions are corrected by the trainer.'}] }
+  ]
+};
+
+let modules = [], currentModuleNum = 1;
+
+async function init() {
+  const token = getToken();
+  if (!token) { window.location.href = 'acces.html'; return; }
+  try {
+    const me = await AuthAPI.me();
+    const user = me.user;
+    if (!user.qualification_done) { window.location.href = 'qualification.html'; return; }
+    if (user.nom || user.prenom) document.getElementById('userDisplayName').textContent = (user.prenom||'') + ' ' + (user.nom||'');
+
+    await loadModules();
+    if (user.all_modules_done) {
+      document.getElementById('allDonePanel').style.display = 'block';
+      document.getElementById('moduleContent').style.display = 'none';
+      document.getElementById('completedBadge').style.display = 'inline-flex';
+    }
+  } catch(e) {
+    document.getElementById('moduleContent').innerHTML = `<p style="color:red">${e.message}</p>`;
+  }
+}
+
+async function loadModules() {
+  const res = await ModulesAPI.status();
+  modules = res.modules;
+  renderSidebar();
+  const firstAvail = modules.find(m => m.status !== 'locked') || modules[0];
+  if (firstAvail) showModule(firstAvail.module_number);
+  updateProgress();
+}
+
+function renderSidebar() {
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+  const names = MODULE_NAMES[lang];
+  const statLabels = { fr:{locked:'Verrouillé',not_started:'Non commencé',in_progress:'En cours',completed:'Terminé'}, en:{locked:'Locked',not_started:'Not started',in_progress:'In progress',completed:'Completed'} };
+  document.getElementById('moduleList').innerHTML = modules.map((m,i) => `
+    <div class="module-item status-${m.status} ${m.module_number===currentModuleNum?'active':''} ${m.status==='locked'?'locked':''}"
+         onclick="${m.status!=='locked'?`showModule(${m.module_number})`:''}">
+      <div class="module-num">${m.status==='completed'?'✓':MODULE_ICONS[i]||m.module_number}</div>
+      <div class="module-info">
+        <div class="module-name">${names[i]||'Module '+m.module_number}</div>
+        <div class="module-status-label">${statLabels[lang][m.status]||m.status}</div>
+      </div>
+    </div>`).join('');
+}
+
+function updateProgress() {
+  const done = modules.filter(m=>m.status==='completed').length;
+  const total = modules.length;
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('statDone').textContent = done;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statPct').textContent = pct+'%';
+}
+
+async function showModule(num) {
+  currentModuleNum = num;
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+  const names = MODULE_NAMES[lang];
+  const mod = modules.find(m=>m.module_number===num);
+  if (!mod) return;
+  if (mod.status === 'locked') return;
+
+  renderSidebar();
+
+  const idx = num - 1;
+  const content = MODULE_CONTENT[lang][idx] || MODULE_CONTENT.fr[idx] || {};
+  const blocks = content.blocks || [];
+  const isCompleted = mod.status === 'completed';
+
+  let html = `
+    <h2>${MODULE_ICONS[idx]} ${names[idx]||'Module '+num}</h2>
+    <p class="module-desc">${content.desc||''}</p>`;
+
+  if (isCompleted) {
+    html += `<div class="completed-badge">✅ <span>${lang==='fr'?'Module terminé':'Module completed'}</span></div>`;
+  }
+
+  html += `<div class="content-blocks">` + blocks.map(b=>`
+    <div class="content-block">
+      <h4>${b.h}</h4>
+      <p>${b.p}</p>
+    </div>`).join('') + `</div>`;
+
+  if (!isCompleted && mod.status !== 'locked') {
+    if (mod.status === 'not_started') {
+      html += `<button class="btn-primary" onclick="startModule(${num})" data-i18n="form.start">▶ Commencer ce module</button>`;
+    } else {
+      html += `<div style="background:var(--gray-light);border-radius:12px;padding:20px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <p style="margin:0;color:var(--gray-text);" data-i18n="form.complete.msg">Vous avez parcouru ce module. Marquez-le comme terminé pour débloquer la suite.</p>
+        <button class="btn-primary" onclick="completeModule(${num})" data-i18n="form.complete">✓ Marquer comme terminé</button>
+      </div>`;
+    }
+  } else if (isCompleted) {
+    const next = modules.find(m=>m.module_number===num+1);
+    if (next && next.status !== 'locked') {
+      html += `<button class="btn-primary" onclick="showModule(${num+1})" style="margin-top:8px;" data-i18n="form.next.mod">Module suivant →</button>`;
+    }
+  }
+
+  document.getElementById('moduleContent').innerHTML = html;
+  if (typeof applyTranslations === 'function') applyTranslations();
+}
+
+async function startModule(num) {
+  try {
+    await ModulesAPI.start(num);
+    const mod = modules.find(m=>m.module_number===num);
+    if (mod) mod.status = 'in_progress';
+    showModule(num);
+    renderSidebar();
+  } catch(e) { alert(e.message); }
+}
+
+async function completeModule(num) {
+  try {
+    const res = await ModulesAPI.complete(num);
+    modules = res.modules;
+    renderSidebar();
+    updateProgress();
+    if (res.all_done) {
+      document.getElementById('moduleContent').style.display = 'none';
+      document.getElementById('allDonePanel').style.display = 'block';
+      document.getElementById('completedBadge').style.display = 'inline-flex';
+    } else {
+      const next = modules.find(m=>m.module_number===num+1);
+      if (next) showModule(next.module_number);
+    }
+  } catch(e) { alert(e.message); }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

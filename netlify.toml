@@ -1,0 +1,11 @@
+[[redirects]]
+  from = "/pages/404.html"
+  to = "/pages/404.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"

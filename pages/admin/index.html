@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Admin – ARCADINS Training Center</title>
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <style>
+    * { box-sizing:border-box; }
+    body { background:#f0f4f8; margin:0; }
+    .admin-layout { display:grid; grid-template-columns:240px 1fr; min-height:100vh; }
+    .admin-sidebar { background:var(--blue-dark); color:white; padding:0; position:sticky; top:0; height:100vh; overflow-y:auto; }
+    .admin-brand { padding:24px 20px; border-bottom:1px solid rgba(255,255,255,.1); }
+    .admin-brand h2 { font-size:.95rem; font-weight:700; margin:0; }
+    .admin-brand p { font-size:.72rem; opacity:.6; margin:4px 0 0; }
+    .admin-nav { padding:16px 0; }
+    .admin-nav-section { padding:8px 20px 4px; font-size:.65rem; text-transform:uppercase; letter-spacing:1.5px; opacity:.4; }
+    .admin-nav-item { display:flex; align-items:center; gap:10px; padding:10px 20px; cursor:pointer; transition:.2s; font-size:.85rem; border-left:3px solid transparent; }
+    .admin-nav-item:hover { background:rgba(255,255,255,.06); }
+    .admin-nav-item.active { background:rgba(255,255,255,.12); border-left-color:var(--gold); color:var(--gold-light); }
+    .admin-main { padding:32px; overflow-x:hidden; }
+    .admin-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; flex-wrap:wrap; gap:12px; }
+    .admin-header h1 { font-size:1.5rem; font-weight:800; color:var(--blue-dark); margin:0; }
+    .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:32px; }
+    .stat-card { background:white; border-radius:14px; padding:20px 22px; box-shadow:var(--shadow); border-left:4px solid; }
+    .stat-card.blue { border-color:var(--blue); }
+    .stat-card.green { border-color:#4caf50; }
+    .stat-card.gold { border-color:var(--gold); }
+    .stat-card.red { border-color:var(--red); }
+    .stat-card.purple { border-color:#7b1fa2; }
+    .stat-num { font-size:2rem; font-weight:900; color:var(--blue-dark); }
+    .stat-lbl { font-size:.78rem; color:var(--gray-text); margin-top:4px; }
+    .admin-section { background:white; border-radius:16px; padding:24px; box-shadow:var(--shadow); margin-bottom:24px; }
+    .admin-section h3 { font-size:1rem; font-weight:800; color:var(--blue-dark); margin:0 0 18px; }
+    .data-table { width:100%; border-collapse:collapse; font-size:.83rem; }
+    .data-table th { padding:10px 14px; background:var(--gray-light); text-align:left; font-weight:700; color:var(--blue-dark); }
+    .data-table td { padding:10px 14px; border-bottom:1px solid #f0f0f0; color:var(--text); }
+    .data-table tr:hover td { background:#fafbfc; }
+    .status-badge { display:inline-block; padding:3px 10px; border-radius:12px; font-size:.72rem; font-weight:700; }
+    .badge-prospect { background:#fff3e0; color:#e65100; }
+    .badge-apprenant { background:#e3f2fd; color:#1565c0; }
+    .badge-admin { background:#e8f5e9; color:#2e7d32; }
+    .badge-yes { background:#e8f5e9; color:#2e7d32; }
+    .badge-no { background:#fce4ec; color:#c62828; }
+    .filter-bar { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
+    .filter-bar input, .filter-bar select { border:2px solid #e0e6f0; border-radius:8px; padding:7px 12px; font-family:inherit; font-size:.82rem; }
+    .filter-bar input:focus, .filter-bar select:focus { border-color:var(--blue); outline:none; }
+    .action-btn { border:none; border-radius:6px; padding:4px 10px; cursor:pointer; font-size:.75rem; font-weight:600; font-family:inherit; transition:.2s; }
+    .action-btn.blue { background:#e3f2fd; color:#1565c0; }
+    .action-btn.red { background:#fce4ec; color:#c62828; }
+    .action-btn.green { background:#e8f5e9; color:#2e7d32; }
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center; }
+    .modal-overlay.open { display:flex; }
+    .modal-box { background:white; border-radius:16px; padding:32px; max-width:520px; width:90%; max-height:80vh; overflow-y:auto; }
+    .modal-box h3 { margin:0 0 16px; color:var(--blue-dark); }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .form-group { display:flex; flex-direction:column; gap:4px; margin-bottom:12px; }
+    .form-group label { font-size:.78rem; font-weight:600; color:var(--blue-dark); }
+    .form-group input, .form-group select, .form-group textarea { border:2px solid #e0e6f0; border-radius:8px; padding:9px 12px; font-family:inherit; font-size:.88rem; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--blue); outline:none; }
+    .loading-spinner { text-align:center; padding:40px; color:var(--gray-text); }
+    .tab-bar { display:flex; gap:0; border-bottom:2px solid #e0e6f0; margin-bottom:20px; overflow-x:auto; }
+    .tab-btn { padding:10px 18px; border:none; background:none; cursor:pointer; font-family:inherit; font-size:.85rem; font-weight:600; color:var(--gray-text); border-bottom:3px solid transparent; margin-bottom:-2px; transition:.2s; white-space:nowrap; }
+    .tab-btn.active { color:var(--blue); border-bottom-color:var(--blue); }
+    @media(max-width:768px) { .admin-layout{grid-template-columns:1fr;} .admin-sidebar{display:none;} }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <div class="admin-sidebar">
+    <div class="admin-brand">
+      <h2>🍁 ARCADINS Admin</h2>
+      <p>Dashboard Administrateur</p>
+    </div>
+    <div class="admin-nav">
+      <div class="admin-nav-section">Vue d'ensemble</div>
+      <div class="admin-nav-item active" onclick="showSection('dashboard')">📊 Tableau de bord</div>
+      <div class="admin-nav-section">Utilisateurs</div>
+      <div class="admin-nav-item" onclick="showSection('prospects')">📥 Prospects</div>
+      <div class="admin-nav-item" onclick="showSection('users')">👥 Apprenants</div>
+      <div class="admin-nav-section">Formation</div>
+      <div class="admin-nav-item" onclick="showSection('tests')">📝 Tests &amp; Scores</div>
+      <div class="admin-nav-item" onclick="showSection('modules')">📚 Progression modules</div>
+      <div class="admin-nav-section">Certifications</div>
+      <div class="admin-nav-item" onclick="showSection('certificates')">🏆 Certificats</div>
+      <div class="admin-nav-section">Paramètres</div>
+      <div class="admin-nav-item" onclick="showSection('settings')">⚙️ Paramètres</div>
+      <div class="admin-nav-section">Actions</div>
+      <div class="admin-nav-item" onclick="exportCsv()">📤 Export CSV</div>
+      <div class="admin-nav-item" onclick="AuthAPI && AuthAPI.logout()">🚪 Déconnexion</div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="admin-main" id="adminMain">
+    <!-- Dashboard section -->
+    <div id="section-dashboard">
+      <div class="admin-header">
+        <h1>📊 Tableau de bord</h1>
+        <div style="font-size:.82rem;color:var(--gray-text);" id="adminLastUpdate"></div>
+      </div>
+      <div class="stats-grid" id="statsGrid">
+        <div class="loading-spinner">⏳ Chargement...</div>
+      </div>
+      <div class="admin-section">
+        <h3>📋 Derniers inscrits</h3>
+        <div id="recentProspects"><div class="loading-spinner">⏳</div></div>
+      </div>
+      <div class="admin-section">
+        <h3>🏆 Derniers certificats</h3>
+        <div id="recentCertificates"><div class="loading-spinner">⏳</div></div>
+      </div>
+    </div>
+
+    <!-- Prospects section -->
+    <div id="section-prospects" style="display:none;">
+      <div class="admin-header"><h1>📥 Prospects</h1></div>
+      <div class="admin-section">
+        <div class="filter-bar">
+          <input type="text" id="prospectSearch" placeholder="Rechercher..." oninput="filterProspects()" />
+        </div>
+        <div id="prospectsTable"><div class="loading-spinner">⏳</div></div>
+      </div>
+    </div>
+
+    <!-- Users section -->
+    <div id="section-users" style="display:none;">
+      <div class="admin-header">
+        <h1>👥 Apprenants</h1>
+        <a id="exportBtn" href="#" onclick="exportCsv()" class="btn-primary" style="font-size:.82rem;padding:8px 16px;">📤 Exporter CSV</a>
+      </div>
+      <div class="admin-section">
+        <div class="filter-bar">
+          <input type="text" id="userSearch" placeholder="Nom / Email..." oninput="filterUsers()" />
+          <select id="userStatusFilter" onchange="filterUsers()">
+            <option value="">Tous les statuts</option>
+            <option value="prospect">Prospect</option>
+            <option value="apprenant">Apprenant</option>
+          </select>
+          <select id="userPlanFilter" onchange="filterUsers()">
+            <option value="">Tous les plans</option>
+            <option value="Découverte">Découverte</option>
+            <option value="Standard">Standard</option>
+            <option value="Premium">Premium</option>
+            <option value="VIP">VIP</option>
+          </select>
+        </div>
+        <div id="usersTable"><div class="loading-spinner">⏳</div></div>
+      </div>
+    </div>
+
+    <!-- Tests section -->
+    <div id="section-tests" style="display:none;">
+      <div class="admin-header"><h1>📝 Tests &amp; Scores</h1></div>
+      <div class="admin-section">
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchTestTab('trial')">Essai gratuit</button>
+          <button class="tab-btn" onclick="switchTestTab('qualification')">Qualification</button>
+          <button class="tab-btn" onclick="switchTestTab('final')">Test final</button>
+        </div>
+        <div id="testsTable"><div class="loading-spinner">⏳</div></div>
+      </div>
+    </div>
+
+    <!-- Modules section -->
+    <div id="section-modules" style="display:none;">
+      <div class="admin-header"><h1>📚 Progression modules</h1></div>
+      <div class="admin-section">
+        <div id="modulesTable"><div class="loading-spinner">⏳</div></div>
+      </div>
+    </div>
+
+    <!-- Certificates section -->
+    <div id="section-certificates" style="display:none;">
+      <div class="admin-header"><h1>🏆 Certificats générés</h1></div>
+      <div class="admin-section">
+        <div id="certificatesTable"><div class="loading-spinner">⏳</div></div>
+      </div>
+    </div>
+
+    <!-- Settings section -->
+    <div id="section-settings" style="display:none;">
+      <div class="admin-header"><h1>⚙️ Paramètres</h1></div>
+      <div class="admin-section">
+        <h3>Paramètres de la plateforme</h3>
+        <form id="settingsForm" onsubmit="saveSettings(event)">
+          <div class="form-group">
+            <label>Nombre maximum de tentatives au test final</label>
+            <input type="number" id="maxAttempts" min="1" max="10" value="3" />
+          </div>
+          <div class="form-group">
+            <label>Score minimum requis pour le test final (%)</label>
+            <input type="number" id="minScore" min="50" max="100" value="70" />
+          </div>
+          <div class="form-group">
+            <label>Email administrateur (notifications)</label>
+            <input type="email" id="adminEmail" />
+          </div>
+          <button type="submit" class="btn-primary">💾 Enregistrer</button>
+        </form>
+      </div>
+      <div class="admin-section" style="margin-top:0;">
+        <h3>Compte administrateur</h3>
+        <p style="color:var(--gray-text);font-size:.85rem;margin-bottom:16px;">Connecté en tant qu'administrateur. Credentials : admin@arcadins-training.com / Admin2024!</p>
+        <p style="color:var(--gray-text);font-size:.85rem;">🔧 Pour modifier le mot de passe admin, accédez directement à la base de données SQLite dans <code>server/arcadins.db</code></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- User detail modal -->
+<div class="modal-overlay" id="userModal">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 id="userModalTitle">Détail utilisateur</h3>
+      <button onclick="closeModal('userModal')" style="background:none;border:none;font-size:1.4rem;cursor:pointer;">✕</button>
+    </div>
+    <div id="userModalContent"></div>
+  </div>
+</div>
+
+<!-- Email modal -->
+<div class="modal-overlay" id="emailModal">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3>📧 Envoyer un email</h3>
+      <button onclick="closeModal('emailModal')" style="background:none;border:none;font-size:1.4rem;cursor:pointer;">✕</button>
+    </div>
+    <input type="hidden" id="emailTargetId" />
+    <div class="form-group"><label>Objet</label><input type="text" id="emailSubject" placeholder="Objet de l'email" /></div>
+    <div class="form-group"><label>Message</label><textarea id="emailBody" rows="6" placeholder="Contenu du message..."></textarea></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn-secondary" onclick="closeModal('emailModal')">Annuler</button>
+      <button class="btn-primary" onclick="sendEmailToUser()">📤 Envoyer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Detect API base (admin pages are in pages/admin/)
+const API_BASE = 'http://localhost:3000/api';
+function getToken() { return localStorage.getItem('arc_token'); }
+function setToken(t) { localStorage.setItem('arc_token', t); }
+
+async function apiFetch(path, options={}) {
+  const token = getToken();
+  const headers = {'Content-Type':'application/json', ...(options.headers||{})};
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const res = await fetch(API_BASE + path, {...options, headers});
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || `HTTP ${res.status}`);
+  return json;
+}
+
+// Auth check
+(async function() {
+  const token = getToken();
+  if (!token) { window.location.href = '../acces.html'; return; }
+  try {
+    const res = await apiFetch('/access/me');
+    if (res.user.role !== 'admin') { window.location.href = '../espace-membre.html'; return; }
+    loadDashboard();
+  } catch(e) { window.location.href = '../acces.html'; }
+})();
+
+const AuthAPI = { logout() { localStorage.removeItem('arc_token'); localStorage.removeItem('arc_user'); window.location.href = '../acces.html'; } };
+
+let allUsers = [], allProspects = [], allTests = [], allCertificates = [], currentTestTab = 'trial';
+
+function showSection(name) {
+  document.querySelectorAll('[id^="section-"]').forEach(s=>s.style.display='none');
+  document.getElementById('section-' + name).style.display = 'block';
+  document.querySelectorAll('.admin-nav-item').forEach(i=>i.classList.remove('active'));
+  event.currentTarget && event.currentTarget.classList.add('active');
+  if (name === 'prospects' && !allProspects.length) loadProspects();
+  if (name === 'users' && !allUsers.length) loadUsers();
+  if (name === 'tests') loadTests();
+  if (name === 'modules') loadModulesProgress();
+  if (name === 'certificates' && !allCertificates.length) loadCertificates();
+  if (name === 'settings') loadSettings();
+}
+
+async function loadDashboard() {
+  try {
+    const res = await apiFetch('/admin/stats');
+    const s = res.stats;
+    document.getElementById('adminLastUpdate').textContent = 'Mis à jour : ' + new Date().toLocaleTimeString('fr-CA');
+    document.getElementById('statsGrid').innerHTML = `
+      <div class="stat-card blue"><div class="stat-num">${s.total_users||0}</div><div class="stat-lbl">👥 Utilisateurs total</div></div>
+      <div class="stat-card blue"><div class="stat-num">${s.total_prospects||0}</div><div class="stat-lbl">📥 Prospects</div></div>
+      <div class="stat-card green"><div class="stat-num">${s.total_apprenants||0}</div><div class="stat-lbl">🎓 Apprenants actifs</div></div>
+      <div class="stat-card gold"><div class="stat-num">${s.trial_done||0}</div><div class="stat-lbl">✅ Essais terminés</div></div>
+      <div class="stat-card gold"><div class="stat-num">${s.payment_confirmed||0}</div><div class="stat-lbl">💳 Paiements confirmés</div></div>
+      <div class="stat-card green"><div class="stat-num">${s.qualification_done||0}</div><div class="stat-lbl">📊 Qualifications</div></div>
+      <div class="stat-card purple"><div class="stat-num">${s.modules_all_done||0}</div><div class="stat-lbl">📚 Formation complétée</div></div>
+      <div class="stat-card red"><div class="stat-num">${s.final_passed||0}</div><div class="stat-lbl">🏆 Tests finaux réussis</div></div>
+      <div class="stat-card gold"><div class="stat-num">${s.certificates_generated||0}</div><div class="stat-lbl">📜 Certificats générés</div></div>`;
+
+    // Recent prospects
+    const pres = await apiFetch('/admin/prospects');
+    allProspects = pres.prospects || [];
+    renderRecentProspects(allProspects.slice(0,5));
+    // Recent certs
+    const cres = await apiFetch('/admin/certificates');
+    allCertificates = cres.certificates || [];
+    renderRecentCerts(allCertificates.slice(0,5));
+  } catch(e) {
+    document.getElementById('statsGrid').innerHTML = `<p style="color:red">${e.message}</p>`;
+  }
+}
+
+function renderRecentProspects(data) {
+  if (!data.length) { document.getElementById('recentProspects').innerHTML = '<p style="color:var(--gray-text);font-size:.85rem;">Aucun prospect</p>'; return; }
+  document.getElementById('recentProspects').innerHTML = `
+    <table class="data-table">
+      <thead><tr><th>Nom</th><th>Email</th><th>Pays</th><th>Téléphone</th><th>Date</th></tr></thead>
+      <tbody>${data.map(p=>`<tr>
+        <td>${p.prenom} ${p.nom}</td><td>${p.email}</td><td>${p.pays}</td><td>${p.telephone}</td>
+        <td>${new Date(p.created_at).toLocaleDateString('fr-CA')}</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+}
+
+function renderRecentCerts(data) {
+  if (!data.length) { document.getElementById('recentCertificates').innerHTML = '<p style="color:var(--gray-text);font-size:.85rem;">Aucun certificat</p>'; return; }
+  document.getElementById('recentCertificates').innerHTML = `
+    <table class="data-table">
+      <thead><tr><th>Apprenant</th><th>Score</th><th>N° Certificat</th><th>Date</th></tr></thead>
+      <tbody>${data.map(c=>`<tr>
+        <td>${c.prenom} ${c.nom}</td>
+        <td><strong>${Math.round(c.score)}%</strong></td>
+        <td style="font-family:monospace;font-size:.75rem;">${c.certificate_number}</td>
+        <td>${new Date(c.issued_at).toLocaleDateString('fr-CA')}</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+}
+
+async function loadProspects() {
+  try {
+    const res = await apiFetch('/admin/prospects');
+    allProspects = res.prospects || [];
+    renderProspectsTable(allProspects);
+  } catch(e) { document.getElementById('prospectsTable').innerHTML = `<p style="color:red">${e.message}</p>`; }
+}
+
+function renderProspectsTable(data) {
+  if (!data.length) { document.getElementById('prospectsTable').innerHTML = '<p>Aucun prospect.</p>'; return; }
+  document.getElementById('prospectsTable').innerHTML = `
+    <table class="data-table">
+      <thead><tr><th>Prénom Nom</th><th>Email</th><th>Téléphone</th><th>Pays</th><th>Date</th></tr></thead>
+      <tbody>${data.map(p=>`<tr>
+        <td>${p.prenom} ${p.nom}</td><td>${p.email}</td><td>${p.telephone}</td><td>${p.pays}</td>
+        <td>${new Date(p.created_at).toLocaleDateString('fr-CA')}</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+}
+
+function filterProspects() {
+  const s = document.getElementById('prospectSearch').value.toLowerCase();
+  const filtered = allProspects.filter(p => (p.nom+' '+p.prenom+' '+p.email).toLowerCase().includes(s));
+  renderProspectsTable(filtered);
+}
+
+async function loadUsers() {
+  try {
+    const res = await apiFetch('/admin/users');
+    allUsers = (res.users || []).filter(u=>u.role!=='admin');
+    renderUsersTable(allUsers);
+  } catch(e) { document.getElementById('usersTable').innerHTML = `<p style="color:red">${e.message}</p>`; }
+}
+
+function renderUsersTable(data) {
+  if (!data.length) { document.getElementById('usersTable').innerHTML = '<p>Aucun utilisateur.</p>'; return; }
+  document.getElementById('usersTable').innerHTML = `
+    <table class="data-table">
+      <thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Plan</th><th>Payé</th><th>Formation</th><th>Cert.</th><th>Actions</th></tr></thead>
+      <tbody>${data.map(u=>`<tr>
+        <td><strong>${u.prenom||''} ${u.nom||''}</strong></td>
+        <td>${u.email}</td>
+        <td><span class="status-badge badge-${u.role}">${u.role}</span></td>
+        <td>${u.payment_plan||'—'}</td>
+        <td><span class="status-badge ${u.payment_confirmed?'badge-yes':'badge-no'}">${u.payment_confirmed?'✓':'✗'}</span></td>
+        <td>${u.all_modules_done?'<span class="status-badge badge-yes">✓ Terminé</span>':u.qualification_done?'En cours':'—'}</td>
+        <td>${u.final_test_passed?'<span class="status-badge badge-yes">✓</span>':'—'}</td>
+        <td style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="action-btn blue" onclick="viewUser(${u.id})">Voir</button>
+          <button class="action-btn green" onclick="openEmail(${u.id})">Email</button>
+          ${u.payment_confirmed?`<button class="action-btn red" onclick="revokeAccess(${u.id})">Révoquer</button>`:''}
+        </td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+}
+
+function filterUsers() {
+  const s = document.getElementById('userSearch').value.toLowerCase();
+  const status = document.getElementById('userStatusFilter').value;
+  const plan = document.getElementById('userPlanFilter').value;
+  const filtered = allUsers.filter(u => {
+    const matchS = (u.nom+' '+u.prenom+' '+u.email).toLowerCase().includes(s);
+    const matchSt = !status || u.role === status;
+    const matchP = !plan || (u.payment_plan && u.payment_plan.includes(plan));
+    return matchS && matchSt && matchP;
+  });
+  renderUsersTable(filtered);
+}
+
+async function viewUser(id) {
+  try {
+    const res = await apiFetch(`/admin/users/${id}`);
+    const u = res.user;
+    document.getElementById('userModalTitle').textContent = `${u.prenom} ${u.nom}`;
+    document.getElementById('userModalContent').innerHTML = `
+      <table style="width:100%;font-size:.85rem;border-collapse:collapse;">
+        ${[['Email',u.email],['Téléphone',u.telephone||'—'],['Pays',u.pays||'—'],['Rôle',u.role],['Statut',u.status||'—'],['Plan',u.payment_plan||'—'],['Paiement confirmé',u.payment_confirmed?'✅ Oui':'❌ Non'],['Essai fait',u.trial_done?`✅ (Score: ${u.trial_score}/10)`:'❌ Non'],['Qualification',u.qualification_done?`✅ Niveau: ${u.qualification_level}`:'❌ Non'],['Formation',u.all_modules_done?'✅ Terminée':u.qualification_done?'🔄 En cours':'—'],['Test final',u.final_test_passed?`✅ (${Math.round(u.final_test_score||0)}%)`:'❌ Non'],['Certificat',u.certificate_id?'✅ Généré':'—'],['Inscrit le',new Date(u.created_at).toLocaleDateString('fr-CA')]].map(([k,v])=>`<tr><td style="padding:7px 10px;border-bottom:1px solid #f0f0f0;font-weight:600;color:var(--blue-dark);width:45%">${k}</td><td style="padding:7px 10px;border-bottom:1px solid #f0f0f0">${v}</td></tr>`).join('')}
+      </table>
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+        <button class="action-btn green" onclick="openEmail(${u.id});closeModal('userModal')">📧 Envoyer email</button>
+        ${u.payment_confirmed?`<button class="action-btn red" onclick="revokeAccess(${u.id})">🚫 Révoquer accès</button>`:''}
+      </div>`;
+    document.getElementById('userModal').classList.add('open');
+  } catch(e) { alert(e.message); }
+}
+
+async function revokeAccess(id) {
+  if (!confirm('Révoquer l\'accès de cet utilisateur ?')) return;
+  try {
+    await apiFetch(`/admin/users/${id}`, { method:'PUT', body: JSON.stringify({ payment_confirmed: 0, status:'suspended' }) });
+    alert('Accès révoqué.');
+    loadUsers();
+  } catch(e) { alert(e.message); }
+}
+
+function openEmail(id) {
+  document.getElementById('emailTargetId').value = id;
+  document.getElementById('emailSubject').value = '';
+  document.getElementById('emailBody').value = '';
+  document.getElementById('emailModal').classList.add('open');
+}
+
+async function sendEmailToUser() {
+  const id = document.getElementById('emailTargetId').value;
+  const subj = document.getElementById('emailSubject').value;
+  const body = document.getElementById('emailBody').value;
+  try {
+    await apiFetch(`/admin/users/${id}/email`, { method:'POST', body: JSON.stringify({ subject: subj, body }) });
+    alert('Email envoyé !');
+    closeModal('emailModal');
+  } catch(e) { alert(e.message); }
+}
+
+async function loadTests(tab) {
+  tab = tab || currentTestTab;
+  currentTestTab = tab;
+  const el = document.getElementById('testsTable');
+  el.innerHTML = '<div class="loading-spinner">⏳</div>';
+  try {
+    const res = await apiFetch('/admin/tests');
+    const tests = (res.tests || []).filter(t=>t.test_type===tab);
+    if (!tests.length) { el.innerHTML = '<p>Aucun résultat.</p>'; return; }
+    el.innerHTML = `
+      <table class="data-table">
+        <thead><tr><th>Utilisateur</th><th>Type</th><th>Score</th><th>Réussi</th><th>Tentative</th><th>Date</th></tr></thead>
+        <tbody>${tests.map(t=>`<tr>
+          <td>${t.email||'—'}</td>
+          <td>${t.test_type}</td>
+          <td><strong>${t.score}</strong></td>
+          <td><span class="status-badge ${t.passed?'badge-yes':'badge-no'}">${t.passed?'Oui':'Non'}</span></td>
+          <td>${t.attempt_number}</td>
+          <td>${new Date(t.created_at).toLocaleDateString('fr-CA')}</td>
+        </tr>`).join('')}</tbody>
+      </table>`;
+  } catch(e) { el.innerHTML = `<p style="color:red">${e.message}</p>`; }
+}
+
+function switchTestTab(tab) {
+  currentTestTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  loadTests(tab);
+}
+
+async function loadModulesProgress() {
+  const el = document.getElementById('modulesTable');
+  try {
+    const res = await apiFetch('/admin/users');
+    const users = (res.users||[]).filter(u=>u.role!=='admin'&&u.qualification_done);
+    if (!users.length) { el.innerHTML = '<p>Aucun apprenant en formation.</p>'; return; }
+    el.innerHTML = `
+      <table class="data-table">
+        <thead><tr><th>Apprenant</th><th>Email</th><th>Niveau</th><th>Module actuel</th><th>Progression</th><th>Formation terminée</th></tr></thead>
+        <tbody>${users.map(u=>`<tr>
+          <td>${u.prenom} ${u.nom}</td>
+          <td>${u.email}</td>
+          <td>${u.qualification_level||'—'}</td>
+          <td>Module ${u.current_module||1}</td>
+          <td>
+            <div style="background:#e0e6f0;border-radius:4px;height:8px;width:120px;">
+              <div style="background:var(--blue);height:100%;border-radius:4px;width:${Math.round((u.current_module||1)/14*100)}%;"></div>
+            </div>
+            <span style="font-size:.75rem;color:var(--gray-text);">${Math.round((u.current_module||1)/14*100)}%</span>
+          </td>
+          <td>${u.all_modules_done?'<span class="status-badge badge-yes">✅ Oui</span>':'<span class="status-badge badge-no">En cours</span>'}</td>
+        </tr>`).join('')}</tbody>
+      </table>`;
+  } catch(e) { el.innerHTML = `<p style="color:red">${e.message}</p>`; }
+}
+
+async function loadCertificates() {
+  const el = document.getElementById('certificatesTable');
+  try {
+    const res = await apiFetch('/admin/certificates');
+    allCertificates = res.certificates || [];
+    if (!allCertificates.length) { el.innerHTML = '<p>Aucun certificat.</p>'; return; }
+    el.innerHTML = `
+      <table class="data-table">
+        <thead><tr><th>Apprenant</th><th>Programme</th><th>Score</th><th>N° Certificat</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody>${allCertificates.map(c=>`<tr>
+          <td>${c.prenom} ${c.nom}</td>
+          <td>${c.programme}</td>
+          <td><strong>${Math.round(c.score)}%</strong></td>
+          <td style="font-family:monospace;font-size:.72rem;">${c.certificate_number}</td>
+          <td>${new Date(c.issued_at).toLocaleDateString('fr-CA')}</td>
+          <td><a href="http://localhost:3000/api/certificate/verify/${c.certificate_number}" target="_blank" class="action-btn blue">Vérifier</a></td>
+        </tr>`).join('')}</tbody>
+      </table>`;
+  } catch(e) { el.innerHTML = `<p style="color:red">${e.message}</p>`; }
+}
+
+async function loadSettings() {
+  try {
+    const res = await apiFetch('/admin/stats');
+    // Settings are minimal; just pre-fill
+  } catch(e) {}
+}
+
+async function saveSettings(e) {
+  e.preventDefault();
+  try {
+    await apiFetch('/admin/settings', { method:'PUT', body: JSON.stringify({
+      max_final_attempts: document.getElementById('maxAttempts').value,
+      min_final_score: document.getElementById('minScore').value
+    })});
+    alert('Paramètres enregistrés !');
+  } catch(e) { alert(e.message); }
+}
+
+function exportCsv() {
+  window.open(`http://localhost:3000/api/admin/export/csv?token=${getToken()}`, '_blank');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+</script>
+</body>
+</html>

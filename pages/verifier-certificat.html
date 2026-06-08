@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vérifier un Certificat – ARCADINS Training Center</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    .verify-hero { background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:white; padding:52px 24px; text-align:center; }
+    .verify-hero h1 { font-size:2rem; font-weight:900; margin-bottom:10px; }
+    .verify-container { max-width:700px; margin:40px auto; padding:0 24px 60px; }
+    .search-box { background:white; border-radius:16px; padding:32px; box-shadow:var(--shadow); margin-bottom:28px; }
+    .search-box h3 { font-size:1rem; font-weight:800; color:var(--blue-dark); margin:0 0 16px; }
+    .search-row { display:flex; gap:10px; }
+    .search-row input { flex:1; border:2px solid #e0e6f0; border-radius:10px; padding:11px 16px; font-family:inherit; font-size:.92rem; }
+    .search-row input:focus { border-color:var(--blue); outline:none; }
+    .result-valid { background:white; border:2px solid #4caf50; border-radius:16px; padding:32px; box-shadow:0 4px 20px rgba(76,175,80,.15); }
+    .result-invalid { background:white; border:2px solid var(--red); border-radius:16px; padding:32px; text-align:center; }
+    .valid-header { display:flex; align-items:center; gap:16px; margin-bottom:24px; padding-bottom:20px; border-bottom:1px solid #f0f0f0; }
+    .valid-icon { width:56px; height:56px; background:#e8f5e9; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.6rem; }
+    .valid-title { font-size:1.1rem; font-weight:800; color:#2e7d32; }
+    .valid-sub { font-size:.82rem; color:var(--gray-text); margin-top:2px; }
+    .cert-detail { display:grid; grid-template-columns:1fr 1fr; gap:0; }
+    @media(max-width:500px) { .cert-detail{grid-template-columns:1fr;} .search-row{flex-direction:column;} }
+    .detail-row { padding:10px 0; border-bottom:1px solid #f0f4f8; }
+    .detail-row:nth-child(odd) { padding-right:20px; }
+    .detail-label { font-size:.75rem; font-weight:600; color:var(--gray-text); text-transform:uppercase; letter-spacing:.8px; }
+    .detail-value { font-size:.9rem; font-weight:700; color:var(--blue-dark); margin-top:3px; }
+    .cert-border { border:2px solid var(--gold); border-radius:12px; padding:20px; text-align:center; margin-top:24px; background:linear-gradient(135deg,#fffbf0,white); }
+    .cert-border .cert-name { font-size:1.5rem; font-weight:900; color:var(--blue-dark); }
+    .cert-border .cert-program { color:var(--blue); font-weight:700; margin:6px 0; }
+    .cert-border .cert-score { font-size:1.8rem; font-weight:900; color:var(--gold); }
+    .cert-num-mono { font-family:monospace; font-size:.72rem; color:#aaa; margin-top:8px; }
+  </style>
+</head>
+<body>
+<div class="topbar" data-i18n="topbar">🍁 Programme de Tutorat 100% en ligne · TEF &amp; TCF Canada</div>
+<nav>
+  <div class="nav-container">
+    <a href="../index.html" class="logo"><img src="../assets/img/logo-nav.svg" alt="ARCADINS" height="50" style="display:block;"></a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;">🇬🇧 EN</button>
+    </div>
+  </div>
+</nav>
+
+<div class="verify-hero">
+  <span class="section-tag" style="background:rgba(255,255,255,.15);color:white;margin:0 auto 14px;display:inline-block;">🔍 <span data-i18n="verify.tag">Vérification de certificat</span></span>
+  <h1 data-i18n="verify.h1">Vérifier un Certificat ARCADINS</h1>
+  <p data-i18n="verify.p">Entrez le numéro de certificat pour vérifier son authenticité en temps réel</p>
+</div>
+
+<div class="verify-container">
+  <div class="search-box">
+    <h3 data-i18n="verify.form.h">🔎 Numéro de certificat</h3>
+    <p style="color:var(--gray-text);font-size:.85rem;margin:0 0 16px;" data-i18n="verify.form.p">Le numéro de certificat se trouve en bas du document PDF (format: xxxx-xxxx-xxxx)</p>
+    <div class="search-row">
+      <input type="text" id="certInput" placeholder="Ex: a1b2c3d4-e5f6-7890-..." data-i18n-placeholder="verify.form.placeholder" oninput="clearResult()" onkeydown="if(event.key==='Enter')verifyCert()" />
+      <button class="btn-primary" onclick="verifyCert()" data-i18n="verify.form.btn">Vérifier</button>
+    </div>
+    <div id="verifyError" style="display:none;color:var(--red);font-size:.83rem;margin-top:8px;"></div>
+  </div>
+
+  <div id="resultArea"></div>
+</div>
+
+<footer style="background:var(--blue-dark);color:rgba(255,255,255,.6);text-align:center;padding:28px;font-size:.82rem;">
+  <p>© 2024 ARCADINS Training Center · <a href="contact.html" style="color:rgba(255,255,255,.6);">Contact</a></p>
+</footer>
+
+<script src="../assets/js/i18n.js"></script>
+<script>
+const API_BASE = 'http://localhost:3000/api';
+
+// Check URL param on load
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  if (id) {
+    document.getElementById('certInput').value = id;
+    verifyCert();
+  }
+});
+
+async function verifyCert() {
+  const id = document.getElementById('certInput').value.trim();
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+  const errEl = document.getElementById('verifyError');
+  errEl.style.display = 'none';
+
+  if (!id) {
+    errEl.textContent = lang==='fr'?'Veuillez entrer un numéro de certificat.':'Please enter a certificate number.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const btn = document.querySelector('[onclick="verifyCert()"]');
+  btn.textContent = lang==='fr'?'Vérification...':'Verifying...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${API_BASE}/certificate/verify/${encodeURIComponent(id)}`);
+    const data = await res.json();
+    btn.textContent = lang==='fr'?'Vérifier':'Verify';
+    btn.disabled = false;
+
+    if (!res.ok || !data.valid) {
+      showInvalid(lang);
+      return;
+    }
+    showValid(data.certificate, lang);
+  } catch(e) {
+    btn.textContent = lang==='fr'?'Vérifier':'Verify';
+    btn.disabled = false;
+    errEl.textContent = lang==='fr'?'Erreur de connexion au serveur. Vérifiez que le serveur est démarré (port 3000).':'Server connection error. Make sure the server is running (port 3000).';
+    errEl.style.display = 'block';
+  }
+}
+
+function showValid(cert, lang) {
+  const issuedDate = new Date(cert.issued_at).toLocaleDateString(lang==='fr'?'fr-CA':'en-CA', { year:'numeric', month:'long', day:'numeric' });
+  document.getElementById('resultArea').innerHTML = `
+    <div class="result-valid">
+      <div class="valid-header">
+        <div class="valid-icon">✅</div>
+        <div>
+          <div class="valid-title">${lang==='fr'?'Certificat authentique':'Authentic Certificate'}</div>
+          <div class="valid-sub">${lang==='fr'?'Ce certificat a été émis par ARCADINS Training Center et est valide.':'This certificate was issued by ARCADINS Training Center and is valid.'}</div>
+        </div>
+      </div>
+      <div class="cert-border">
+        <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:2px;color:var(--gray-text);margin-bottom:10px;">🍁 ARCADINS Training Center</div>
+        <div style="font-size:1rem;font-style:italic;color:var(--gold);font-weight:700;margin-bottom:12px;">${lang==='fr'?'Certificat de Réussite':'Certificate of Achievement'}</div>
+        <div class="cert-name">${cert.prenom} ${cert.nom}</div>
+        <div class="cert-program">${cert.programme}</div>
+        <div class="cert-score">${Math.round(cert.score)}%</div>
+        <div style="font-size:.8rem;color:var(--gray-text);margin-top:8px;">${lang==='fr'?'Délivré le':'Issued on'} ${issuedDate}</div>
+        <div class="cert-num-mono">${cert.certificate_number}</div>
+      </div>
+      <div class="cert-detail" style="margin-top:20px;">
+        ${[
+          [lang==='fr'?'Titulaire':'Holder', `${cert.prenom} ${cert.nom}`],
+          [lang==='fr'?'Programme':'Program', cert.programme],
+          [lang==='fr'?'Score final':'Final Score', `${Math.round(cert.score)}%`],
+          [lang==='fr'?'Date d\'émission':'Issue Date', issuedDate],
+          [lang==='fr'?'Statut':'Status', `<span style="color:#2e7d32;font-weight:700;">✓ ${lang==='fr'?'Valide':'Valid'}</span>`],
+          [lang==='fr'?'Émetteur':'Issuer', 'ARCADINS Training Center'],
+        ].map(([k,v])=>`<div class="detail-row"><div class="detail-label">${k}</div><div class="detail-value">${v}</div></div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function showInvalid(lang) {
+  document.getElementById('resultArea').innerHTML = `
+    <div class="result-invalid">
+      <div style="font-size:3rem;margin-bottom:16px;">❌</div>
+      <h3 style="color:var(--red);font-size:1.1rem;font-weight:800;margin:0 0 10px;">
+        ${lang==='fr'?'Certificat introuvable':'Certificate Not Found'}
+      </h3>
+      <p style="color:var(--gray-text);font-size:.88rem;line-height:1.7;">
+        ${lang==='fr'
+          ? 'Ce numéro de certificat n\'existe pas dans notre base de données ou est invalide. Assurez-vous d\'avoir copié le numéro complet depuis le document PDF.'
+          : 'This certificate number does not exist in our database or is invalid. Make sure you copied the full number from the PDF document.'}
+      </p>
+      <p style="font-size:.82rem;color:#aaa;margin-top:12px;">
+        ${lang==='fr'?'Pour toute question : ':'Questions? '}<a href="contact.html" style="color:var(--blue);">contact@arcadins-training.com</a>
+      </p>
+    </div>`;
+}
+
+function clearResult() {
+  document.getElementById('resultArea').innerHTML = '';
+  document.getElementById('verifyError').style.display = 'none';
+}
+</script>
+</body>
+</html>

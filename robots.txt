@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /pages/dashboard.html
+
+Sitemap: https://www.arcadins-training.com/sitemap.xml

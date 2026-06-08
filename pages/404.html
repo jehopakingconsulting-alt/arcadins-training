@@ -1,0 +1,258 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page introuvable – ARCADINS Training Center</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    .error-page {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 48px 24px;
+      background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 60%, #1a4fc4 100%);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .error-page::before {
+      content: '404';
+      position: absolute;
+      font-size: 22rem;
+      font-weight: 900;
+      opacity: .04;
+      color: white;
+      line-height: 1;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .error-inner { position: relative; z-index: 1; max-width: 580px; }
+    .error-icon { font-size: 5rem; margin-bottom: 20px; display: block; animation: float 3s ease-in-out infinite; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-14px); }
+    }
+    .error-code {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      opacity: .7;
+      margin-bottom: 16px;
+    }
+    .error-inner h1 { font-size: 2.4rem; font-weight: 900; margin-bottom: 14px; line-height: 1.2; }
+    .error-inner h1 span { color: var(--gold-light); }
+    .error-inner p { font-size: 1rem; opacity: .85; margin-bottom: 32px; line-height: 1.7; }
+    .error-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 36px; }
+    .error-links {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      font-size: .85rem;
+      opacity: .8;
+    }
+    .error-links a { color: var(--gold-light); text-decoration: none; }
+    .error-links a:hover { text-decoration: underline; }
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      max-width: 420px;
+      margin: 0 auto 32px;
+    }
+    .search-bar input {
+      flex: 1;
+      padding: 13px 18px;
+      border-radius: 10px;
+      border: none;
+      font-size: .9rem;
+      font-family: inherit;
+      outline: none;
+    }
+    .search-bar button {
+      background: var(--gold);
+      color: var(--blue-dark);
+      border: none;
+      border-radius: 10px;
+      padding: 0 20px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: .9rem;
+      white-space: nowrap;
+    }
+    .quick-links-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 32px;
+      text-align: left;
+    }
+    .quick-link-card {
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 12px;
+      padding: 14px;
+      text-decoration: none;
+      color: white;
+      transition: var(--transition);
+    }
+    .quick-link-card:hover { background: rgba(255,255,255,.2); }
+    .quick-link-card .ql-icon { font-size: 1.4rem; margin-bottom: 6px; }
+    .quick-link-card .ql-title { font-size: .82rem; font-weight: 700; }
+    .quick-link-card .ql-desc { font-size: .72rem; opacity: .7; margin-top: 2px; }
+    @media (max-width: 500px) {
+      .quick-links-grid { grid-template-columns: 1fr 1fr; }
+      .error-inner h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="topbar">🍁 Programme de Tutorat 100% en ligne · TEF & TCF Canada · <a href="mailto:info@arcadins-training.com">info@arcadins-training.com</a> · 📞 514-451-3436</div>
+<nav>
+  <div class="nav-container">
+    <a href="../index.html" class="logo"><img src="../assets/img/logo-nav.svg" alt="ARCADINS Training Center" height="50" style="display:block;" /></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html" data-i18n="nav.home">Accueil</a></li>
+      <li><a href="tef-canada.html" data-i18n="nav.tef">TEF Canada</a></li>
+      <li><a href="tcf-canada.html" data-i18n="nav.tcf">TCF Canada</a></li>
+      <li><a href="tests.html" data-i18n="nav.tests">Tests interactifs</a></li>
+      <li><a href="tarifs.html" data-i18n="nav.tarifs">Tarifs</a></li>
+      <li><a href="faq.html" data-i18n="nav.faq">FAQ</a></li>
+      <li><a href="tuteur.html" style="color:var(--gold);font-weight:700;">🎓 Devenir Tuteur</a></li><li><a href="#" class="btn-login" onclick="openModal('login')" data-i18n="nav.login">Connexion</a></li>
+      <li><a href="../index.html#inscription" class="btn-cta" data-i18n="nav.register">S'inscrire</a></li>
+    </ul>
+    <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.3s;margin-right:8px;" title="Switch language">🇬🇧 EN</button><div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<div class="error-page">
+  <div class="error-inner">
+    <span class="error-icon">🍁</span>
+    <div class="error-code">Erreur 404</div>
+    <h1>Oups ! Cette page <span>n'existe pas</span></h1>
+    <p>La page que vous cherchez a peut-être été déplacée, renommée ou n'existe tout simplement pas. Mais ne vous inquiétez pas — votre préparation au <strong>TEF Canada</strong> ou au <strong>TCF Canada</strong> peut continuer !</p>
+
+    <div class="search-bar">
+      <input type="text" placeholder="Rechercher une page..." id="searchInput" onkeydown="if(event.key==='Enter')doSearch()" />
+      <button onclick="doSearch()">Rechercher</button>
+    </div>
+
+    <div class="error-btns">
+      <a href="../index.html" class="btn-primary">🏠 Retour à l'accueil</a>
+      <a href="tests.html" class="btn-gold">🎯 Test gratuit</a>
+    </div>
+
+    <div class="quick-links-grid">
+      <a href="tef-canada.html" class="quick-link-card">
+        <div class="ql-icon">📋</div>
+        <div class="ql-title">TEF Canada</div>
+        <div class="ql-desc">Accompagnement complet ARCADINS</div>
+      </a>
+      <a href="tcf-canada.html" class="quick-link-card">
+        <div class="ql-icon">📝</div>
+        <div class="ql-title">TCF Canada</div>
+        <div class="ql-desc">Accompagnement complet ARCADINS</div>
+      </a>
+      <a href="tests.html" class="quick-link-card">
+        <div class="ql-icon">🎯</div>
+        <div class="ql-title">Tests interactifs</div>
+        <div class="ql-desc">Quiz & simulations</div>
+      </a>
+      <a href="tarifs.html" class="quick-link-card">
+        <div class="ql-icon">💰</div>
+        <div class="ql-title">Tarifs</div>
+        <div class="ql-desc">Nos 4 plans</div>
+      </a>
+      <a href="faq.html" class="quick-link-card">
+        <div class="ql-icon">❓</div>
+        <div class="ql-title">FAQ</div>
+        <div class="ql-desc">Vos questions</div>
+      </a>
+      <a href="contact.html" class="quick-link-card">
+        <div class="ql-icon">📧</div>
+        <div class="ql-title">Contact</div>
+        <div class="ql-desc">514-451-3436</div>
+      </a>
+    </div>
+
+    <div class="error-links" style="margin-top:24px;">
+      <a href="blog.html">📚 Blog</a>
+      <a href="about.html" data-i18n="nav.about">À propos</a>
+      <a href="dashboard.html">Mon espace</a>
+      <a href="confidentialite.html">Confidentialité</a>
+    </div>
+  </div>
+</div>
+
+<footer style="background:var(--blue-dark);color:rgba(255,255,255,.7);text-align:center;padding:24px;font-size:.85rem;">
+  © 2024 ARCADINS Training Center · 116 Albert Street, Suite 300, Ottawa (Ontario) Canada · 514-451-3436
+</footer>
+
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 data-i18n="auth.title">Bienvenue</h2><p data-i18n="auth.sub">Accédez à votre espace ARCADINS</p>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Connexion</button>
+      <button class="modal-tab" id="tabRegister" onclick="switchTab('register')">Créer un compte</button>
+    </div>
+    <form class="modal-form active" id="loginForm" onsubmit="handleAuth(event,'login')">
+      <div class="form-group"><label data-i18n="auth.email">Email</label><input type="email" required /></div>
+      <div class="form-group"><label data-i18n="auth.pass">Mot de passe</label><input type="password" required /></div>
+      <button type="submit" class="btn-primary" data-i18n="auth.loginBtn" style="width:100%;justify-content:center;">Se connecter</button>
+    </form>
+    <form class="modal-form" id="registerForm" onsubmit="handleAuth(event,'register')">
+      <div class="form-group"><label data-i18n="auth.fullname">Nom complet</label><input type="text" required /></div>
+      <div class="form-group"><label data-i18n="auth.email">Email</label><input type="email" required /></div>
+      <div class="form-group"><label data-i18n="auth.pass">Mot de passe</label><input type="password" required minlength="8" /></div>
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;background:var(--red);" data-i18n="auth.createBtn">Créer mon compte</button>
+    </form>
+  </div>
+</div>
+
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/main.js"></script>
+<script>
+const pages = {
+  'tef': 'tef-canada.html', 'tcf': 'tcf-canada.html',
+  'test': 'tests.html', 'quiz': 'tests.html',
+  'tarif': 'tarifs.html', 'prix': 'tarifs.html',
+  'faq': 'faq.html', 'question': 'faq.html',
+  'contact': 'contact.html', 'blog': 'blog.html',
+  'dashboard': 'dashboard.html', 'compte': 'dashboard.html',
+};
+function doSearch() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const match = Object.keys(pages).find(k => q.includes(k));
+  if (match) { window.location.href = pages[match]; }
+  else { showToast('Aucune page trouvée. Essayez "TEF", "TCF", "tarifs", "FAQ"...', 'info'); }
+}
+
+// Compte à rebours auto-redirection (optionnel)
+let countdown = 30;
+const countEl = document.createElement('p');
+countEl.style.cssText = 'font-size:.78rem;opacity:.6;margin-top:16px;';
+countEl.innerHTML = `Redirection automatique vers l'accueil dans <strong id="countNum">30</strong>s`;
+document.querySelector('.error-inner').appendChild(countEl);
+const timer = setInterval(() => {
+  countdown--;
+  const el = document.getElementById('countNum');
+  if (el) el.textContent = countdown;
+  if (countdown <= 0) { clearInterval(timer); window.location.href = '../index.html'; }
+}, 1000);
+</script>
+</body>
+</html>
+
+
+
+
+
+
+

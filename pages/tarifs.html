@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarifs – ARCADINS Training Center</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+<div class="topbar" data-i18n="topbar">🍁 Programme de Tutorat 100% en ligne · TEF & TCF Canada · <a href="mailto:info@arcadins-training.com">info@arcadins-training.com</a></div>
+<nav>
+  <div class="nav-container">
+    <a href="../index.html" class="logo"><img src="../assets/img/logo-nav.svg" alt="ARCADINS Training Center" height="50" style="display:block;" /></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html" data-i18n="nav.home">Accueil</a></li>
+      <li><a href="tef-canada.html" data-i18n="nav.tef">TEF Canada</a></li>
+      <li><a href="tcf-canada.html" data-i18n="nav.tcf">TCF Canada</a></li>
+      <li><a href="tests.html" data-i18n="nav.tests">Tests interactifs</a></li>
+      <li><a href="tarifs.html" style="color:var(--blue);font-weight:700;">Tarifs</a></li>
+      <li><a href="about.html" data-i18n="nav.about">À propos</a></li>
+      <li><a href="faq.html" data-i18n="nav.faq">FAQ</a></li>
+      <li><a href="tuteur.html" style="color:var(--gold);font-weight:700;">🎓 Devenir Tuteur</a></li><li><a href="#" class="btn-login" onclick="openModal('login')" data-i18n="nav.login">Connexion</a></li>
+      <li><a href="../index.html#inscription" class="btn-cta" data-i18n="nav.register">S'inscrire</a></li>
+    </ul>
+    <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.3s;margin-right:8px;" title="Switch language">🇬🇧 EN</button><div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<section style="background:linear-gradient(135deg,var(--blue-dark),var(--blue));color:white;padding:60px 24px;text-align:center;">
+  <div class="container" style="max-width:700px;">
+    <span class="section-tag" style="background:rgba(201,168,76,.2);color:var(--gold-light);" data-i18n="tarifs.hero.tag">Plans &amp; Tarifs</span>
+    <h1 style="font-size:2.2rem;font-weight:900;margin:14px 0 12px;" data-i18n="tarifs.hero.h1">Choisissez votre plan de tutorat</h1>
+    <p style="opacity:.9;" data-i18n="tarifs.hero.p">Accès valide 6 mois · Paiement sécurisé · Garantie satisfait ou remboursé 7 jours</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="plan-name" data-i18n="plan1.name">Découverte</div>
+        <div class="plan-price">Essai Libre <span data-i18n="plan1.pricesub" style="font-size:.9rem;">/ accès découverte</span></div>
+        <div class="plan-desc" data-i18n="plan1.desc">Pour tester et évaluer votre niveau</div>
+        <ul class="plan-features">
+          <li data-i18n="plan1.f1">Test de niveau gratuit</li>
+          <li data-i18n="plan1.f3">Quiz de grammaire (5 questions)</li>
+          <li data-i18n="plan1.f2">Accès partiel aux exercices</li>
+          <li data-i18n="plan1.f7">Compte étudiant basique</li>
+          <li class="no" data-i18n="plan1.f4">Modules TEF/TCF complets</li>
+          <li class="no" data-i18n="plan1.f5">Simulations chronométrées</li>
+          <li class="no" data-i18n="plan1.f8">Corrections détaillées</li>
+          <li class="no" data-i18n="plan1.f9">Certificat ARCADINS</li>
+          <li class="no" data-i18n="plan1.f10">Coaching formateur</li>
+        </ul>
+        <a href="../index.html#inscription" class="btn-primary" data-i18n="plan1.btn" style="display:block;text-align:center;background:var(--blue);">Commencer pour rentrer dans le Forfait</a>
+      </div>
+      <div class="pricing-card">
+        <div class="plan-name" data-i18n="plan2.name">Standard</div>
+        <div class="plan-price">149€ <span data-i18n="plan2.pricesub">/ test</span></div>
+        <div class="plan-desc" data-i18n="plan2.desc">TEF & TCF Canada — un test au choix</div>
+        <ul class="plan-features">
+          <li data-i18n="plan2.f1">Tous les modules TEF ou TCF</li>
+          <li data-i18n="plan2.f2">Tests interactifs complets</li>
+          <li data-i18n="plan2.f3">Exercices corrigés</li>
+          <li data-i18n="plan2.f8">3 simulations chronométrées</li>
+          <li data-i18n="plan2.f4">Espace membre privé</li>
+          <li data-i18n="plan2.f5">Progression &amp; scores</li>
+          <li data-i18n="plan2.f9">Certificat ARCADINS PDF</li>
+          <li class="no" data-i18n="plan2.f10">TEF + TCF simultanément</li>
+          <li class="no" data-i18n="plan2.f7">Coaching formateur</li>
+        </ul>
+        <a href="../index.html#inscription" class="btn-primary" data-i18n="plan2.btn" style="display:block;text-align:center;background:var(--blue);">Choisir Standard</a>
+      </div>
+      <div class="pricing-card popular">
+        <div class="popular-badge" data-i18n="popular.badge">⭐ PLUS POPULAIRE</div>
+        <div class="plan-name" data-i18n="plan3.name">Premium</div>
+        <div class="plan-price">249€ <span data-i18n="plan3.pricesub">/ accès complet</span></div>
+        <div class="plan-desc" data-i18n="plan3.desc">TEF & TCF Canada + simulations + corrections</div>
+        <ul class="plan-features">
+          <li data-i18n="plan3.f1">TEF Canada complet</li>
+          <li data-i18n="plan3.f2">TCF Canada complet</li>
+          <li data-i18n="plan3.f3">Simulations chronométrées</li>
+          <li data-i18n="plan3.f4">Corrections détaillées</li>
+          <li data-i18n="plan3.f5">Banque 500+ questions</li>
+          <li data-i18n="plan3.f8">Suivi de progression avancé</li>
+          <li data-i18n="plan3.f9">Documents PDF téléchargeables</li>
+          <li data-i18n="plan3.f6">Certificat ARCADINS PDF</li>
+          <li class="no" data-i18n="plan3.f7">Coaching 1-à-1</li>
+        </ul>
+        <a href="../index.html#inscription" class="btn-primary" data-i18n="plan3.btn" style="display:block;text-align:center;">Choisir Premium</a>
+      </div>
+      <div class="pricing-card">
+        <div class="plan-name" data-i18n="plan4.name">VIP</div>
+        <div class="plan-price">399€ <span data-i18n="plan4.pricesub">/ Complet PLUS</span></div>
+        <div class="plan-desc" data-i18n="plan4.desc">Coaching personnalisé + correction orale &amp; écrite</div>
+        <ul class="plan-features">
+          <li data-i18n="plan4.f1">Tout le plan Premium</li>
+          <li data-i18n="plan4.f2">4h de coaching oral individuel</li>
+          <li data-i18n="plan4.f3">Correction productions écrites</li>
+          <li data-i18n="plan4.f4">Sessions avec formateur expert</li>
+          <li data-i18n="plan4.f5">Plan de révision personnalisé</li>
+          <li data-i18n="plan4.f6">Suivi prioritaire</li>
+          <li data-i18n="plan4.f7">Certificat ARCADINS + recommandation</li>
+          <li data-i18n="plan4.f8">Simulations illimitées</li>
+          <li data-i18n="plan4.f9">Suivi WhatsApp formateur</li>
+        </ul>
+        <a href="../index.html#inscription" class="btn-primary" data-i18n="plan4.btn" style="display:block;text-align:center;background:var(--gold);color:var(--blue-dark);">Choisir VIP</a>
+      </div>
+    </div>
+
+    <!-- Comparatif -->
+    <div style="margin-top:60px;">
+      <h2 style="text-align:center;font-size:1.6rem;font-weight:800;color:var(--blue-dark);margin-bottom:32px;" data-i18n="tarifs.compare.h2">Comparatif détaillé des plans</h2>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:.88rem;">
+          <thead>
+            <tr style="background:var(--blue);color:white;">
+              <th style="padding:14px 16px;text-align:left;" data-i18n="tarifs.compare.feature">Fonctionnalité</th>
+              <th style="padding:14px;text-align:center;" data-i18n="plan1.name">Découverte</th>
+              <th style="padding:14px;text-align:center;" data-i18n="plan2.name">Standard</th>
+              <th style="padding:14px;text-align:center;background:var(--blue-dark);">Premium ⭐</th>
+              <th style="padding:14px;text-align:center;" data-i18n="plan4.name">VIP</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:var(--gray-light);">
+              <td style="padding:12px 16px;" data-i18n="tarifs.row1">Test de niveau initial</td>
+              <td style="padding:12px;text-align:center;">✅</td><td style="padding:12px;text-align:center;">✅</td><td style="padding:12px;text-align:center;">✅</td><td style="padding:12px;text-align:center;">✅</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 16px;" data-i18n="tarifs.row2">Modules TEF Canada</td>
+              <td style="padding:12px;text-align:center;color:#ccc;">—</td><td style="padding:12px;text-align:center;">✅</td><td style="padding:12px;text-align:center;">✅</td><td style="padding:12px;text-align:center;">✅</td>
+            </tr>
+            <tr style="background:var(--gray-light);">
+              <td style="padding:12px 16px;" data-i18n="tarifs.row3">Modules TCF Canada</td>
+              <td style="padding:12px;text-align:center;color:#ccc;">—</td><td style="padding:12px;text-align:center;" data-i18n="tarifs.val.option">Option</td><td style="padding:12px;text-align:center;">✅</td><td style="padding:12px;text-align:center;">✅</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 16px;" data-i18n="tarifs.row4">Simulations chronométrées</td>
+              <td style="padding:12px;text-align:center;color:#ccc;">—</td><td style="padding:12px;text-align:center;">3</td><td style="padding:12px;text-align:center;">10</td><td style="padding:12px;text-align:center;" data-i18n="tarifs.val.unlimited">Illimitées</td>
+            </tr>
+            <tr style="background:var(--gray-light);">
+              <td style="padding:12px 16px;" data-i18n="tarifs.row5">Corrections détaillées</td>
+              <td style="padding:12px;text-align:center;color:#ccc;">—</td><td style="padding:12px;text-align:center;" data-i18n="tarifs.val.basic">Basique</td><td style="padding:12px;text-align:center;" data-i18n="tarifs.val.full">✅ Complètes</td><td style="padding:12px;text-align:center;" data-i18n="tarifs.val.expert">✅ Expert</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 16px;" data-i18n="tarifs.row6">Coaching formateur (visio)</td>
+              <td style="padding:12px;text-align:center;color:#ccc;">—</td><td style="padding:12px;text-align:center;color:#ccc;">—</td><td style="padding:12px;text-align:center;color:#ccc;">—</td><td style="padding:12px;text-align:center;" data-i18n="tarifs.val.incl4h">4h incluses</td>
+            </tr>
+            <tr style="background:var(--gray-light);">
+              <td style="padding:12px 16px;" data-i18n="tarifs.row7">Certificat ARCADINS PDF</td>
+              <td style="padding:12px;text-align:center;color:#ccc;">—</td><td style="padding:12px;text-align:center;">✅</td><td style="padding:12px;text-align:center;">✅</td><td style="padding:12px;text-align:center;" data-i18n="tarifs.val.rec">✅ + recommandation</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 16px;" data-i18n="tarifs.row8">Validité de l'accès</td>
+              <td style="padding:12px;text-align:center;" data-i18n="tarifs.val.unlimitedM">Illimité</td><td style="padding:12px;text-align:center;">6 mois</td><td style="padding:12px;text-align:center;">6 mois</td><td style="padding:12px;text-align:center;">6 mois</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FAQ Tarifs -->
+    <div style="margin-top:60px;max-width:760px;margin-left:auto;margin-right:auto;">
+      <h2 style="text-align:center;font-size:1.5rem;font-weight:800;color:var(--blue-dark);margin-bottom:28px;" data-i18n="tarifs.faq.h">Questions sur les tarifs</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)"><span data-i18n="tarifs.faq.q1">Le paiement est-il sécurisé ?</span> <span class="faq-icon">+</span></button>
+          <div class="faq-answer" data-i18n="tarifs.faq.a1">Oui. Tous les paiements sont traités via des plateformes sécurisées (SSL). Nous n'avons jamais accès à vos données bancaires.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)"><span data-i18n="tarifs.faq.q2">Y a-t-il une garantie satisfait ou remboursé ?</span> <span class="faq-icon">+</span></button>
+          <div class="faq-answer" data-i18n="tarifs.faq.a2">Oui. Nous offrons une garantie de remboursement de 7 jours si vous n'êtes pas satisfait(e), sans question posée, à condition de n'avoir pas accédé à plus de 20% du contenu.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)"><span data-i18n="tarifs.faq.q3">Puis-je changer de plan après l'inscription ?</span> <span class="faq-icon">+</span></button>
+          <div class="faq-answer" data-i18n="tarifs.faq.a3">Oui. Vous pouvez passer à un plan supérieur à tout moment. La différence de prix sera calculée au prorata du temps restant sur votre plan actuel.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:linear-gradient(135deg,var(--blue-dark),var(--blue));color:white;text-align:center;padding:60px 24px;">
+  <div class="container" style="max-width:600px;">
+    <h2 style="font-size:1.8rem;font-weight:900;margin-bottom:12px;" data-i18n="tarifs.cta.h2">Prêt à commencer ?</h2>
+    <p style="opacity:.9;margin-bottom:28px;" data-i18n="tarifs.cta.p">Inscrivez-vous maintenant et accédez à votre espace membre sous 24h.</p>
+    <a href="../index.html#inscription" class="btn-primary" data-i18n="tarifs.cta.btn">✏️ S'inscrire maintenant</a>
+  </div>
+</section>
+
+<footer style="background:var(--blue-dark);color:rgba(255,255,255,.7);text-align:center;padding:28px 24px;font-size:.85rem;">
+  © 2024 ARCADINS Training Center · <a href="confidentialite.html" style="color:var(--gold-light);">Confidentialité</a> · <a href="conditions.html" style="color:var(--gold-light);">Conditions</a> · <a href="../index.html" style="color:var(--gold-light);">Accueil</a>
+</footer>
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 data-i18n="auth.title">Bienvenue</h2><p data-i18n="auth.sub">Accédez à votre espace ARCADINS</p>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Connexion</button>
+      <button class="modal-tab" id="tabRegister" onclick="switchTab('register')">Créer un compte</button>
+    </div>
+    <form class="modal-form active" id="loginForm" onsubmit="handleAuth(event,'login')">
+      <div class="form-group"><label data-i18n="auth.email">Email</label><input type="email" required /></div>
+      <div class="form-group"><label data-i18n="auth.pass">Mot de passe</label><input type="password" required /></div>
+      <button type="submit" class="btn-primary" data-i18n="auth.loginBtn" style="width:100%;justify-content:center;">Se connecter</button>
+    </form>
+    <form class="modal-form" id="registerForm" onsubmit="handleAuth(event,'register')">
+      <div class="form-group"><label data-i18n="auth.fullname">Nom complet</label><input type="text" required /></div>
+      <div class="form-group"><label data-i18n="auth.email">Email</label><input type="email" required /></div>
+      <div class="form-group"><label data-i18n="auth.pass">Mot de passe</label><input type="password" required minlength="8" /></div>
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;background:var(--red);" data-i18n="auth.createBtn">Créer mon compte</button>
+    </form>
+  </div>
+</div>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/access-popup.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

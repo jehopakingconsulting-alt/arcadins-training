@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accès à la Plateforme – ARCADINS Training Center</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    body { background: linear-gradient(135deg, #0a1628, #1a2d5a, #0a1628); min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: inherit; }
+    .access-card { background: white; border-radius: 20px; padding: 48px 44px; max-width: 520px; width: 100%; box-shadow: 0 24px 80px rgba(0,0,0,.35); }
+    .access-logo { text-align: center; margin-bottom: 28px; }
+    .access-logo img { height: 52px; }
+    .access-logo h2 { font-size: 1.1rem; color: var(--blue-dark); font-weight: 700; margin-top: 8px; }
+    .access-hero-badge { background: linear-gradient(135deg, var(--blue), var(--blue-light)); color: white; text-align: center; border-radius: 10px; padding: 14px 20px; margin-bottom: 24px; font-size: .9rem; line-height: 1.5; }
+    .access-hero-badge strong { display: block; font-size: 1rem; margin-bottom: 4px; }
+    .access-card h1 { font-size: 1.5rem; font-weight: 800; color: var(--blue-dark); text-align: center; margin-bottom: 6px; }
+    .access-card .sub { font-size: .88rem; color: var(--gray-text); text-align: center; margin-bottom: 24px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+    .form-group label { font-size: .82rem; font-weight: 600; color: var(--blue-dark); }
+    .form-group input, .form-group select { border: 2px solid #e0e6f0; border-radius: 8px; padding: 10px 12px; font-family: inherit; font-size: .9rem; transition: .25s; outline: none; }
+    .form-group input:focus, .form-group select:focus { border-color: var(--blue); }
+    .form-group input.error, .form-group select.error { border-color: var(--red); }
+    .field-error { font-size: .75rem; color: var(--red); margin-top: 2px; display: none; }
+    .btn-access { width: 100%; background: linear-gradient(135deg, var(--blue), var(--blue-dark)); color: white; border: none; border-radius: 10px; padding: 14px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: .3s; margin-top: 8px; }
+    .btn-access:hover { opacity: .9; transform: translateY(-1px); }
+    .btn-access:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+    .access-error { background: #fff0f0; border: 1.5px solid #ffcccc; color: var(--red); border-radius: 8px; padding: 10px 14px; font-size: .85rem; margin-top: 12px; display: none; }
+    .access-note { font-size: .75rem; color: #aaa; text-align: center; margin-top: 16px; line-height: 1.6; }
+    .login-link { text-align: center; margin-top: 16px; font-size: .85rem; color: var(--gray-text); }
+    .login-link a { color: var(--blue); font-weight: 600; cursor: pointer; text-decoration: underline; }
+    .login-form-section { display: none; }
+    .perks { display: flex; flex-direction: column; gap: 7px; margin-bottom: 22px; }
+    .perk-item { display: flex; align-items: center; gap: 10px; font-size: .83rem; color: var(--gray-text); }
+    .perk-item span.icon { width: 22px; height: 22px; background: var(--blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .7rem; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+<div class="access-card">
+  <div class="access-logo">
+    <img src="../assets/img/logo-nav.svg" alt="ARCADINS Training Center" onerror="this.style.display='none'">
+    <h2>ARCADINS Training Center</h2>
+  </div>
+
+  <!-- Register section -->
+  <div id="registerSection">
+    <div class="access-hero-badge">
+      <strong data-i18n="acc.badge.title">🍁 Accès gratuit à votre test de niveau</strong>
+      <span data-i18n="acc.badge.sub">TEF & TCF Canada · Immigration Canada / Québec</span>
+    </div>
+    <h1 data-i18n="acc.h1">Commencez votre parcours</h1>
+    <p class="sub" data-i18n="acc.sub">Remplissez le formulaire ci-dessous pour accéder à votre test de niveau gratuit et commencer votre préparation.</p>
+
+    <div class="perks">
+      <div class="perk-item"><span class="icon">✓</span> <span data-i18n="acc.perk1">Test de niveau gratuit — aucune carte requise</span></div>
+      <div class="perk-item"><span class="icon">✓</span> <span data-i18n="acc.perk2">Score NCLC estimé en quelques minutes</span></div>
+      <div class="perk-item"><span class="icon">✓</span> <span data-i18n="acc.perk3">Accès à la plateforme complète après inscription</span></div>
+    </div>
+
+    <form id="accessForm" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label data-i18n="acc.nom">Nom *</label>
+          <input type="text" id="fNom" name="nom" placeholder="Dupont" required />
+          <span class="field-error" id="errNom" data-i18n="acc.err.required">Champ requis</span>
+        </div>
+        <div class="form-group">
+          <label data-i18n="acc.prenom">Prénom *</label>
+          <input type="text" id="fPrenom" name="prenom" placeholder="Jean" required />
+          <span class="field-error" id="errPrenom" data-i18n="acc.err.required">Champ requis</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label data-i18n="acc.email">Email *</label>
+        <input type="email" id="fEmail" name="email" placeholder="jean@email.com" required />
+        <span class="field-error" id="errEmail" data-i18n="acc.err.email">Email invalide</span>
+      </div>
+      <div class="form-group">
+        <label data-i18n="acc.tel">Téléphone / WhatsApp *</label>
+        <input type="tel" id="fTel" name="telephone" placeholder="+33 6 00 00 00 00" required />
+        <span class="field-error" id="errTel" data-i18n="acc.err.tel">Téléphone invalide</span>
+      </div>
+      <div class="form-group">
+        <label data-i18n="acc.pays">Pays de résidence *</label>
+        <select id="fPays" name="pays" required>
+          <option value="" data-i18n="acc.pays.opt0">Sélectionnez votre pays</option>
+          <option>Algérie</option><option>Angola</option><option>Bénin</option><option>Burkina Faso</option>
+          <option>Cameroun</option><option>Canada</option><option>Comores</option><option>Congo</option>
+          <option>Côte d'Ivoire</option><option>Djibouti</option><option>Égypte</option><option>France</option>
+          <option>Gabon</option><option>Guinée</option><option>Haïti</option><option>Madagascar</option>
+          <option>Mali</option><option>Maroc</option><option>Mauritanie</option><option>Niger</option>
+          <option>République démocratique du Congo</option><option>Rwanda</option><option>Sénégal</option>
+          <option>Suisse</option><option>Tchad</option><option>Togo</option><option>Tunisie</option>
+          <option>Autre</option>
+        </select>
+        <span class="field-error" id="errPays" data-i18n="acc.err.required">Champ requis</span>
+      </div>
+
+      <div class="access-error" id="accessError"></div>
+      <button type="submit" class="btn-access" id="submitBtn" data-i18n="acc.btn">🚀 Accéder à mon test gratuit</button>
+    </form>
+
+    <div class="login-link">
+      <span data-i18n="acc.already">Déjà inscrit ?</span>
+      <a onclick="showLogin()" data-i18n="acc.signin">Se connecter</a>
+    </div>
+    <p class="access-note" data-i18n="acc.note">🔒 Vos données sont protégées et ne seront jamais revendues. Conforme LCAP / CASL.</p>
+  </div>
+
+  <!-- Login section -->
+  <div id="loginSection" class="login-form-section">
+    <h1 data-i18n="acc.login.h1">Connexion</h1>
+    <p class="sub" data-i18n="acc.login.sub">Accédez à votre espace ARCADINS</p>
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <label data-i18n="auth.email">Email</label>
+        <input type="email" id="lEmail" placeholder="jean@email.com" required />
+      </div>
+      <div class="form-group">
+        <label data-i18n="auth.pass">Mot de passe</label>
+        <input type="password" id="lPass" placeholder="••••••••" required />
+      </div>
+      <div class="access-error" id="loginError"></div>
+      <button type="submit" class="btn-access" data-i18n="auth.loginBtn">Se connecter</button>
+    </form>
+    <div class="login-link" style="margin-top:14px;">
+      <a onclick="showRegister()" data-i18n="acc.back">← Retour à l'inscription</a>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/api.js"></script>
+<script>
+// Si déjà connecté → rediriger
+(async function() {
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res = await AuthAPI.me();
+    const user = res.user;
+    const step = getUserStepLocal(user);
+    const map = { registered:'essai-gratuit.html', trial_done:'forfaits.html', payment_confirmed:'qualification.html', qualification_done:'formation.html', modules_done:'test-final.html', final_passed:'mon-certificat.html', admin:'admin/index.html' };
+    if (map[step]) window.location.href = map[step];
+  } catch(e) {}
+})();
+
+function getUserStepLocal(user) {
+  if (!user) return null;
+  if (user.role === 'admin') return 'admin';
+  if (user.final_test_passed) return 'final_passed';
+  if (user.all_modules_done) return 'modules_done';
+  if (user.qualification_done) return 'qualification_done';
+  if (user.payment_confirmed) return 'payment_confirmed';
+  if (user.trial_done) return 'trial_done';
+  return 'registered';
+}
+
+function showLogin() {
+  document.getElementById('registerSection').style.display = 'none';
+  document.getElementById('loginSection').style.display = 'block';
+}
+function showRegister() {
+  document.getElementById('registerSection').style.display = 'block';
+  document.getElementById('loginSection').style.display = 'none';
+}
+
+// Validation helpers
+function validateEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+function validatePhone(p) { return p.replace(/[\s\-\+\(\)]/g,'').length >= 7; }
+function setFieldError(fieldId, errId, show) {
+  document.getElementById(fieldId).classList.toggle('error', show);
+  document.getElementById(errId).style.display = show ? 'block' : 'none';
+}
+
+document.getElementById('accessForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  let valid = true;
+  const nom = document.getElementById('fNom').value.trim();
+  const prenom = document.getElementById('fPrenom').value.trim();
+  const email = document.getElementById('fEmail').value.trim();
+  const tel = document.getElementById('fTel').value.trim();
+  const pays = document.getElementById('fPays').value;
+
+  setFieldError('fNom','errNom', !nom); if (!nom) valid = false;
+  setFieldError('fPrenom','errPrenom', !prenom); if (!prenom) valid = false;
+  const emailBad = !validateEmail(email);
+  setFieldError('fEmail','errEmail', emailBad); if (emailBad) valid = false;
+  const telBad = !validatePhone(tel);
+  setFieldError('fTel','errTel', telBad); if (telBad) valid = false;
+  setFieldError('fPays','errPays', !pays); if (!pays) valid = false;
+
+  if (!valid) return;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '...';
+  document.getElementById('accessError').style.display = 'none';
+
+  try {
+    await AuthAPI.register({ nom, prenom, email, telephone: tel, pays, lang: currentLang });
+    window.location.href = 'essai-gratuit.html';
+  } catch(err) {
+    document.getElementById('accessError').textContent = err.message;
+    document.getElementById('accessError').style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = document.querySelector('[data-i18n="acc.btn"]')?.textContent || 'Accéder';
+  }
+});
+
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const email = document.getElementById('lEmail').value.trim();
+  const pass = document.getElementById('lPass').value;
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+  try {
+    const res = await AuthAPI.login(email, pass);
+    const user = res.user;
+    const step = getUserStepLocal(user);
+    const map = { registered:'essai-gratuit.html', trial_done:'forfaits.html', payment_confirmed:'qualification.html', qualification_done:'formation.html', modules_done:'test-final.html', final_passed:'mon-certificat.html', admin:'admin/index.html' };
+    window.location.href = map[step] || 'espace-membre.html';
+  } catch(err) {
+    errEl.textContent = err.message;
+    errEl.style.display = 'block';
+  }
+});
+</script>
+</body>
+</html>

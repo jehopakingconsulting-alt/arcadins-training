@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Final – ARCADINS Training Center</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    .final-hero { background:linear-gradient(135deg,#4a0080,#7b1fa2); color:white; padding:48px 24px; text-align:center; }
+    .final-hero h1 { font-size:2rem; font-weight:900; margin-bottom:10px; }
+    .quiz-container { max-width:800px; margin:40px auto; padding:0 24px 60px; }
+    .question-card { background:white; border-radius:16px; padding:32px; box-shadow:var(--shadow); margin-bottom:24px; }
+    .question-num { font-size:.78rem; font-weight:700; color:#7b1fa2; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+    .question-skill { display:inline-block; background:#f3e5f5; color:#7b1fa2; border-radius:12px; padding:3px 10px; font-size:.72rem; font-weight:600; margin-bottom:12px; }
+    .question-text { font-size:1.05rem; font-weight:600; color:var(--blue-dark); margin-bottom:20px; line-height:1.5; }
+    .options-grid { display:flex; flex-direction:column; gap:9px; }
+    .option-btn { border:2px solid #e0e6f0; border-radius:10px; padding:11px 16px; background:white; text-align:left; cursor:pointer; font-family:inherit; font-size:.9rem; color:var(--text); transition:.2s; display:flex; align-items:center; gap:10px; }
+    .option-btn:hover { border-color:#7b1fa2; background:#fce4ec; }
+    .option-btn.selected { border-color:#7b1fa2; background:#f3e5f5; font-weight:600; }
+    .option-letter { width:26px; height:26px; border-radius:50%; background:var(--gray-light); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.75rem; flex-shrink:0; }
+    .quiz-progress-bar { height:8px; background:#e0e6f0; border-radius:4px; margin-bottom:28px; overflow:hidden; }
+    .quiz-progress-fill { height:100%; background:linear-gradient(90deg,#7b1fa2,var(--gold)); border-radius:4px; transition:.4s; }
+    .quiz-nav { display:flex; justify-content:space-between; margin-top:20px; }
+    .result-card { background:white; border-radius:20px; padding:48px 36px; text-align:center; box-shadow:var(--shadow); }
+    .score-circle { width:140px; height:140px; border-radius:50%; border:8px solid; display:flex; flex-direction:column; align-items:center; justify-content:center; margin:24px auto; }
+    .score-circle.pass { border-color:#4caf50; color:#2e7d32; }
+    .score-circle.fail { border-color:var(--red); color:var(--red); }
+    .score-pct { font-size:2.2rem; font-weight:900; }
+    .score-label { font-size:.75rem; font-weight:600; }
+    .alert-min { background:#fff8e1; border:1.5px solid #ffe082; border-radius:10px; padding:12px 18px; font-size:.85rem; color:#f57f17; margin-bottom:20px; }
+    .modules-review { display:flex; flex-direction:column; gap:8px; text-align:left; margin:16px 0; }
+    .review-item { background:var(--gray-light); border-radius:8px; padding:10px 14px; font-size:.85rem; display:flex; align-items:center; gap:10px; }
+  </style>
+</head>
+<body>
+<div class="topbar" data-i18n="topbar">🍁 Programme de Tutorat 100% en ligne · TEF &amp; TCF Canada</div>
+<nav>
+  <div class="nav-container">
+    <a href="../index.html" class="logo"><img src="../assets/img/logo-nav.svg" alt="ARCADINS" height="50" style="display:block;"></a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;">🇬🇧 EN</button>
+    </div>
+  </div>
+</nav>
+
+<div class="final-hero">
+  <span class="section-tag" style="background:rgba(255,255,255,.15);color:white;margin:0 auto 16px;display:inline-block;" data-i18n="final.tag">Test d'Évaluation Finale</span>
+  <h1 data-i18n="final.h1">Test Final de Certification</h1>
+  <p data-i18n="final.p">30 questions · Score minimum requis : 70% · Certificat généré automatiquement en cas de réussite</p>
+</div>
+
+<div class="quiz-container">
+  <div id="loadingState" style="text-align:center;padding:60px 0;">⏳ <span data-i18n="trial.loading">Chargement...</span></div>
+  <div id="notReady" style="display:none;text-align:center;padding:60px 0;">
+    <div style="font-size:3rem;">🔒</div>
+    <h2 data-i18n="final.locked.h">Test final non disponible</h2>
+    <p data-i18n="final.locked.p">Complétez tous les modules de formation pour débloquer le test final.</p>
+    <a href="formation.html" class="btn-primary" style="margin-top:20px;" data-i18n="final.locked.btn">Retour à ma formation →</a>
+  </div>
+  <div id="quizArea" style="display:none;">
+    <div class="alert-min" data-i18n="final.alert">⚠️ Score minimum requis : 70%. En cas d'échec, les modules concernés vous seront indiqués pour révision.</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:.85rem;color:var(--gray-text);">
+      <span id="questionCounter"></span>
+      <span>⏱️ <span id="timerDisplay">45:00</span></span>
+    </div>
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div id="questionWrap"></div>
+    <div class="quiz-nav">
+      <button id="prevBtn" class="btn-secondary" onclick="prevQ()" style="display:none;" data-i18n="quiz.prev">← Précédent</button>
+      <button id="nextBtn" class="btn-primary" onclick="nextQ()" data-i18n="quiz.next">Suivant →</button>
+      <button id="submitBtn" class="btn-primary" onclick="submitFinal()" style="display:none;background:#7b1fa2;" data-i18n="final.submit">🏁 Terminer &amp; soumettre</button>
+    </div>
+  </div>
+  <div id="resultArea" style="display:none;">
+    <div class="result-card">
+      <h2 id="resultTitle" data-i18n="final.result.h">Résultat du test final</h2>
+      <div class="score-circle" id="scoreCircle">
+        <span class="score-pct" id="scorePct">—%</span>
+        <span class="score-label" id="scoreLabel"></span>
+      </div>
+      <div id="passMsg" style="display:none;">
+        <p style="color:#2e7d32;font-weight:600;font-size:1.05rem;" data-i18n="final.pass.msg">🎉 Félicitations ! Vous avez réussi votre test final.</p>
+        <p style="color:var(--gray-text);margin:12px 0 24px;" data-i18n="final.pass.sub">Votre certificat PDF a été généré et vous a été envoyé par email.</p>
+        <a href="mon-certificat.html" class="btn-primary" data-i18n="final.pass.btn">🏆 Accéder à mon certificat →</a>
+      </div>
+      <div id="failMsg" style="display:none;">
+        <p style="color:var(--red);font-weight:600;" data-i18n="final.fail.msg">Vous n'avez pas atteint le score minimum de 70%.</p>
+        <p style="color:var(--gray-text);margin:12px 0;" data-i18n="final.fail.sub">Révisez les modules suivants avant de repasser le test :</p>
+        <div class="modules-review" id="reviewModules"></div>
+        <a href="formation.html" class="btn-primary" style="margin-top:16px;display:inline-flex;" data-i18n="final.fail.btn">↩ Retourner à la formation</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/api.js"></script>
+<script>
+let questions=[], currentQ=0, answers=[], timerInterval, secondsLeft=2700;
+
+async function init() {
+  const token = getToken();
+  if (!token) { window.location.href = 'acces.html'; return; }
+  try {
+    const me = await AuthAPI.me();
+    const user = me.user;
+    if (!user.all_modules_done) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('notReady').style.display = 'block';
+      return;
+    }
+    if (user.final_test_passed) { window.location.href = 'mon-certificat.html'; return; }
+    const res = await FinalAPI.questions();
+    questions = res.questions;
+    answers = new Array(questions.length).fill(null);
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('quizArea').style.display = 'block';
+    renderQ();
+    startTimer();
+  } catch(e) {
+    document.getElementById('loadingState').innerHTML = `<p style="color:red">${e.message}</p>`;
+  }
+}
+
+const SKILL_LABELS = { fr:{CO:'Compréhension orale',CE:'Compréhension écrite',EO:'Expression orale',EE:'Expression écrite',GR:'Grammaire',VOC:'Vocabulaire'}, en:{CO:'Listening',CE:'Reading',EO:'Speaking',EE:'Writing',GR:'Grammar',VOC:'Vocabulary'} };
+
+function renderQ() {
+  const q = questions[currentQ];
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+  const total = questions.length;
+  document.getElementById('questionCounter').textContent = `Question ${currentQ+1} / ${total}`;
+  document.getElementById('progressFill').style.width = ((currentQ+1)/total*100)+'%';
+  const opts = q.options[lang] || q.options.fr;
+  const letters = ['A','B','C','D'];
+  const skillLabel = (SKILL_LABELS[lang]||SKILL_LABELS.fr)[q.skill] || q.skill;
+  document.getElementById('questionWrap').innerHTML = `
+    <div class="question-card">
+      <div class="question-num">Question ${currentQ+1}</div>
+      <div class="question-skill">${skillLabel}</div>
+      <div class="question-text">${q.question[lang] || q.question.fr}</div>
+      <div class="options-grid">
+        ${opts.map((o,i)=>`<button class="option-btn ${answers[currentQ]===i?'selected':''}" onclick="selectA(${i})"><span class="option-letter">${letters[i]}</span>${o}</button>`).join('')}
+      </div>
+    </div>`;
+  document.getElementById('prevBtn').style.display = currentQ > 0 ? '' : 'none';
+  document.getElementById('nextBtn').style.display = currentQ < total-1 ? '' : 'none';
+  document.getElementById('submitBtn').style.display = currentQ === total-1 ? '' : 'none';
+}
+
+function selectA(idx) {
+  answers[currentQ] = idx;
+  document.querySelectorAll('.option-btn').forEach((b,i)=>b.classList.toggle('selected',i===idx));
+}
+function nextQ() { if (currentQ < questions.length-1) { currentQ++; renderQ(); } }
+function prevQ() { if (currentQ > 0) { currentQ--; renderQ(); } }
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    const m=Math.floor(secondsLeft/60), s=secondsLeft%60;
+    document.getElementById('timerDisplay').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    if (secondsLeft <= 0) { clearInterval(timerInterval); submitFinal(); }
+  }, 1000);
+}
+
+async function submitFinal() {
+  clearInterval(timerInterval);
+  document.getElementById('quizArea').style.display = 'none';
+  document.getElementById('resultArea').style.display = 'block';
+  try {
+    const res = await FinalAPI.submit(answers);
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+    const pct = Math.round(res.score_percent);
+    document.getElementById('scorePct').textContent = pct + '%';
+    const circle = document.getElementById('scoreCircle');
+    if (res.passed) {
+      circle.classList.add('pass');
+      document.getElementById('scoreLabel').textContent = lang==='fr'?'RÉUSSI':'PASSED';
+      document.getElementById('passMsg').style.display = 'block';
+    } else {
+      circle.classList.add('fail');
+      document.getElementById('scoreLabel').textContent = lang==='fr'?'ÉCHEC':'FAILED';
+      document.getElementById('failMsg').style.display = 'block';
+      const modNames = { fr:['Test de niveau','Compréhension orale','Compréhension écrite','Expression écrite','Expression orale','Grammaire','Vocabulaire','Stratégies NCLC','Simulations','Banque de questions','Corrections','Tableau de progression','Certificat','Coaching'], en:['Level test','Listening','Reading','Writing','Speaking','Grammar','Vocabulary','NCLC strategies','Simulations','Question bank','Corrections','Progress dashboard','Certificate','Coaching'] };
+      const names = modNames[lang];
+      if (res.modules_to_review && res.modules_to_review.length) {
+        document.getElementById('reviewModules').innerHTML = res.modules_to_review.map(n=>`<div class="review-item">📖 ${names[n-1]||'Module '+n}</div>`).join('');
+      }
+    }
+  } catch(e) {
+    document.getElementById('resultArea').innerHTML = `<div class="result-card"><p style="color:red">${e.message}</p><a href="formation.html" class="btn-primary" style="margin-top:16px;">← Retour</a></div>`;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mon Certificat – ARCADINS Training Center</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    .cert-hero { background:linear-gradient(135deg,#b8860b,#d4a017,#c9a84c); color:white; padding:48px 24px; text-align:center; }
+    .cert-hero h1 { font-size:2rem; font-weight:900; margin-bottom:10px; }
+    .cert-container { max-width:860px; margin:40px auto; padding:0 24px 60px; }
+    .certificate-preview { background:white; border:3px solid var(--gold); border-radius:20px; padding:56px 48px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,.15); position:relative; overflow:hidden; }
+    .certificate-preview::before { content:''; position:absolute; inset:12px; border:1.5px solid var(--gold-light); border-radius:14px; pointer-events:none; }
+    .cert-header { display:flex; flex-direction:column; align-items:center; gap:8px; margin-bottom:28px; }
+    .cert-logo-text { font-size:1.3rem; font-weight:900; color:var(--blue-dark); letter-spacing:2px; }
+    .cert-subtitle { font-size:.78rem; text-transform:uppercase; letter-spacing:3px; color:var(--gray-text); }
+    .cert-title { font-size:1.8rem; font-weight:900; color:var(--gold); margin:16px 0 8px; font-style:italic; }
+    .cert-body { margin:20px 0; color:var(--gray-text); font-size:.95rem; line-height:1.8; }
+    .cert-name { font-size:2rem; font-weight:900; color:var(--blue-dark); margin:10px 0; }
+    .cert-program { font-size:1rem; font-weight:700; color:var(--blue); margin:8px 0; }
+    .cert-score-box { display:inline-block; background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:white; border-radius:12px; padding:12px 28px; margin:16px 0; }
+    .cert-score-box .score-num { font-size:2rem; font-weight:900; }
+    .cert-score-box .score-lbl { font-size:.75rem; opacity:.8; }
+    .cert-date { color:var(--gray-text); font-size:.85rem; margin:12px 0; }
+    .cert-number { font-size:.75rem; color:#aaa; margin-top:16px; font-family:monospace; }
+    .cert-footer { display:flex; justify-content:space-between; align-items:flex-end; margin-top:28px; padding-top:20px; border-top:1px solid #f0f0f0; flex-wrap:wrap; gap:16px; }
+    .cert-signature { text-align:left; }
+    .cert-signature .sig-line { width:140px; border-bottom:2px solid var(--blue-dark); margin-bottom:6px; height:40px; display:flex; align-items:flex-end; font-style:italic; font-weight:600; color:var(--blue-dark); font-size:.9rem; }
+    .cert-signature .sig-name { font-size:.75rem; color:var(--gray-text); }
+    .cert-actions { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:32px; }
+    .verify-section { background:var(--gray-light); border-radius:16px; padding:28px; margin-top:32px; text-align:center; }
+    .verify-url { background:white; border:2px solid #e0e6f0; border-radius:8px; padding:10px 16px; font-family:monospace; font-size:.82rem; color:var(--blue); word-break:break-all; margin:12px 0; }
+    .not-passed { text-align:center; background:white; border-radius:20px; padding:60px 36px; box-shadow:var(--shadow); }
+  </style>
+</head>
+<body>
+<div class="topbar" data-i18n="topbar">🍁 ARCADINS Training Center · Certificat de réussite</div>
+<nav>
+  <div class="nav-container">
+    <a href="../index.html" class="logo"><img src="../assets/img/logo-nav.svg" alt="ARCADINS" height="50" style="display:block;"></a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;">🇬🇧 EN</button>
+      <a href="espace-membre.html" style="font-size:.85rem;" data-i18n="nav.dashboard">Mon espace</a>
+    </div>
+  </div>
+</nav>
+
+<div class="cert-hero">
+  <span class="section-tag" style="background:rgba(255,255,255,.2);color:white;margin:0 auto 16px;display:inline-block;">🏆 <span data-i18n="cert.tag">Certificat de réussite</span></span>
+  <h1 data-i18n="cert.h1">Mon Certificat ARCADINS</h1>
+  <p data-i18n="cert.p">Téléchargez, partagez et vérifiez votre certificat officiel ARCADINS Training Center</p>
+</div>
+
+<div class="cert-container">
+  <div id="loadingState" style="text-align:center;padding:60px 0;">⏳</div>
+
+  <div id="notPassedState" class="not-passed" style="display:none;">
+    <div style="font-size:4rem;">🔒</div>
+    <h2 data-i18n="cert.locked.h">Certificat non disponible</h2>
+    <p data-i18n="cert.locked.p">Réussissez le test final avec un score de 70% ou plus pour obtenir votre certificat.</p>
+    <a href="test-final.html" class="btn-primary" style="margin-top:20px;" data-i18n="cert.locked.btn">Passer le test final →</a>
+  </div>
+
+  <div id="certState" style="display:none;">
+    <div class="certificate-preview" id="certPreview">
+      <div class="cert-header">
+        <div class="cert-logo-text">🍁 ARCADINS Training Center</div>
+        <div class="cert-subtitle" data-i18n="cert.subtitle">Plateforme spécialisée TEF & TCF Canada · Immigration</div>
+      </div>
+      <div class="cert-title" data-i18n="cert.title.doc">Certificat de Réussite</div>
+      <div class="cert-body">
+        <p data-i18n="cert.body.pre">Ce certificat atteste que</p>
+        <div class="cert-name" id="certName">—</div>
+        <p data-i18n="cert.body.mid">a complété avec succès le programme de tutorat</p>
+        <div class="cert-program" id="certProgram">—</div>
+        <div class="cert-score-box">
+          <div class="score-num" id="certScore">—%</div>
+          <div class="score-lbl" data-i18n="cert.score.lbl">Score final</div>
+        </div>
+        <div class="cert-date" id="certDate"></div>
+      </div>
+      <div class="cert-footer">
+        <div class="cert-signature">
+          <div class="cert-sig-line" style="width:140px;border-bottom:2px solid var(--blue-dark);margin-bottom:6px;height:36px;display:flex;align-items:flex-end;font-style:italic;font-weight:600;color:var(--blue-dark);font-size:.9rem;">Direction ARCADINS</div>
+          <div class="cert-sig-name" style="font-size:.75rem;color:var(--gray-text);">ARCADINS Training Center</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:.7rem;color:#aaa;" data-i18n="cert.number.lbl">N° de certificat :</div>
+          <div class="cert-number" id="certNumber">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cert-actions">
+      <a id="downloadBtn" href="#" class="btn-primary" onclick="downloadCert(event)" data-i18n="cert.download">📥 Télécharger le PDF</a>
+      <button class="btn-secondary" onclick="shareCert()" data-i18n="cert.share">📤 Partager</button>
+    </div>
+
+    <div class="verify-section">
+      <strong data-i18n="cert.verify.h">🔍 Vérifier ce certificat</strong>
+      <p style="color:var(--gray-text);font-size:.85rem;margin:8px 0;" data-i18n="cert.verify.p">Ce certificat peut être vérifié en ligne par tout employeur ou institution.</p>
+      <div class="verify-url" id="verifyUrl"></div>
+      <button class="btn-secondary" onclick="copyVerifyUrl()" style="font-size:.82rem;" data-i18n="cert.verify.copy">Copier le lien</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/api.js"></script>
+<script>
+async function init() {
+  const token = getToken();
+  if (!token) { window.location.href = 'acces.html'; return; }
+  try {
+    const me = await AuthAPI.me();
+    if (!me.user.final_test_passed) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('notPassedState').style.display = 'block';
+      return;
+    }
+    const res = await CertAPI.my();
+    const cert = res.certificate;
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+
+    document.getElementById('certName').textContent = cert.prenom + ' ' + cert.nom;
+    document.getElementById('certProgram').textContent = cert.programme;
+    document.getElementById('certScore').textContent = Math.round(cert.score) + '%';
+    const d = new Date(cert.issued_at);
+    const dateStr = lang === 'fr'
+      ? d.toLocaleDateString('fr-CA', { year:'numeric', month:'long', day:'numeric' })
+      : d.toLocaleDateString('en-CA', { year:'numeric', month:'long', day:'numeric' });
+    document.getElementById('certDate').textContent = (lang==='fr'?'Délivré le ':'Issued on ') + dateStr;
+    document.getElementById('certNumber').textContent = cert.certificate_number;
+
+    const verifyUrl = `${window.location.origin}${window.location.pathname.replace('mon-certificat.html','verifier-certificat.html')}?id=${cert.certificate_number}`;
+    document.getElementById('verifyUrl').textContent = verifyUrl;
+
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('certState').style.display = 'block';
+  } catch(e) {
+    document.getElementById('loadingState').innerHTML = `<p style="color:red">${e.message}</p>`;
+  }
+}
+
+function downloadCert(e) {
+  e.preventDefault();
+  window.open(CertAPI.downloadUrl(), '_blank');
+}
+
+function shareCert() {
+  const url = document.getElementById('verifyUrl').textContent;
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+  const txt = lang === 'fr'
+    ? `J'ai obtenu mon certificat ARCADINS Training Center ! Vérifiez-le ici : ${url}`
+    : `I earned my ARCADINS Training Center certificate! Verify it here: ${url}`;
+  if (navigator.share) {
+    navigator.share({ title: 'Mon certificat ARCADINS', url, text: txt });
+  } else {
+    navigator.clipboard.writeText(txt).then(() => alert(lang==='fr'?'Lien copié !':'Link copied!'));
+  }
+}
+
+function copyVerifyUrl() {
+  const url = document.getElementById('verifyUrl').textContent;
+  navigator.clipboard.writeText(url).then(() => {
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+    alert(lang==='fr'?'Lien copié dans le presse-papiers !':'Link copied to clipboard!');
+  });
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+# ===== ARCADINS Training Center — .htaccess =====
+
+# Page d'erreur personnalisée
+ErrorDocument 404 /pages/404.html
+ErrorDocument 403 /pages/404.html
+
+# Désactiver la liste des répertoires (sécurité)
+Options -Indexes
+
+# Forcer HTTPS
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Redirection www → non-www (optionnel, commenter si non souhaité)
+# RewriteCond %{HTTP_HOST} ^www\.arcadins-training\.com [NC]
+# RewriteRule ^(.*)$ https://arcadins-training.com/$1 [L,R=301]
+
+# En-têtes de sécurité
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+# Cache navigateur (performances)
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType text/css "access plus 1 week"
+  ExpiresByType application/javascript "access plus 1 week"
+  ExpiresByType text/html "access plus 1 day"
+</IfModule>
+
+# Compression GZIP (performances)
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript text/javascript
+</IfModule>

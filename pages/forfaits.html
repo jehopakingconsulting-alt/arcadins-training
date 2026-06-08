@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forfaits – ARCADINS Training Center</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    .forfait-hero { background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:white; padding:60px 24px; text-align:center; }
+    .forfait-hero h1 { font-size:2.2rem; font-weight:900; margin-bottom:12px; }
+    .step-indicator { display:flex; justify-content:center; gap:0; margin-bottom:40px; flex-wrap:wrap; }
+    .step { display:flex; align-items:center; }
+    .step-dot { width:32px; height:32px; border-radius:50%; background:#e0e6f0; display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:700; }
+    .step.done .step-dot { background:var(--blue); color:white; }
+    .step.active .step-dot { background:var(--gold); color:var(--blue-dark); }
+    .step-label { font-size:.72rem; margin-top:4px; color:var(--gray-text); text-align:center; width:80px; }
+    .step-line { width:40px; height:2px; background:#e0e6f0; }
+    .step.done .step-line { background:var(--blue); }
+    .plans-container { max-width:1100px; margin:0 auto; padding:0 24px 60px; }
+    .plans-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:24px; margin-top:40px; }
+    .plan-card { background:white; border-radius:18px; padding:28px 24px; box-shadow:var(--shadow); border:2px solid transparent; transition:.3s; position:relative; }
+    .plan-card:hover { border-color:var(--blue); transform:translateY(-4px); }
+    .plan-card.popular { border-color:var(--gold); }
+    .plan-card.popular::before { content:'⭐ PLUS POPULAIRE'; position:absolute; top:-14px; left:50%; transform:translateX(-50%); background:var(--gold); color:var(--blue-dark); border-radius:20px; padding:4px 16px; font-size:.72rem; font-weight:800; white-space:nowrap; }
+    .plan-name { font-size:1.1rem; font-weight:800; color:var(--blue-dark); margin-bottom:6px; }
+    .plan-price-big { font-size:2.4rem; font-weight:900; color:var(--blue); margin:12px 0 4px; }
+    .plan-price-big sub { font-size:1rem; color:var(--gray-text); font-weight:400; }
+    .plan-desc { font-size:.82rem; color:var(--gray-text); margin-bottom:16px; line-height:1.5; border-bottom:1px solid #f0f0f0; padding-bottom:16px; }
+    .plan-features { list-style:none; display:flex; flex-direction:column; gap:8px; margin-bottom:22px; }
+    .plan-features li { font-size:.83rem; display:flex; gap:8px; align-items:flex-start; }
+    .plan-features li::before { content:'✓'; color:var(--blue); font-weight:700; flex-shrink:0; }
+    .plan-features li.no::before { content:'✗'; color:#ccc; }
+    .plan-features li.no { color:#bbb; }
+    .btn-plan { width:100%; border:none; border-radius:10px; padding:13px; font-weight:700; font-size:.9rem; cursor:pointer; font-family:inherit; transition:.3s; }
+    .btn-plan-blue { background:var(--blue); color:white; }
+    .btn-plan-gold { background:var(--gold); color:var(--blue-dark); }
+    .btn-plan:hover { opacity:.9; }
+    .btn-plan:disabled { opacity:.5; cursor:not-allowed; }
+    .payment-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center; }
+    .payment-modal.open { display:flex; }
+    .payment-box { background:white; border-radius:20px; padding:36px; max-width:480px; width:90%; }
+    .payment-box h2 { font-size:1.4rem; font-weight:800; color:var(--blue-dark); margin-bottom:8px; }
+    .payment-box .price-recap { background:var(--gray-light); border-radius:10px; padding:16px; margin:16px 0; }
+    .card-field { border:2px solid #e0e6f0; border-radius:8px; padding:12px; font-family:inherit; font-size:.9rem; width:100%; box-sizing:border-box; }
+    .card-field:focus { border-color:var(--blue); outline:none; }
+    .secure-note { font-size:.75rem; color:#aaa; display:flex; align-items:center; gap:6px; margin-top:8px; }
+    .payment-success { text-align:center; }
+    .payment-success .big-check { font-size:4rem; }
+  </style>
+</head>
+<body>
+<div class="topbar" data-i18n="topbar">🍁 Programme de Tutorat 100% en ligne · TEF &amp; TCF Canada</div>
+<nav>
+  <div class="nav-container">
+    <a href="../index.html" class="logo"><img src="../assets/img/logo-nav.svg" alt="ARCADINS" height="50" style="display:block;"></a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;">🇬🇧 EN</button>
+      <a href="espace-membre.html" style="font-size:.85rem;" data-i18n="nav.dashboard">Mon espace</a>
+    </div>
+  </div>
+</nav>
+
+<div class="forfait-hero">
+  <span class="section-tag" style="background:rgba(201,168,76,.2);color:var(--gold-light);margin:0 auto 16px;display:inline-block;" data-i18n="plans.tag">Étape 2 — Choisir votre forfait</span>
+  <h1 data-i18n="plans.h1">Choisissez votre plan de formation</h1>
+  <p style="opacity:.9;" data-i18n="plans.p">Accès valide 6 mois · Paiement sécurisé · Garantie 7 jours</p>
+</div>
+
+<!-- Indicateur d'étapes -->
+<div style="background:white;padding:24px;border-bottom:1px solid #eee;">
+  <div class="step-indicator">
+    <div class="step done"><div><div class="step-dot">✓</div><div class="step-label" data-i18n="step.form">Formulaire</div></div></div>
+    <div class="step-line done"></div>
+    <div class="step done"><div><div class="step-dot">✓</div><div class="step-label" data-i18n="step.trial">Test gratuit</div></div></div>
+    <div class="step-line"></div>
+    <div class="step active"><div><div class="step-dot">3</div><div class="step-label" data-i18n="step.plan">Forfait</div></div></div>
+    <div class="step-line"></div>
+    <div class="step"><div><div class="step-dot">4</div><div class="step-label" data-i18n="step.qual">Qualification</div></div></div>
+    <div class="step-line"></div>
+    <div class="step"><div><div class="step-dot">5</div><div class="step-label" data-i18n="step.modules">Formation</div></div></div>
+    <div class="step-line"></div>
+    <div class="step"><div><div class="step-dot">6</div><div class="step-label" data-i18n="step.cert">Certificat</div></div></div>
+  </div>
+</div>
+
+<div class="plans-container">
+  <div id="loadingPlans" style="text-align:center;padding:60px 0;">⏳ <span data-i18n="plans.loading">Chargement des forfaits...</span></div>
+  <div class="plans-grid" id="plansGrid" style="display:none;"></div>
+</div>
+
+<!-- Modal paiement -->
+<div class="payment-modal" id="paymentModal">
+  <div class="payment-box">
+    <div id="paymentForm">
+      <h2 data-i18n="pay.h2">Finaliser votre inscription</h2>
+      <p style="color:var(--gray-text);font-size:.88rem;" data-i18n="pay.sub">Paiement sécurisé · SSL · Garantie 7 jours</p>
+      <div class="price-recap" id="priceRecap"></div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px;">
+        <input class="card-field" type="text" id="cardName" placeholder="Nom sur la carte" data-i18n-placeholder="pay.card.name" />
+        <select class="card-field" id="payCountry">
+          <option value="" data-i18n="pay.country.default">— Sélectionnez votre pays —</option>
+        </select>
+        <input class="card-field" type="text" id="cardNum" placeholder="1234 5678 9012 3456" maxlength="19" />
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <input class="card-field" type="text" placeholder="MM/YY" maxlength="5" />
+          <input class="card-field" type="text" placeholder="CVC" maxlength="3" />
+        </div>
+      </div>
+      <div class="secure-note">🔒 <span data-i18n="pay.secure">Paiement sécurisé SSL — Nous ne stockons pas vos données bancaires</span></div>
+      <div style="display:flex;gap:12px;margin-top:20px;">
+        <button class="btn-secondary" onclick="closePayment()" style="flex:1;" data-i18n="pay.cancel">Annuler</button>
+        <button class="btn-primary" onclick="processPayment()" style="flex:2;" id="payBtn" data-i18n="pay.btn">💳 Payer maintenant</button>
+      </div>
+    </div>
+    <div id="paymentSuccess" class="payment-success" style="display:none;">
+      <div class="big-check">✅</div>
+      <h2 data-i18n="pay.ok.h">Paiement confirmé !</h2>
+      <p data-i18n="pay.ok.p">Votre accès est activé. Vous allez maintenant passer votre test de qualification.</p>
+      <a href="qualification.html" class="btn-primary" style="display:inline-flex;margin-top:20px;" data-i18n="pay.ok.btn">Passer le test de qualification →</a>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/api.js"></script>
+<script>
+let selectedPlan = null;
+
+const PAYS_LIST = [
+  'Afghanistan','Afrique du Sud','Albanie','Algérie','Allemagne','Andorre','Angola',
+  'Antigua-et-Barbuda','Arabie Saoudite','Argentine','Arménie','Australie','Autriche',
+  'Azerbaïdjan','Bahamas','Bahreïn','Bangladesh','Barbade','Belgique','Belize','Bénin',
+  'Bhoutan','Biélorussie','Birmanie (Myanmar)','Bolivie','Bosnie-Herzégovine','Botswana',
+  'Brésil','Brunei','Bulgarie','Burkina Faso','Burundi','Cambodge','Cameroun','Canada',
+  'Cap-Vert','Chili','Chine','Chypre','Colombie','Comores','Congo (Brazzaville)',
+  'Congo (RDC)','Corée du Nord','Corée du Sud','Costa Rica','Côte d\'Ivoire','Croatie',
+  'Cuba','Danemark','Djibouti','Dominique','Égypte','Émirats arabes unis','Équateur',
+  'Érythrée','Espagne','Estonie','Eswatini','États-Unis','Éthiopie','Fidji','Finlande',
+  'France','Gabon','Gambie','Géorgie','Ghana','Grèce','Grenade','Guatemala','Guinée',
+  'Guinée équatoriale','Guinée-Bissau','Guyana','Haïti','Honduras','Hongrie','Îles Marshall',
+  'Îles Salomon','Inde','Indonésie','Irak','Iran','Irlande','Islande','Israël','Italie',
+  'Jamaïque','Japon','Jordanie','Kazakhstan','Kenya','Kirghizistan','Kiribati','Kosovo',
+  'Koweït','Laos','Lesotho','Lettonie','Liban','Liberia','Libye','Liechtenstein',
+  'Lituanie','Luxembourg','Macédoine du Nord','Madagascar','Malaisie','Malawi','Maldives',
+  'Mali','Malte','Maroc','Maurice','Mauritanie','Mexique','Micronésie','Moldavie',
+  'Monaco','Mongolie','Monténégro','Mozambique','Namibie','Nauru','Népal','Nicaragua',
+  'Niger','Nigéria','Norvège','Nouvelle-Zélande','Oman','Ouganda','Ouzbékistan','Pakistan',
+  'Palaos','Palestine','Panama','Papouasie-Nouvelle-Guinée','Paraguay','Pays-Bas','Pérou',
+  'Philippines','Pologne','Portugal','Qatar','République centrafricaine',
+  'République dominicaine','République tchèque','Roumanie','Royaume-Uni','Russie','Rwanda',
+  'Saint-Christophe-et-Niévès','Saint-Marin','Saint-Vincent-et-les-Grenadines','Sainte-Lucie',
+  'Salvador','Samoa','Sao Tomé-et-Principe','Sénégal','Serbie','Seychelles','Sierra Leone',
+  'Singapour','Slovaquie','Slovénie','Somalie','Soudan','Soudan du Sud','Sri Lanka',
+  'Suède','Suisse','Suriname','Syrie','Tadjikistan','Tanzanie','Tchad','Thaïlande',
+  'Timor oriental','Togo','Tonga','Trinité-et-Tobago','Tunisie','Turkménistan','Turquie',
+  'Tuvalu','Ukraine','Uruguay','Vanuatu','Vatican','Venezuela','Vietnam','Yémen',
+  'Zambie','Zimbabwe'
+];
+
+(function populateCountrySelect() {
+  const sel = document.getElementById('payCountry');
+  if (!sel) return;
+  PAYS_LIST.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p;
+    opt.textContent = p;
+    sel.appendChild(opt);
+  });
+})();
+
+async function init() {
+  const token = getToken();
+  if (!token) { window.location.href = 'acces.html'; return; }
+  try {
+    const res = await AuthAPI.me();
+    if (res.user && res.user.payment_confirmed) {
+      window.location.href = 'qualification.html'; return;
+    }
+  } catch(e) {}
+  loadPlans();
+}
+
+async function loadPlans() {
+  try {
+    const res = await PlansAPI.list();
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+    // API returns: { success, data: { plans: [...] } }
+    const plans = (res.data && res.data.plans) || res.plans || [];
+    document.getElementById('loadingPlans').style.display = 'none';
+    const grid = document.getElementById('plansGrid');
+    grid.style.display = 'grid';
+
+    const btnLabel = { fr: 'Choisir ce forfait', en: 'Choose this plan' };
+    const perLabel = { fr: 'accès unique', en: 'one-time access' };
+
+    plans.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'plan-card' + (p.recommended ? ' popular' : '');
+      // name, description, features are plain strings/arrays from API
+      const name = p.name || '';
+      const desc = p.description || '';
+      const price = p.price || 0;
+      const currency = p.currency || 'USD';
+      const features = Array.isArray(p.features) ? p.features : [];
+      const isPopular = !!p.recommended;
+
+      card.innerHTML = `
+        <div class="plan-name">${name}</div>
+        <div class="plan-price-big">${price}<sup style="font-size:1rem;">${currency}</sup><sub style="font-size:.85rem;color:var(--gray-text);font-weight:400;"> / ${perLabel[lang]}</sub></div>
+        <div class="plan-desc">${desc}</div>
+        <ul class="plan-features">
+          ${features.map(f => `<li>${f}</li>`).join('')}
+        </ul>
+        <button class="btn-plan ${isPopular ? 'btn-plan-gold' : 'btn-plan-blue'}"
+          onclick="selectPlan('${p.id}','${name}',${price},'${currency}')">
+          ${btnLabel[lang]}
+        </button>`;
+      grid.appendChild(card);
+    });
+  } catch(e) {
+    document.getElementById('loadingPlans').innerHTML = `<p style="color:red">Erreur chargement forfaits: ${e.message}</p>`;
+  }
+}
+
+function selectPlan(id, name, price, period) {
+  selectedPlan = { id, name, price, period };
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+  document.getElementById('priceRecap').innerHTML = `
+    <div style="display:flex;justify-content:space-between;"><strong>${name}</strong><strong>${price}€</strong></div>
+    <div style="font-size:.8rem;color:var(--gray-text);">${period}</div>`;
+  document.getElementById('paymentModal').classList.add('open');
+}
+
+function closePayment() {
+  document.getElementById('paymentModal').classList.remove('open');
+}
+
+async function processPayment() {
+  if (!selectedPlan) return;
+  const country = document.getElementById('payCountry').value;
+  if (!country) {
+    alert('Veuillez sélectionner votre pays / Please select your country');
+    return;
+  }
+  const btn = document.getElementById('payBtn');
+  btn.disabled = true;
+  btn.textContent = '...';
+  try {
+    await PlansAPI.checkout(selectedPlan.id);
+    document.getElementById('paymentForm').style.display = 'none';
+    document.getElementById('paymentSuccess').style.display = 'block';
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = document.querySelector('[data-i18n="pay.btn"]')?.textContent || 'Payer';
+    alert(e.message);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

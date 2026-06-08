@@ -1,0 +1,818 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARCADINS Training Center – Préparation TEF & TCF Canada</title>
+  <meta name="description" content="Préparez votre TEF & TCF Canada avec ARCADINS Training Center. Accompagnement complet ARCADINS, tests interactifs, simulations chronométrées et espace membre privé." />
+
+  <!-- Open Graph / Facebook / WhatsApp -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.arcadins-training.com/" />
+  <meta property="og:title" content="ARCADINS Training Center – TEF & TCF Canada" />
+  <meta property="og:description" content="Préparez votre TEF & TCF Canada avec confiance. Accompagnement complet ARCADINS, tests interactifs, simulations et espace membre privé. Ottawa, Canada." />
+  <meta property="og:image" content="https://www.arcadins-training.com/assets/img/logo.svg" />
+  <meta property="og:locale" content="fr_CA" />
+  <meta property="og:locale:alternate" content="en_CA" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ARCADINS Training Center – TEF & TCF Canada" />
+  <meta name="twitter:description" content="Accompagnement complet ARCADINS TEF & TCF Canada pour l'immigration. Tests interactifs, simulations, coaching. Ottawa, Canada." />
+  <meta name="twitter:image" content="https://www.arcadins-training.com/assets/img/logo.svg" />
+
+  <!-- SEO supplémentaire -->
+  <meta name="keywords" content="TEF & TCF Canada, préparation TEF, préparation TCF, immigration Canada, Express Entry, NCLC, formation français, Ottawa" />
+  <meta name="author" content="ARCADINS Training Center" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.arcadins-training.com/" />
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "ARCADINS Training Center",
+    "url": "https://www.arcadins-training.com",
+    "logo": "https://www.arcadins-training.com/assets/img/logo.svg",
+    "description": "Plateforme de préparation au TEF & TCF Canada pour l'immigration au Canada et au Québec.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "116 Albert Street, Suite 300",
+      "addressLocality": "Ottawa",
+      "addressRegion": "Ontario",
+      "addressCountry": "CA"
+    },
+    "telephone": "+15144513436",
+    "email": "info@arcadins-training.com",
+    "sameAs": [
+      "https://wa.me/15144513436"
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" href="assets/img/logo-nav.svg" />
+  <link rel="shortcut icon" href="assets/img/logo-nav.svg" type="image/svg+xml" />
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  🍁 Programme de Tutorat 100% en ligne · TEF & TCF Canada · Immigration Canada / Québec &nbsp;|&nbsp;
+  <a href="mailto:info@arcadins-training.com">info@arcadins-training.com</a>
+</div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-container">
+    <a href="index.html" class="logo">
+      <img src="assets/img/logo-nav.svg" alt="ARCADINS Training Center" height="50" style="display:block;" />
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" data-i18n="nav.home">Accueil</a></li>
+      <li><a href="pages/tef-canada.html">TEF Canada</a></li>
+      <li><a href="pages/tcf-canada.html">TCF Canada</a></li>
+      <li><a href="pages/tests.html" data-i18n="nav.tests">Tests interactifs</a></li>
+      <li><a href="pages/tarifs.html" data-i18n="nav.tarifs">Tarifs</a></li>
+      <li><a href="pages/about.html" data-i18n="nav.about">À propos</a></li>
+      <li><a href="pages/tuteur.html" style="color:var(--gold);font-weight:700;">🎓 Devenir Tuteur</a></li><li><a href="#" class="btn-login" onclick="openModal('login')" data-i18n="nav.login">Connexion</a></li>
+      <li><a href="#inscription" class="btn-cta" data-i18n="nav.register">S'inscrire</a></li>
+    </ul>
+    <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.3s;margin-right:8px;" title="Switch language">🇬🇧 EN</button><div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-container">
+    <div class="hero-content">
+      <div class="hero-badge" data-i18n="hero.badge">🍁 Plateforme officielle de préparation linguistique</div>
+      <h1 data-i18n="hero.h1">Préparez votre <span>TEF Canada</span> ou <span>TCF Canada</span> avec confiance et méthode</h1>
+      <p data-i18n="hero.p">Un accompagnement complet — interactif, structuré et progressif — pour améliorer votre français, réussir votre test officiel et concrétiser votre projet d'immigration au Canada ou au Québec.</p>
+      <div class="hero-btns">
+        <a href="#inscription" class="btn-primary" data-i18n="hero.btn1">✏️ S'inscrire maintenant</a>
+        <a href="pages/tests.html" class="btn-secondary" data-i18n="hero.btn2">🎯 Test de niveau gratuit</a>
+        <a href="#" onclick="openModal('login')" class="btn-gold" data-i18n="hero.btn3">🔐 Mon compte</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card">
+        <h3 data-i18n="hero.results">📊 Nos résultats</h3>
+        <div class="stat-grid">
+          <div class="stat-item">
+            <span class="stat-num">2 400+</span>
+            <span class="stat-label" data-i18n="hero.stat1">Étudiants formés</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">94%</span>
+            <span class="stat-label" data-i18n="hero.stat2">Taux de réussite</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">14</span>
+            <span class="stat-label" data-i18n="hero.stat3">Modules complets</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">500+</span>
+            <span class="stat-label" data-i18n="hero.stat4">Exercices en ligne</span>
+          </div>
+        </div>
+        <div class="hero-flags">
+          <span class="flag-pill">🇨🇦 Canada</span>
+          <span class="flag-pill">🏔️ Québec</span>
+          <span class="flag-pill">📋 NCLC</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POURQUOI ARCADINS -->
+<section class="why-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" data-i18n="tag.avantages">Nos avantages</span>
+      <h2 data-i18n="why.h2">Pourquoi choisir ARCADINS Training Center ?</h2>
+      <p data-i18n="why.p">Une plateforme pensée pour les candidats à l'immigration qui veulent décrocher le score NCLC dont ils ont besoin.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#e8eef8;">🎯</div>
+        <h3 data-i18n="why.f1.h">Accompagnement linguistique en TEF et en TCF Canada</h3>
+        <p data-i18n="why.f1.p">Contenu 100% aligné sur les exigences d'IRCC, d'Express Entry et du Programme des Travailleurs Qualifiés.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#fff0f0;">📝</div>
+        <h3 data-i18n="why.f2.h">TUTORAT en TEF &amp; TCF Canada</h3>
+        <p data-i18n="why.f2.p">Préparation spécialisée pour les deux tests officiels reconnus par IRCC pour l'immigration francophone.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#e8f5e9;">💻</div>
+        <h3 data-i18n="why.f3.h">Tests interactifs en ligne</h3>
+        <p data-i18n="why.f3.p">Quiz, simulations chronométrées et exercices pratiques disponibles 24h/24, depuis n'importe quel appareil.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#fff8e1;">✅</div>
+        <h3 data-i18n="why.f4.h">Exercices corrigés</h3>
+        <p data-i18n="why.f4.p">Chaque exercice est accompagné d'une correction détaillée et d'explications pédagogiques claires.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#f3e5f5;">📈</div>
+        <h3 data-i18n="why.f5.h">Suivi de progression</h3>
+        <p data-i18n="why.f5.p">Tableau de bord personnalisé pour visualiser votre évolution module par module et ajuster votre plan de travail.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#e0f7fa;">🔐</div>
+        <h3 data-i18n="why.f6.h">Espace membre privé</h3>
+        <p data-i18n="why.f6.p">Un espace sécurisé pour accéder à vos programmes de tutorat, résultats, documents et certificat de participation.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#fce4ec;">⏱️</div>
+        <h3 data-i18n="why.f7.h">Simulations réalistes</h3>
+        <p data-i18n="why.f7.p">Reproduisez les conditions réelles du TEF & TCF Canada avec des simulations chronométrées complètes.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#e8eef8;">🎓</div>
+        <h3 data-i18n="why.f8.h">Accompagnement pédagogique</h3>
+        <p data-i18n="why.f8.p">Coaching optionnel avec un formateur expert pour corriger vos productions écrites et orales.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMATIONS -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" data-i18n="tag.programmes">Nos programmes de tutorat</span>
+      <h2 data-i18n="form.h2">Programmes de Tutorat TEF &amp; TCF Canada</h2>
+      <p data-i18n="form.p">Choisissez votre test cible et accédez à un parcours d'accompagnement en TEF et en TCF Canada complet et structuré.</p>
+    </div>
+    <div class="formation-grid">
+      <div class="formation-card">
+        <div class="formation-header tef">
+          <span class="formation-badge" data-i18n="form.tef.badge">STANDARD CANADA / QUÉBEC</span>
+          <h3 data-i18n="form.tef.h">Accompagnement TEF Canada</h3>
+          <p data-i18n="form.tef.p">Test d'Évaluation de Français – pour l'immigration, Express Entry, la résidence permanente et les études au Canada.</p>
+        </div>
+        <div class="formation-body">
+          <ul class="module-list">
+            <li data-i18n="form.tef.m1">Compréhension orale (CO)</li>
+            <li data-i18n="form.tef.m2">Compréhension écrite (CE)</li>
+            <li data-i18n="form.tef.m3">Expression orale (EO)</li>
+            <li data-i18n="form.tef.m4">Expression écrite (EE)</li>
+            <li data-i18n="form.tef.m5">Stratégies NCLC 7, 8, 9+</li>
+            <li data-i18n="form.tef.m6">Simulations chronométrées</li>
+            <li data-i18n="form.tef.m7">Banque de 200+ questions</li>
+          </ul>
+          <a href="pages/tef-canada.html" class="btn-primary" style="display:inline-flex;width:100%;justify-content:center;" data-i18n="form.tef.btn">Je commence ma préparation TEF →</a>
+        </div>
+      </div>
+      <div class="formation-card">
+        <div class="formation-header tcf">
+          <span class="formation-badge" data-i18n="form.tcf.badge">STANDARD CANADA / QUÉBEC &amp; MIFI</span>
+          <h3 data-i18n="form.tcf.h">Accompagnement TCF Canada</h3>
+          <p data-i18n="form.tcf.p">Test de Connaissance du Français – pour l'immigration au Canada et le Programme de l'Expérience Québécoise (PEQ).</p>
+        </div>
+        <div class="formation-body">
+          <ul class="module-list">
+            <li data-i18n="form.tcf.m1">Compréhension orale (CO)</li>
+            <li data-i18n="form.tcf.m2">Compréhension écrite (CE)</li>
+            <li data-i18n="form.tcf.m3">Expression orale (EO)</li>
+            <li data-i18n="form.tcf.m4">Expression écrite (EE)</li>
+            <li data-i18n="form.tcf.m5">Stratégies NCLC 5, 7, 8, 9+</li>
+            <li data-i18n="form.tcf.m6">Préparation intensive Québec</li>
+            <li data-i18n="form.tcf.m7">Banque de 200+ questions</li>
+          </ul>
+          <a href="pages/tcf-canada.html" class="btn-primary" style="display:inline-flex;width:100%;justify-content:center;background:var(--red);" data-i18n="form.tcf.btn">Je commence ma préparation TCF →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section style="background:var(--blue-dark);color:white;">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" style="background:rgba(201,168,76,0.2);color:var(--gold-light);" data-i18n="tag.parcours">Parcours complet</span>
+      <h2 style="color:white;" data-i18n="modules.h2">14 Modules de tutorat structurés</h2>
+      <p style="color:rgba(255,255,255,0.8);" data-i18n="modules.p">Un parcours pédagogique progressif du test de niveau initial jusqu'au certificat de participation.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
+      <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:18px;border-left:4px solid var(--gold);">
+        <div style="font-size:0.7rem;color:var(--gold-light);font-weight:700;margin-bottom:6px;">MODULE 01</div>
+        <div style="font-weight:700;" data-i18n="mod.01">Test de niveau initial</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:18px;border-left:4px solid var(--gold);">
+        <div style="font-size:0.7rem;color:var(--gold-light);font-weight:700;margin-bottom:6px;">MODULE 02</div>
+        <div style="font-weight:700;" data-i18n="mod.02">Compréhension orale</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:18px;border-left:4px solid var(--gold);">
+        <div style="font-size:0.7rem;color:var(--gold-light);font-weight:700;margin-bottom:6px;">MODULE 03</div>
+        <div style="font-weight:700;" data-i18n="mod.03">Compréhension écrite</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:18px;border-left:4px solid var(--gold);">
+        <div style="font-size:0.7rem;color:var(--gold-light);font-weight:700;margin-bottom:6px;">MODULE 04</div>
+        <div style="font-weight:700;" data-i18n="mod.04">Expression écrite</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:18px;border-left:4px solid var(--gold);">
+        <div style="font-size:0.7rem;color:var(--gold-light);font-weight:700;margin-bottom:6px;">MODULE 05</div>
+        <div style="font-weight:700;" data-i18n="mod.05">Expression orale</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:18px;border-left:4px solid var(--gold);">
+        <div style="font-size:0.7rem;color:var(--gold-light);font-weight:700;margin-bottom:6px;">MODULE 06</div>
+        <div style="font-weight:700;" data-i18n="mod.06">Grammaire essentielle</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:18px;border-left:4px solid var(--gold);">
+        <div style="font-size:0.7rem;color:var(--gold-light);font-weight:700;margin-bottom:6px;">MODULE 07</div>
+        <div style="font-weight:700;" data-i18n="mod.07">Vocabulaire immigration</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:18px;border-left:4px solid var(--gold);">
+        <div style="font-size:0.7rem;color:var(--gold-light);font-weight:700;margin-bottom:6px;">MODULE 08</div>
+        <div style="font-weight:700;" data-i18n="mod.08">Stratégies NCLC 5→9+</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:18px;border-left:4px solid var(--gold);">
+        <div style="font-size:0.7rem;color:var(--gold-light);font-weight:700;margin-bottom:6px;">MODULE 09</div>
+        <div style="font-weight:700;" data-i18n="mod.09">Simulations chronométrées</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:18px;border-left:4px solid var(--gold);">
+        <div style="font-size:0.7rem;color:var(--gold-light);font-weight:700;margin-bottom:6px;">MODULE 10</div>
+        <div style="font-weight:700;" data-i18n="mod.10">Banque de questions</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:18px;border-left:4px solid var(--gold);">
+        <div style="font-size:0.7rem;color:var(--gold-light);font-weight:700;margin-bottom:6px;">MODULE 11</div>
+        <div style="font-weight:700;" data-i18n="mod.11">Corrections &amp; explications</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:18px;border-left:4px solid var(--gold);">
+        <div style="font-size:0.7rem;color:var(--gold-light);font-weight:700;margin-bottom:6px;">MODULE 12</div>
+        <div style="font-weight:700;" data-i18n="mod.12">Tableau de progression</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:18px;border-left:4px solid var(--gold);">
+        <div style="font-size:0.7rem;color:var(--gold-light);font-weight:700;margin-bottom:6px;">MODULE 13</div>
+        <div style="font-weight:700;" data-i18n="mod.13">Certificat ARCADINS</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:18px;border-left:4px solid var(--gold);">
+        <div style="font-size:0.7rem;color:var(--gold-light);font-weight:700;margin-bottom:6px;">MODULE 14</div>
+        <div style="font-weight:700;" data-i18n="mod.14">Coaching formateur (option)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTS INTERACTIFS -->
+<section class="tests-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" data-i18n="tag.tests">Entraînement</span>
+      <h2 data-i18n="tests.h2">Tests interactifs en ligne</h2>
+      <p data-i18n="tests.p">Résultats automatiques, corrections immédiates et historique dans votre compte étudiant.</p>
+    </div>
+    <div class="tests-grid">
+      <div class="test-card" onclick="location.href='pages/tests.html'">
+        <span class="test-icon">📊</span>
+        <h3 data-i18n="test.niveau.h">Test de niveau</h3>
+        <p data-i18n="test.niveau.p">Évaluez votre niveau actuel en français</p>
+        <span class="badge-free" data-i18n="badge.free">GRATUIT</span>
+      </div>
+      <div class="test-card" onclick="location.href='pages/tests.html'">
+        <span class="test-icon">📖</span>
+        <h3 data-i18n="test.gram.h">Quiz de grammaire</h3>
+        <p data-i18n="test.gram.p">Révisez les règles essentielles</p>
+      </div>
+      <div class="test-card" onclick="location.href='pages/tests.html'">
+        <span class="test-icon">💬</span>
+        <h3 data-i18n="test.voc.h">Vocabulaire immigration</h3>
+        <p data-i18n="test.voc.p">Maîtrisez le lexique du dossier IRCC</p>
+      </div>
+      <div class="test-card" onclick="location.href='pages/tests.html'">
+        <span class="test-icon">🎧</span>
+        <h3 data-i18n="test.oral.h">Compréhension orale</h3>
+        <p data-i18n="test.oral.p">Exercices audio avec transcription</p>
+      </div>
+      <div class="test-card" onclick="location.href='pages/tests.html'">
+        <span class="test-icon">📄</span>
+        <h3 data-i18n="test.lect.h">Compréhension écrite</h3>
+        <p data-i18n="test.lect.p">Textes authentiques avec questions</p>
+      </div>
+      <div class="test-card" onclick="location.href='pages/tests.html'">
+        <span class="test-icon">✍️</span>
+        <h3 data-i18n="test.ecr.h">Expression écrite</h3>
+        <p data-i18n="test.ecr.p">Sujets avec zone de rédaction</p>
+      </div>
+      <div class="test-card" onclick="location.href='pages/tests.html'">
+        <span class="test-icon">🎤</span>
+        <h3 data-i18n="test.parol.h">Expression orale</h3>
+        <p data-i18n="test.parol.p">Consignes avec minuterie intégrée</p>
+      </div>
+      <div class="test-card" onclick="location.href='pages/tests.html'">
+        <span class="test-icon">⏱️</span>
+        <h3 data-i18n="test.simul.h">Simulation complète</h3>
+        <p data-i18n="test.simul.p">Reproduisez le vrai examen TEF/TCF</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TARIFS -->
+<section id="tarifs">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" data-i18n="tag.tarifs">Tarifs</span>
+      <h2 data-i18n="tarifs.h2">Choisissez votre plan</h2>
+      <p data-i18n="tarifs.p">Des offres adaptées à chaque profil, de la découverte à l'accompagnement personnalisé VIP.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="plan-name" data-i18n="plan1.name">Découverte</div>
+        <div class="plan-price">Essai Libre <span data-i18n="plan1.pricesub">/ accès découverte</span></div>
+        <div class="plan-desc" data-i18n="plan1.desc">Pour tester la plateforme et évaluer votre niveau</div>
+        <ul class="plan-features">
+          <li data-i18n="plan1.f1">Test de niveau gratuit</li>
+          <li data-i18n="plan1.f2">Accès partiel aux exercices</li>
+          <li data-i18n="plan1.f3">Quiz de grammaire (5 questions)</li>
+          <li class="no" data-i18n="plan1.f4">Programmes de Tutorat complètes</li>
+          <li class="no" data-i18n="plan1.f5">Simulations chronométrées</li>
+          <li class="no" data-i18n="plan1.f6">Espace membre complet</li>
+        </ul>
+        <a href="#inscription" class="btn-primary" style="display:block;text-align:center;background:var(--blue);" data-i18n="plan1.btn">Commencer pour rentrer dans le Forfait</a>
+      </div>
+      <div class="pricing-card">
+        <div class="plan-name" data-i18n="plan2.name">Standard</div>
+        <div class="plan-price">149€ <span data-i18n="plan2.pricesub">/ test</span></div>
+        <div class="plan-desc" data-i18n="plan2.desc">TEF & TCF Canada — un test au choix</div>
+        <ul class="plan-features">
+          <li data-i18n="plan2.f1">Tous les modules TEF ou TCF</li>
+          <li data-i18n="plan2.f2">Tests interactifs complets</li>
+          <li data-i18n="plan2.f3">Exercices corrigés</li>
+          <li data-i18n="plan2.f4">Espace membre privé</li>
+          <li data-i18n="plan2.f5">Progression &amp; scores</li>
+          <li class="no" data-i18n="plan2.f6">Simulations TEF + TCF</li>
+          <li class="no" data-i18n="plan2.f7">Coaching formateur</li>
+        </ul>
+        <a href="#inscription" class="btn-primary" style="display:block;text-align:center;background:var(--blue);" data-i18n="plan2.btn">Choisir Standard</a>
+      </div>
+      <div class="pricing-card popular">
+        <div class="popular-badge" data-i18n="popular.badge">⭐ PLUS POPULAIRE</div>
+        <div class="plan-name" data-i18n="plan3.name">Premium</div>
+        <div class="plan-price">249€ <span data-i18n="plan3.pricesub">/ accès complet</span></div>
+        <div class="plan-desc" data-i18n="plan3.desc">TEF & TCF Canada + simulations + corrections</div>
+        <ul class="plan-features">
+          <li data-i18n="plan3.f1">TEF Canada complet</li>
+          <li data-i18n="plan3.f2">TCF Canada complet</li>
+          <li data-i18n="plan3.f3">Simulations chronométrées</li>
+          <li data-i18n="plan3.f4">Corrections détaillées</li>
+          <li data-i18n="plan3.f5">Banque de 500+ questions</li>
+          <li data-i18n="plan3.f6">Certificat ARCADINS PDF</li>
+          <li class="no" data-i18n="plan3.f7">Coaching 1-à-1</li>
+        </ul>
+        <a href="#inscription" class="btn-primary" style="display:block;text-align:center;" data-i18n="plan3.btn">Choisir Premium</a>
+      </div>
+      <div class="pricing-card">
+        <div class="plan-name" data-i18n="plan4.name">VIP</div>
+        <div class="plan-price">399€ <span data-i18n="plan4.pricesub">/ Complet PLUS</span></div>
+        <div class="plan-desc" data-i18n="plan4.desc">Accompagnement personnalisé + coaching oral + correction écrite</div>
+        <ul class="plan-features">
+          <li data-i18n="plan4.f1">Tout le plan Premium</li>
+          <li data-i18n="plan4.f2">Coaching oral individuel (4h)</li>
+          <li data-i18n="plan4.f3">Correction productions écrites</li>
+          <li data-i18n="plan4.f4">Sessions avec formateur expert</li>
+          <li data-i18n="plan4.f5">Plan de révision personnalisé</li>
+          <li data-i18n="plan4.f6">Suivi prioritaire</li>
+        </ul>
+        <a href="#inscription" class="btn-primary" style="display:block;text-align:center;background:var(--gold);color:var(--blue-dark);" data-i18n="plan4.btn">Choisir VIP</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSCRIPTION -->
+<section class="inscription-section" id="inscription">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" style="background:rgba(201,168,76,0.2);color:var(--gold-light);" data-i18n="tag.inscription">Inscription</span>
+      <h2 data-i18n="insc.h2">Commencez votre préparation aujourd'hui</h2>
+      <p data-i18n="insc.p">Remplissez le formulaire ci-dessous et notre équipe vous contacte sous 24h.</p>
+    </div>
+    <div class="inscription-form">
+      <form id="inscriptionForm" onsubmit="submitForm(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="nom" data-i18n="insc.nom">Nom complet *</label>
+            <input type="text" id="nom" name="nom" placeholder="Jean Dupont" data-i18n-placeholder="insc.nom.ph" required />
+          </div>
+          <div class="form-group">
+            <label for="email" data-i18n="insc.email">Adresse email *</label>
+            <input type="email" id="email" name="email" placeholder="jean@email.com" data-i18n-placeholder="insc.email.ph" required />
+          </div>
+          <div class="form-group">
+            <label for="tel" data-i18n="insc.tel">Téléphone / WhatsApp *</label>
+            <input type="tel" id="tel" name="tel" placeholder="+33 6 00 00 00 00" required />
+          </div>
+          <div class="form-group">
+            <label for="pays" data-i18n="insc.pays">Pays de résidence *</label>
+            <select id="pays" name="pays" required>
+              <option value="" data-i18n="insc.pays.opt0">Sélectionnez votre pays</option>
+              <option>France</option><option>Maroc</option><option>Algérie</option>
+              <option>Tunisie</option><option>Sénégal</option><option>Côte d'Ivoire</option>
+              <option>Cameroun</option><option>Congo</option><option>Mali</option>
+              <option>Belgique</option><option>Suisse</option><option>Canada</option>
+              <option data-i18n="insc.other">Autre</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="objectif" data-i18n="insc.obj">Objectif principal *</label>
+            <select id="objectif" name="objectif" required>
+              <option value="" data-i18n="insc.obj.opt0">Votre objectif</option>
+              <option>TEF Canada</option>
+              <option>TCF Canada</option>
+              <option>TEF & TCF Canada</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="niveau" data-i18n="insc.niv">Niveau actuel en français *</label>
+            <select id="niveau" name="niveau" required>
+              <option value="" data-i18n="insc.niv.opt0">Votre niveau estimé</option>
+              <option data-i18n="insc.niv.a">Débutant (A1-A2)</option>
+              <option data-i18n="insc.niv.b1">Intermédiaire (B1)</option>
+              <option data-i18n="insc.niv.b2">Avancé (B2)</option>
+              <option data-i18n="insc.niv.c">Expert (C1-C2)</option>
+              <option data-i18n="insc.niv.dk">Je ne sais pas</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label for="programme" data-i18n="insc.prog">Programme visé *</label>
+            <select id="programme" name="programme" required>
+              <option value="" data-i18n="insc.prog.opt0">Sélectionnez votre programme</option>
+              <option data-i18n="insc.prog.ee">Express Entry – Entrée Express</option>
+              <option data-i18n="insc.prog.rp">Résidence permanente Canada</option>
+              <option data-i18n="insc.prog.ptq">Programme des Travailleurs Qualifiés (Québec)</option>
+              <option data-i18n="insc.prog.peq">PEQ – Programme de l'Expérience Québécoise</option>
+              <option data-i18n="insc.prog.etudes">Études au Canada</option>
+              <option data-i18n="insc.prog.travail">Travail au Canada</option>
+              <option data-i18n="insc.prog.famille">Regroupement familial</option>
+              <option data-i18n="insc.prog.autre">Autre programme</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label for="plan" data-i18n="insc.plan">Plan souhaité</label>
+            <select id="plan" name="plan">
+              <option value="" data-i18n="insc.plan.opt0">Je choisirai plus tard</option>
+              <option data-i18n="insc.plan.d">Découverte (Gratuit)</option>
+              <option>Standard – 149€</option>
+              <option>Premium – 249€</option>
+              <option>VIP – 399€</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px;">
+          <label style="display:flex;align-items:flex-start;gap:10px;font-size:.82rem;color:var(--gray-text);cursor:pointer;background:#f4f6fb;border-radius:8px;padding:10px 12px;">
+            <input type="checkbox" required style="margin-top:2px;flex-shrink:0;width:15px;height:15px;accent-color:var(--blue);" />
+            <span data-i18n="insc.cgu">J'accepte les <a href="pages/conditions.html" target="_blank" style="color:var(--blue);font-weight:600;">Conditions d'utilisation</a> et la <a href="pages/confidentialite.html" target="_blank" style="color:var(--blue);font-weight:600;">Politique de confidentialité</a>. Je consens à être contacté(e) par ARCADINS Training Center. <strong style="color:var(--red);">*</strong> <em style="color:#aaa;">(LCAP / CASL)</em></span>
+          </label>
+          <label style="display:flex;align-items:flex-start;gap:10px;font-size:.82rem;color:var(--gray-text);cursor:pointer;background:#f4f6fb;border-radius:8px;padding:10px 12px;">
+            <input type="checkbox" id="newsletterConsent" style="margin-top:2px;flex-shrink:0;width:15px;height:15px;accent-color:var(--blue);" />
+            <span data-i18n="insc.newsletter">Je souhaite recevoir la newsletter ARCADINS (conseils TEF/TCF, actualités IRCC). <em style="color:#aaa;">(Optionnel — désinscription en 1 clic)</em></span>
+          </label>
+          <button type="submit" class="btn-primary" style="width:100%;justify-content:center;font-size:1.05rem;padding:16px;" data-i18n="insc.btn">
+            ✉️ Envoyer mon inscription
+          </button>
+          <p style="text-align:center;font-size:0.76rem;color:#aaa;margin-top:4px;" data-i18n="insc.secure">
+            🔒 Aucune carte bancaire requise · Données protégées · Réponse sous 24h
+          </p>
+        </div>
+      </form>
+      <div id="formSuccess" style="display:none;text-align:center;padding:32px 0;">
+        <div style="font-size:3rem;margin-bottom:16px;">🎉</div>
+        <h3 style="color:var(--blue-dark);margin-bottom:8px;" data-i18n="insc.success.h">Inscription reçue !</h3>
+        <p style="color:var(--gray-text);" data-i18n="insc.success.p">Merci ! Notre équipe vous contactera sous 24h pour finaliser votre accès.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- TÉMOIGNAGES -->
+<section class="testimonials-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" data-i18n="tag.testi">Témoignages</span>
+      <h2 data-i18n="testi.h2">Ce que disent nos étudiants</h2>
+      <p data-i18n="testi.p">Plus de 2 400 candidats ont préparé leur TEF & TCF Canada avec ARCADINS Training Center.</p>
+    </div>
+    <!-- Compteur live -->
+    <div style="display:flex;justify-content:center;margin-bottom:36px;">
+      <div style="background:white;border-radius:14px;padding:14px 24px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;font-size:.9rem;">
+        <span class="counter-dot"></span>
+        <span><strong id="liveCount">2 431</strong> <span data-i18n="testi.counter">étudiants actifs sur la plateforme en ce moment</span></span>
+      </div>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text" data-i18n="testi.1.text">« Grâce à ARCADINS Training Center, j'ai obtenu NCLC 9 en compréhension orale et NCLC 8 en expression écrite au TEF Canada. Les simulations chronométrées m'ont vraiment préparé aux conditions réelles de l'examen. Je recommande à 100% ! »</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#0033A0,#1a4fc4);">AM</div>
+          <div>
+            <div class="testi-name">Amadou M.</div>
+            <div class="testi-meta" data-i18n="testi.1.meta">Dakar, Sénégal</div>
+            <span class="testi-result" data-i18n="testi.1.result">✅ NCLC 9 – Express Entry validé</span>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text" data-i18n="testi.2.text">« J'avais peur de l'épreuve d'expression orale. Les exercices avec minuterie et les conseils de structuration du discours m'ont aidée à dépasser cette peur. J'ai obtenu NCLC 8 et mon dossier Express Entry est en cours ! »</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#CC0000,#ff4444);">FK</div>
+          <div>
+            <div class="testi-name">Fatima K.</div>
+            <div class="testi-meta" data-i18n="testi.2.meta">Casablanca, Maroc</div>
+            <span class="testi-result" data-i18n="testi.2.result">✅ NCLC 8 – Résidence permanente en cours</span>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text" data-i18n="testi.3.text">« La plateforme est très bien faite. Le test de niveau initial m'a donné une vision claire de mes points faibles. En 8 semaines d'accompagnement intensif avec les modules ARCADINS, j'ai obtenu NCLC 7 partout au TCF Canada. »</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#C9A84C,#e6c06b);">JB</div>
+          <div>
+            <div class="testi-name">Jean-Baptiste N.</div>
+            <div class="testi-meta" data-i18n="testi.3.meta">Douala, Cameroun</div>
+            <span class="testi-result" data-i18n="testi.3.result">✅ NCLC 7 – PEQ Québec soumis</span>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text" data-i18n="testi.4.text">« Le plan VIP avec coaching a transformé mon expression orale. Mon formateur m'a donné des retours précis sur ma prononciation et ma structure. J'ai progressé de NCLC 5 à NCLC 8 en 10 semaines. Merci ARCADINS ! »</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#2e7d32,#4caf50);">LT</div>
+          <div>
+            <div class="testi-name">Laila T.</div>
+            <div class="testi-meta" data-i18n="testi.4.meta">Tunis, Tunisie</div>
+            <span class="testi-result" data-i18n="testi.4.result">✅ NCLC 8 – Travailleur qualifié Québec</span>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text" data-i18n="testi.5.text">« Les exercices de compréhension écrite avec des textes sur l'immigration canadienne sont excellents. On apprend le vocabulaire utile pour IRCC en même temps qu'on se prépare au test. Programme de Tutorat très ciblé et efficace. »</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#4a148c,#7b1fa2);">RD</div>
+          <div>
+            <div class="testi-name">Rachid D.</div>
+            <div class="testi-meta" data-i18n="testi.5.meta">Lyon, France</div>
+            <span class="testi-result" data-i18n="testi.5.result">✅ NCLC 9 – Invitation Express Entry reçue</span>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★☆</div>
+        <p class="testi-text" data-i18n="testi.6.text">« J'ai utilisé le plan Standard pour le TCF Canada. Les simulations chronométrées et les corrections détaillées sont très utiles. Le tableau de progression m'a motivé à continuer. Je recommande vraiment cette plateforme. »</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#e65100,#ff6d00);">MO</div>
+          <div>
+            <div class="testi-name">Marie-Claire O.</div>
+            <div class="testi-meta" data-i18n="testi.6.meta">Abidjan, Côte d'Ivoire</div>
+            <span class="testi-result" data-i18n="testi.6.result">✅ NCLC 7 – Études au Québec</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG PREVIEW -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" data-i18n="tag.blog">Ressources &amp; Conseils</span>
+      <h2 data-i18n="blog.h2">Articles sur l'immigration au Canada</h2>
+      <p data-i18n="blog.p">Conseils pratiques, actualités IRCC et guides pour maximiser vos chances de réussite.</p>
+    </div>
+    <div class="blog-grid">
+      <div class="blog-card">
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#e8eef8,#c5d3f0);">🍁</div>
+        <div class="blog-body">
+          <div class="blog-cat" data-i18n="blog1.cat">Express Entry</div>
+          <h3 data-i18n="blog1.h3">Comment maximiser votre score CRS grâce au français ?</h3>
+          <p data-i18n="blog1.p">Un NCLC 9 dans les 4 compétences peut vous rapporter jusqu'à 50 points supplémentaires dans Express Entry. Voici comment y arriver.</p>
+          <div class="blog-meta">
+            <span data-i18n="blog1.date">📅 15 juin 2024 · 5 min</span>
+            <a href="pages/blog.html" class="read-more" data-i18n="blog.read">Lire →</a>
+          </div>
+        </div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#fff0f0,#ffd5d5);">📋</div>
+        <div class="blog-body">
+          <div class="blog-cat" data-i18n="blog2.cat">TEF vs TCF</div>
+          <h3 data-i18n="blog2.h3">TEF & TCF Canada : lequel choisir pour votre dossier ?</h3>
+          <p data-i18n="blog2.p">Différences, avantages, disponibilité dans votre pays, structure des épreuves — tout ce qu'il faut savoir avant de vous inscrire.</p>
+          <div class="blog-meta">
+            <span data-i18n="blog2.date">📅 8 juin 2024 · 7 min</span>
+            <a href="pages/blog.html" class="read-more" data-i18n="blog.read">Lire →</a>
+          </div>
+        </div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9);">🏔️</div>
+        <div class="blog-body">
+          <div class="blog-cat" data-i18n="blog3.cat">Québec</div>
+          <h3 data-i18n="blog3.h3">PEQ, PTQE, PRTQ : les programmes d'immigration au Québec expliqués</h3>
+          <p data-i18n="blog3.p">Le Québec a ses propres programmes d'immigration. Découvrez lequel vous correspond et quel score TCF Canada vous faut.</p>
+          <div class="blog-meta">
+            <span data-i18n="blog3.date">📅 1 juin 2024 · 6 min</span>
+            <a href="pages/blog.html" class="read-more" data-i18n="blog.read">Lire →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:32px;">
+      <a href="pages/blog.html" class="btn-primary" style="background:var(--blue);" data-i18n="blog.all">Voir tous les articles →</a>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter-section">
+  <div class="newsletter-inner">
+    <span class="section-tag" style="background:rgba(201,168,76,.25);color:var(--gold-light);margin-bottom:14px;display:inline-block;" data-i18n="tag.newsletter">📬 Newsletter gratuite</span>
+    <h2 data-i18n="nl.h2">Restez informé sur l'immigration au Canada</h2>
+    <p data-i18n="nl.p">Conseils hebdomadaires, rondes Express Entry, mises à jour IRCC et offres exclusives ARCADINS.</p>
+    <form class="newsletter-form" onsubmit="submitNewsletter(event)">
+      <input type="email" class="newsletter-input" id="nlEmail" data-i18n="nl.placeholder" placeholder="Votre adresse email" required />
+      <button type="submit" class="btn-primary" style="padding:14px 24px;white-space:nowrap;" data-i18n="nl.btn">S'abonner gratuitement</button>
+    </form>
+    <div class="newsletter-perks">
+      <span data-i18n="nl.perk1">✅ Gratuit</span>
+      <span data-i18n="nl.perk2">✅ Sans spam</span>
+      <span data-i18n="nl.perk3">✅ Désabonnement facile</span>
+      <span data-i18n="nl.perk4">✅ Conseils exclusifs</span>
+    </div>
+    <p id="nlSuccess" style="display:none;margin-top:16px;font-weight:700;color:var(--gold-light);" data-i18n="nl.success">🎉 Merci ! Vous êtes bien abonné(e) à notre newsletter.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="assets/img/logo.svg" alt="ARCADINS Training Center" height="52" style="display:block;margin-bottom:4px;" />
+      <p data-i18n="footer.desc">Plateforme spécialisée dans la préparation au TEF & TCF Canada pour les candidats à l'immigration au Canada et au Québec.</p>
+      <div class="footer-social">
+        <a href="https://facebook.com/arcadinstraining" target="_blank" class="social-btn" title="Facebook" rel="noopener">f</a>
+        <a href="https://instagram.com/arcadinstraining" target="_blank" class="social-btn" title="Instagram" rel="noopener">📷</a>
+        <a href="https://youtube.com/@arcadinstraining" target="_blank" class="social-btn" title="YouTube" rel="noopener">▶</a>
+        <a href="https://wa.me/15144513436" target="_blank" class="social-btn" title="WhatsApp" rel="noopener">💬</a>
+        <a href="https://linkedin.com/company/arcadins-training" target="_blank" class="social-btn" title="LinkedIn" rel="noopener">in</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer.form">Programmes de Tutorat</h4>
+      <ul>
+        <li><a href="pages/tef-canada.html">TEF Canada</a></li>
+        <li><a href="pages/tcf-canada.html">TCF Canada</a></li>
+        <li><a href="pages/tests.html" data-i18n="nav.tests">Tests interactifs</a></li>
+        <li><a href="pages/tarifs.html" data-i18n="nav.tarifs">Tarifs</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer.info">Informations</h4>
+      <ul>
+        <li><a href="pages/about.html" data-i18n="nav.about">À propos</a></li>
+        <li><a href="#inscription" data-i18n="nav.register">S'inscrire</a></li>
+        <li><a href="pages/contact.html" data-i18n="footer.contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer.legal">Légal</h4>
+      <ul>
+        <li><a href="pages/confidentialite.html" data-i18n="footer.privacy">Confidentialité</a></li>
+        <li><a href="pages/conditions.html" data-i18n="footer.terms">Conditions d'utilisation</a></li>
+        <li><a href="pages/mentions-legales.html" data-i18n="footer.mentions">Mentions légales</a></li>
+      </ul>
+      <div style="margin-top:20px;font-size:0.8rem;opacity:0.6;">
+        📧 <a href="mailto:info@arcadins-training.com" style="color:rgba(255,255,255,.7);">info@arcadins-training.com</a><br>
+        📧 <a href="mailto:contact@arcadins-training.com" style="color:rgba(255,255,255,.7);">contact@arcadins-training.com</a><br>
+        📞 / 💬 <a href="tel:+15144513436" style="color:rgba(255,255,255,.7);">514-451-3436</a>
+        &nbsp;<small style="opacity:.7;" data-i18n="footer.phone.note">(Appel direct &amp; WhatsApp)</small><br>
+        🌐 www.arcadins-training.com
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom" style="flex-direction:column;gap:6px;text-align:center;">
+    <span data-i18n="footer.copy.line">© <span id="footerYear"></span> ARCADINS Training Center – Propulsé par <strong>Les Entreprises ARCADINS et ses Éditions</strong></span>
+    <span style="font-size:.75rem;opacity:.7;" data-i18n="footer.tagline">Accompagnement TEF & TCF Canada | Immigration Canada / Québec 🍁</span>
+  </div>
+</footer>
+
+<!-- MODAL CONNEXION / INSCRIPTION -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 id="modalTitle">Bienvenue</h2>
+    <p id="modalSubtitle">Accédez à votre espace ARCADINS</p>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Connexion</button>
+      <button class="modal-tab" id="tabRegister" onclick="switchTab('register')">Créer un compte</button>
+    </div>
+    <!-- Connexion -->
+    <form class="modal-form active" id="loginForm" onsubmit="handleAuth(event,'login')">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="votre@email.com" required />
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" placeholder="••••••••" required />
+      </div>
+      <div class="forgot-link"><a href="#">Mot de passe oublié ?</a></div>
+      <button type="submit" class="btn-primary" data-i18n="auth.loginBtn" style="width:100%;justify-content:center;">Se connecter</button>
+    </form>
+    <!-- Création de compte -->
+    <form class="modal-form" id="registerForm" onsubmit="handleAuth(event,'register')">
+      <div class="form-group">
+        <label data-i18n="auth.fullname">Nom complet</label>
+        <input type="text" placeholder="Jean Dupont" required />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="votre@email.com" required />
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" placeholder="Minimum 8 caractères" required minlength="8" />
+      </div>
+      <div class="form-group">
+        <label>Confirmer le mot de passe</label>
+        <input type="password" placeholder="Répétez le mot de passe" required minlength="8" />
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;background:var(--red);" data-i18n="auth.createBtn">Créer mon compte</button>
+    </form>
+  </div>
+</div>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/access-popup.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+

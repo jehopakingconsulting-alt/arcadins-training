@@ -1,0 +1,362 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accéder à la plateforme – ARCADINS Training Center</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    body { background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 100%); min-height: 100vh; }
+    .access-wrap {
+      max-width: 680px; margin: 0 auto; padding: 40px 20px 60px;
+    }
+    .access-card {
+      background: white; border-radius: 24px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .access-header {
+      background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+      padding: 36px 36px 28px; color: white; text-align: center;
+    }
+    .access-header img { height: 44px; margin-bottom: 16px; display: block; margin-left: auto; margin-right: auto; }
+    .access-header h1 { font-size: 1.5rem; font-weight: 900; margin-bottom: 8px; }
+    .access-header p { font-size: .88rem; opacity: .85; line-height: 1.6; }
+    .access-steps {
+      display: flex; justify-content: center; gap: 0; margin-top: 20px;
+    }
+    .step {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      font-size: .72rem; opacity: .7; position: relative; padding: 0 16px;
+    }
+    .step.active { opacity: 1; }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 700;
+    }
+    .step.active .step-num { background: var(--gold); border-color: var(--gold); color: var(--blue-dark); }
+    .step.done .step-num { background: #4caf50; border-color: #4caf50; color: white; }
+    .access-body { padding: 32px 36px 36px; }
+    .section-title {
+      font-size: .78rem; font-weight: 700; color: var(--gold);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-row.full { grid-template-columns: 1fr; }
+    .fg { display: flex; flex-direction: column; gap: 5px; }
+    .fg label { font-size: .82rem; font-weight: 600; color: var(--blue-dark); }
+    .fg input, .fg select, .fg textarea {
+      border: 2px solid var(--gray); border-radius: 8px;
+      padding: 11px 14px; font-size: .9rem; font-family: inherit;
+      background: var(--gray-light); transition: var(--transition);
+    }
+    .fg input:focus, .fg select:focus, .fg textarea:focus {
+      outline: none; border-color: var(--blue); background: white;
+    }
+    .required-star { color: var(--red); }
+    .divider { border: none; border-top: 1px solid var(--gray); margin: 24px 0; }
+    .privacy-note {
+      background: #fff8e1; border-left: 4px solid var(--gold);
+      border-radius: 8px; padding: 12px 16px; font-size: .78rem;
+      color: #5a4500; margin-bottom: 20px;
+    }
+    .btn-submit-access {
+      width: 100%; padding: 16px; background: var(--blue);
+      color: white; border: none; border-radius: 12px;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      font-family: inherit; transition: var(--transition);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-submit-access:hover { background: var(--blue-dark); transform: translateY(-2px); }
+    .already-member { text-align: center; margin-top: 16px; font-size: .84rem; color: var(--gray-text); }
+    .already-member a { color: var(--blue); font-weight: 600; text-decoration: none; }
+    #step2 { display: none; }
+    #step3 { display: none; }
+    .success-screen { text-align: center; padding: 20px 0; display: none; }
+    .success-icon { font-size: 4rem; margin-bottom: 16px; }
+    .progress-access {
+      height: 4px; background: var(--gray); border-radius: 2px;
+      margin-bottom: 24px; overflow: hidden;
+    }
+    .progress-access-fill {
+      height: 100%; background: linear-gradient(90deg, var(--blue), var(--gold));
+      border-radius: 2px; transition: width .5s ease;
+    }
+    @media (max-width: 560px) {
+      .form-row { grid-template-columns: 1fr; }
+      .access-body { padding: 24px 20px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<div style="text-align:center;padding:20px 16px 0;">
+  <a href="../index.html">
+    <img src="../assets/img/logo.svg" alt="ARCADINS Training Center" height="42" />
+  </a>
+</div>
+
+<div class="access-wrap">
+  <div class="access-card">
+    <div class="access-header">
+      <h1>Accéder à la plateforme</h1>
+      <p>Veuillez compléter ce formulaire d'identification avant d'accéder à votre espace d'accompagnement ARCADINS.</p>
+      <div class="access-steps">
+        <div class="step active" id="s1"><div class="step-num">1</div><span>Identité</span></div>
+        <div class="step" id="s2"><div class="step-num">2</div><span>Profil</span></div>
+        <div class="step" id="s3"><div class="step-num">3</div><span>Accès</span></div>
+      </div>
+    </div>
+
+    <div class="access-body">
+      <div class="progress-access"><div class="progress-access-fill" id="progFill" style="width:33%"></div></div>
+
+      <!-- ÉTAPE 1 — IDENTITÉ -->
+      <form id="step1" onsubmit="goStep2(event)">
+        <div class="section-title">👤 Vos informations personnelles</div>
+        <div class="form-row">
+          <div class="fg">
+            <label>Nom <span class="required-star">*</span></label>
+            <input type="text" id="nom" placeholder="Nom de famille" required />
+          </div>
+          <div class="fg">
+            <label>Prénom <span class="required-star">*</span></label>
+            <input type="text" id="prenom" placeholder="Prénom" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="fg">
+            <label>Email <span class="required-star">*</span></label>
+            <input type="email" id="email" placeholder="votre@email.com" required />
+          </div>
+          <div class="fg">
+            <label>Téléphone / WhatsApp <span class="required-star">*</span></label>
+            <input type="tel" id="tel" placeholder="+1 514-000-0000" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="fg">
+            <label>Pays de résidence <span class="required-star">*</span></label>
+            <select id="pays" required>
+              <option value="">Sélectionnez</option>
+              <option>Canada</option><option>France</option><option>Maroc</option>
+              <option>Algérie</option><option>Tunisie</option><option>Sénégal</option>
+              <option>Côte d'Ivoire</option><option>Cameroun</option><option>Congo</option>
+              <option>Haïti</option><option>Belgique</option><option>Suisse</option>
+              <option>Autre</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Adresse complète <span class="required-star">*</span></label>
+            <input type="text" id="adresse" placeholder="Ville, Province/État" required />
+          </div>
+        </div>
+        <button type="submit" class="btn-submit-access">Étape suivante →</button>
+      </form>
+
+      <!-- ÉTAPE 2 — PROFIL -->
+      <form id="step2" onsubmit="goStep3(event)">
+        <div class="section-title">🎓 Votre profil linguistique et objectifs</div>
+        <div class="form-row">
+          <div class="fg">
+            <label>Niveau d'études <span class="required-star">*</span></label>
+            <select id="etudes" required>
+              <option value="">Sélectionnez</option>
+              <option>École secondaire / Lycée</option>
+              <option>Programme de formation professionnelle</option>
+              <option>Baccalauréat / Licence (Bac+3)</option>
+              <option>Maîtrise / Master (Bac+5)</option>
+              <option>Doctorat (Bac+8)</option>
+              <option>Autre</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Niveau de français estimé <span class="required-star">*</span></label>
+            <select id="niveau_fr" required>
+              <option value="">Sélectionnez</option>
+              <option>Débutant (A1-A2)</option>
+              <option>Intermédiaire (B1)</option>
+              <option>Avancé (B2)</option>
+              <option>Expert (C1-C2)</option>
+              <option>Je ne sais pas</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="fg">
+            <label>Test visé <span class="required-star">*</span></label>
+            <select id="test_vise" required>
+              <option value="">Sélectionnez</option>
+              <option>TEF Canada uniquement</option>
+              <option>TCF Canada uniquement</option>
+              <option>TEF & TCF Canada</option>
+              <option>Je ne sais pas encore</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Programme d'immigration visé</label>
+            <select id="programme">
+              <option value="">Sélectionnez (optionnel)</option>
+              <option>Express Entry – Entrée Express</option>
+              <option>Résidence permanente Canada</option>
+              <option>PEQ – Québec</option>
+              <option>Études au Canada</option>
+              <option>Travail au Canada</option>
+              <option>Regroupement familial</option>
+              <option>Autre</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="fg">
+            <label>Raison principale de votre visite / intérêt <span class="required-star">*</span></label>
+            <select id="raison" required>
+              <option value="">Sélectionnez votre objectif principal</option>
+              <option>Préparer le TEF Canada pour immigrer au Canada</option>
+              <option>Préparer le TCF Canada pour immigrer au Québec</option>
+              <option>Améliorer mon français général</option>
+              <option>Obtenir un meilleur score NCLC pour Express Entry</option>
+              <option>Préparer un test pour des études au Canada</option>
+              <option>Tutorat ou coaching personnalisé</option>
+              <option>Simple curiosité / exploration de la plateforme</option>
+              <option>Autre raison</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="fg">
+            <label>Commentaires additionnels (optionnel)</label>
+            <textarea id="commentaires" rows="3" placeholder="Parlez-nous de votre situation ou de vos besoins spécifiques..."></textarea>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;">
+          <button type="button" onclick="backStep1()" style="flex:1;padding:14px;background:var(--gray-light);border:2px solid var(--gray);border-radius:10px;font-weight:600;cursor:pointer;font-family:inherit;">← Retour</button>
+          <button type="submit" class="btn-submit-access" style="flex:2;">Finaliser mon inscription →</button>
+        </div>
+      </form>
+
+      <!-- ÉTAPE 3 — SUCCÈS -->
+      <div id="step3">
+        <div class="success-screen" id="successScreen">
+          <div class="success-icon">🎉</div>
+          <h2 style="font-size:1.4rem;font-weight:900;color:var(--blue-dark);margin-bottom:10px;">Bienvenue chez ARCADINS !</h2>
+          <p style="color:var(--gray-text);margin-bottom:8px;">Votre profil a été enregistré avec succès.</p>
+
+          <div style="background:linear-gradient(135deg,var(--blue-dark),var(--blue));border-radius:14px;padding:20px;color:white;margin:20px 0;text-align:left;">
+            <div style="font-size:.78rem;opacity:.8;margin-bottom:6px;">⏱️ VOTRE ACCÈS EST VALIDE POUR</div>
+            <div style="font-size:1.6rem;font-weight:900;color:var(--gold-light);">6 Semaines</div>
+            <div style="font-size:.8rem;opacity:.85;margin-top:6px;">
+              📚 Semaines 1–4 : Apprentissage de tous les modules<br>
+              🎯 Semaines 5–6 : Tests d'évaluation et simulations
+            </div>
+            <div style="margin-top:12px;font-size:.75rem;opacity:.7;background:rgba(255,255,255,.1);border-radius:8px;padding:8px 12px;">
+              ⚠️ Après cette période, votre accès et votre code expireront automatiquement.
+            </div>
+          </div>
+
+          <div style="background:#fff8e1;border-left:4px solid var(--gold);border-radius:10px;padding:14px 18px;text-align:left;margin:16px 0;font-size:.82rem;color:#5a4500;">
+            <strong>📋 Prochaine étape obligatoire :</strong><br>
+            Avant d'accéder à l'accompagnement complet, vous devez d'abord passer le
+            <strong>Test de niveau gratuit (10 questions)</strong>, puis le
+            <strong>Test semi-officiel d'évaluation (15 questions)</strong>.
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
+            <a href="tests.html" class="btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;">
+              🎯 Commencer le test de niveau gratuit
+            </a>
+            <a href="dashboard.html" class="btn-secondary" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border:2px solid var(--blue);color:var(--blue);border-radius:10px;text-decoration:none;font-weight:600;">
+              🏠 Accéder à mon tableau de bord
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="already-member">
+        Déjà inscrit(e) ? <a href="#" onclick="openModal('login')">Connexion →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AUTH -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2>Connexion</h2><p>Accédez à votre espace ARCADINS</p>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Connexion</button>
+      <button class="modal-tab" id="tabRegister" onclick="switchTab('register')">Créer un compte</button>
+    </div>
+    <form class="modal-form active" id="loginForm" onsubmit="handleAuth(event,'login')">
+      <div class="form-group"><label data-i18n="auth.email">Email</label><input type="email" required /></div>
+      <div class="form-group"><label data-i18n="auth.pass">Mot de passe</label><input type="password" required /></div>
+      <button type="submit" class="btn-primary" data-i18n="auth.loginBtn" style="width:100%;justify-content:center;">Se connecter</button>
+    </form>
+    <form class="modal-form" id="registerForm" onsubmit="handleAuth(event,'register')">
+      <div class="form-group"><label data-i18n="auth.fullname">Nom complet</label><input type="text" required /></div>
+      <div class="form-group"><label data-i18n="auth.email">Email</label><input type="email" required /></div>
+      <div class="form-group"><label data-i18n="auth.pass">Mot de passe</label><input type="password" required minlength="8" /></div>
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;background:var(--red);" data-i18n="auth.createBtn">Créer mon compte</button>
+    </form>
+  </div>
+</div>
+
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/main.js"></script>
+<script>
+function goStep2(e) {
+  e.preventDefault();
+  document.getElementById('step1').style.display = 'none';
+  document.getElementById('step2').style.display = 'block';
+  document.getElementById('progFill').style.width = '66%';
+  document.getElementById('s1').classList.replace('active','done');
+  document.getElementById('s1').querySelector('.step-num').textContent = '✓';
+  document.getElementById('s2').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function backStep1() {
+  document.getElementById('step2').style.display = 'none';
+  document.getElementById('step1').style.display = 'block';
+  document.getElementById('progFill').style.width = '33%';
+}
+
+function goStep3(e) {
+  e.preventDefault();
+  // Sauvegarder les données utilisateur
+  const userData = {
+    nom: document.getElementById('nom').value,
+    prenom: document.getElementById('prenom').value,
+    email: document.getElementById('email').value,
+    tel: document.getElementById('tel').value,
+    pays: document.getElementById('pays').value,
+    adresse: document.getElementById('adresse').value,
+    etudes: document.getElementById('etudes').value,
+    niveau_fr: document.getElementById('niveau_fr').value,
+    test_vise: document.getElementById('test_vise').value,
+    programme: document.getElementById('programme').value,
+    raison: document.getElementById('raison').value,
+    dateAcces: new Date().toISOString(),
+    expiration: new Date(Date.now() + 42 * 24 * 60 * 60 * 1000).toISOString() // 6 semaines
+  };
+  localStorage.setItem('arc_user', JSON.stringify(userData));
+  localStorage.setItem('arc_registered', '1');
+
+  document.getElementById('step2').style.display = 'none';
+  document.getElementById('step3').style.display = 'block';
+  document.getElementById('successScreen').style.display = 'block';
+  document.getElementById('progFill').style.width = '100%';
+  document.getElementById('s2').classList.replace('active','done');
+  document.getElementById('s2').querySelector('.step-num').textContent = '✓';
+  document.getElementById('s3').classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
+
+
+
