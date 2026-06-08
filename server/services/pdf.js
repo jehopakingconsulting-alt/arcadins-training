@@ -44,55 +44,90 @@ function generateCertificate(user, certificate) {
       doc.circle(cx, cy, 6).fill('#c9a84c');
     });
 
-    // === HEADER ===
+    // === HEADER — Logo ARCADINS (redrawn from SVG) ===
     // Top accent line
-    doc.rect(60, 55, W - 120, 3).fill('#c9a84c');
+    doc.rect(60, 45, W - 120, 2).fill('#c9a84c');
 
-    doc.font('Helvetica-Bold').fontSize(11).fillColor('#c9a84c')
-      .text('ARCADINS TRAINING CENTER', 60, 65, { align: 'center', width: W - 120 });
+    // --- Shield icon (centred at logoX, logoY) ---
+    const logoX = W / 2 - 115; // left edge of icon group
+    const logoY = 52;
+    const sc = 1.05; // scale factor
 
-    doc.font('Helvetica').fontSize(8).fillColor('#a0a8c0')
-      .text('Excellence · Expertise · Réussite', 60, 80, { align: 'center', width: W - 120 });
+    // Shield outline (silver-grey)
+    doc.save()
+       .translate(logoX, logoY)
+       .scale(sc)
+       .path('M 20 4 L 40 0 L 60 4 L 60 36 L 40 48 L 20 36 Z')
+       .lineWidth(2.5).strokeColor('#8899bb').stroke()
+       .restore();
+
+    // Bar 1 (short, silver)
+    doc.rect(logoX + 7*sc, logoY + 26*sc, 5*sc, 12*sc).fill('#8899bb');
+    // Bar 2 (medium, gold)
+    doc.rect(logoX + 15*sc, logoY + 18*sc, 5*sc, 20*sc).fill('#c9a84c');
+    // Bar 3 (tall, gold)
+    doc.rect(logoX + 23*sc, logoY + 12*sc, 5*sc, 26*sc).fill('#e6c06b');
+
+    // Arrow tip (triangle, gold)
+    doc.save()
+       .translate(logoX, logoY)
+       .scale(sc)
+       .moveTo(25.5, 2).lineTo(20, 12).lineTo(31, 12).closePath()
+       .fill('#c9a84c')
+       .restore();
+
+    // --- ARCADINS text ---
+    const textX = logoX + 42*sc;
+    doc.font('Helvetica-Bold').fontSize(22).fillColor('#ffffff')
+       .text('ARCADINS', textX, logoY + 8, { lineBreak: false });
+
+    // --- TRAINING CENTER text ---
+    doc.font('Helvetica').fontSize(8).fillColor('#8899bb')
+       .text('TRAINING CENTER', textX + 1, logoY + 32, { lineBreak: false, characterSpacing: 2 });
+
+    // Tagline
+    doc.font('Helvetica').fontSize(7.5).fillColor('#a0a8c0')
+      .text('Excellence · Expertise · Réussite', 60, logoY + 52, { align: 'center', width: W - 120 });
 
     // Bottom accent line
-    doc.rect(60, 93, W - 120, 1).fill('#c9a84c');
+    doc.rect(60, logoY + 64, W - 120, 1).fill('#c9a84c');
 
     // === MAIN TITLE ===
-    doc.font('Helvetica-Bold').fontSize(36).fillColor('#ffffff')
-      .text('CERTIFICAT DE RÉUSSITE', 60, 115, { align: 'center', width: W - 120 });
+    doc.font('Helvetica-Bold').fontSize(34).fillColor('#ffffff')
+      .text('CERTIFICAT DE RÉUSSITE', 60, 130, { align: 'center', width: W - 120 });
 
-    doc.font('Helvetica').fontSize(11).fillColor('#c9a84c')
-      .text('CERTIFICATE OF ACHIEVEMENT', 60, 158, { align: 'center', width: W - 120 });
+    doc.font('Helvetica').fontSize(10).fillColor('#c9a84c')
+      .text('CERTIFICATE OF ACHIEVEMENT', 60, 168, { align: 'center', width: W - 120 });
 
     // Decorative line
-    doc.moveTo(W / 2 - 120, 180).lineTo(W / 2 + 120, 180).lineWidth(0.5).stroke('#c9a84c');
+    doc.moveTo(W / 2 - 120, 185).lineTo(W / 2 + 120, 185).lineWidth(0.5).stroke('#c9a84c');
 
     // === BODY TEXT ===
-    doc.font('Helvetica').fontSize(11).fillColor('#a0a8c0')
-      .text('Ce certificat est décerné à', 60, 195, { align: 'center', width: W - 120 });
+    doc.font('Helvetica').fontSize(10).fillColor('#a0a8c0')
+      .text('Ce certificat est décerné à', 60, 196, { align: 'center', width: W - 120 });
 
     // Student Name
     const fullName = `${user.prenom} ${user.nom}`.toUpperCase();
-    doc.font('Helvetica-BoldOblique').fontSize(30).fillColor('#ffd700')
-      .text(fullName, 60, 215, { align: 'center', width: W - 120 });
+    doc.font('Helvetica-BoldOblique').fontSize(28).fillColor('#ffd700')
+      .text(fullName, 60, 212, { align: 'center', width: W - 120 });
 
     // Underline name
     const nameWidth = Math.min(doc.widthOfString(fullName) + 40, 350);
-    doc.moveTo(W / 2 - nameWidth / 2, 250).lineTo(W / 2 + nameWidth / 2, 250)
+    doc.moveTo(W / 2 - nameWidth / 2, 245).lineTo(W / 2 + nameWidth / 2, 245)
       .lineWidth(1).stroke('#c9a84c');
 
     doc.font('Helvetica').fontSize(10).fillColor('#a0a8c0')
-      .text('pour avoir complété avec succès le programme de formation', 60, 260, { align: 'center', width: W - 120 });
+      .text('pour avoir complété avec succès le programme de formation', 60, 254, { align: 'center', width: W - 120 });
 
     // Programme
     const programme = certificate.programme || 'TEF & TCF Canada – Préparation Complète';
-    doc.font('Helvetica-Bold').fontSize(14).fillColor('#ffffff')
-      .text(programme, 60, 278, { align: 'center', width: W - 120 });
+    doc.font('Helvetica-Bold').fontSize(13).fillColor('#ffffff')
+      .text(programme, 60, 270, { align: 'center', width: W - 120 });
 
     // Score
     const scoreText = `Score obtenu : ${certificate.score.toFixed(1)}%`;
     doc.font('Helvetica').fontSize(11).fillColor('#c9a84c')
-      .text(scoreText, 60, 305, { align: 'center', width: W - 120 });
+      .text(scoreText, 60, 292, { align: 'center', width: W - 120 });
 
     // === FOOTER INFO ===
     const issuedDate = new Date(certificate.issued_at || Date.now()).toLocaleDateString('fr-FR', {
