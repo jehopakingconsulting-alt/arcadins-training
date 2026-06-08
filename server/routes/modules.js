@@ -190,7 +190,7 @@ router.post('/:num/complete', authMiddleware, stepGuard('qualification_done'), a
         <div style="margin: 20px 0; padding: 15px; background: #f0f4ff; border-left: 4px solid #c9a84c; border-radius: 4px;">
           <strong>Prochaine étape :</strong> Test Final TEF & TCF Canada<br>
           <strong>Durée :</strong> 30 questions<br>
-          <strong>Score requis :</strong> 70% minimum
+          <strong>Score requis :</strong> 80% minimum
         </div>
         <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/test-final" style="display:inline-block;padding:12px 24px;background:#1a2a6c;color:white;text-decoration:none;border-radius:6px;margin-top:10px;">
           Passer le test final →

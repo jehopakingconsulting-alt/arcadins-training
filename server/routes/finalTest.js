@@ -553,7 +553,7 @@ router.post('/submit', authMiddleware, stepGuard('modules_done'), async (req, re
     });
 
     const scorePercent = (score / FINAL_QUESTIONS.length) * 100;
-    const passingScore = 70;
+    const passingScore = 80;
     const passed = scorePercent >= passingScore;
     const attemptNum = attemptRecord.cnt + 1;
 
