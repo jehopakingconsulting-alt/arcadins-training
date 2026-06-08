@@ -44,90 +44,86 @@ function generateCertificate(user, certificate) {
       doc.circle(cx, cy, 6).fill('#c9a84c');
     });
 
-    // === HEADER — Logo ARCADINS (redrawn from SVG) ===
+    // === HEADER — Logo ARCADINS compact ===
     // Top accent line
-    doc.rect(60, 45, W - 120, 2).fill('#c9a84c');
+    doc.rect(60, 30, W - 120, 2).fill('#c9a84c');
 
-    // --- Shield icon (centred at logoX, logoY) ---
-    const logoX = W / 2 - 115; // left edge of icon group
-    const logoY = 52;
-    const sc = 1.05; // scale factor
+    // Logo centred: icon + ARCADINS + TRAINING CENTER on one line
+    const sc = 0.62; // compact scale
+    const iconW = 60 * sc;  // shield width in pts
+    const totalLogoW = iconW + 130; // icon + text block
+    const logoX = (W - totalLogoW) / 2;
+    const logoY = 36;
 
-    // Shield outline (silver-grey)
+    // Shield outline
     doc.save()
        .translate(logoX, logoY)
        .scale(sc)
        .path('M 20 4 L 40 0 L 60 4 L 60 36 L 40 48 L 20 36 Z')
-       .lineWidth(2.5).strokeColor('#8899bb').stroke()
+       .lineWidth(3).strokeColor('#8899bb').stroke()
        .restore();
 
-    // Bar 1 (short, silver)
-    doc.rect(logoX + 7*sc, logoY + 26*sc, 5*sc, 12*sc).fill('#8899bb');
-    // Bar 2 (medium, gold)
+    // Bars inside shield
+    doc.rect(logoX + 7*sc,  logoY + 26*sc, 5*sc, 12*sc).fill('#8899bb');
     doc.rect(logoX + 15*sc, logoY + 18*sc, 5*sc, 20*sc).fill('#c9a84c');
-    // Bar 3 (tall, gold)
     doc.rect(logoX + 23*sc, logoY + 12*sc, 5*sc, 26*sc).fill('#e6c06b');
 
-    // Arrow tip (triangle, gold)
-    doc.save()
-       .translate(logoX, logoY)
-       .scale(sc)
-       .moveTo(25.5, 2).lineTo(20, 12).lineTo(31, 12).closePath()
-       .fill('#c9a84c')
+    // Arrow tip
+    doc.save().translate(logoX, logoY).scale(sc)
+       .moveTo(25.5, 2).lineTo(20, 12).lineTo(31, 12).closePath().fill('#c9a84c')
        .restore();
 
-    // --- ARCADINS text ---
-    const textX = logoX + 42*sc;
-    doc.font('Helvetica-Bold').fontSize(22).fillColor('#ffffff')
-       .text('ARCADINS', textX, logoY + 8, { lineBreak: false });
+    // Text: ARCADINS
+    const textX = logoX + iconW + 6;
+    doc.font('Helvetica-Bold').fontSize(18).fillColor('#ffffff')
+       .text('ARCADINS', textX, logoY + 4, { lineBreak: false });
+    // TRAINING CENTER
+    doc.font('Helvetica').fontSize(7).fillColor('#8899bb')
+       .text('TRAINING CENTER', textX + 1, logoY + 24, { lineBreak: false, characterSpacing: 2 });
 
-    // --- TRAINING CENTER text ---
-    doc.font('Helvetica').fontSize(8).fillColor('#8899bb')
-       .text('TRAINING CENTER', textX + 1, logoY + 32, { lineBreak: false, characterSpacing: 2 });
-
-    // Tagline
-    doc.font('Helvetica').fontSize(7.5).fillColor('#a0a8c0')
-      .text('Excellence · Expertise · Réussite', 60, logoY + 52, { align: 'center', width: W - 120 });
+    // Tagline centred
+    doc.font('Helvetica').fontSize(7).fillColor('#a0a8c0')
+       .text('Excellence · Expertise · Réussite', 60, logoY + 40, { align: 'center', width: W - 120 });
 
     // Bottom accent line
-    doc.rect(60, logoY + 64, W - 120, 1).fill('#c9a84c');
+    doc.rect(60, logoY + 52, W - 120, 1).fill('#c9a84c');
 
-    // === MAIN TITLE ===
-    doc.font('Helvetica-Bold').fontSize(34).fillColor('#ffffff')
-      .text('CERTIFICAT DE RÉUSSITE', 60, 130, { align: 'center', width: W - 120 });
+    // === MAIN TITLE === (starts after logo at ~y=96)
+    doc.font('Helvetica-Bold').fontSize(36).fillColor('#ffffff')
+      .text('CERTIFICAT DE RÉUSSITE', 60, 100, { align: 'center', width: W - 120 });
 
     doc.font('Helvetica').fontSize(10).fillColor('#c9a84c')
-      .text('CERTIFICATE OF ACHIEVEMENT', 60, 168, { align: 'center', width: W - 120 });
+      .text('CERTIFICATE OF ACHIEVEMENT', 60, 140, { align: 'center', width: W - 120 });
 
     // Decorative line
-    doc.moveTo(W / 2 - 120, 185).lineTo(W / 2 + 120, 185).lineWidth(0.5).stroke('#c9a84c');
+    doc.moveTo(W / 2 - 120, 158).lineTo(W / 2 + 120, 158).lineWidth(0.5).stroke('#c9a84c');
 
     // === BODY TEXT ===
     doc.font('Helvetica').fontSize(10).fillColor('#a0a8c0')
-      .text('Ce certificat est décerné à', 60, 196, { align: 'center', width: W - 120 });
+      .text('Ce certificat est décerné à', 60, 168, { align: 'center', width: W - 120 });
 
     // Student Name
     const fullName = `${user.prenom} ${user.nom}`.toUpperCase();
-    doc.font('Helvetica-BoldOblique').fontSize(28).fillColor('#ffd700')
-      .text(fullName, 60, 212, { align: 'center', width: W - 120 });
+    doc.font('Helvetica-BoldOblique').fontSize(30).fillColor('#ffd700')
+      .text(fullName, 60, 184, { align: 'center', width: W - 120 });
 
     // Underline name
-    const nameWidth = Math.min(doc.widthOfString(fullName) + 40, 350);
-    doc.moveTo(W / 2 - nameWidth / 2, 245).lineTo(W / 2 + nameWidth / 2, 245)
+    const nameWidth = Math.min(doc.widthOfString(fullName) + 40, 380);
+    doc.moveTo(W / 2 - nameWidth / 2, 220).lineTo(W / 2 + nameWidth / 2, 220)
       .lineWidth(1).stroke('#c9a84c');
 
     doc.font('Helvetica').fontSize(10).fillColor('#a0a8c0')
-      .text('pour avoir complété avec succès le programme de formation', 60, 254, { align: 'center', width: W - 120 });
+      .text('pour avoir complété avec succès le programme de formation', 60, 229, { align: 'center', width: W - 120 });
 
     // Programme
     const programme = certificate.programme || 'TEF & TCF Canada – Préparation Complète';
-    doc.font('Helvetica-Bold').fontSize(13).fillColor('#ffffff')
-      .text(programme, 60, 270, { align: 'center', width: W - 120 });
+    doc.font('Helvetica-Bold').fontSize(14).fillColor('#ffffff')
+      .text(programme, 60, 246, { align: 'center', width: W - 120 });
 
     // Score
     const scoreText = `Score obtenu : ${certificate.score.toFixed(1)}%`;
     doc.font('Helvetica').fontSize(11).fillColor('#c9a84c')
-      .text(scoreText, 60, 292, { align: 'center', width: W - 120 });
+      .text(scoreText, 60, 268, { align: 'center', width: W - 120 });
 
     // === FOOTER INFO ===
     const issuedDate = new Date(certificate.issued_at || Date.now()).toLocaleDateString('fr-FR', {
