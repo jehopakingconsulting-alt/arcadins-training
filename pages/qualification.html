@@ -99,7 +99,8 @@ async function init() {
       return;
     }
     const res = await QualAPI.questions();
-    questions = res.questions;
+    const qPayload = res.data || res;
+    questions = qPayload.questions || res.questions;
     answers = new Array(questions.length).fill(null);
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('quizArea').style.display = 'block';
@@ -152,10 +153,11 @@ async function submitQual() {
   document.getElementById('quizArea').style.display = 'none';
   try {
     const res = await QualAPI.submit(answers);
+    const rPayload = res.data || res;
     const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
     document.getElementById('resultArea').style.display = 'block';
-    document.getElementById('scoreDisplay').textContent = res.score;
-    const lv = res.level;
+    document.getElementById('scoreDisplay').textContent = rPayload.correct_answers ?? rPayload.score ?? 0;
+    const lv = rPayload.level || res.level;
     const lbls = { fr:{ Débutant:'Débutant (A1-A2)', Intermédiaire:'Intermédiaire (B1-B2)', Avancé:'Avancé (B2-C1)' }, en:{ Débutant:'Beginner (A1-A2)', Intermédiaire:'Intermediate (B1-B2)', Avancé:'Advanced (B2-C1)' } };
     const badge = document.getElementById('levelBadge');
     badge.textContent = lbls[lang][lv] || lv;

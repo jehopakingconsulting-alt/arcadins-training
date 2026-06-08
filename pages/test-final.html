@@ -113,7 +113,8 @@ async function init() {
     }
     if (user.final_test_passed) { window.location.href = 'mon-certificat.html'; return; }
     const res = await FinalAPI.questions();
-    questions = res.questions;
+    const fPayload = res.data || res;
+    questions = fPayload.questions || res.questions;
     answers = new Array(questions.length).fill(null);
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('quizArea').style.display = 'block';
@@ -171,11 +172,12 @@ async function submitFinal() {
   document.getElementById('resultArea').style.display = 'block';
   try {
     const res = await FinalAPI.submit(answers);
+    const rData = res.data || res;
     const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
-    const pct = Math.round(res.score_percent);
+    const pct = Math.round(rData.score ?? rData.score_percent ?? 0);
     document.getElementById('scorePct').textContent = pct + '%';
     const circle = document.getElementById('scoreCircle');
-    if (res.passed) {
+    if (rData.passed) {
       circle.classList.add('pass');
       document.getElementById('scoreLabel').textContent = lang==='fr'?'RÉUSSI':'PASSED';
       document.getElementById('passMsg').style.display = 'block';
@@ -185,8 +187,9 @@ async function submitFinal() {
       document.getElementById('failMsg').style.display = 'block';
       const modNames = { fr:['Test de niveau','Compréhension orale','Compréhension écrite','Expression écrite','Expression orale','Grammaire','Vocabulaire','Stratégies NCLC','Simulations','Banque de questions','Corrections','Tableau de progression','Certificat','Coaching'], en:['Level test','Listening','Reading','Writing','Speaking','Grammar','Vocabulary','NCLC strategies','Simulations','Question bank','Corrections','Progress dashboard','Certificate','Coaching'] };
       const names = modNames[lang];
-      if (res.modules_to_review && res.modules_to_review.length) {
-        document.getElementById('reviewModules').innerHTML = res.modules_to_review.map(n=>`<div class="review-item">📖 ${names[n-1]||'Module '+n}</div>`).join('');
+      const toReview = rData.modules_to_review || rData.weak_areas || [];
+      if (toReview.length) {
+        document.getElementById('reviewModules').innerHTML = toReview.map(n=>`<div class="review-item">📖 ${names[(n-1)]||n}</div>`).join('');
       }
     }
   } catch(e) {

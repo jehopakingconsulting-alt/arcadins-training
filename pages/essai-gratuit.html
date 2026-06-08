@@ -113,12 +113,14 @@ async function init() {
   if (!token) { window.location.href = 'acces.html'; return; }
   try {
     const res = await TrialAPI.questions();
-    if (res.already_done) {
+    // API returns { success, data: { questions, total } }
+    const payload = res.data || res;
+    if (payload.already_done || res.already_done) {
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('alreadyDone').style.display = 'block';
       return;
     }
-    questions = res.questions;
+    questions = payload.questions || res.questions;
     answers = new Array(questions.length).fill(null);
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('quizArea').style.display = 'block';
@@ -176,17 +178,21 @@ async function submitTest() {
   document.getElementById('quizArea').style.display = 'none';
   try {
     const res = await TrialAPI.submit(answers);
+    const payload = res.data || res;
     const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
     document.getElementById('resultArea').style.display = 'block';
-    document.getElementById('scoreDisplay').textContent = res.score;
+    const scoreVal = payload.correct_answers ?? payload.score ?? 0;
+    document.getElementById('scoreDisplay').textContent = scoreVal;
     const levels = { fr: {low:'Débutant (A1-A2)',mid:'Intermédiaire (B1)',high:'Avancé (B2-C1)'}, en: {low:'Beginner (A1-A2)',mid:'Intermediate (B1)',high:'Advanced (B2-C1)'} };
-    const level = res.score <= 3 ? 'low' : res.score <= 7 ? 'mid' : 'high';
+    const level = scoreVal <= 3 ? 'low' : scoreVal <= 7 ? 'mid' : 'high';
     document.getElementById('levelBadge').textContent = levels[lang][level];
     const msgs = {
       fr: { low:'Votre niveau de départ est débutant. Notre programme complet vous accompagnera pas à pas vers votre objectif NCLC.', mid:'Bon niveau de base ! Avec notre programme, vous pouvez atteindre NCLC 7 ou 8 en quelques semaines.', high:'Excellent niveau ! Notre formation avancée vous permettra d\'atteindre NCLC 9+ et maximiser votre score Express Entry.' },
       en: { low:'Your starting level is beginner. Our complete program will guide you step by step to your NCLC goal.', mid:'Good foundation! With our program, you can reach NCLC 7 or 8 in a few weeks.', high:'Excellent level! Our advanced training will help you reach NCLC 9+ and maximize your Express Entry score.' }
     };
     document.getElementById('resultMessage').textContent = msgs[lang][level];
+    // Redirect to plans after a delay if backend says so
+    if (payload.redirect) setTimeout(() => { window.location.href = payload.redirect.replace('/plans','forfaits.html'); }, 4000);
   } catch(e) {
     document.getElementById('resultArea').style.display = 'block';
     document.getElementById('resultArea').innerHTML = `<div class="result-card"><p style="color:red">${e.message}</p><a href="forfaits.html" class="btn-primary" style="margin-top:16px;">Continuer →</a></div>`;
