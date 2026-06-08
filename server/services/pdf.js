@@ -130,30 +130,32 @@ function generateCertificate(user, certificate) {
       year: 'numeric', month: 'long', day: 'numeric',
     });
 
-    // Three columns at bottom
-    const col1X = 80, col2X = W / 2 - 80, col3X = W - 260;
-    const footerY = 360;
+    // === FOOTER — Signature zone uniquement (centré) ===
+    const footerY = 345;
+    const sigZoneX = W / 2 - 100; // centré, largeur 200
 
-    // Col 1 - Date
-    doc.moveTo(col1X, footerY).lineTo(col1X + 160, footerY).lineWidth(1).stroke('#c9a84c');
-    doc.font('Helvetica-Bold').fontSize(9).fillColor('#ffffff')
-      .text(issuedDate, col1X, footerY + 5, { width: 160, align: 'center' });
+    // Signature image (si disponible)
+    const sigPath = path.join(__dirname, '..', 'assets', 'signature.png');
+    const sigPathJpg = path.join(__dirname, '..', 'assets', 'signature.jpg');
+    const sigFile = fs.existsSync(sigPath) ? sigPath : fs.existsSync(sigPathJpg) ? sigPathJpg : null;
+    if (sigFile) {
+      doc.image(sigFile, sigZoneX + 20, footerY - 38, { width: 160, height: 40 });
+    }
+
+    // Ligne signature (or)
+    doc.moveTo(sigZoneX, footerY).lineTo(sigZoneX + 200, footerY).lineWidth(1).stroke('#c9a84c');
+
+    // Nom du directeur
+    doc.font('Helvetica-BoldOblique').fontSize(10).fillColor('#ffffff')
+      .text('M. Claude Jr EMILE', sigZoneX, footerY + 6, { width: 200, align: 'center' });
     doc.font('Helvetica').fontSize(8).fillColor('#a0a8c0')
-      .text('Date de délivrance', col1X, footerY + 18, { width: 160, align: 'center' });
+      .text('Directeur Général — ARCADINS Training Center', sigZoneX, footerY + 19, { width: 200, align: 'center' });
 
-    // Col 2 - Signature
-    doc.moveTo(col2X, footerY).lineTo(col2X + 160, footerY).lineWidth(1).stroke('#c9a84c');
-    doc.font('Helvetica-BoldOblique').fontSize(12).fillColor('#ffffff')
-      .text('Direction ARCADINS', col2X, footerY + 5, { width: 160, align: 'center' });
-    doc.font('Helvetica').fontSize(8).fillColor('#a0a8c0')
-      .text('Directeur de la Formation', col2X, footerY + 20, { width: 160, align: 'center' });
-
-    // Col 3 - Certificate number
-    doc.moveTo(col3X, footerY).lineTo(col3X + 160, footerY).lineWidth(1).stroke('#c9a84c');
-    doc.font('Helvetica').fontSize(7).fillColor('#a0a8c0')
-      .text(`N° ${certificate.certificate_number}`, col3X, footerY + 5, { width: 160, align: 'center' });
-    doc.font('Helvetica').fontSize(7).fillColor('#a0a8c0')
-      .text('Numéro de certificat', col3X, footerY + 16, { width: 160, align: 'center' });
+    // Date et N° discrets sous la signature
+    doc.font('Helvetica').fontSize(7.5).fillColor('#6a7090')
+      .text(issuedDate, sigZoneX, footerY + 34, { width: 200, align: 'center' });
+    doc.font('Helvetica').fontSize(7).fillColor('#4a5060')
+      .text(`N° ${certificate.certificate_number}`, sigZoneX, footerY + 46, { width: 200, align: 'center' });
 
     // === LEGAL NOTE ===
     const legalNote =
