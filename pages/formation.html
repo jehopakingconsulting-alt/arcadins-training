@@ -169,7 +169,7 @@ async function init() {
 
 async function loadModules() {
   const res = await ModulesAPI.status();
-  modules = res.modules;
+  modules = (res.data || res).modules || res.modules;
   renderSidebar();
   const firstAvail = modules.find(m => m.status !== 'locked') || modules[0];
   if (firstAvail) showModule(firstAvail.module_number);
@@ -263,10 +263,11 @@ async function startModule(num) {
 async function completeModule(num) {
   try {
     const res = await ModulesAPI.complete(num);
-    modules = res.modules;
+    const cData = res.data || res;
+    modules = cData.modules || res.modules || modules;
     renderSidebar();
     updateProgress();
-    if (res.all_done) {
+    if (cData.all_done || res.all_done) {
       document.getElementById('moduleContent').style.display = 'none';
       document.getElementById('allDonePanel').style.display = 'block';
       document.getElementById('completedBadge').style.display = 'inline-flex';
