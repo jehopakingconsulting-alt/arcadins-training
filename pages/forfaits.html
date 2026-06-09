@@ -84,7 +84,11 @@
 </div>
 
 <div class="plans-container">
-  <div id="loadingPlans" style="text-align:center;padding:60px 0;">⏳ <span data-i18n="plans.loading">Chargement des forfaits...</span></div>
+  <div id="loadingPlans" style="text-align:center;padding:60px 0;">
+    <div style="font-size:2rem;margin-bottom:12px;">⏳</div>
+    <p style="font-weight:700;color:var(--blue-dark);" data-i18n="plans.loading">Chargement des forfaits...</p>
+    <p id="loadingNote" style="font-size:.82rem;color:var(--gray-text);margin-top:8px;display:none;" data-i18n="plans.loading.slow">Le serveur démarre, merci de patienter 30 secondes...</p>
+  </div>
   <div class="plans-grid" id="plansGrid" style="display:none;"></div>
 </div>
 
@@ -209,12 +213,19 @@ async function verifyPayment(sessionId) {
 
 // ── Chargement des forfaits ──────────────────────────────────
 async function loadPlans() {
+  // Afficher message "serveur qui démarre" après 5s
+  const slowTimer = setTimeout(() => {
+    const note = document.getElementById('loadingNote');
+    if (note) note.style.display = 'block';
+  }, 5000);
+
   try {
     const r = await fetch(API_BASE + '/plans');
     const res = await r.json();
     const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
     const plans = res.data?.plans || [];
 
+    clearTimeout(slowTimer);
     document.getElementById('loadingPlans').style.display = 'none';
     const grid = document.getElementById('plansGrid');
     grid.style.display = 'grid';
@@ -241,8 +252,16 @@ async function loadPlans() {
       grid.appendChild(card);
     });
   } catch(e) {
-    document.getElementById('loadingPlans').innerHTML =
-      `<p style="color:red;text-align:center;">Erreur chargement forfaits: ${e.message}</p>`;
+    clearTimeout(slowTimer);
+    document.getElementById('loadingPlans').innerHTML = `
+      <div style="text-align:center;padding:20px;">
+        <div style="font-size:2rem;margin-bottom:12px;">🔄</div>
+        <p style="color:var(--blue-dark);font-weight:700;">Le serveur démarre...</p>
+        <p style="color:var(--gray-text);font-size:.85rem;margin:8px 0 20px;">Première visite après inactivité — rechargement automatique dans 15s</p>
+        <button onclick="location.reload()" class="btn-primary" style="display:inline-flex;">↺ Recharger maintenant</button>
+      </div>`;
+    // Auto-retry after 15s
+    setTimeout(() => location.reload(), 15000);
   }
 }
 

@@ -22,4 +22,12 @@
 
   // Exposé aussi comme constante simple pour les scripts inline
   window.API_BASE_URL = window.ARCADINS_API_BASE;
+
+  // ── Keep-alive : ping le serveur toutes les 10 min pour éviter le cold start
+  // (uniquement en production Render)
+  if (!isLocal) {
+    const ping = () => fetch(window.ARCADINS_API_BASE.replace('/api', '') + '/api/health', { method: 'GET' }).catch(() => {});
+    ping(); // ping immédiat au chargement de la page
+    setInterval(ping, 10 * 60 * 1000); // puis toutes les 10 minutes
+  }
 })();
