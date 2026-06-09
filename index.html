@@ -357,73 +357,70 @@
 </section>
 
 <!-- TARIFS -->
-<section id="tarifs">
+<section id="tarifs" style="background:var(--gray-light);">
   <div class="container">
     <div class="section-header">
       <span class="section-tag" data-i18n="tag.tarifs">Tarifs</span>
-      <h2 data-i18n="tarifs.h2">Choisissez votre plan</h2>
-      <p data-i18n="tarifs.p">Des offres adaptées à chaque profil, de la découverte à l'accompagnement personnalisé VIP.</p>
+      <h2 data-i18n="tarifs.h2">Choisissez votre plan de tutorat</h2>
+      <p data-i18n="tarifs.p">4 plans adaptés à votre budget et vos objectifs · Accès de 6 à 8 semaines · Paiement sécurisé Stripe</p>
     </div>
-    <div class="pricing-grid">
-      <div class="pricing-card">
-        <div class="plan-name" data-i18n="plan1.name">Découverte</div>
-        <div class="plan-price">Essai Libre <span data-i18n="plan1.pricesub">/ accès découverte</span></div>
-        <div class="plan-desc" data-i18n="plan1.desc">Pour tester la plateforme et évaluer votre niveau</div>
-        <ul class="plan-features">
-          <li data-i18n="plan1.f1">Test de niveau</li>
-          <li data-i18n="plan1.f2">Accès partiel aux exercices</li>
-          <li data-i18n="plan1.f3">Quiz de grammaire (5 questions)</li>
-          <li class="no" data-i18n="plan1.f4">Programmes de Tutorat complètes</li>
-          <li class="no" data-i18n="plan1.f5">Simulations chronométrées</li>
-          <li class="no" data-i18n="plan1.f6">Espace membre complet</li>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-top:8px;">
+      <!-- Starter -->
+      <div style="background:white;border-radius:16px;padding:28px 22px;box-shadow:var(--shadow);border:2px solid transparent;text-align:center;">
+        <div style="font-size:.72rem;font-weight:800;color:var(--blue);letter-spacing:1px;margin-bottom:8px;">STARTER</div>
+        <div style="font-size:2.2rem;font-weight:900;color:var(--blue-dark);">$97<sup style="font-size:.9rem;">USD</sup></div>
+        <div style="font-size:.78rem;color:var(--gray-text);margin-bottom:14px;">accès 6 semaines</div>
+        <ul class="plan-features" style="text-align:left;margin-bottom:20px;">
+          <li>14 modules de formation</li>
+          <li>Test de qualification inclus</li>
+          <li>Test final · 1 tentative</li>
+          <li>Support par email</li>
         </ul>
-        <a href="#inscription" class="btn-primary" style="display:block;text-align:center;background:var(--blue);" data-i18n="plan1.btn">Commencer pour rentrer dans le Forfait</a>
+        <a href="pages/tarifs.html" class="btn-primary" style="display:block;text-align:center;background:var(--blue);font-size:.85rem;" data-i18n="tarifs.see">Voir ce plan →</a>
       </div>
-      <div class="pricing-card">
-        <div class="plan-name" data-i18n="plan2.name">Standard</div>
-        <div class="plan-price">149€ <span data-i18n="plan2.pricesub">/ test</span></div>
-        <div class="plan-desc" data-i18n="plan2.desc">TEF & TCF Canada — un test au choix</div>
-        <ul class="plan-features">
-          <li data-i18n="plan2.f1">Tous les modules TEF ou TCF</li>
-          <li data-i18n="plan2.f2">Tests interactifs complets</li>
-          <li data-i18n="plan2.f3">Exercices corrigés</li>
-          <li data-i18n="plan2.f4">Espace membre privé</li>
-          <li data-i18n="plan2.f5">Progression &amp; scores</li>
-          <li class="no" data-i18n="plan2.f6">Simulations TEF + TCF</li>
-          <li class="no" data-i18n="plan2.f7">Coaching formateur</li>
+      <!-- Essential -->
+      <div style="background:white;border-radius:16px;padding:28px 22px;box-shadow:var(--shadow);border:2px solid var(--gold);text-align:center;position:relative;">
+        <div style="position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--blue-dark);border-radius:20px;padding:3px 14px;font-size:.7rem;font-weight:800;white-space:nowrap;">⭐ PLUS POPULAIRE</div>
+        <div style="font-size:.72rem;font-weight:800;color:var(--blue);letter-spacing:1px;margin-bottom:8px;">ESSENTIAL</div>
+        <div style="font-size:2.2rem;font-weight:900;color:var(--blue-dark);">$147<sup style="font-size:.9rem;">USD</sup></div>
+        <div style="font-size:.78rem;color:var(--gray-text);margin-bottom:14px;">accès 6 semaines</div>
+        <ul class="plan-features" style="text-align:left;margin-bottom:20px;">
+          <li>Tout le plan Starter</li>
+          <li>Test final · 2 tentatives</li>
+          <li>Certificat officiel ARCADINS</li>
+          <li>Support prioritaire</li>
         </ul>
-        <a href="#inscription" class="btn-primary" style="display:block;text-align:center;background:var(--blue);" data-i18n="plan2.btn">Choisir Standard</a>
+        <a href="pages/tarifs.html" class="btn-primary" style="display:block;text-align:center;font-size:.85rem;" data-i18n="tarifs.see">Voir ce plan →</a>
       </div>
-      <div class="pricing-card popular">
-        <div class="popular-badge" data-i18n="popular.badge">⭐ PLUS POPULAIRE</div>
-        <div class="plan-name" data-i18n="plan3.name">Premium</div>
-        <div class="plan-price">249€ <span data-i18n="plan3.pricesub">/ accès complet</span></div>
-        <div class="plan-desc" data-i18n="plan3.desc">TEF & TCF Canada + simulations + corrections</div>
-        <ul class="plan-features">
-          <li data-i18n="plan3.f1">TEF Canada complet</li>
-          <li data-i18n="plan3.f2">TCF Canada complet</li>
-          <li data-i18n="plan3.f3">Simulations chronométrées</li>
-          <li data-i18n="plan3.f4">Corrections détaillées</li>
-          <li data-i18n="plan3.f5">Banque de 500+ questions</li>
-          <li data-i18n="plan3.f6">Certificat ARCADINS PDF</li>
-          <li class="no" data-i18n="plan3.f7">Coaching 1-à-1</li>
+      <!-- Premium -->
+      <div style="background:white;border-radius:16px;padding:28px 22px;box-shadow:var(--shadow);border:2px solid transparent;text-align:center;">
+        <div style="font-size:.72rem;font-weight:800;color:var(--blue);letter-spacing:1px;margin-bottom:8px;">PREMIUM</div>
+        <div style="font-size:2.2rem;font-weight:900;color:var(--blue-dark);">$247<sup style="font-size:.9rem;">USD</sup></div>
+        <div style="font-size:.78rem;color:var(--gray-text);margin-bottom:14px;">accès 6 semaines</div>
+        <ul class="plan-features" style="text-align:left;margin-bottom:20px;">
+          <li>Tout le plan Essential</li>
+          <li>Test final · 3 tentatives</li>
+          <li>Coaching individuel 2h</li>
+          <li>Ressources supplémentaires</li>
         </ul>
-        <a href="#inscription" class="btn-primary" style="display:block;text-align:center;" data-i18n="plan3.btn">Choisir Premium</a>
+        <a href="pages/tarifs.html" class="btn-primary" style="display:block;text-align:center;background:var(--blue);font-size:.85rem;" data-i18n="tarifs.see">Voir ce plan →</a>
       </div>
-      <div class="pricing-card">
-        <div class="plan-name" data-i18n="plan4.name">VIP</div>
-        <div class="plan-price">399€ <span data-i18n="plan4.pricesub">/ Complet PLUS</span></div>
-        <div class="plan-desc" data-i18n="plan4.desc">Accompagnement personnalisé + coaching oral + correction écrite</div>
-        <ul class="plan-features">
-          <li data-i18n="plan4.f1">Tout le plan Premium</li>
-          <li data-i18n="plan4.f2">Coaching oral individuel (4h)</li>
-          <li data-i18n="plan4.f3">Correction productions écrites</li>
-          <li data-i18n="plan4.f4">Sessions avec formateur expert</li>
-          <li data-i18n="plan4.f5">Plan de révision personnalisé</li>
-          <li data-i18n="plan4.f6">Suivi prioritaire</li>
+      <!-- VIP -->
+      <div style="background:white;border-radius:16px;padding:28px 22px;box-shadow:var(--shadow);border:2px solid transparent;text-align:center;">
+        <div style="font-size:.72rem;font-weight:800;color:var(--gold);letter-spacing:1px;margin-bottom:8px;">VIP</div>
+        <div style="font-size:2.2rem;font-weight:900;color:var(--blue-dark);">$497<sup style="font-size:.9rem;">USD</sup></div>
+        <div style="font-size:.78rem;color:var(--gray-text);margin-bottom:14px;">accès 8 semaines</div>
+        <ul class="plan-features" style="text-align:left;margin-bottom:20px;">
+          <li>Tout le plan Premium</li>
+          <li>Test final · 6 tentatives</li>
+          <li>Coaching privé 4h</li>
+          <li>Garantie de résultat</li>
         </ul>
-        <a href="#inscription" class="btn-primary" style="display:block;text-align:center;background:var(--gold);color:var(--blue-dark);" data-i18n="plan4.btn">Choisir VIP</a>
+        <a href="pages/tarifs.html" class="btn-primary" style="display:block;text-align:center;background:var(--gold);color:var(--blue-dark);font-size:.85rem;" data-i18n="tarifs.see">Voir ce plan →</a>
       </div>
+    </div>
+    <div style="text-align:center;margin-top:28px;">
+      <a href="pages/tarifs.html" class="btn-secondary" data-i18n="tarifs.compare.link">Voir le comparatif complet →</a>
     </div>
   </div>
 </section>
