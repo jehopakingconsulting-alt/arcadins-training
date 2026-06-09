@@ -136,14 +136,7 @@
 <script src="../assets/js/i18n.js"></script>
 <script src="../assets/js/api.js"></script>
 <script>
-// ── Config ──────────────────────────────────────────────────
-const API_BASE = window.ARCADINS_API_BASE || (
-  ['localhost','127.0.0.1'].includes(location.hostname)
-    ? 'http://localhost:3000/api'
-    : location.origin + '/api'
-);
-function getToken() { return localStorage.getItem('arc_token') || ''; }
-
+// API_BASE et getToken() sont fournis par api.js (chargé avant ce script)
 let selectedPlan = null;
 
 // ── Init page ────────────────────────────────────────────────
