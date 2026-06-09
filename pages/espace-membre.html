@@ -161,7 +161,7 @@ async function init() {
     // Steps
     const steps = [
       { key:'registered', label: lang==='fr'?'Inscription':'Registration', icon:'✅', done: true, link: null },
-      { key:'trial', label: lang==='fr'?'Essai gratuit':'Free trial', icon: u.trial_done?'✅':'🔵', done:!!u.trial_done, link: u.trial_done?null:'essai-gratuit.html', linkLabel: lang==='fr'?'Faire le test →':'Take test →' },
+      { key:'trial', label: lang==='fr'?'Test d'Essai':'Trial', icon: u.trial_done?'✅':'🔵', done:!!u.trial_done, link: u.trial_done?null:'essai-gratuit.html', linkLabel: lang==='fr'?'Faire le test →':'Take test →' },
       { key:'payment', label: lang==='fr'?'Paiement':'Payment', icon: u.payment_confirmed?'✅':'🔵', done:!!u.payment_confirmed, link: u.payment_confirmed||!u.trial_done?null:'forfaits.html', linkLabel: lang==='fr'?'Choisir un forfait →':'Choose plan →' },
       { key:'qual', label: lang==='fr'?'Test de qualification':'Placement test', icon: u.qualification_done?'✅':u.payment_confirmed?'🔵':'🔒', done:!!u.qualification_done, link: u.qualification_done||!u.payment_confirmed?null:'qualification.html', linkLabel: lang==='fr'?'Passer le test →':'Take test →' },
       { key:'formation', label: lang==='fr'?'Formation':'Training', icon: u.all_modules_done?'✅':u.qualification_done?'🔵':'🔒', done:!!u.all_modules_done, link: !u.qualification_done?null:'formation.html', linkLabel: lang==='fr'?'Ma formation →':'My training →' },
@@ -203,7 +203,7 @@ async function init() {
 
     // Scores summary
     const scores = [];
-    if (u.trial_done) scores.push({ label: lang==='fr'?'Essai gratuit':'Free trial', val: `${u.trial_score||0}/10` });
+    if (u.trial_done) scores.push({ label: lang==='fr'?'Test d'Essai':'Trial', val: `${u.trial_score||0}/10` });
     if (u.qualification_done) scores.push({ label: lang==='fr'?'Qualification':'Placement', val: `${u.qualification_score||0}/20`, sub: u.qualification_level });
     if (u.final_test_done) scores.push({ label: lang==='fr'?'Test final':'Final test', val: `${Math.round(u.final_test_score||0)}%`, pill: u.final_test_passed?'green':'orange' });
 

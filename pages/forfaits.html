@@ -71,7 +71,7 @@
   <div class="step-indicator">
     <div class="step done"><div><div class="step-dot">✓</div><div class="step-label" data-i18n="step.form">Formulaire</div></div></div>
     <div class="step-line done"></div>
-    <div class="step done"><div><div class="step-dot">✓</div><div class="step-label" data-i18n="step.trial">Test gratuit</div></div></div>
+    <div class="step done"><div><div class="step-dot">✓</div><div class="step-label" data-i18n="step.trial">Test d'essai</div></div></div>
     <div class="step-line"></div>
     <div class="step active"><div><div class="step-dot">3</div><div class="step-label" data-i18n="step.plan">Forfait</div></div></div>
     <div class="step-line"></div>
@@ -89,34 +89,41 @@
 </div>
 
 <!-- Modal paiement -->
+<!-- Modal confirmation Stripe -->
 <div class="payment-modal" id="paymentModal">
   <div class="payment-box">
     <div id="paymentForm">
       <h2 data-i18n="pay.h2">Finaliser votre inscription</h2>
       <p style="color:var(--gray-text);font-size:.88rem;" data-i18n="pay.sub">Paiement sécurisé · SSL · Garantie 7 jours</p>
       <div class="price-recap" id="priceRecap"></div>
-      <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px;">
-        <input class="card-field" type="text" id="cardName" placeholder="Nom sur la carte" data-i18n-placeholder="pay.card.name" />
-        <select class="card-field" id="payCountry">
-          <option value="" data-i18n="pay.country.default">— Sélectionnez votre pays —</option>
-        </select>
-        <input class="card-field" type="text" id="cardNum" placeholder="1234 5678 9012 3456" maxlength="19" />
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <input class="card-field" type="text" placeholder="MM/YY" maxlength="5" />
-          <input class="card-field" type="text" placeholder="CVC" maxlength="3" />
+      <div style="background:#f0f7ff;border:1.5px solid #c0d8ff;border-radius:10px;padding:16px 18px;margin:20px 0;display:flex;gap:12px;align-items:center;">
+        <span style="font-size:2rem;">🔒</span>
+        <div>
+          <div style="font-weight:700;color:#0d2060;font-size:.9rem;">Paiement 100% sécurisé via Stripe</div>
+          <div style="color:#6b7a99;font-size:.8rem;margin-top:3px;">Vous serez redirigé vers la page de paiement Stripe. Visa, Mastercard, Amex acceptés.</div>
         </div>
       </div>
-      <div class="secure-note">🔒 <span data-i18n="pay.secure">Paiement sécurisé SSL — Nous ne stockons pas vos données bancaires</span></div>
-      <div style="display:flex;gap:12px;margin-top:20px;">
-        <button class="btn-secondary" onclick="closePayment()" style="flex:1;" data-i18n="pay.cancel">Annuler</button>
-        <button class="btn-primary" onclick="processPayment()" style="flex:2;" id="payBtn" data-i18n="pay.btn">💳 Payer maintenant</button>
+      <div style="display:flex;gap:10px;margin-bottom:16px;justify-content:center;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" height="24" alt="Visa" />
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" height="24" alt="Mastercard" />
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg" height="24" alt="Amex" />
+      </div>
+      <div id="payError" style="display:none;background:#fce4ec;border:1.5px solid #ef9a9a;border-radius:8px;padding:10px 14px;font-size:.85rem;color:#c62828;margin-bottom:14px;"></div>
+      <div style="display:flex;gap:12px;margin-top:4px;">
+        <button class="btn-secondary" onclick="closePayment()" style="flex:1;">Annuler</button>
+        <button class="btn-primary" onclick="processPayment()" style="flex:2;" id="payBtn">💳 Payer avec Stripe →</button>
       </div>
     </div>
     <div id="paymentSuccess" class="payment-success" style="display:none;">
       <div class="big-check">✅</div>
-      <h2 data-i18n="pay.ok.h">Paiement confirmé !</h2>
-      <p data-i18n="pay.ok.p">Votre accès est activé. Vous allez maintenant passer votre test de qualification.</p>
-      <a href="qualification.html" class="btn-primary" style="display:inline-flex;margin-top:20px;" data-i18n="pay.ok.btn">Passer le test de qualification →</a>
+      <h2>Paiement confirmé !</h2>
+      <p id="paySuccessMsg">Votre accès est activé. Bienvenue dans votre formation ARCADINS !</p>
+      <a href="formation.html" class="btn-primary" style="display:inline-flex;margin-top:20px;">🎓 Accéder à ma formation →</a>
+    </div>
+    <div id="paymentVerifying" style="display:none;text-align:center;padding:30px 0;">
+      <div style="font-size:2.5rem;margin-bottom:12px;">⏳</div>
+      <p style="font-weight:700;color:#0d2060;">Vérification du paiement...</p>
+      <p style="color:#6b7a99;font-size:.85rem;">Merci de patienter quelques secondes.</p>
     </div>
   </div>
 </div>
@@ -125,110 +132,133 @@
 <script src="../assets/js/i18n.js"></script>
 <script src="../assets/js/api.js"></script>
 <script>
+// ── Config ──────────────────────────────────────────────────
+const API_BASE = window.ARCADINS_API_BASE || (
+  ['localhost','127.0.0.1'].includes(location.hostname)
+    ? 'http://localhost:3000/api'
+    : location.origin + '/api'
+);
+function getToken() { return localStorage.getItem('arc_token') || ''; }
+
 let selectedPlan = null;
 
-const PAYS_LIST = [
-  'Afghanistan','Afrique du Sud','Albanie','Algérie','Allemagne','Andorre','Angola',
-  'Antigua-et-Barbuda','Arabie Saoudite','Argentine','Arménie','Australie','Autriche',
-  'Azerbaïdjan','Bahamas','Bahreïn','Bangladesh','Barbade','Belgique','Belize','Bénin',
-  'Bhoutan','Biélorussie','Birmanie (Myanmar)','Bolivie','Bosnie-Herzégovine','Botswana',
-  'Brésil','Brunei','Bulgarie','Burkina Faso','Burundi','Cambodge','Cameroun','Canada',
-  'Cap-Vert','Chili','Chine','Chypre','Colombie','Comores','Congo (Brazzaville)',
-  'Congo (RDC)','Corée du Nord','Corée du Sud','Costa Rica','Côte d\'Ivoire','Croatie',
-  'Cuba','Danemark','Djibouti','Dominique','Égypte','Émirats arabes unis','Équateur',
-  'Érythrée','Espagne','Estonie','Eswatini','États-Unis','Éthiopie','Fidji','Finlande',
-  'France','Gabon','Gambie','Géorgie','Ghana','Grèce','Grenade','Guatemala','Guinée',
-  'Guinée équatoriale','Guinée-Bissau','Guyana','Haïti','Honduras','Hongrie','Îles Marshall',
-  'Îles Salomon','Inde','Indonésie','Irak','Iran','Irlande','Islande','Israël','Italie',
-  'Jamaïque','Japon','Jordanie','Kazakhstan','Kenya','Kirghizistan','Kiribati','Kosovo',
-  'Koweït','Laos','Lesotho','Lettonie','Liban','Liberia','Libye','Liechtenstein',
-  'Lituanie','Luxembourg','Macédoine du Nord','Madagascar','Malaisie','Malawi','Maldives',
-  'Mali','Malte','Maroc','Maurice','Mauritanie','Mexique','Micronésie','Moldavie',
-  'Monaco','Mongolie','Monténégro','Mozambique','Namibie','Nauru','Népal','Nicaragua',
-  'Niger','Nigéria','Norvège','Nouvelle-Zélande','Oman','Ouganda','Ouzbékistan','Pakistan',
-  'Palaos','Palestine','Panama','Papouasie-Nouvelle-Guinée','Paraguay','Pays-Bas','Pérou',
-  'Philippines','Pologne','Portugal','Qatar','République centrafricaine',
-  'République dominicaine','République tchèque','Roumanie','Royaume-Uni','Russie','Rwanda',
-  'Saint-Christophe-et-Niévès','Saint-Marin','Saint-Vincent-et-les-Grenadines','Sainte-Lucie',
-  'Salvador','Samoa','Sao Tomé-et-Principe','Sénégal','Serbie','Seychelles','Sierra Leone',
-  'Singapour','Slovaquie','Slovénie','Somalie','Soudan','Soudan du Sud','Sri Lanka',
-  'Suède','Suisse','Suriname','Syrie','Tadjikistan','Tanzanie','Tchad','Thaïlande',
-  'Timor oriental','Togo','Tonga','Trinité-et-Tobago','Tunisie','Turkménistan','Turquie',
-  'Tuvalu','Ukraine','Uruguay','Vanuatu','Vatican','Venezuela','Vietnam','Yémen',
-  'Zambie','Zimbabwe'
-];
-
-(function populateCountrySelect() {
-  const sel = document.getElementById('payCountry');
-  if (!sel) return;
-  PAYS_LIST.forEach(p => {
-    const opt = document.createElement('option');
-    opt.value = p;
-    opt.textContent = p;
-    sel.appendChild(opt);
-  });
-})();
-
+// ── Init page ────────────────────────────────────────────────
 async function init() {
   const token = getToken();
   if (!token) { window.location.href = 'acces.html'; return; }
+
+  // Retour depuis Stripe ?
+  const params = new URLSearchParams(location.search);
+  const payment = params.get('payment');
+  const sessionId = params.get('session_id');
+
+  if (payment === 'success' && sessionId) {
+    // Afficher modal de vérification
+    document.getElementById('paymentModal').classList.add('open');
+    document.getElementById('paymentForm').style.display = 'none';
+    document.getElementById('paymentVerifying').style.display = 'block';
+    await verifyPayment(sessionId);
+    return;
+  }
+
+  if (payment === 'cancelled') {
+    // Rien — on recharge juste les forfaits normalement
+    history.replaceState({}, '', location.pathname);
+  }
+
+  // Vérifier si déjà payé
   try {
-    const res = await AuthAPI.me();
-    if (res.user && res.user.payment_confirmed) {
-      window.location.href = 'qualification.html'; return;
+    const r = await fetch(API_BASE + '/access/me', { headers: { Authorization: 'Bearer ' + token } });
+    const d = await r.json();
+    if (d.success && d.data?.user?.payment_confirmed) {
+      window.location.href = 'formation.html'; return;
     }
   } catch(e) {}
+
   loadPlans();
 }
 
+// ── Vérification paiement après retour Stripe ────────────────
+async function verifyPayment(sessionId) {
+  try {
+    const r = await fetch(`${API_BASE}/plans/verify-payment?session_id=${sessionId}`, {
+      headers: { Authorization: 'Bearer ' + getToken() }
+    });
+    const d = await r.json();
+
+    document.getElementById('paymentVerifying').style.display = 'none';
+
+    if (d.success) {
+      // Mettre à jour le token/user en local
+      if (d.data?.user) localStorage.setItem('arc_user', JSON.stringify(d.data.user));
+      document.getElementById('paymentSuccess').style.display = 'block';
+      // Nettoyage URL
+      history.replaceState({}, '', location.pathname);
+    } else {
+      // Paiement non confirmé
+      document.getElementById('paymentModal').classList.remove('open');
+      history.replaceState({}, '', location.pathname);
+      loadPlans();
+    }
+  } catch(e) {
+    document.getElementById('paymentVerifying').style.display = 'none';
+    document.getElementById('paymentModal').classList.remove('open');
+    loadPlans();
+  }
+}
+
+// ── Chargement des forfaits ──────────────────────────────────
 async function loadPlans() {
   try {
-    const res = await PlansAPI.list();
+    const r = await fetch(API_BASE + '/plans');
+    const res = await r.json();
     const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
-    // API returns: { success, data: { plans: [...] } }
-    const plans = (res.data && res.data.plans) || res.plans || [];
+    const plans = res.data?.plans || [];
+
     document.getElementById('loadingPlans').style.display = 'none';
     const grid = document.getElementById('plansGrid');
     grid.style.display = 'grid';
 
-    const btnLabel = { fr: 'Choisir ce forfait', en: 'Choose this plan' };
+    const btnLabel = { fr: '💳 Choisir ce forfait', en: '💳 Choose this plan' };
     const perLabel = { fr: 'accès unique', en: 'one-time access' };
 
     plans.forEach(p => {
       const card = document.createElement('div');
       card.className = 'plan-card' + (p.recommended ? ' popular' : '');
-      // name, description, features are plain strings/arrays from API
-      const name = p.name || '';
-      const desc = p.description || '';
-      const price = p.price || 0;
-      const currency = p.currency || 'USD';
       const features = Array.isArray(p.features) ? p.features : [];
-      const isPopular = !!p.recommended;
 
       card.innerHTML = `
-        <div class="plan-name">${name}</div>
-        <div class="plan-price-big">${price}<sup style="font-size:1rem;">${currency}</sup><sub style="font-size:.85rem;color:var(--gray-text);font-weight:400;"> / ${perLabel[lang]}</sub></div>
-        <div class="plan-desc">${desc}</div>
-        <ul class="plan-features">
-          ${features.map(f => `<li>${f}</li>`).join('')}
-        </ul>
-        <button class="btn-plan ${isPopular ? 'btn-plan-gold' : 'btn-plan-blue'}"
-          onclick="selectPlan('${p.id}','${name}',${price},'${currency}')">
+        <div class="plan-name">${p.name}</div>
+        <div class="plan-price-big">${p.price}<sup style="font-size:1rem;">$</sup>
+          <sub style="font-size:.85rem;color:var(--gray-text);font-weight:400;"> / ${perLabel[lang]}</sub>
+        </div>
+        <div class="plan-desc">${p.description}</div>
+        <ul class="plan-features">${features.map(f => `<li>✅ ${f}</li>`).join('')}</ul>
+        <button class="btn-plan ${p.recommended ? 'btn-plan-gold' : 'btn-plan-blue'}"
+          onclick="selectPlan('${p.id}','${p.name}',${p.price})">
           ${btnLabel[lang]}
         </button>`;
       grid.appendChild(card);
     });
   } catch(e) {
-    document.getElementById('loadingPlans').innerHTML = `<p style="color:red">Erreur chargement forfaits: ${e.message}</p>`;
+    document.getElementById('loadingPlans').innerHTML =
+      `<p style="color:red;text-align:center;">Erreur chargement forfaits: ${e.message}</p>`;
   }
 }
 
-function selectPlan(id, name, price, period) {
-  selectedPlan = { id, name, price, period };
-  const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+// ── Sélection d'un forfait ───────────────────────────────────
+function selectPlan(id, name, price) {
+  selectedPlan = { id, name, price };
   document.getElementById('priceRecap').innerHTML = `
-    <div style="display:flex;justify-content:space-between;"><strong>${name}</strong><strong>${price}€</strong></div>
-    <div style="font-size:.8rem;color:var(--gray-text);">${period}</div>`;
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <strong style="font-size:1rem;">${name}</strong>
+      <strong style="font-size:1.3rem;color:var(--blue-dark);">${price} USD</strong>
+    </div>
+    <div style="font-size:.8rem;color:var(--gray-text);margin-top:4px;">Accès unique · Paiement sécurisé Stripe</div>`;
+  document.getElementById('payError').style.display = 'none';
+  document.getElementById('paymentForm').style.display = 'block';
+  document.getElementById('paymentSuccess').style.display = 'none';
+  document.getElementById('paymentVerifying').style.display = 'none';
   document.getElementById('paymentModal').classList.add('open');
 }
 
@@ -236,24 +266,38 @@ function closePayment() {
   document.getElementById('paymentModal').classList.remove('open');
 }
 
+// ── Lancement Stripe Checkout ────────────────────────────────
 async function processPayment() {
   if (!selectedPlan) return;
-  const country = document.getElementById('payCountry').value;
-  if (!country) {
-    alert('Veuillez sélectionner votre pays / Please select your country');
-    return;
-  }
   const btn = document.getElementById('payBtn');
+  const errEl = document.getElementById('payError');
   btn.disabled = true;
-  btn.textContent = '...';
+  btn.textContent = '⏳ Connexion à Stripe...';
+  errEl.style.display = 'none';
+
   try {
-    await PlansAPI.checkout(selectedPlan.id);
-    document.getElementById('paymentForm').style.display = 'none';
-    document.getElementById('paymentSuccess').style.display = 'block';
+    const r = await fetch(API_BASE + '/plans/create-checkout-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + getToken()
+      },
+      body: JSON.stringify({ plan: selectedPlan.id })
+    });
+    const d = await r.json();
+
+    if (!r.ok || !d.success) {
+      throw new Error(d.message || 'Erreur Stripe');
+    }
+
+    // Redirection vers la page Stripe Checkout
+    window.location.href = d.data.url;
+
   } catch(e) {
     btn.disabled = false;
-    btn.textContent = document.querySelector('[data-i18n="pay.btn"]')?.textContent || 'Payer';
-    alert(e.message);
+    btn.textContent = '💳 Payer avec Stripe →';
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
   }
 }
 

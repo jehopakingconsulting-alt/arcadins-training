@@ -5,7 +5,7 @@ const router = express.Router();
 const { getDb } = require('../database');
 const authMiddleware = require('../middleware/auth');
 const stepGuard = require('../middleware/stepGuard');
-const { sendUserEmail, sendAdminNotification } = require('../services/email');
+const { sendUserEmail, sendAdminNotification, sendWelcomeEmail } = require('../services/email');
 
 const MODULE_TITLES = {
   1: 'Introduction au TEF & TCF Canada',
@@ -196,8 +196,8 @@ router.post('/:num/complete', authMiddleware, stepGuard('qualification_done'), a
           Passer le test final →
         </a>
       `;
-      sendUserEmail(user.email, '[ARCADINS] Tous les modules complétés – Passez le test final !', inviteHtml).catch(() => {});
-      sendAdminNotification({ nom: user.nom, prenom: user.prenom, email: user.email, telephone: user.telephone, pays: user.pays }).catch(() => {});
+      sendUserEmail(user.email, '[ARCADINS] 🎓 Tous les modules complétés — Passez le test final !', inviteHtml).catch(() => {});
+      sendAdminNotification({ nom: user.nom, prenom: user.prenom, email: user.email, telephone: user.telephone, pays: user.pays, event: 'modules_completed' }).catch(() => {});
     }
 
     const modules = db.prepare('SELECT * FROM modules WHERE user_id = ? ORDER BY module_number').all(user.id);

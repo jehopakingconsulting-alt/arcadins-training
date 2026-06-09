@@ -90,11 +90,11 @@
   <div class="hero-container">
     <div class="hero-content">
       <div class="hero-badge" data-i18n="hero.badge">🍁 Plateforme officielle de préparation linguistique</div>
-      <h1 data-i18n="hero.h1">Préparez votre <span>TEF Canada</span> ou <span>TCF Canada</span> avec confiance et méthode</h1>
+      <h1 data-i18n="hero.h1">Préparez votre <span>TEF</span> ou <span>TCF Canada</span> avec confiance et méthode</h1>
       <p data-i18n="hero.p">Un accompagnement complet — interactif, structuré et progressif — pour améliorer votre français, réussir votre test officiel et concrétiser votre projet d'immigration au Canada ou au Québec.</p>
       <div class="hero-btns">
         <a href="#inscription" class="btn-primary" data-i18n="hero.btn1">✏️ S'inscrire maintenant</a>
-        <a href="pages/tests.html" class="btn-secondary" data-i18n="hero.btn2">🎯 Test de niveau gratuit</a>
+        <a href="pages/tests.html" class="btn-secondary" data-i18n="hero.btn2">🎯 Test de niveau</a>
         <a href="#" onclick="openModal('login')" class="btn-gold" data-i18n="hero.btn3">🔐 Mon compte</a>
       </div>
     </div>
@@ -315,7 +315,7 @@
         <span class="test-icon">📊</span>
         <h3 data-i18n="test.niveau.h">Test de niveau</h3>
         <p data-i18n="test.niveau.p">Évaluez votre niveau actuel en français</p>
-        <span class="badge-free" data-i18n="badge.free">GRATUIT</span>
+        <span class="badge.free": { fr: "ESSAI",                  en: "TRIAL" </span>
       </div>
       <div class="test-card" onclick="location.href='pages/tests.html'">
         <span class="test-icon">📖</span>
@@ -370,7 +370,7 @@
         <div class="plan-price">Essai Libre <span data-i18n="plan1.pricesub">/ accès découverte</span></div>
         <div class="plan-desc" data-i18n="plan1.desc">Pour tester la plateforme et évaluer votre niveau</div>
         <ul class="plan-features">
-          <li data-i18n="plan1.f1">Test de niveau gratuit</li>
+          <li data-i18n="plan1.f1">Test de niveau</li>
           <li data-i18n="plan1.f2">Accès partiel aux exercices</li>
           <li data-i18n="plan1.f3">Quiz de grammaire (5 questions)</li>
           <li class="no" data-i18n="plan1.f4">Programmes de Tutorat complètes</li>
@@ -434,7 +434,7 @@
     <div class="section-header">
       <span class="section-tag" style="background:rgba(201,168,76,0.2);color:var(--gold-light);" data-i18n="tag.inscription">Inscription</span>
       <h2 data-i18n="insc.h2">Commencez votre préparation aujourd'hui</h2>
-      <p data-i18n="insc.p">Remplissez le formulaire ci-dessous et notre équipe vous contacte sous 24h.</p>
+      <p data-i18n="insc.p">Remplissez le formulaire et accédez immédiatement à votre espace de formation.</p>
     </div>
     <div class="inscription-form">
       <form id="inscriptionForm" onsubmit="submitForm(event)">
@@ -455,10 +455,42 @@
             <label for="pays" data-i18n="insc.pays">Pays de résidence *</label>
             <select id="pays" name="pays" required>
               <option value="" data-i18n="insc.pays.opt0">Sélectionnez votre pays</option>
-              <option>France</option><option>Maroc</option><option>Algérie</option>
-              <option>Tunisie</option><option>Sénégal</option><option>Côte d'Ivoire</option>
-              <option>Cameroun</option><option>Congo</option><option>Mali</option>
-              <option>Belgique</option><option>Suisse</option><option>Canada</option>
+              <optgroup label="🌍 Afrique">
+                <option>Algérie</option><option>Angola</option><option>Bénin</option>
+                <option>Burkina Faso</option><option>Burundi</option><option>Cameroun</option>
+                <option>Cap-Vert</option><option>Comores</option><option>Congo</option>
+                <option>Côte d'Ivoire</option><option>Djibouti</option><option>Égypte</option>
+                <option>Érythrée</option><option>Éthiopie</option><option>Gabon</option>
+                <option>Gambie</option><option>Ghana</option><option>Guinée</option>
+                <option>Guinée équatoriale</option><option>Kenya</option><option>Libye</option>
+                <option>Madagascar</option><option>Mali</option><option>Maroc</option>
+                <option>Mauritanie</option><option>Niger</option><option>Nigéria</option>
+                <option>République démocratique du Congo</option><option>Rwanda</option>
+                <option>Sénégal</option><option>Somalie</option><option>Soudan</option>
+                <option>Tanzanie</option><option>Tchad</option><option>Togo</option>
+                <option>Tunisie</option><option>Ouganda</option><option>Zimbabwe</option>
+              </optgroup>
+              <optgroup label="🌍 Moyen-Orient">
+                <option>Arabie saoudite</option><option>Émirats arabes unis</option>
+                <option>Irak</option><option>Iran</option><option>Jordanie</option>
+                <option>Koweït</option><option>Liban</option><option>Oman</option>
+                <option>Qatar</option><option>Syrie</option><option>Yémen</option>
+              </optgroup>
+              <optgroup label="🌍 Europe">
+                <option>Allemagne</option><option>Belgique</option><option>Espagne</option>
+                <option>France</option><option>Italie</option><option>Luxembourg</option>
+                <option>Pays-Bas</option><option>Portugal</option><option>Royaume-Uni</option>
+                <option>Suisse</option>
+              </optgroup>
+              <optgroup label="🌎 Amériques">
+                <option>Canada</option><option>États-Unis</option><option>Haïti</option>
+                <option>Mexique</option><option>Brésil</option>
+              </optgroup>
+              <optgroup label="🌏 Asie / Océanie">
+                <option>Bangladesh</option><option>Chine</option><option>Inde</option>
+                <option>Pakistan</option><option>Philippines</option><option>Vietnam</option>
+                <option>Australie</option>
+              </optgroup>
               <option data-i18n="insc.other">Autre</option>
             </select>
           </div>
@@ -500,10 +532,10 @@
             <label for="plan" data-i18n="insc.plan">Plan souhaité</label>
             <select id="plan" name="plan">
               <option value="" data-i18n="insc.plan.opt0">Je choisirai plus tard</option>
-              <option data-i18n="insc.plan.d">Découverte (Gratuit)</option>
-              <option>Standard – 149€</option>
-              <option>Premium – 249€</option>
-              <option>VIP – 399€</option>
+              <option>Starter – $97 USD</option>
+              <option>Essential – $147 USD</option>
+              <option>Premium – $247 USD</option>
+              <option>VIP – $497 USD</option>
             </select>
           </div>
         </div>
@@ -517,17 +549,21 @@
             <span data-i18n="insc.newsletter">Je souhaite recevoir la newsletter ARCADINS (conseils TEF/TCF, actualités IRCC). <em style="color:#aaa;">(Optionnel — désinscription en 1 clic)</em></span>
           </label>
           <button type="submit" class="btn-primary" style="width:100%;justify-content:center;font-size:1.05rem;padding:16px;" data-i18n="insc.btn">
-            ✉️ Envoyer mon inscription
+            🚀 Commencer maintenant — Accès immédiat
           </button>
           <p style="text-align:center;font-size:0.76rem;color:#aaa;margin-top:4px;" data-i18n="insc.secure">
-            🔒 Aucune carte bancaire requise · Données protégées · Réponse sous 24h
+            🔒 Paiement sécurisé Stripe · Accès immédiat · Données protégées
           </p>
         </div>
       </form>
       <div id="formSuccess" style="display:none;text-align:center;padding:32px 0;">
         <div style="font-size:3rem;margin-bottom:16px;">🎉</div>
-        <h3 style="color:var(--blue-dark);margin-bottom:8px;" data-i18n="insc.success.h">Inscription reçue !</h3>
-        <p style="color:var(--gray-text);" data-i18n="insc.success.p">Merci ! Notre équipe vous contactera sous 24h pour finaliser votre accès.</p>
+        <h3 style="color:var(--blue-dark);margin-bottom:8px;" data-i18n="insc.success.h">Inscription enregistrée !</h3>
+        <p style="color:var(--gray-text);margin-bottom:12px;" data-i18n="insc.success.p">Vous allez être redirigé vers la page de paiement pour activer votre accès immédiatement.</p>
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;color:var(--blue);font-weight:600;font-size:.9rem;">
+          <span style="width:18px;height:18px;border:3px solid var(--blue);border-top-color:transparent;border-radius:50%;display:inline-block;animation:spin 0.8s linear infinite;"></span>
+          <span data-i18n="insc.success.redirect">Redirection en cours...</span>
+        </div>
       </div>
     </div>
   </div>

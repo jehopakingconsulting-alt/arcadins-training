@@ -84,7 +84,7 @@
   const TXT = {
     fr: {
       welcome: 'Bienvenue sur ARCADINS',
-      sub: 'Créez votre compte gratuit pour accéder à la plateforme de préparation TEF & TCF Canada',
+      sub: 'Créez votre compte pour accéder à la plateforme de préparation TEF & TCF Canada',
       tabNew: '✨ Nouveau visiteur',
       tabLogin: '🔑 Déjà inscrit',
       prenom: 'Prénom *',

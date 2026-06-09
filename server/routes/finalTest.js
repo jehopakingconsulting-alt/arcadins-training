@@ -7,7 +7,7 @@ const { getDb } = require('../database');
 const authMiddleware = require('../middleware/auth');
 const stepGuard = require('../middleware/stepGuard');
 const { generateCertificate } = require('../services/pdf');
-const { sendUserEmail } = require('../services/email');
+const { sendCertificateEmail } = require('../services/email');
 
 const FINAL_QUESTIONS = [
   // Compréhension orale (CO) - simulated via text
@@ -610,7 +610,7 @@ router.post('/submit', authMiddleware, stepGuard('modules_done'), async (req, re
           Télécharger mon certificat →
         </a>
       `;
-      sendUserEmail(freshUser.email, '[ARCADINS] 🎓 Votre certificat officiel est prêt !', certEmailHtml).catch(() => {});
+      sendCertificateEmail(freshUser, { score: scorePercent, certificate_number: certNumber }).catch(() => {});
 
       return res.json({
         success: true,

@@ -29,14 +29,51 @@ function switchTab(tab) {
 const authModal = document.getElementById('authModal');
 if (authModal) authModal.addEventListener('click', function(e) { if (e.target === this) closeModal(); });
 
-function handleAuth(e, type) {
+async function handleAuth(e, type) {
   e.preventDefault();
-  if (type === 'login') {
-    showToast(t('toast.login'), 'info');
-  } else {
-    showToast(t('toast.register'), 'success');
+  const form = e.target;
+  const btn  = form.querySelector('button[type="submit"]');
+  const origText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '⏳ ...';
+
+  try {
+    if (type === 'login') {
+      const email    = form.querySelector('input[type="email"]').value.trim();
+      const password = form.querySelector('input[type="password"]').value;
+      const res  = await fetch('/api/access/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (data.success) {
+        localStorage.setItem('arc_token', data.token);
+        localStorage.setItem('arc_user', JSON.stringify(data.user));
+        closeModal();
+        showToast('Connexion réussie ! Redirection...', 'success');
+        setTimeout(() => {
+          const u = data.user;
+          const base = window.location.pathname.includes('/pages/') ? '' : 'pages/';
+          if (!u.trial_done)              window.location.href = base + 'essai-gratuit.html';
+          else if (!u.payment_confirmed)  window.location.href = base + 'forfaits.html';
+          else if (!u.qualification_done) window.location.href = base + 'qualification.html';
+          else                            window.location.href = base + 'formation.html';
+        }, 1000);
+      } else {
+        btn.disabled = false; btn.innerHTML = origText;
+        showToast(data.message || 'Email ou mot de passe incorrect.', 'error');
+      }
+    } else {
+      // Pour l'inscription, on redirige vers le formulaire principal
+      closeModal();
+      const inPages = window.location.pathname.includes('/pages/');
+      window.location.href = (inPages ? '../index.html' : 'index.html') + '#inscription';
+    }
+  } catch (err) {
+    btn.disabled = false; btn.innerHTML = origText;
+    showToast('Erreur réseau. Vérifiez votre connexion.', 'error');
   }
-  closeModal();
 }
 
 // ===== FAQ =====
@@ -48,18 +85,58 @@ function toggleFaq(btn) {
 }
 
 // ===== FORMULAIRE INSCRIPTION =====
-function submitForm(e) {
+async function submitForm(e) {
   e.preventDefault();
+
+  const nomComplet  = (document.getElementById('nom')?.value || '').trim();
+  const email       = (document.getElementById('email')?.value || '').trim();
+  const telephone   = (document.getElementById('tel')?.value || '').trim();
+  const pays        = (document.getElementById('pays')?.value || '').trim();
+  const lang        = (typeof currentLang !== 'undefined' ? currentLang : 'fr');
+
+  // Split nom complet → prenom + nom
+  const parts  = nomComplet.split(/\s+/);
+  const prenom = parts[0] || nomComplet;
+  const nom    = parts.slice(1).join(' ') || prenom;
+
+  const btn = e.target.querySelector('button[type="submit"]');
+  if (btn) { btn.disabled = true; }
+
+  // Afficher le succès immédiatement (UX)
   document.getElementById('inscriptionForm').style.display = 'none';
   document.getElementById('formSuccess').style.display = 'block';
   showToast(t('toast.form'), 'success');
+
+  // Appel API pour créer le compte en arrière-plan
+  try {
+    const res = await fetch('/api/access/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nom, prenom, email, telephone: telephone || '0000000000', pays: pays || 'Autre', lang })
+    });
+    const data = await res.json();
+    if (data.success && data.token) {
+      localStorage.setItem('arc_token', data.token);
+      localStorage.setItem('arc_user', JSON.stringify(data.user));
+    }
+  } catch (err) {
+    // Pas bloquant : l'accès-popup gérera l'auth au chargement de forfaits.html
+    console.warn('[submitForm] API call failed (offline?):', err.message);
+  }
+
+  // Redirection vers forfaits après 2.5 secondes
+  setTimeout(() => {
+    const inPages = window.location.pathname.includes('/pages/');
+    const target  = inPages ? 'forfaits.html' : 'pages/forfaits.html';
+    window.location.href = target + (email ? '?email=' + encodeURIComponent(email) : '');
+  }, 2500);
 }
 
 // ===== SCROLL TO TOP =====
 const scrollBtn = document.createElement('button');
 scrollBtn.className = 'scroll-top';
 scrollBtn.innerHTML = '↑';
-scrollBtn.title = t('scroll.top') || 'Retour en haut';
+scrollBtn.title = (typeof currentLang !== 'undefined' && currentLang === 'en') ? 'Back to top' : 'Retour en haut';
 scrollBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 document.body.appendChild(scrollBtn);
 window.addEventListener('scroll', () => {
@@ -156,7 +233,7 @@ const chatAnswers = {
     en: "The <strong>TCF Canada</strong> is organized by France Éducation international. It is recognized by IRCC (Canada) and MIFI (Quebec). It includes 5 components including Language Structure Mastery (MSL). Ideal for PEQ and Express Entry. 🇨🇦"
   },
   tarifs: {
-    fr: "Nous proposons 4 plans :<br>• <strong>Découverte</strong> : Gratuit<br>• <strong>Standard</strong> : 149€<br>• <strong>Premium</strong> : 249€ ⭐<br>• <strong>VIP</strong> : 399€ avec coaching<br><a href='" + tarifLink + "' style='color:var(--gold)'>Voir les détails →</a>",
+    fr: "Nous proposons 4 plans :<br>• <strong>Découverte : Inclus dans votre inscription<br>• <strong>Standard</strong> : 149€<br>• <strong>Premium</strong> : 249€ ⭐<br>• <strong>VIP</strong> : 399€ avec coaching<br><a href='" + tarifLink + "' style='color:var(--gold)'>Voir les détails →</a>",
     en: "We offer 4 plans:<br>• <strong>Discovery</strong>: Free<br>• <strong>Standard</strong>: €149<br>• <strong>Premium</strong>: €249 ⭐<br>• <strong>VIP</strong>: €399 with coaching<br><a href='" + tarifLink + "' style='color:var(--gold)'>See details →</a>"
   },
   inscription: {

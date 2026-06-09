@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
@@ -7,24 +7,26 @@
   <link rel="stylesheet" href="../assets/css/style.css" />
 </head>
 <body>
-<div class="topbar" data-i18n="topbar">🍁 Programme de Tutorat 100% en ligne · TEF & TCF Canada · <a href="mailto:info@arcadins-training.com">info@arcadins-training.com</a></div>
+<div class="topbar" data-i18n="topbar">🍁 Programme de Tutorat 100% en ligne · TEF &amp; TCF Canada · <a href="mailto:info@arcadins-training.com">info@arcadins-training.com</a></div>
 <nav>
   <div class="nav-container">
     <a href="../index.html" class="logo"><img src="../assets/img/logo-nav.svg" alt="ARCADINS Training Center" height="50" style="display:block;" /></a>
     <ul class="nav-links" id="navLinks">
       <li><a href="../index.html" data-i18n="nav.home">Accueil</a></li>
       <li><a href="faq.html" data-i18n="nav.faq">FAQ</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="tuteur.html" style="color:var(--gold);font-weight:700;">🎓 Devenir Tuteur</a></li><li><a href="#" class="btn-login" onclick="openModal('login')" data-i18n="nav.login">Connexion</a></li>
+      <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+      <li><a href="tuteur.html" data-i18n="nav.tuteur" style="color:var(--gold);font-weight:700;">🎓 Devenir Tuteur</a></li>
+      <li><a href="#" class="btn-login" onclick="openModal('login')" data-i18n="nav.login">Connexion</a></li>
       <li><a href="../index.html#inscription" class="btn-cta" data-i18n="nav.register">S'inscrire</a></li>
     </ul>
-    <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.3s;margin-right:8px;" title="Switch language">🇬🇧 EN</button><div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+    <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.3s;margin-right:8px;" title="Switch language">🇬🇧 EN</button>
+    <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
   </div>
 </nav>
 
 <section style="background:var(--blue-dark);color:white;padding:50px 24px;text-align:center;">
-  <h1 style="font-size:1.8rem;font-weight:800;">Politique de Confidentialité</h1>
-  <p style="opacity:.8;margin-top:8px;font-size:.9rem;">Dernière mise à jour : juin 2024</p>
+  <h1 style="font-size:1.8rem;font-weight:800;" data-i18n="priv.title">Politique de Confidentialité</h1>
+  <p style="opacity:.8;margin-top:8px;font-size:.9rem;" data-i18n="priv.updated">Dernière mise à jour : juin 2024</p>
 </section>
 
 <section>
@@ -32,73 +34,79 @@
     <div style="display:flex;flex-direction:column;gap:32px;font-size:.92rem;color:var(--text);line-height:1.8;">
 
       <div>
-        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;">1. Collecte des données personnelles</h2>
-        <p>Lors de votre inscription sur ARCADINS Training Center, nous collectons les informations suivantes : nom complet, adresse email, numéro de téléphone, pays de résidence, et informations relatives à votre projet d'immigration. Ces données sont nécessaires à la création de votre compte et à la personnalisation de votre parcours de tutorat.</p>
+        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;" data-i18n="priv.s1.h">1. Collecte des données personnelles</h2>
+        <p data-i18n="priv.s1.p">Lors de votre inscription sur ARCADINS Training Center, nous collectons les informations suivantes : nom complet, adresse email, numéro de téléphone, pays de résidence, et informations relatives à votre projet d'immigration. Ces données sont nécessaires à la création de votre compte et à la personnalisation de votre parcours de tutorat.</p>
       </div>
 
       <div>
-        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;">2. Utilisation des données</h2>
-        <p>Vos données personnelles sont utilisées exclusivement pour :</p>
+        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;" data-i18n="priv.s2.h">2. Utilisation des données</h2>
+        <p data-i18n="priv.s2.p">Vos données personnelles sont utilisées exclusivement pour :</p>
         <ul style="margin-left:20px;margin-top:8px;display:flex;flex-direction:column;gap:6px;">
-          <li>La création et la gestion de votre compte étudiant</li>
-          <li>L'accès aux programmes de tutorat et aux tests interactifs</li>
-          <li>Le suivi de votre progression pédagogique</li>
-          <li>La communication relative à votre programme de tutorat (emails de suivi, notifications)</li>
-          <li>L'amélioration de nos services</li>
+          <li data-i18n="priv.s2.li1">La création et la gestion de votre compte étudiant</li>
+          <li data-i18n="priv.s2.li2">L'accès aux programmes de tutorat et aux tests interactifs</li>
+          <li data-i18n="priv.s2.li3">Le suivi de votre progression pédagogique</li>
+          <li data-i18n="priv.s2.li4">La communication relative à votre programme de tutorat (emails de suivi, notifications)</li>
+          <li data-i18n="priv.s2.li5">L'amélioration de nos services</li>
         </ul>
-        <p style="margin-top:10px;">Nous ne vendons, ne louons et ne partageons jamais vos données personnelles avec des tiers à des fins commerciales.</p>
+        <p style="margin-top:10px;" data-i18n="priv.s2.p2">Nous ne vendons, ne louons et ne partageons jamais vos données personnelles avec des tiers à des fins commerciales.</p>
       </div>
 
       <div>
-        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;">3. Sécurité des données</h2>
-        <p>Toutes les communications entre votre navigateur et nos serveurs sont chiffrées via le protocole SSL/TLS. Vos mots de passe sont stockés sous forme hashée et ne sont jamais accessibles en clair. Nous appliquons des mesures de sécurité conformes aux standards du secteur pour protéger vos informations.</p>
+        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;" data-i18n="priv.s3.h">3. Sécurité des données</h2>
+        <p data-i18n="priv.s3.p">Toutes les communications entre votre navigateur et nos serveurs sont chiffrées via le protocole SSL/TLS. Vos mots de passe sont stockés sous forme hashée et ne sont jamais accessibles en clair. Nous appliquons des mesures de sécurité conformes aux standards du secteur pour protéger vos informations.</p>
       </div>
 
       <div>
-        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;">4. Cookies</h2>
-        <p>Notre site utilise des cookies essentiels au fonctionnement de la plateforme (session de connexion, préférences) et des cookies analytiques anonymisés pour comprendre comment les utilisateurs interagissent avec le site. Vous pouvez désactiver les cookies non essentiels dans les paramètres de votre navigateur.</p>
+        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;" data-i18n="priv.s4.h">4. Cookies</h2>
+        <p data-i18n="priv.s4.p">Notre site utilise des cookies essentiels au fonctionnement de la plateforme (session de connexion, préférences) et des cookies analytiques anonymisés pour comprendre comment les utilisateurs interagissent avec le site. Vous pouvez désactiver les cookies non essentiels dans les paramètres de votre navigateur.</p>
       </div>
 
       <div>
-        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;">5. Vos droits</h2>
-        <p>Conformément aux réglementations applicables sur la protection des données (RGPD et lois locales), vous disposez des droits suivants :</p>
+        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;" data-i18n="priv.s5.h">5. Vos droits</h2>
+        <p data-i18n="priv.s5.p">Conformément aux réglementations applicables sur la protection des données (RGPD et lois locales), vous disposez des droits suivants :</p>
         <ul style="margin-left:20px;margin-top:8px;display:flex;flex-direction:column;gap:6px;">
-          <li>Droit d'accès à vos données personnelles</li>
-          <li>Droit de rectification des données inexactes</li>
-          <li>Droit à l'effacement (« droit à l'oubli »)</li>
-          <li>Droit à la portabilité des données</li>
-          <li>Droit d'opposition au traitement</li>
+          <li data-i18n="priv.s5.li1">Droit d'accès à vos données personnelles</li>
+          <li data-i18n="priv.s5.li2">Droit de rectification des données inexactes</li>
+          <li data-i18n="priv.s5.li3">Droit à l'effacement (« droit à l'oubli »)</li>
+          <li data-i18n="priv.s5.li4">Droit à la portabilité des données</li>
+          <li data-i18n="priv.s5.li5">Droit d'opposition au traitement</li>
         </ul>
-        <p style="margin-top:10px;">Pour exercer ces droits, contactez-nous à : <a href="mailto:info@arcadins-training.com" style="color:var(--blue);">info@arcadins-training.com</a></p>
+        <p style="margin-top:10px;" data-i18n="priv.s5.p2">Pour exercer ces droits, contactez-nous à : <a href="mailto:info@arcadins-training.com" style="color:var(--blue);">info@arcadins-training.com</a></p>
       </div>
 
       <div>
-        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;">6. Conservation des données</h2>
-        <p>Vos données sont conservées pendant la durée de votre abonnement actif, plus une période de 2 ans après la fin de votre accès, sauf demande de suppression de votre part.</p>
+        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;" data-i18n="priv.s6.h">6. Conservation des données</h2>
+        <p data-i18n="priv.s6.p">Vos données sont conservées pendant la durée de votre abonnement actif, plus une période de 2 ans après la fin de votre accès, sauf demande de suppression de votre part.</p>
       </div>
 
       <div>
-        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;">7. Contact</h2>
-        <p>Pour toute question relative à cette politique de confidentialité : <a href="mailto:info@arcadins-training.com" style="color:var(--blue);">info@arcadins-training.com</a></p>
+        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;" data-i18n="priv.s7.h">7. Contact</h2>
+        <p data-i18n="priv.s7.p">Pour toute question relative à cette politique de confidentialité : <a href="mailto:info@arcadins-training.com" style="color:var(--blue);">info@arcadins-training.com</a></p>
       </div>
+
     </div>
+
     <div style="margin-top:40px;display:flex;gap:14px;flex-wrap:wrap;">
-      <a href="../index.html" class="btn-primary" style="background:var(--blue);">← Retour à l'accueil</a>
-      <a href="conditions.html" class="btn-secondary" style="color:var(--blue);border-color:var(--blue);background:transparent;">Conditions d'utilisation</a>
+      <a href="../index.html" class="btn-primary" style="background:var(--blue);" data-i18n="priv.btn.home">← Retour à l'accueil</a>
+      <a href="conditions.html" class="btn-secondary" style="color:var(--blue);border-color:var(--blue);background:transparent;" data-i18n="priv.btn.terms">Conditions d'utilisation</a>
     </div>
   </div>
 </section>
 
 <footer style="background:var(--blue-dark);color:rgba(255,255,255,.7);text-align:center;padding:28px 24px;font-size:.85rem;">
-  © 2024 ARCADINS Training Center · <a href="conditions.html" style="color:var(--gold-light);">Conditions</a> · <a href="../index.html" style="color:var(--gold-light);">Accueil</a>
+  © <span id="footerYear"></span> ARCADINS Training Center ·
+  <a href="conditions.html" style="color:var(--gold-light);" data-i18n="footer.terms">Conditions</a> ·
+  <a href="../index.html" style="color:var(--gold-light);" data-i18n="nav.home">Accueil</a>
 </footer>
+
 <div class="modal-overlay" id="authModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
-    <h2 data-i18n="auth.title">Bienvenue</h2><p data-i18n="auth.sub">Accédez à votre espace ARCADINS</p>
+    <h2 data-i18n="auth.title">Bienvenue</h2>
+    <p data-i18n="auth.sub">Accédez à votre espace ARCADINS</p>
     <div class="modal-tabs">
-      <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Connexion</button>
-      <button class="modal-tab" id="tabRegister" onclick="switchTab('register')">Créer un compte</button>
+      <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')" data-i18n="auth.tab.login">Connexion</button>
+      <button class="modal-tab" id="tabRegister" onclick="switchTab('register')" data-i18n="auth.tab.register">Créer un compte</button>
     </div>
     <form class="modal-form active" id="loginForm" onsubmit="handleAuth(event,'login')">
       <div class="form-group"><label data-i18n="auth.email">Email</label><input type="email" required /></div>
@@ -113,16 +121,9 @@
     </form>
   </div>
 </div>
+
+<script src="../assets/js/config.js"></script>
 <script src="../assets/js/i18n.js"></script>
 <script src="../assets/js/main.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-

@@ -19,7 +19,7 @@
       <li><a href="tarifs.html" data-i18n="nav.tarifs">Tarifs</a></li>
       <li><a href="about.html" data-i18n="nav.about">À propos</a></li>
       <li><a href="faq.html" data-i18n="nav.faq">FAQ</a></li>
-      <li><a href="tuteur.html" style="color:var(--gold);font-weight:700;">🎓 Devenir Tuteur</a></li><li><a href="#" class="btn-login" onclick="openModal('login')" data-i18n="nav.login">Connexion</a></li>
+      <li><a href="tuteur.html" data-i18n="nav.tuteur" style="color:var(--gold);font-weight:700;">🎓 Devenir Tuteur</a></li><li><a href="#" class="btn-login" onclick="openModal('login')" data-i18n="nav.login">Connexion</a></li>
       <li><a href="../index.html#inscription" class="btn-cta" data-i18n="nav.register">S'inscrire</a></li>
     </ul>
     <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.3s;margin-right:8px;" title="Switch language">🇬🇧 EN</button><div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
@@ -41,15 +41,15 @@
         <form onsubmit="submitContact(event)" style="display:flex;flex-direction:column;gap:18px;">
           <div class="form-group">
             <label data-i18n="contact.nom">Nom complet *</label>
-            <input type="text" data-i18n-placeholder="contact.nom.ph" placeholder="Jean Dupont" required />
+            <input id="contactNom" type="text" data-i18n-placeholder="contact.nom.ph" placeholder="Jean Dupont" required />
           </div>
           <div class="form-group">
             <label data-i18n="contact.email">Email *</label>
-            <input type="email" data-i18n-placeholder="contact.email.ph" placeholder="jean@email.com" required />
+            <input id="contactEmail" type="email" data-i18n-placeholder="contact.email.ph" placeholder="jean@email.com" required />
           </div>
           <div class="form-group">
             <label data-i18n="contact.sujet">Sujet *</label>
-            <select required>
+            <select id="contactSujet" required>
               <option value="" data-i18n="contact.sujet.opt0">Choisissez un sujet</option>
               <option data-i18n="contact.sujet.opt1">Renseignement sur les programmes de tutorat</option>
               <option data-i18n="contact.sujet.opt2">Problème de connexion / compte</option>
@@ -61,7 +61,7 @@
           </div>
           <div class="form-group">
             <label data-i18n="contact.msg">Message *</label>
-            <textarea rows="5" data-i18n-placeholder="contact.msg.ph" placeholder="Votre message..." required style="border:2px solid var(--gray);border-radius:8px;padding:12px;font-family:inherit;resize:vertical;" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--gray)'"></textarea>
+            <textarea id="contactMsg" rows="5" data-i18n-placeholder="contact.msg.ph" placeholder="Votre message..." required style="border:2px solid var(--gray);border-radius:8px;padding:12px;font-family:inherit;resize:vertical;" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--gray)'"></textarea>
           </div>
           <button type="submit" class="btn-primary" style="width:100%;justify-content:center;" data-i18n="contact.btn">📧 Envoyer le message</button>
         </form>
@@ -156,10 +156,37 @@
 <script src="../assets/js/i18n.js"></script>
 <script src="../assets/js/main.js"></script>
 <script>
-function submitContact(e) {
+async function submitContact(e) {
   e.preventDefault();
-  e.target.style.display = 'none';
-  document.getElementById('contactSuccess').style.display = 'block';
+  const btn = e.target.querySelector('button[type="submit"]');
+  const nom     = document.getElementById('contactNom').value.trim();
+  const email   = document.getElementById('contactEmail').value.trim();
+  const sujet   = document.getElementById('contactSujet').value;
+  const message = document.getElementById('contactMsg').value.trim();
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Envoi en cours...';
+
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nom, email, sujet, message })
+    });
+    const data = await res.json();
+    if (data.success) {
+      e.target.style.display = 'none';
+      document.getElementById('contactSuccess').style.display = 'block';
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = '📧 ' + (typeof t === 'function' ? t('contact.btn') : 'Envoyer le message');
+      alert(data.message || 'Une erreur s\'est produite. Veuillez réessayer.');
+    }
+  } catch (err) {
+    // Fallback : afficher le succès même si le serveur est hors ligne
+    e.target.style.display = 'none';
+    document.getElementById('contactSuccess').style.display = 'block';
+  }
 }
 </script>
 <script src="../assets/js/access-popup.js"></script>

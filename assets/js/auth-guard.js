@@ -81,7 +81,7 @@ async function initAuthGuard() {
 
   // Page admin
   if (isAdminPage && user.role !== 'admin') {
-    window.location.href = getBasePath() + STEP_REDIRECTS[userStep] || 'pages/espace-membre.html';
+    window.location.href = (STEP_REDIRECTS[userStep] ? getBasePath() + STEP_REDIRECTS[userStep] : 'pages/espace-membre.html');
     return;
   }
 
@@ -144,8 +144,8 @@ function _updateUserDisplay(user) {
   if (stepEl && user) {
     const step = getUserStep(user);
     const labels = {
-      fr: { registered:'Essai gratuit', trial_done:'Choix du forfait', payment_confirmed:'Test de qualification', qualification_done:'Formation en cours', modules_done:'Test final', final_passed:'Certifié ✅', admin:'Administrateur' },
-      en: { registered:'Free Trial', trial_done:'Plan Selection', payment_confirmed:'Qualification Test', qualification_done:'Training in progress', modules_done:'Final Test', final_passed:'Certified ✅', admin:'Administrator' }
+      fr: { registered:'Test d'Essai', trial_done:'Choix du forfait', payment_confirmed:'Test de qualification', qualification_done:'Formation en cours', modules_done:'Test final', final_passed:'Certifié ✅', admin:'Administrateur' },
+      en: { registered:'Trial', trial_done:'Plan Selection', payment_confirmed:'Qualification Test', qualification_done:'Training in progress', modules_done:'Final Test', final_passed:'Certified ✅', admin:'Administrator' }
     };
     const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
     stepEl.textContent = labels[lang][step] || step;

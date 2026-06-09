@@ -4,7 +4,9 @@ const Database = require('better-sqlite3');
 const bcrypt = require('bcryptjs');
 const path = require('path');
 
-const DB_PATH = path.join(__dirname, 'arcadins.db');
+// En production (Render), la DB est sur le disque persistant monté sur /data
+// En local, elle est dans le dossier server/
+const DB_PATH = process.env.DATABASE_PATH || path.join(__dirname, 'arcadins.db');
 
 let db;
 
@@ -46,6 +48,9 @@ function initDatabase() {
       payment_confirmed INTEGER DEFAULT 0,
       payment_plan TEXT,
       payment_date TEXT,
+      payment_method TEXT,
+      payment_notes TEXT,
+      stripe_session_id TEXT,
       modules_progress TEXT DEFAULT '{}',
       current_module INTEGER DEFAULT 1,
       all_modules_done INTEGER DEFAULT 0,
@@ -115,6 +120,16 @@ function initDatabase() {
   insertSetting.run('passing_score_final', '70');
   insertSetting.run('passing_score_qualification', '0');
   insertSetting.run('total_modules', '14');
+
+  // Migration : ajouter les colonnes manquantes si la DB existe déjà
+  const migrations = [
+    'ALTER TABLE users ADD COLUMN payment_method TEXT',
+    'ALTER TABLE users ADD COLUMN payment_notes TEXT',
+    'ALTER TABLE users ADD COLUMN stripe_session_id TEXT',
+  ];
+  migrations.forEach(sql => {
+    try { db.prepare(sql).run(); } catch(e) { /* colonne déjà existante */ }
+  });
 
   // Insert default admin user
   const existingAdmin = db.prepare('SELECT id FROM users WHERE email = ?').get('admin@arcadins-training.com');

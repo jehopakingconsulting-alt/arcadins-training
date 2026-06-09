@@ -1,17 +1,27 @@
 'use strict';
 
 const express = require('express');
-const router = express.Router();
+const router  = express.Router();
 const { getDb } = require('../database');
 const authMiddleware = require('../middleware/auth');
-const { sendUserEmail, sendAdminNotification } = require('../services/email');
+const { sendPaymentConfirmation } = require('../services/email');
 
+// ── Stripe init (lazy) ──────────────────────────────────────
+function getStripe() {
+  const key = process.env.STRIPE_SECRET_KEY || '';
+  if (!key || key.includes('YOUR_STRIPE')) {
+    throw new Error('Stripe non configuré — ajoutez STRIPE_SECRET_KEY dans .env');
+  }
+  return require('stripe')(key);
+}
+
+// ── Catalogue forfaits ──────────────────────────────────────
 const PLANS = [
   {
     id: 'starter',
     name: 'Starter',
     price: 97,
-    currency: 'USD',
+    currency: 'usd',
     description: 'Idéal pour débuter votre préparation TEF/TCF',
     features: [
       'Accès aux 14 modules de formation',
@@ -25,7 +35,7 @@ const PLANS = [
     id: 'essential',
     name: 'Essential',
     price: 147,
-    currency: 'USD',
+    currency: 'usd',
     description: 'Le choix le plus populaire pour une préparation complète',
     features: [
       'Tout le plan Starter',
@@ -40,14 +50,14 @@ const PLANS = [
     id: 'premium',
     name: 'Premium',
     price: 247,
-    currency: 'USD',
+    currency: 'usd',
     description: 'Préparez-vous avec un accompagnement personnalisé',
     features: [
       'Tout le plan Essential',
       'Test final (3 tentatives)',
       'Sessions de coaching individuel (2h)',
       'Ressources supplémentaires',
-      'Accès à vie',
+      'Accès 6 mois',
     ],
     recommended: false,
   },
@@ -55,8 +65,8 @@ const PLANS = [
     id: 'vip',
     name: 'VIP',
     price: 497,
-    currency: 'USD',
-    description: 'L\'excellence avec suivi personnalisé complet',
+    currency: 'usd',
+    description: "L'excellence avec suivi personnalisé complet",
     features: [
       'Tout le plan Premium',
       'Tentatives illimitées au test final',
@@ -69,104 +79,251 @@ const PLANS = [
   },
 ];
 
-// GET /api/plans
+// ── GET /api/plans ──────────────────────────────────────────
 router.get('/', (req, res) => {
   return res.json({ success: true, data: { plans: PLANS } });
 });
 
-// POST /api/plans/checkout (simulated payment)
-router.post('/checkout', authMiddleware, async (req, res) => {
+// ── POST /api/plans/create-checkout-session ─────────────────
+// Crée une session Stripe Checkout et retourne l'URL
+router.post('/create-checkout-session', authMiddleware, async (req, res) => {
   try {
     const user = req.user;
-    const db = getDb();
+    const db   = getDb();
 
     if (user.payment_confirmed === 1) {
       return res.status(400).json({ success: false, message: 'Paiement déjà confirmé.' });
     }
 
     const { plan } = req.body;
-    if (!plan) {
-      return res.status(400).json({ success: false, message: 'Plan non spécifié.' });
-    }
-
-    const selectedPlan = PLANS.find((p) => p.id === plan);
+    const selectedPlan = PLANS.find(p => p.id === plan);
     if (!selectedPlan) {
       return res.status(400).json({ success: false, message: 'Plan invalide.' });
     }
 
-    // Simulate payment success
-    db.prepare(`
-      UPDATE users
-      SET payment_confirmed = 1, payment_plan = ?, payment_date = datetime('now'), role = 'apprenant', status = 'active'
-      WHERE id = ?
-    `).run(plan, user.id);
+    const stripe      = getStripe();
+    const SITE        = process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 3000}`;
+    const successUrl  = `${SITE}/pages/forfaits.html?payment=success&plan=${plan}&session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl   = `${SITE}/pages/forfaits.html?payment=cancelled`;
 
-    // Send confirmation email to user
-    const emailHtml = `
-      <h2 style="color: #1a2a6c;">Paiement confirmé ! 🎉</h2>
-      <p>Bonjour <strong>${user.prenom} ${user.nom}</strong>,</p>
-      <p>Votre paiement pour le plan <strong>${selectedPlan.name}</strong> (${selectedPlan.price} ${selectedPlan.currency}) a été confirmé avec succès.</p>
-      <p>Vous pouvez maintenant accéder à votre test de qualification pour commencer votre formation.</p>
-      <div style="margin: 20px 0; padding: 15px; background: #f0f4ff; border-left: 4px solid #1a2a6c; border-radius: 4px;">
-        <strong>Plan souscrit :</strong> ${selectedPlan.name}<br>
-        <strong>Montant :</strong> ${selectedPlan.price} ${selectedPlan.currency}<br>
-        <strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')}
-      </div>
-      <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/qualification" style="display:inline-block;padding:12px 24px;background:#1a2a6c;color:white;text-decoration:none;border-radius:6px;margin-top:10px;">
-        Commencer ma qualification →
-      </a>
-    `;
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'payment',
+      customer_email: user.email,
+      line_items: [
+        {
+          price_data: {
+            currency: selectedPlan.currency,
+            unit_amount: selectedPlan.price * 100,   // en centimes
+            product_data: {
+              name: `ARCADINS Training Center — Plan ${selectedPlan.name}`,
+              description: selectedPlan.description,
+              images: [`${SITE}/assets/img/logo-nav.svg`],
+            },
+          },
+          quantity: 1,
+        },
+      ],
+      metadata: {
+        user_id:  String(user.id),
+        user_email: user.email,
+        plan:     selectedPlan.id,
+        plan_name: selectedPlan.name,
+      },
+      success_url: successUrl,
+      cancel_url:  cancelUrl,
+      locale: 'fr',
+    });
 
-    sendUserEmail(user.email, `[ARCADINS] Confirmation de paiement – Plan ${selectedPlan.name}`, emailHtml).catch(() => {});
-    sendAdminNotification({ nom: user.nom, prenom: user.prenom, email: user.email, telephone: user.telephone, pays: user.pays }).catch(() => {});
-
-    const updatedUser = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id);
-    const { password_hash, ...safeUser } = updatedUser;
+    // Sauvegarde l'ID de session dans la DB pour vérification ultérieure
+    db.prepare(`UPDATE users SET payment_plan = ?, stripe_session_id = ? WHERE id = ?`)
+      .run(selectedPlan.id, session.id, user.id);
 
     return res.json({
       success: true,
-      data: { user: safeUser, plan: selectedPlan, redirect: '/qualification' },
-      message: `Paiement confirmé ! Plan ${selectedPlan.name} activé.`,
+      data: { url: session.url, session_id: session.id },
     });
+
   } catch (err) {
-    console.error('[Plans] Checkout error:', err);
-    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+    console.error('[Stripe] create-checkout-session error:', err.message);
+    if (err.message.includes('non configuré')) {
+      return res.status(503).json({ success: false, message: err.message });
+    }
+    return res.status(500).json({ success: false, message: 'Erreur serveur Stripe.' });
   }
 });
 
-// POST /api/plans/stripe-webhook
-router.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+// ── GET /api/plans/verify-payment?session_id=xxx ────────────
+// Appelé après retour depuis Stripe pour confirmer le paiement
+router.get('/verify-payment', authMiddleware, async (req, res) => {
   try {
-    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || '');
-    const sig = req.headers['stripe-signature'];
-    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
-
-    let event;
-    try {
-      event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
-    } catch (err) {
-      console.error('[Stripe] Webhook signature verification failed:', err.message);
-      return res.status(400).json({ success: false, message: `Webhook error: ${err.message}` });
+    const { session_id } = req.query;
+    if (!session_id) {
+      return res.status(400).json({ success: false, message: 'session_id manquant.' });
     }
 
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object;
-      const userEmail = session.customer_email || (session.customer_details && session.customer_details.email);
-      const plan = session.metadata && session.metadata.plan;
+    const stripe  = getStripe();
+    const session = await stripe.checkout.sessions.retrieve(session_id);
 
-      if (userEmail) {
-        const db = getDb();
-        db.prepare(`
-          UPDATE users SET payment_confirmed = 1, payment_plan = ?, payment_date = datetime('now'), role = 'apprenant', status = 'active'
-          WHERE email = ?
-        `).run(plan || 'essential', userEmail);
-        console.log('[Stripe] Payment confirmed for:', userEmail);
+    if (session.payment_status !== 'paid') {
+      return res.status(402).json({ success: false, message: 'Paiement non complété.' });
+    }
+
+    const db   = getDb();
+    const user = req.user;
+
+    // Vérifie que la session appartient bien à cet utilisateur
+    if (session.metadata.user_id !== String(user.id)) {
+      return res.status(403).json({ success: false, message: 'Session invalide.' });
+    }
+
+    // Déjà confirmé ?
+    if (user.payment_confirmed === 1) {
+      const fresh = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id);
+      const { password_hash, ...safeUser } = fresh;
+      return res.json({ success: true, data: { user: safeUser }, message: 'Déjà activé.' });
+    }
+
+    const plan     = session.metadata.plan || 'essential';
+    const planName = session.metadata.plan_name || plan;
+
+    // Activer le compte + créer les 14 modules
+    db.prepare(`
+      UPDATE users
+      SET payment_confirmed = 1, payment_plan = ?, payment_date = datetime('now'),
+          role = 'apprenant', status = 'active',
+          stripe_session_id = ?
+      WHERE id = ?
+    `).run(plan, session_id, user.id);
+
+    // Créer les 14 modules si pas encore créés
+    const existing = db.prepare('SELECT COUNT(*) as c FROM modules WHERE user_id = ?').get(user.id);
+    if (existing.c === 0) {
+      const ins = db.prepare('INSERT OR IGNORE INTO modules (user_id, module_number, status) VALUES (?, ?, ?)');
+      for (let i = 1; i <= 14; i++) {
+        ins.run(user.id, i, i === 1 ? 'not_started' : 'locked');
       }
     }
 
-    return res.json({ received: true });
+    const freshUser = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id);
+    const { password_hash, ...safeUser } = freshUser;
+
+    // Email de confirmation
+    sendPaymentConfirmation(freshUser, planName).catch(() => {});
+
+    return res.json({
+      success: true,
+      data: { user: safeUser, plan, redirect: '/pages/formation.html' },
+      message: `Plan ${planName} activé avec succès ! Bienvenue dans votre formation.`,
+    });
+
   } catch (err) {
-    console.error('[Stripe] Webhook error:', err);
+    console.error('[Stripe] verify-payment error:', err.message);
+    return res.status(500).json({ success: false, message: 'Erreur de vérification du paiement.' });
+  }
+});
+
+// ── POST /api/plans/webhook ─────────────────────────────────
+// Webhook Stripe (pour production avec URL publique)
+router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig           = req.headers['stripe-signature'];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
+
+  if (!webhookSecret || webhookSecret.includes('YOUR_WEBHOOK')) {
+    // En mode test sans webhook configuré, on ignore silencieusement
+    return res.json({ received: true });
+  }
+
+  let event;
+  try {
+    const stripe = getStripe();
+    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+  } catch (err) {
+    console.error('[Stripe] Webhook signature error:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session   = event.data.object;
+    const userEmail = session.customer_email || session.customer_details?.email;
+    const plan      = session.metadata?.plan || 'essential';
+    const planName  = session.metadata?.plan_name || plan;
+
+    if (userEmail) {
+      try {
+        const db = getDb();
+        db.prepare(`
+          UPDATE users
+          SET payment_confirmed = 1, payment_plan = ?, payment_date = datetime('now'),
+              role = 'apprenant', status = 'active',
+              stripe_session_id = ?
+          WHERE email = ?
+        `).run(plan, session.id, userEmail);
+
+        const existing = db.prepare('SELECT COUNT(*) as c FROM modules WHERE user_id = (SELECT id FROM users WHERE email = ?)').get(userEmail);
+        if (existing.c === 0) {
+          const userId = db.prepare('SELECT id FROM users WHERE email = ?').get(userEmail)?.id;
+          if (userId) {
+            const ins = db.prepare('INSERT OR IGNORE INTO modules (user_id, module_number, status) VALUES (?, ?, ?)');
+            for (let i = 1; i <= 14; i++) ins.run(userId, i, i === 1 ? 'not_started' : 'locked');
+          }
+        }
+
+        const user = db.prepare('SELECT * FROM users WHERE email = ?').get(userEmail);
+        if (user) sendPaymentConfirmation(user, planName).catch(() => {});
+
+        console.log('[Stripe] ✅ Webhook: paiement confirmé pour', userEmail, '— plan', plan);
+      } catch (dbErr) {
+        console.error('[Stripe] Webhook DB error:', dbErr.message);
+      }
+    }
+  }
+
+  return res.json({ received: true });
+});
+
+// ── POST /api/plans/checkout (mode test sans Stripe) ────────
+// Gardé pour les tests manuels admin
+router.post('/checkout', authMiddleware, async (req, res) => {
+  try {
+    const user = req.user;
+    const db   = getDb();
+
+    if (user.payment_confirmed === 1) {
+      return res.status(400).json({ success: false, message: 'Paiement déjà confirmé.' });
+    }
+
+    const { plan } = req.body;
+    const selectedPlan = PLANS.find(p => p.id === plan);
+    if (!selectedPlan) {
+      return res.status(400).json({ success: false, message: 'Plan invalide.' });
+    }
+
+    db.prepare(`
+      UPDATE users
+      SET payment_confirmed = 1, payment_plan = ?, payment_date = datetime('now'),
+          role = 'apprenant', status = 'active', qualification_done = 1
+      WHERE id = ?
+    `).run(plan, user.id);
+
+    const existing = db.prepare('SELECT COUNT(*) as c FROM modules WHERE user_id = ?').get(user.id);
+    if (existing.c === 0) {
+      const ins = db.prepare('INSERT OR IGNORE INTO modules (user_id, module_number, status) VALUES (?, ?, ?)');
+      for (let i = 1; i <= 14; i++) ins.run(user.id, i, i === 1 ? 'not_started' : 'locked');
+    }
+
+    sendPaymentConfirmation(user, selectedPlan.name).catch(() => {});
+
+    const freshUser = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id);
+    const { password_hash, ...safeUser } = freshUser;
+
+    return res.json({
+      success: true,
+      data: { user: safeUser, plan: selectedPlan, redirect: '/pages/formation.html' },
+      message: `Plan ${selectedPlan.name} activé.`,
+    });
+  } catch (err) {
+    console.error('[Plans] Checkout error:', err);
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
   }
 });

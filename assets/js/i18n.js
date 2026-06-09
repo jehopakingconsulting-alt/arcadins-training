@@ -18,9 +18,11 @@ const translations = {
   "nav.tarifs":   { fr: "Tarifs",            en: "Pricing" },
   "nav.about":    { fr: "À propos",          en: "About" },
   "nav.faq":      { fr: "FAQ",               en: "FAQ" },
+  "nav.contact":  { fr: "Contact",          en: "Contact" },
   "nav.login":    { fr: "Connexion",         en: "Login" },
   "nav.register": { fr: "S'inscrire",        en: "Sign Up" },
   "nav.blog":     { fr: "Blog",              en: "Blog" },
+  "nav.tuteur":   { fr: "🎓 Devenir Tuteur", en: "🎓 Become a Tutor" },
 
   // ===== HERO =====
   "hero.badge": {
@@ -28,8 +30,8 @@ const translations = {
     en: "🍁 Specialized Language Test Preparation Platform – TEF &amp; TCF Canada"
   },
   "hero.h1": {
-    fr: "Préparez votre <span>TEF Canada</span> ou <span>TCF Canada</span> avec confiance et méthode",
-    en: "Prepare your <span>TEF Canada</span> or <span>TCF Canada</span> with confidence and method"
+    fr: "Préparez votre <span>TEF</span> ou <span>TCF Canada</span> avec confiance et méthode",
+    en: "Prepare your <span>TEF</span> or <span>TCF Canada</span> with confidence and method"
   },
   "hero.p": {
     fr: "Un accompagnement complet — interactif, structuré et progressif — pour améliorer votre français, réussir votre test officiel et concrétiser votre projet d'immigration au Canada ou au Québec.",
@@ -37,7 +39,7 @@ const translations = {
   },
   "hero.results": { fr: "📊 Nos résultats",  en: "📊 Our results" },
   "hero.btn1":  { fr: "✏️ S'inscrire maintenant",   en: "✏️ Register Now" },
-  "hero.btn2":  { fr: "🎯 Test de niveau gratuit",   en: "🎯 Free Level Test" },
+  "hero.btn2":  { fr: "🎯 Test de niveau",   en: "🎯 Level Test" },
   "hero.btn3":  { fr: "🔐 Mon compte",               en: "🔐 My Account" },
   "hero.stat1": { fr: "Étudiants accompagnés",       en: "Students coached" },
   "hero.stat2": { fr: "Taux de réussite",            en: "Success rate" },
@@ -113,20 +115,20 @@ const translations = {
   // ===== 14 MODULES =====
   "modules.h2": { fr: "14 Modules de tutorat structurés",   en: "14 Structured tutoring modules" },
   "modules.p":  { fr: "Un parcours pédagogique progressif du test de niveau initial jusqu'au certificat de participation.", en: "A progressive learning path from the initial level test to the participation certificate." },
-  "mod.01": { fr: "Test de niveau initial",         en: "Initial level test" },
-  "mod.02": { fr: "Compréhension orale",            en: "Listening comprehension" },
-  "mod.03": { fr: "Compréhension écrite",           en: "Reading comprehension" },
-  "mod.04": { fr: "Expression écrite",              en: "Written expression" },
-  "mod.05": { fr: "Expression orale",               en: "Oral expression" },
-  "mod.06": { fr: "Grammaire essentielle",          en: "Essential grammar" },
-  "mod.07": { fr: "Vocabulaire immigration",        en: "Immigration vocabulary" },
-  "mod.08": { fr: "Stratégies NCLC 5→9+",          en: "NCLC 5→9+ strategies" },
-  "mod.09": { fr: "Simulations chronométrées",      en: "Timed simulations" },
-  "mod.10": { fr: "Banque de questions",            en: "Question bank" },
-  "mod.11": { fr: "Corrections &amp; explications", en: "Corrections &amp; explanations" },
-  "mod.12": { fr: "Tableau de progression",         en: "Progress dashboard" },
-  "mod.13": { fr: "Certificat ARCADINS",            en: "ARCADINS certificate" },
-  "mod.14": { fr: "Coaching formateur (option)",    en: "Trainer coaching (option)" },
+  "mod.01": { fr: "Introduction au TEF &amp; TCF Canada",         en: "Introduction to TEF &amp; TCF Canada" },
+  "mod.02": { fr: "Compréhension orale – Niveau 1",             en: "Listening Comprehension – Level 1" },
+  "mod.03": { fr: "Expression orale – Niveau 1",                en: "Oral Expression – Level 1" },
+  "mod.04": { fr: "Compréhension écrite – Niveau 1",            en: "Reading Comprehension – Level 1" },
+  "mod.05": { fr: "Expression écrite – Niveau 1",               en: "Written Expression – Level 1" },
+  "mod.06": { fr: "Grammaire essentielle",                      en: "Essential Grammar" },
+  "mod.07": { fr: "Vocabulaire thématique",                     en: "Thematic Vocabulary" },
+  "mod.08": { fr: "Compréhension orale – Niveau 2",             en: "Listening Comprehension – Level 2" },
+  "mod.09": { fr: "Expression orale – Niveau 2",                en: "Oral Expression – Level 2" },
+  "mod.10": { fr: "Compréhension écrite – Niveau 2",            en: "Reading Comprehension – Level 2" },
+  "mod.11": { fr: "Expression écrite – Niveau 2",               en: "Written Expression – Level 2" },
+  "mod.12": { fr: "Techniques d'examen",                        en: "Exam Techniques" },
+  "mod.13": { fr: "Simulations et examens blancs",              en: "Simulations &amp; Mock Exams" },
+  "mod.14": { fr: "Révision générale et stratégies finales",    en: "General Review &amp; Final Strategies" },
 
   // ===== TESTS INTERACTIFS =====
   "tests.h2": { fr: "Tests interactifs en ligne",  en: "Interactive Online Tests" },
@@ -147,7 +149,7 @@ const translations = {
   "test.parol.p":  { fr: "Consignes avec minuterie intégrée", en: "Instructions with built-in timer" },
   "test.simul.h":  { fr: "Simulation complète",      en: "Full Simulation" },
   "test.simul.p":  { fr: "Reproduisez le vrai examen TEF/TCF", en: "Reproduce the real TEF/TCF exam" },
-  "badge.free":    { fr: "GRATUIT",                  en: "FREE" },
+  "badge.free": { fr: "ESSAI",                  en: "TRIAL" },
 
   // ===== TARIFS (section index) =====
   "tarifs.h2": { fr: "Choisissez votre plan", en: "Choose your plan" },
@@ -156,7 +158,7 @@ const translations = {
   "plan1.name":     { fr: "Découverte",          en: "Discovery" },
   "plan1.pricesub": { fr: "/ accès découverte",  en: "/ discovery access" },
   "plan1.desc":     { fr: "Pour tester la plateforme et évaluer votre niveau", en: "To explore the platform and assess your level" },
-  "plan1.f1":       { fr: "Test de niveau gratuit",          en: "Free level test" },
+  "plan1.f1":       { fr: "Test de niveau",          en: "Level test" },
   "plan1.f2":       { fr: "Accès partiel aux exercices",     en: "Partial access to exercises" },
   "plan1.f3":       { fr: "Quiz de grammaire (5 questions)", en: "Grammar quiz (5 questions)" },
   "plan1.f4":       { fr: "Programmes de Tutorat complets",  en: "Full tutoring programs" },
@@ -202,7 +204,7 @@ const translations = {
 
   // ===== FORMULAIRE D'INSCRIPTION =====
   "insc.h2":        { fr: "Commencez votre préparation aujourd'hui", en: "Start your preparation today" },
-  "insc.p":         { fr: "Remplissez le formulaire ci-dessous et notre équipe vous contacte sous 24h.", en: "Fill out the form below and our team will contact you within 24 hours." },
+  "insc.p":         { fr: "Remplissez le formulaire et accédez immédiatement à votre espace de formation.", en: "Fill out the form and access your training space immediately." },
   "insc.nom":       { fr: "Nom complet *",           en: "Full name *" },
   "insc.nom.ph":    { fr: "Jean Dupont",             en: "John Smith" },
   "insc.email":     { fr: "Adresse email *",         en: "Email address *" },
@@ -232,7 +234,7 @@ const translations = {
   "insc.prog.autre":   { fr: "Autre programme",      en: "Other program" },
   "insc.plan":      { fr: "Plan souhaité",            en: "Preferred plan" },
   "insc.plan.opt0": { fr: "Je choisirai plus tard",  en: "I'll choose later" },
-  "insc.plan.d":    { fr: "Découverte (Gratuit)",    en: "Discovery (Free)" },
+  "insc.plan.d":    { fr: "Découverte",    en: "Discovery" },
   "insc.cgu": {
     fr: "J'accepte les <a href='pages/conditions.html' target='_blank' style='color:var(--blue);font-weight:600;'>Conditions d'utilisation</a> et la <a href='pages/confidentialite.html' target='_blank' style='color:var(--blue);font-weight:600;'>Politique de confidentialité</a>. Je consens à être contacté(e) par ARCADINS Training Center. <strong style='color:var(--red);'>*</strong> <em style='color:#aaa;'>(LCAP / CASL)</em>",
     en: "I accept the <a href='pages/conditions.html' target='_blank' style='color:var(--blue);font-weight:600;'>Terms of Use</a> and the <a href='pages/confidentialite.html' target='_blank' style='color:var(--blue);font-weight:600;'>Privacy Policy</a>. I consent to being contacted by ARCADINS Training Center. <strong style='color:var(--red);'>*</strong> <em style='color:#aaa;'>(CASL)</em>"
@@ -241,10 +243,11 @@ const translations = {
     fr: "Je souhaite recevoir la newsletter ARCADINS (conseils TEF/TCF, actualités IRCC). <em style='color:#aaa;'>(Optionnel — désinscription en 1 clic)</em>",
     en: "I want to receive the ARCADINS newsletter (TEF/TCF tips, IRCC news). <em style='color:#aaa;'>(Optional — unsubscribe in 1 click)</em>"
   },
-  "insc.btn":       { fr: "✉️ Envoyer mon inscription", en: "✉️ Send my registration" },
-  "insc.secure":    { fr: "🔒 Aucune carte bancaire requise · Données protégées · Réponse sous 24h", en: "🔒 No credit card required · Data protected · Response within 24h" },
-  "insc.success.h": { fr: "Inscription reçue !",  en: "Registration received!" },
-  "insc.success.p": { fr: "Merci ! Notre équipe vous contactera sous 24h pour finaliser votre accès.", en: "Thank you! Our team will contact you within 24 hours to finalize your access." },
+  "insc.btn":            { fr: "🚀 Commencer maintenant — Accès immédiat", en: "🚀 Start Now — Immediate Access" },
+  "insc.secure":         { fr: "🔒 Paiement sécurisé Stripe · Accès immédiat · Données protégées", en: "🔒 Secure Stripe payment · Immediate access · Data protected" },
+  "insc.success.h":      { fr: "Inscription enregistrée !",  en: "Registration recorded!" },
+  "insc.success.p":      { fr: "Vous allez être redirigé vers la page de paiement pour activer votre accès immédiatement.", en: "You will be redirected to the payment page to activate your access immediately." },
+  "insc.success.redirect":{ fr: "Redirection en cours...", en: "Redirecting..." },
 
   // ===== TÉMOIGNAGES =====
   "testi.h2": { fr: "Ce que disent nos étudiants", en: "What our students say" },
@@ -362,6 +365,37 @@ const translations = {
   "auth.confirm":  { fr: "Confirmer le mot de passe",        en: "Confirm password" },
   "auth.createBtn":{ fr: "Créer mon compte",                 en: "Create my account" },
 
+  // ===== TESTS INTERACTIFS (tests.html) =====
+  "tests.hero.badge":      { fr: "🎯 Entraînement interactif",              en: "🎯 Interactive Practice" },
+  "tests.hero.h1":         { fr: "Tests Interactifs",                        en: "Interactive Tests" },
+  "tests.hero.p":          { fr: "Évaluez votre niveau, entraînez-vous sur chaque compétence et obtenez votre estimation NCLC en temps réel. Corrections détaillées après chaque réponse.", en: "Evaluate your level, practice each skill and get your NCLC estimate in real time. Detailed corrections after each answer." },
+  "tests.tab.niveau":      { fr: "📊 Test de niveau",                       en: "📊 Level Test" },
+  "tests.tab.grammaire":   { fr: "📖 Grammaire",                            en: "📖 Grammar" },
+  "tests.tab.vocabulaire": { fr: "💬 Vocabulaire",                          en: "💬 Vocabulary" },
+  "tests.tab.lecture":     { fr: "📄 Compréhension écrite",                 en: "📄 Reading Comprehension" },
+  "tests.tab.expression":  { fr: "✍️ Expression écrite",                   en: "✍️ Written Expression" },
+  "tests.tab.oral":        { fr: "🎤 Expression orale",                     en: "🎤 Oral Expression" },
+  "tests.tab.semiofficiel":{ fr: "🏅 Test semi-officiel",                   en: "🏅 Semi-official Test" },
+  "tests.niveau.title":    { fr: "📊 Test de niveau NCLC",                  en: "📊 NCLC Level Test" },
+  "tests.niveau.desc":     { fr: "10 questions progressives · Grammaire, vocabulaire, culture canadienne · Score NCLC estimé en fin de test", en: "10 progressive questions · Grammar, vocabulary, Canadian culture · Estimated NCLC score at the end" },
+  "tests.gram.title":      { fr: "📖 Quiz de grammaire",                    en: "📖 Grammar Quiz" },
+  "tests.gram.desc":       { fr: "10 questions · Conjugaison, accord, syntaxe, connecteurs · Niveau B1–C1", en: "10 questions · Conjugation, agreement, syntax, connectors · Level B1–C1" },
+  "tests.vocab.title":     { fr: "💬 Vocabulaire immigration Canada / Québec", en: "💬 Immigration Vocabulary Canada / Quebec" },
+  "tests.vocab.desc":      { fr: "10 questions · Termes IRCC, NCLC, Express Entry, immigration · Indispensable pour le TEF/TCF", en: "10 questions · IRCC, NCLC, Express Entry, immigration terms · Essential for TEF/TCF" },
+  "tests.lecture.title":   { fr: "📄 Compréhension écrite",                 en: "📄 Reading Comprehension" },
+  "tests.lecture.desc":    { fr: "Lisez le texte puis répondez aux 8 questions. Durée recommandée : 12 minutes.", en: "Read the text then answer the 8 questions. Recommended time: 12 minutes." },
+  "tests.expr.title":      { fr: "✍️ Expression écrite — Simulation TEF/TCF", en: "✍️ Written Expression — TEF/TCF Simulation" },
+  "tests.expr.desc":       { fr: "Rédigez votre production en respectant les consignes. L'auto-évaluation vous guidera sur les critères de notation officiels.", en: "Write your text following the instructions. The self-assessment will guide you through the official scoring criteria." },
+  "tests.oral.title":      { fr: "🎤 Expression orale — Simulation TEF/TCF", en: "🎤 Oral Expression — TEF/TCF Simulation" },
+  "tests.oral.desc":       { fr: "Sélectionnez une tâche, préparez-vous, puis parlez pendant la durée impartie. Consultez ensuite les critères d'évaluation.", en: "Select a task, prepare yourself, then speak for the allotted time. Then review the evaluation criteria." },
+  "tests.semi.title":      { fr: "🏅 Test semi-officiel d'évaluation",      en: "🏅 Semi-official Evaluation Test" },
+  "tests.semi.badge":      { fr: "OBLIGATOIRE",                              en: "REQUIRED" },
+  "tests.semi.desc":       { fr: "15 questions aléatoires · Grammaire + Vocabulaire + Stratégies + Culture canadienne · Durée : 20 min", en: "15 random questions · Grammar + Vocabulary + Strategies + Canadian culture · Duration: 20 min" },
+  "tests.cta.h2":          { fr: "Prêt pour une programme de tutorat complet ?", en: "Ready for a complete tutoring program?" },
+  "tests.cta.p":           { fr: "Accédez à 500+ exercices, 10 simulations chronométrées et votre tableau de bord NCLC.", en: "Access 500+ exercises, 10 timed simulations and your NCLC dashboard." },
+  "tests.cta.btn1":        { fr: "✏️ S'inscrire maintenant",                en: "✏️ Register Now" },
+  "tests.cta.btn2":        { fr: "💰 Voir les tarifs",                      en: "💰 View Pricing" },
+
   // ===== MODULES DÉTAILLÉS TEF CANADA (cards avec description) =====
   "tef.card1.h": { fr: "Compréhension orale (CO)",     en: "Listening comprehension (CO)" },
   "tef.card1.p": { fr: "Dialogues, monologues, annonces. Techniques d'écoute active, repérage des mots-clés, anticipation et prise de notes efficace.", en: "Dialogues, monologues, announcements. Active listening techniques, keyword spotting, anticipation and effective note-taking." },
@@ -421,7 +455,7 @@ const translations = {
   "tef.hero.h1":    { fr: "Programme de Tutorat <span style='color:var(--gold-light);'>TEF Canada</span>", en: "Tutoring Program <span style='color:var(--gold-light);'>TEF Canada</span>" },
   "tef.hero.p":     { fr: "Préparez le Test d'Évaluation de Français pour l'immigration, Express Entry, la résidence permanente et les études au Canada avec une méthode structurée et des simulations réalistes.", en: "Prepare for the French Evaluation Test for immigration, Express Entry, permanent residence and studies in Canada with a structured method and realistic simulations." },
   "tef.hero.btn1":  { fr: "✏️ Je commence ma préparation TEF", en: "✏️ Start my TEF preparation" },
-  "tef.hero.btn2":  { fr: "🎯 Test d'essai libre",         en: "🎯 Free Trial Test" },
+  "tef.hero.btn2":  { fr: "🎯 Test d'essai libre",         en: "🎯 Trial Test" },
   "tef.what.tag":   { fr: "Présentation",                      en: "Overview" },
   "tef.what.h2":    { fr: "Qu'est-ce que le TEF Canada ?",     en: "What is TEF Canada?" },
   "tef.what.p1":    { fr: "Le <strong>TEF Canada</strong> (Test d'Évaluation de Français Canada) est un test linguistique officiel organisé par la Chambre de Commerce et d'Industrie de Paris (CCIP). Il est reconnu par <strong>Immigration, Réfugiés et Citoyenneté Canada (IRCC)</strong> pour évaluer les compétences en français des candidats à l'immigration.", en: "The <strong>TEF Canada</strong> (French Evaluation Test for Canada) is an official language test organized by the Paris Chamber of Commerce and Industry (CCIP). It is recognized by <strong>Immigration, Refugees and Citizenship Canada (IRCC)</strong> to assess the French skills of immigration candidates." },
@@ -450,7 +484,7 @@ const translations = {
   "tcf.hero.h1":    { fr: "Programme de Tutorat <span style='color:#ffe08a;'>TCF Canada</span>", en: "Tutoring Program <span style='color:#ffe08a;'>TCF Canada</span>" },
   "tcf.hero.p":     { fr: "Préparez le Test de Connaissance du Français pour l'immigration au Canada et au Québec, le Programme de l'Expérience Québécoise (PEQ) et les études en milieu francophone.", en: "Prepare for the French Knowledge Test for immigration to Canada and Quebec, the Quebec Experience Program (PEQ) and studies in a French-speaking environment." },
   "tcf.hero.btn1":  { fr: "✏️ Je commence ma préparation TCF", en: "✏️ Start my TCF preparation" },
-  "tcf.hero.btn2":  { fr: "🎯 Test d'essai libre",         en: "🎯 Free Trial Test" },
+  "tcf.hero.btn2":  { fr: "🎯 Test d'essai libre",         en: "🎯 Trial Test" },
   "tcf.what.tag":   { fr: "Présentation",                      en: "Overview" },
   "tcf.what.h2":    { fr: "Qu'est-ce que le TCF Canada ?",     en: "What is TCF Canada?" },
   "tcf.what.p1":    { fr: "Le <strong>TCF Canada</strong> (Test de Connaissance du Français pour le Canada) est organisé par France Éducation international (anciennement CIEP). Il est reconnu par <strong>IRCC</strong> pour l'immigration au Canada et par le <strong>MIFI (Québec)</strong> pour les programmes d'immigration québécois.", en: "The <strong>TCF Canada</strong> (French Knowledge Test for Canada) is organized by France Éducation international (formerly CIEP). It is recognized by <strong>IRCC</strong> for immigration to Canada and by <strong>MIFI (Quebec)</strong> for Quebec immigration programs." },
@@ -490,20 +524,20 @@ const translations = {
 
   // ===== POPUP DE BIENVENUE =====
   "popup.badge": { fr: "🎁 Offre de bienvenue",              en: "🎁 Welcome offer" },
-  "popup.h2":    { fr: "Testez votre français<br>gratuitement !", en: "Test your French<br>for free!" },
-  "popup.p":     { fr: "Évaluez votre niveau NCLC actuel avec notre test de niveau 100% gratuit.", en: "Assess your current NCLC level with our 100% free level test." },
-  "popup.perk1": { fr: "Test de niveau complet — aucune carte requise", en: "Full level test — no card required" },
+  "popup.h2":    { fr: "Testez votre français !", en: "Test your French<br>for free!" },
+  "popup.p":     { fr: "Évaluez votre niveau NCLC actuel avec notre test de niveau.", en: "Assess your current NCLC level with our 100% free level test." },
+  "popup.perk1": { fr: "Test de niveau complet — ", en: "Full level test — no card required" },
   "popup.perk2": { fr: "Score NCLC estimé en quelques minutes",         en: "Estimated NCLC score in minutes" },
   "popup.perk3": { fr: "Préparation TEF &amp; TCF Canada",       en: "TEF &amp; TCF Canada preparation" },
   "popup.perk4": { fr: "Espace membre privé avec suivi de progression", en: "Private member space with progress tracking" },
-  "popup.btn":   { fr: "🎯 Faire mon test de niveau gratuit", en: "🎯 Take my free level test" },
+  "popup.btn":   { fr: "🎯 Faire mon Test de niveau", en: "🎯 Take my free level test" },
   "popup.or":    { fr: "Ou",                                  en: "Or" },
   "popup.link":  { fr: "s'inscrire directement →",            en: "register directly →" },
 
   // ===== BARRE DE NOTIFICATION =====
   "notif.badge": { fr: "OFFRE LIMITÉE", en: "LIMITED OFFER" },
   "notif.text": {
-    fr: "🍁 Inscrivez-vous cette semaine et accédez au <strong>test de niveau gratuitement</strong> + 10% de réduction sur le plan Standard !",
+    fr: "🍁 Inscrivez-vous cette semaine et accédez au <strong>Test de niveauement</strong> + 10% de réduction sur le plan Standard !",
     en: "🍁 Register this week and get the <strong>free level test</strong> + 10% off the Standard plan!"
   },
   "notif.cta": { fr: "Je profite de l'offre →", en: "Claim the offer →" },
@@ -511,7 +545,7 @@ const translations = {
   // ===== TOASTS =====
   "toast.login":      { fr: "Connexion en cours de déploiement. Inscrivez-vous via le formulaire.", en: "Login is being deployed. Please register via the form." },
   "toast.register":   { fr: "Compte créé ! Vous recevrez vos accès sous 24h par email.", en: "Account created! You will receive your access within 24 hours by email." },
-  "toast.form":       { fr: "Inscription envoyée ! Notre équipe vous contacte sous 24h.", en: "Registration sent! Our team will contact you within 24 hours." },
+  "toast.form":       { fr: "Inscription reçue ! Redirection vers le paiement...", en: "Registration received! Redirecting to payment..." },
   "toast.newsletter": { fr: "Abonnement confirmé ! Merci de rejoindre la communauté ARCADINS.", en: "Subscription confirmed! Thank you for joining the ARCADINS community." },
 
   // ===== PAGE FAQ =====
@@ -656,9 +690,9 @@ const translations = {
   "about.dont.7":{ fr: "✗ Promettre la résidence permanente",           en: "✗ Promise permanent residence" },
   "about.legal": { fr: "⚠️ Note légale : ARCADINS Training Center est une plateforme privée de programme de tutorat linguistique. Elle n'est affiliée ni à IRCC, ni au MIFI, ni aux organismes officiels TEF (CCIP) ou TCF (France Éducation international). Les scores obtenus lors de nos simulations sont indicatifs et ne constituent pas des résultats officiels.", en: "⚠️ Legal notice: ARCADINS Training Center is a private language tutoring platform. It is not affiliated with IRCC, MIFI, or the official TEF (CCIP) or TCF (France Éducation international) organizations. Scores obtained in our simulations are indicative and do not constitute official results." },
   "about.cta.h2":   { fr: "Rejoignez ARCADINS Training Center",        en: "Join ARCADINS Training Center" },
-  "about.cta.p":    { fr: "Commencez par un test de niveau gratuit et découvrez votre niveau NCLC actuel.", en: "Start with a free level test and discover your current NCLC level." },
+  "about.cta.p":    { fr: "Commencez par un Test de niveau et découvrez votre niveau NCLC actuel.", en: "Start with a free level test and discover your current NCLC level." },
   "about.cta.btn1": { fr: "✏️ S'inscrire maintenant",                  en: "✏️ Register now" },
-  "about.cta.btn2": { fr: "🎯 Test gratuit",                           en: "🎯 Free test" },
+  "about.cta.btn2": { fr: "🎯 Test d'essai",                           en: "🎯 Free test" },
 
   // ===== PAGE CONTACT =====
   "contact.hero.h1":    { fr: "Contactez-nous",                        en: "Contact us" },
@@ -700,7 +734,7 @@ const translations = {
   // ===== ACCES PAGE (acces.html) =====
   "acc.tag":           { fr: "Accès à la plateforme", en: "Platform Access" },
   "acc.h1":            { fr: "Accédez à votre espace de formation", en: "Access Your Training Space" },
-  "acc.p":             { fr: "Créez votre compte gratuit ou connectez-vous pour commencer votre préparation TEF & TCF Canada", en: "Create your free account or log in to start your TEF & TCF Canada preparation" },
+  "acc.p":             { fr: "Créez votre compte ou connectez-vous pour commencer votre préparation TEF & TCF Canada", en: "Create your free account or log in to start your TEF & TCF Canada preparation" },
   "acc.tab.register":  { fr: "Créer un compte", en: "Create Account" },
   "acc.tab.login":     { fr: "Se connecter", en: "Log In" },
   "acc.register.h2":   { fr: "Créer mon compte", en: "Create My Account" },
@@ -710,18 +744,18 @@ const translations = {
   "acc.tel":           { fr: "Numéro de téléphone", en: "Phone Number" },
   "acc.pays":          { fr: "Pays de résidence", en: "Country of Residence" },
   "acc.password":      { fr: "Mot de passe", en: "Password" },
-  "acc.register.btn":  { fr: "Créer mon compte gratuit →", en: "Create My Free Account →" },
+  "acc.register.btn":  { fr: "Créer mon compte →", en: "Create My Account →" },
   "acc.login.h2":      { fr: "Se connecter", en: "Log In" },
   "acc.login.btn":     { fr: "Se connecter →", en: "Log In →" },
   "acc.forgot":        { fr: "Mot de passe oublié ?", en: "Forgot password?" },
 
-  // ===== ESSAI GRATUIT (essai-gratuit.html) =====
-  "trial.tag":         { fr: "Essai gratuit", en: "Free Trial" },
-  "trial.h1":          { fr: "Test d'Essai Gratuit", en: "Free Trial Test" },
+  // ===== Test d'Essai (essai-gratuit.html) =====
+  "trial.tag":         { fr: "Test d'Essai", en: "Trial" },
+  "trial.h1":          { fr: "Test d'Essai", en: "Trial Test" },
   "trial.p":           { fr: "10 questions · 10 minutes · Résultat immédiat", en: "10 questions · 10 minutes · Instant result" },
   "trial.loading":     { fr: "Chargement...", en: "Loading..." },
   "trial.done.h":      { fr: "Essai déjà effectué", en: "Trial Already Taken" },
-  "trial.done.p":      { fr: "Vous avez déjà passé le test d'essai gratuit.", en: "You have already taken the free trial test." },
+  "trial.done.p":      { fr: "Vous avez déjà passé le Test d'Essai.", en: "You have already taken the trial test." },
   "trial.done.btn":    { fr: "Choisir mon forfait →", en: "Choose My Plan →" },
   "trial.start.h2":    { fr: "Prêt à commencer ?", en: "Ready to Start?" },
   "trial.start.p":     { fr: "10 questions de niveau TEF & TCF Canada. Vous avez 10 minutes.", en: "10 TEF & TCF Canada level questions. You have 10 minutes." },
@@ -828,6 +862,122 @@ const translations = {
   "verify.form.p":       { fr: "Le numéro de certificat se trouve en bas du document PDF (format: xxxx-xxxx-xxxx)", en: "The certificate number is found at the bottom of the PDF document (format: xxxx-xxxx-xxxx)" },
   "verify.form.placeholder": { fr: "Ex: a1b2c3d4-e5f6-7890-...", en: "E.g.: a1b2c3d4-e5f6-7890-..." },
   "verify.form.btn":     { fr: "Vérifier", en: "Verify" },
+
+  // ===== CONDITIONS D'UTILISATION =====
+  "cgu.title":    { fr: "Conditions d'utilisation", en: "Terms of Use" },
+  "cgu.updated":  { fr: "Dernière mise à jour : juin 2024", en: "Last updated: June 2024" },
+  "cgu.warning":  {
+    fr: "<strong>⚠️ Avertissement important :</strong> ARCADINS Training Center est une plateforme privée de préparation linguistique. Elle n'est pas affiliée à IRCC, au MIFI, à la CCIP (TEF) ni à France Éducation international (TCF). Elle ne garantit pas l'obtention d'un visa, d'une résidence permanente ou d'un résultat officiel.",
+    en: "<strong>⚠️ Important notice:</strong> ARCADINS Training Center is a private language preparation platform. It is not affiliated with IRCC, MIFI, CCIP (TEF) or France Éducation international (TCF). It does not guarantee obtaining a visa, permanent residence or an official result."
+  },
+  "cgu.s1.h":  { fr: "1. Objet", en: "1. Purpose" },
+  "cgu.s1.p":  {
+    fr: "Les présentes conditions d'utilisation régissent l'accès et l'utilisation de la plateforme ARCADINS Training Center (ci-après « la Plateforme »), accessible à l'adresse www.arcadins-training.com. En créant un compte ou en accédant aux services, vous acceptez sans réserve les présentes conditions.",
+    en: "These terms of use govern access to and use of the ARCADINS Training Center platform (hereinafter \"the Platform\"), accessible at www.arcadins-training.com. By creating an account or accessing the services, you unconditionally accept these terms."
+  },
+  "cgu.s2.h":  { fr: "2. Services proposés", en: "2. Services offered" },
+  "cgu.s2.p":  {
+    fr: "La Plateforme propose des programmes de tutorat en ligne pour la préparation au TEF & TCF Canada, des tests interactifs, des simulations d'examen, un espace membre privé, et un coaching optionnel. Ces services sont à visée pédagogique exclusivement.",
+    en: "The Platform offers online tutoring programs for TEF & TCF Canada preparation, interactive tests, exam simulations, a private member space, and optional coaching. These services are exclusively educational in purpose."
+  },
+  "cgu.s3.h":  { fr: "3. Création de compte", en: "3. Account creation" },
+  "cgu.s3.p":  {
+    fr: "L'accès aux programmes de tutorat payantes nécessite la création d'un compte. Vous vous engagez à fournir des informations exactes et à ne pas partager vos identifiants avec des tiers. Tout compte créé avec de fausses informations pourra être suspendu.",
+    en: "Access to paid tutoring programs requires creating an account. You agree to provide accurate information and not to share your credentials with third parties. Any account created with false information may be suspended."
+  },
+  "cgu.s4.h":  { fr: "4. Accès et durée", en: "4. Access and duration" },
+  "cgu.s4.p":  {
+    fr: "L'accès aux programmes de tutorat est accordé pour une durée de 6 mois à compter de l'activation du compte, sauf indication contraire dans l'offre souscrite. À l'expiration, l'accès est suspendu. Les contenus ne sont pas téléchargeables sauf indication explicite.",
+    en: "Access to tutoring programs is granted for 6 months from the date of account activation, unless otherwise specified in the subscribed offer. Upon expiry, access is suspended. Content is not downloadable unless explicitly stated."
+  },
+  "cgu.s5.h":  { fr: "5. Paiement", en: "5. Payment" },
+  "cgu.s5.p":  {
+    fr: "Les tarifs sont indiqués en dollars américains (USD) toutes taxes comprises. Le paiement est traité de manière sécurisée via Stripe. Nous nous réservons le droit de modifier les tarifs à tout moment, sans que cela affecte les commandes déjà confirmées.",
+    en: "Prices are listed in US dollars (USD), all taxes included. Payment is processed securely via Stripe. We reserve the right to modify prices at any time, without affecting already confirmed orders."
+  },
+  "cgu.s6.h":  { fr: "6. Droit de rétractation", en: "6. Right of withdrawal" },
+  "cgu.s6.p":  {
+    fr: "Conformément aux dispositions légales applicables, vous disposez d'un délai de 7 jours pour demander un remboursement, à condition de n'avoir pas accédé à plus de 20% du contenu du programme de tutorat. Passé ce délai ou ce seuil d'utilisation, aucun remboursement ne sera accordé.",
+    en: "In accordance with applicable legal provisions, you have 7 days to request a refund, provided you have not accessed more than 20% of the tutoring program content. After this period or usage threshold, no refund will be granted."
+  },
+  "cgu.s7.h":  { fr: "7. Propriété intellectuelle", en: "7. Intellectual property" },
+  "cgu.s7.p":  {
+    fr: "L'ensemble des contenus de la Plateforme (textes, exercices, audio, vidéos, design) est protégé par les droits de propriété intellectuelle. Toute reproduction, diffusion ou utilisation commerciale sans autorisation écrite préalable est strictement interdite.",
+    en: "All content on the Platform (texts, exercises, audio, videos, design) is protected by intellectual property rights. Any reproduction, distribution or commercial use without prior written authorization is strictly prohibited."
+  },
+  "cgu.s8.h":  { fr: "8. Limitation de responsabilité", en: "8. Limitation of liability" },
+  "cgu.s8.p":  {
+    fr: "ARCADINS Training Center s'engage à fournir des contenus de qualité pour préparer les candidats aux tests TEF & TCF Canada. Cependant, la Plateforme ne peut être tenue responsable des résultats obtenus lors des tests officiels, ni des décisions prises par IRCC ou tout autre organisme gouvernemental concernant les dossiers d'immigration.",
+    en: "ARCADINS Training Center is committed to providing quality content to prepare candidates for TEF & TCF Canada tests. However, the Platform cannot be held responsible for results obtained in official tests, nor for decisions made by IRCC or any other government body regarding immigration files."
+  },
+  "cgu.s9.h":  { fr: "9. Modification des conditions", en: "9. Amendment of terms" },
+  "cgu.s9.p":  {
+    fr: "ARCADINS Training Center se réserve le droit de modifier les présentes conditions à tout moment. Les utilisateurs seront informés par email de toute modification substantielle. La poursuite de l'utilisation de la Plateforme après notification vaut acceptation des nouvelles conditions.",
+    en: "ARCADINS Training Center reserves the right to modify these terms at any time. Users will be notified by email of any substantial changes. Continued use of the Platform after notification constitutes acceptance of the new terms."
+  },
+  "cgu.s10.h": { fr: "10. Contact", en: "10. Contact" },
+  "cgu.s10.p": {
+    fr: "Pour toute question relative aux présentes conditions : <a href='mailto:info@arcadins-training.com' style='color:var(--blue);'>info@arcadins-training.com</a>",
+    en: "For any questions regarding these terms: <a href='mailto:info@arcadins-training.com' style='color:var(--blue);'>info@arcadins-training.com</a>"
+  },
+  "cgu.btn.home":   { fr: "← Retour à l'accueil", en: "← Back to home" },
+  "cgu.btn.privacy":{ fr: "Politique de confidentialité", en: "Privacy Policy" },
+
+  // ===== POLITIQUE DE CONFIDENTIALITÉ =====
+  "priv.title":   { fr: "Politique de Confidentialité", en: "Privacy Policy" },
+  "priv.updated": { fr: "Dernière mise à jour : juin 2024", en: "Last updated: June 2024" },
+  "priv.s1.h": { fr: "1. Collecte des données personnelles", en: "1. Collection of personal data" },
+  "priv.s1.p": {
+    fr: "Lors de votre inscription sur ARCADINS Training Center, nous collectons les informations suivantes : nom complet, adresse email, numéro de téléphone, pays de résidence, et informations relatives à votre projet d'immigration. Ces données sont nécessaires à la création de votre compte et à la personnalisation de votre parcours de tutorat.",
+    en: "When you register on ARCADINS Training Center, we collect the following information: full name, email address, phone number, country of residence, and information related to your immigration project. This data is necessary for creating your account and personalizing your tutoring journey."
+  },
+  "priv.s2.h":   { fr: "2. Utilisation des données", en: "2. Use of data" },
+  "priv.s2.p":   {
+    fr: "Vos données personnelles sont utilisées exclusivement pour :",
+    en: "Your personal data is used exclusively for:"
+  },
+  "priv.s2.li1": { fr: "La création et la gestion de votre compte étudiant", en: "Creating and managing your student account" },
+  "priv.s2.li2": { fr: "L'accès aux programmes de tutorat et aux tests interactifs", en: "Accessing tutoring programs and interactive tests" },
+  "priv.s2.li3": { fr: "Le suivi de votre progression pédagogique", en: "Tracking your educational progress" },
+  "priv.s2.li4": { fr: "La communication relative à votre programme de tutorat (emails de suivi, notifications)", en: "Communication about your tutoring program (follow-up emails, notifications)" },
+  "priv.s2.li5": { fr: "L'amélioration de nos services", en: "Improving our services" },
+  "priv.s2.p2":  {
+    fr: "Nous ne vendons, ne louons et ne partageons jamais vos données personnelles avec des tiers à des fins commerciales.",
+    en: "We never sell, rent or share your personal data with third parties for commercial purposes."
+  },
+  "priv.s3.h": { fr: "3. Sécurité des données", en: "3. Data security" },
+  "priv.s3.p": {
+    fr: "Toutes les communications entre votre navigateur et nos serveurs sont chiffrées via le protocole SSL/TLS. Vos mots de passe sont stockés sous forme hashée et ne sont jamais accessibles en clair. Nous appliquons des mesures de sécurité conformes aux standards du secteur pour protéger vos informations.",
+    en: "All communications between your browser and our servers are encrypted via SSL/TLS protocol. Your passwords are stored in hashed form and are never accessible in plain text. We apply industry-standard security measures to protect your information."
+  },
+  "priv.s4.h": { fr: "4. Cookies", en: "4. Cookies" },
+  "priv.s4.p": {
+    fr: "Notre site utilise des cookies essentiels au fonctionnement de la plateforme (session de connexion, préférences) et des cookies analytiques anonymisés pour comprendre comment les utilisateurs interagissent avec le site. Vous pouvez désactiver les cookies non essentiels dans les paramètres de votre navigateur.",
+    en: "Our site uses essential cookies for platform operation (login session, preferences) and anonymized analytical cookies to understand how users interact with the site. You can disable non-essential cookies in your browser settings."
+  },
+  "priv.s5.h":   { fr: "5. Vos droits", en: "5. Your rights" },
+  "priv.s5.p":   { fr: "Conformément aux réglementations applicables sur la protection des données (RGPD et lois locales), vous disposez des droits suivants :", en: "In accordance with applicable data protection regulations (GDPR and local laws), you have the following rights:" },
+  "priv.s5.li1": { fr: "Droit d'accès à vos données personnelles", en: "Right of access to your personal data" },
+  "priv.s5.li2": { fr: "Droit de rectification des données inexactes", en: "Right to rectification of inaccurate data" },
+  "priv.s5.li3": { fr: "Droit à l'effacement (« droit à l'oubli »)", en: "Right to erasure (\"right to be forgotten\")" },
+  "priv.s5.li4": { fr: "Droit à la portabilité des données", en: "Right to data portability" },
+  "priv.s5.li5": { fr: "Droit d'opposition au traitement", en: "Right to object to processing" },
+  "priv.s5.p2":  {
+    fr: "Pour exercer ces droits, contactez-nous à : <a href='mailto:info@arcadins-training.com' style='color:var(--blue);'>info@arcadins-training.com</a>",
+    en: "To exercise these rights, contact us at: <a href='mailto:info@arcadins-training.com' style='color:var(--blue);'>info@arcadins-training.com</a>"
+  },
+  "priv.s6.h": { fr: "6. Conservation des données", en: "6. Data retention" },
+  "priv.s6.p": {
+    fr: "Vos données sont conservées pendant la durée de votre abonnement actif, plus une période de 2 ans après la fin de votre accès, sauf demande de suppression de votre part.",
+    en: "Your data is retained for the duration of your active subscription, plus a period of 2 years after your access ends, unless you request deletion."
+  },
+  "priv.s7.h": { fr: "7. Contact", en: "7. Contact" },
+  "priv.s7.p": {
+    fr: "Pour toute question relative à cette politique de confidentialité : <a href='mailto:info@arcadins-training.com' style='color:var(--blue);'>info@arcadins-training.com</a>",
+    en: "For any questions regarding this privacy policy: <a href='mailto:info@arcadins-training.com' style='color:var(--blue);'>info@arcadins-training.com</a>"
+  },
+  "priv.btn.home":  { fr: "← Retour à l'accueil", en: "← Back to home" },
+  "priv.btn.terms": { fr: "Conditions d'utilisation", en: "Terms of Use" },
 };
 
 // ============================================================

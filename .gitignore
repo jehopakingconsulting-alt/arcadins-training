@@ -5,6 +5,11 @@ server/node_modules/
 *.db-wal
 .env
 .env.local
+.env.production
 server/certificates/*.pdf
+server/certificates/
 .claude/
 .DS_Store
+Thumbs.db
+*.log
+npm-debug.log*

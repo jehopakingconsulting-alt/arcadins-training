@@ -13,6 +13,7 @@ const { initDatabase } = require('./database');
 initDatabase();
 
 const app = express();
+// Render injecte automatiquement $PORT (10000 en général)
 const PORT = process.env.PORT || 3000;
 
 // ─── CORS ────────────────────────────────────────────────────────────────────
@@ -21,7 +22,8 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://127.0.0.1:8765',
   'http://127.0.0.1:3000',
-  process.env.FRONTEND_URL,
+  process.env.FRONTEND_URL,                           // https://arcadins-training.onrender.com
+  process.env.CUSTOM_DOMAIN,                          // https://www.arcadins-training.com
 ].filter(Boolean);
 
 app.use(cors({
@@ -64,6 +66,7 @@ app.use('/api/modules', require('./routes/modules'));
 app.use('/api/final-test', require('./routes/finalTest'));
 app.use('/api/certificate', require('./routes/certificate'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/contact', require('./routes/contact'));
 
 // ─── HEALTH CHECK ────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {

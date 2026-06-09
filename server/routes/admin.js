@@ -2,178 +2,414 @@
 
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 const { getDb } = require('../database');
 const authMiddleware = require('../middleware/auth');
-const { sendUserEmail } = require('../services/email');
+const { sendUserEmail, testConnection, isConfigured } = require('../services/email');
 
-// Admin check middleware
+// ── Admin guard ─────────────────────────────────────────────────────────────
 function adminOnly(req, res, next) {
   if (!req.user || req.user.role !== 'admin') {
     return res.status(403).json({ success: false, message: 'Accès réservé aux administrateurs.' });
   }
   next();
 }
-
 router.use(authMiddleware, adminOnly);
 
-// GET /api/admin/stats
+// ════════════════════════════════════════════════════════════════════
+//  STATS
+// ════════════════════════════════════════════════════════════════════
 router.get('/stats', (req, res) => {
   try {
     const db = getDb();
+    const g = (sql) => db.prepare(sql).get().cnt;
 
-    const totalUsers      = db.prepare("SELECT COUNT(*) as cnt FROM users WHERE role != 'admin'").get();
-    const prospects       = db.prepare("SELECT COUNT(*) as cnt FROM users WHERE role = 'prospect'").get();
-    const apprenants      = db.prepare("SELECT COUNT(*) as cnt FROM users WHERE role = 'apprenant'").get();
-    const paymentConfirmed= db.prepare("SELECT COUNT(*) as cnt FROM users WHERE payment_confirmed = 1 AND role != 'admin'").get();
-    const trialDone       = db.prepare("SELECT COUNT(*) as cnt FROM users WHERE trial_done = 1 AND role != 'admin'").get();
-    const qualDone        = db.prepare("SELECT COUNT(*) as cnt FROM users WHERE qualification_done = 1 AND role != 'admin'").get();
-    const modulesDone     = db.prepare("SELECT COUNT(*) as cnt FROM users WHERE all_modules_done = 1 AND role != 'admin'").get();
-    const finalPassed     = db.prepare("SELECT COUNT(*) as cnt FROM users WHERE final_test_passed = 1 AND role != 'admin'").get();
-    const certificates    = db.prepare('SELECT COUNT(*) as cnt FROM certificates').get();
-    const totalRevenue    = db.prepare("SELECT COUNT(*) as cnt FROM users WHERE payment_confirmed = 1 AND role != 'admin'").get();
-
-    const recentProspects = db.prepare(`
-      SELECT nom, prenom, email, pays, created_at FROM prospects ORDER BY created_at DESC LIMIT 5
-    `).all();
+    const recentProspects = db.prepare(
+      'SELECT nom, prenom, email, pays, telephone, created_at FROM prospects ORDER BY created_at DESC LIMIT 10'
+    ).all();
 
     return res.json({
       success: true,
       data: {
-        total_users: totalUsers.cnt,
-        prospects: prospects.cnt,
-        apprenants: apprenants.cnt,
-        payment_confirmed: paymentConfirmed.cnt,
-        trial_done: trialDone.cnt,
-        qualification_done: qualDone.cnt,
-        modules_done: modulesDone.cnt,
-        final_passed: finalPassed.cnt,
-        certificates_issued: certificates.cnt,
-        recent_prospects: recentProspects,
-        conversion_rate: totalUsers.cnt > 0 ? ((paymentConfirmed.cnt / totalUsers.cnt) * 100).toFixed(1) : 0,
+        total_users:          g("SELECT COUNT(*) cnt FROM users WHERE role!='admin'"),
+        total_prospects:      g("SELECT COUNT(*) cnt FROM prospects"),
+        total_apprenants:     g("SELECT COUNT(*) cnt FROM users WHERE role='apprenant'"),
+        payment_confirmed:    g("SELECT COUNT(*) cnt FROM users WHERE payment_confirmed=1 AND role!='admin'"),
+        payment_pending:      g("SELECT COUNT(*) cnt FROM users WHERE payment_confirmed=0 AND role='apprenant'"),
+        trial_done:           g("SELECT COUNT(*) cnt FROM users WHERE trial_done=1 AND role!='admin'"),
+        qualification_done:   g("SELECT COUNT(*) cnt FROM users WHERE qualification_done=1 AND role!='admin'"),
+        modules_all_done:     g("SELECT COUNT(*) cnt FROM users WHERE all_modules_done=1"),
+        final_passed:         g("SELECT COUNT(*) cnt FROM users WHERE final_test_passed=1"),
+        certificates_generated: g('SELECT COUNT(*) cnt FROM certificates'),
+        blocked_users:        g("SELECT COUNT(*) cnt FROM users WHERE status='blocked'"),
+        recent_prospects:     recentProspects,
       },
     });
   } catch (err) {
-    console.error('[Admin] Stats error:', err);
+    console.error('[Admin] Stats:', err);
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
   }
 });
 
-// GET /api/admin/users
+// ════════════════════════════════════════════════════════════════════
+//  USERS — LIST
+// ════════════════════════════════════════════════════════════════════
 router.get('/users', (req, res) => {
   try {
     const db = getDb();
-    const { role, status, pays, search, page = 1, limit = 50 } = req.query;
+    const { role, status, pays, search, page = 1, limit = 100 } = req.query;
 
-    let query = `SELECT id, nom, prenom, email, telephone, pays, role, status, plan, created_at,
-      trial_done, trial_score, payment_confirmed, payment_plan, payment_date,
-      qualification_done, qualification_level, qualification_score,
-      all_modules_done, final_test_passed, final_test_score, certificate_id, lang
-      FROM users WHERE 1=1`;
-    const params = [];
+    let q = `SELECT id,nom,prenom,email,telephone,pays,role,status,plan,created_at,
+      trial_done,trial_score,payment_confirmed,payment_plan,payment_date,payment_method,
+      qualification_done,qualification_level,qualification_score,
+      current_module,all_modules_done,final_test_done,final_test_score,final_test_passed,
+      certificate_id,lang FROM users WHERE 1=1`;
+    const p = [];
 
-    if (role) { query += ' AND role = ?'; params.push(role); }
-    if (status) { query += ' AND status = ?'; params.push(status); }
-    if (pays) { query += ' AND pays = ?'; params.push(pays); }
+    if (role)   { q += ' AND role=?';  p.push(role); }
+    if (status) { q += ' AND status=?'; p.push(status); }
+    if (pays)   { q += ' AND pays=?';  p.push(pays); }
     if (search) {
-      query += ' AND (nom LIKE ? OR prenom LIKE ? OR email LIKE ?)';
-      params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+      q += ' AND (nom LIKE ? OR prenom LIKE ? OR email LIKE ? OR telephone LIKE ?)';
+      p.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
     }
 
-    query += ' ORDER BY created_at DESC';
-
+    q += ' ORDER BY created_at DESC';
     const offset = (parseInt(page) - 1) * parseInt(limit);
-    query += ` LIMIT ${parseInt(limit)} OFFSET ${offset}`;
+    q += ` LIMIT ${parseInt(limit)} OFFSET ${offset}`;
 
-    const users = db.prepare(query).all(...params);
-    const countQuery = query.replace(/SELECT .* FROM/, 'SELECT COUNT(*) as cnt FROM').replace(/ORDER BY.*$/, '');
-
-    return res.json({
-      success: true,
-      data: {
-        users,
-        total: users.length,
-        page: parseInt(page),
-        limit: parseInt(limit),
-      },
-    });
+    const users = db.prepare(q).all(...p);
+    return res.json({ success: true, data: { users, total: users.length } });
   } catch (err) {
-    console.error('[Admin] Users error:', err);
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
   }
 });
 
-// GET /api/admin/users/:id
+// ════════════════════════════════════════════════════════════════════
+//  USERS — DETAIL
+// ════════════════════════════════════════════════════════════════════
 router.get('/users/:id', (req, res) => {
   try {
     const db = getDb();
-    const user = db.prepare(`
-      SELECT id, nom, prenom, email, telephone, pays, role, status, plan, created_at,
-      trial_done, trial_score, payment_confirmed, payment_plan, payment_date,
-      qualification_done, qualification_level, qualification_score,
-      all_modules_done, final_test_passed, final_test_score, certificate_id,
-      current_module, lang
-      FROM users WHERE id = ?
-    `).get(req.params.id);
+    const user = db.prepare(
+      `SELECT id,nom,prenom,email,telephone,pays,role,status,plan,created_at,
+       trial_done,trial_score,payment_confirmed,payment_plan,payment_date,payment_method,payment_notes,
+       qualification_done,qualification_level,qualification_score,
+       current_module,all_modules_done,final_test_done,final_test_score,final_test_passed,
+       certificate_id,lang FROM users WHERE id=?`
+    ).get(req.params.id);
 
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'Utilisateur non trouvé.' });
-    }
+    if (!user) return res.status(404).json({ success: false, message: 'Utilisateur introuvable.' });
 
-    const tests = db.prepare('SELECT * FROM tests WHERE user_id = ? ORDER BY created_at DESC').all(user.id);
-    const modules = db.prepare('SELECT * FROM modules WHERE user_id = ? ORDER BY module_number').all(user.id);
-    const cert = db.prepare('SELECT * FROM certificates WHERE user_id = ?').get(user.id);
+    const tests   = db.prepare('SELECT * FROM tests WHERE user_id=? ORDER BY created_at DESC').all(user.id);
+    const modules = db.prepare('SELECT * FROM modules WHERE user_id=? ORDER BY module_number').all(user.id);
+    const cert    = db.prepare('SELECT * FROM certificates WHERE user_id=?').get(user.id);
+    const testAttempts = db.prepare("SELECT COUNT(*) cnt FROM tests WHERE user_id=? AND test_type='final'").get(user.id);
 
-    return res.json({
-      success: true,
-      data: { user, tests, modules, certificate: cert || null },
-    });
+    return res.json({ success: true, data: { user, tests, modules, certificate: cert || null, final_attempts: testAttempts.cnt } });
   } catch (err) {
-    console.error('[Admin] User detail error:', err);
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
   }
 });
 
-// PUT /api/admin/users/:id
-router.put('/users/:id', (req, res) => {
+// ════════════════════════════════════════════════════════════════════
+//  USERS — CREATE MANUALLY
+// ════════════════════════════════════════════════════════════════════
+router.post('/users', async (req, res) => {
   try {
     const db = getDb();
-    const { role, status, payment_confirmed, trial_done, qualification_done, all_modules_done, final_test_passed, plan } = req.body;
+    const { nom, prenom, email, telephone, pays, password, plan, payment_method, payment_confirmed, notes } = req.body;
 
-    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.params.id);
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'Utilisateur non trouvé.' });
+    if (!nom || !prenom || !email || !password)
+      return res.status(400).json({ success: false, message: 'Nom, prénom, email et mot de passe requis.' });
+
+    const existing = db.prepare('SELECT id FROM users WHERE email=?').get(email);
+    if (existing) return res.status(409).json({ success: false, message: 'Email déjà utilisé.' });
+
+    const hash = await bcrypt.hash(password, 10);
+    const paid = payment_confirmed ? 1 : 0;
+
+    const info = db.prepare(`
+      INSERT INTO users (nom,prenom,email,telephone,pays,password_hash,role,status,
+        payment_plan,payment_method,payment_confirmed,payment_date,payment_notes,lang)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    `).run(
+      nom.trim(), prenom.trim(), email.trim().toLowerCase(),
+      telephone || null, pays || null, hash,
+      paid ? 'apprenant' : 'prospect',
+      paid ? 'active' : 'trial',
+      plan || null,
+      payment_method || null,
+      paid,
+      paid ? new Date().toISOString() : null,
+      notes || null,
+      'fr'
+    );
+
+    const newId = info.lastInsertRowid;
+
+    // Si paiement confirmé → créer les 14 modules
+    if (paid) {
+      const ins = db.prepare('INSERT OR IGNORE INTO modules (user_id,module_number,status) VALUES (?,?,?)');
+      for (let i = 1; i <= 14; i++) ins.run(newId, i, i === 1 ? 'not_started' : 'locked');
+      db.prepare("UPDATE users SET qualification_done=1 WHERE id=?").run(newId);
     }
 
-    const updates = [];
-    const params = [];
-
-    if (role !== undefined) { updates.push('role = ?'); params.push(role); }
-    if (status !== undefined) { updates.push('status = ?'); params.push(status); }
-    if (payment_confirmed !== undefined) { updates.push('payment_confirmed = ?'); params.push(payment_confirmed ? 1 : 0); }
-    if (trial_done !== undefined) { updates.push('trial_done = ?'); params.push(trial_done ? 1 : 0); }
-    if (qualification_done !== undefined) { updates.push('qualification_done = ?'); params.push(qualification_done ? 1 : 0); }
-    if (all_modules_done !== undefined) { updates.push('all_modules_done = ?'); params.push(all_modules_done ? 1 : 0); }
-    if (final_test_passed !== undefined) { updates.push('final_test_passed = ?'); params.push(final_test_passed ? 1 : 0); }
-    if (plan !== undefined) { updates.push('payment_plan = ?'); params.push(plan); }
-
-    if (updates.length === 0) {
-      return res.status(400).json({ success: false, message: 'Aucune modification spécifiée.' });
-    }
-
-    params.push(req.params.id);
-    db.prepare(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`).run(...params);
-
-    const updated = db.prepare('SELECT * FROM users WHERE id = ?').get(req.params.id);
-    const { password_hash, ...safeUser } = updated;
-
-    return res.json({ success: true, data: { user: safeUser }, message: 'Utilisateur mis à jour.' });
+    const created = db.prepare('SELECT id,nom,prenom,email,role,status,payment_confirmed FROM users WHERE id=?').get(newId);
+    return res.status(201).json({ success: true, data: { user: created }, message: 'Compte créé avec succès.' });
   } catch (err) {
-    console.error('[Admin] Update user error:', err);
+    console.error('[Admin] Create user:', err);
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
   }
 });
 
-// GET /api/admin/prospects
+// ════════════════════════════════════════════════════════════════════
+//  USERS — EDIT PROFILE
+// ════════════════════════════════════════════════════════════════════
+router.put('/users/:id/profile', async (req, res) => {
+  try {
+    const db = getDb();
+    const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'Utilisateur introuvable.' });
+
+    const { nom, prenom, email, telephone, pays, plan, password, notes } = req.body;
+    const updates = []; const params = [];
+
+    if (nom)       { updates.push('nom=?');       params.push(nom.trim()); }
+    if (prenom)    { updates.push('prenom=?');     params.push(prenom.trim()); }
+    if (email)     { updates.push('email=?');      params.push(email.trim().toLowerCase()); }
+    if (telephone !== undefined) { updates.push('telephone=?'); params.push(telephone || null); }
+    if (pays !== undefined)      { updates.push('pays=?');      params.push(pays || null); }
+    if (plan !== undefined)      { updates.push('payment_plan=?'); params.push(plan || null); }
+    if (notes !== undefined)     { updates.push('payment_notes=?'); params.push(notes || null); }
+    if (password)  {
+      const hash = await bcrypt.hash(password, 10);
+      updates.push('password_hash=?'); params.push(hash);
+    }
+
+    if (!updates.length) return res.status(400).json({ success: false, message: 'Aucune modification.' });
+
+    params.push(req.params.id);
+    db.prepare(`UPDATE users SET ${updates.join(',')} WHERE id=?`).run(...params);
+
+    return res.json({ success: true, message: 'Profil mis à jour.' });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
+//  USERS — CONFIRM PAYMENT (cash, Interac, virement…)
+// ════════════════════════════════════════════════════════════════════
+router.post('/users/:id/confirm-payment', (req, res) => {
+  try {
+    const db = getDb();
+    const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'Utilisateur introuvable.' });
+
+    const { plan, payment_method, notes } = req.body;
+
+    // Confirm payment + upgrade role + activate
+    db.prepare(`UPDATE users SET
+      payment_confirmed=1, payment_date=datetime('now'),
+      payment_plan=COALESCE(?,payment_plan),
+      payment_method=COALESCE(?,payment_method,'Manuel'),
+      payment_notes=COALESCE(?,payment_notes),
+      role='apprenant', status='active', qualification_done=1
+    WHERE id=?`).run(plan || null, payment_method || 'Manuel', notes || null, user.id);
+
+    // Create/unlock modules if not already done
+    const existing = db.prepare('SELECT COUNT(*) cnt FROM modules WHERE user_id=?').get(user.id);
+    if (existing.cnt === 0) {
+      const ins = db.prepare('INSERT OR IGNORE INTO modules (user_id,module_number,status) VALUES (?,?,?)');
+      for (let i = 1; i <= 14; i++) ins.run(user.id, i, i === 1 ? 'not_started' : 'locked');
+    } else {
+      // Unlock first module if still locked
+      db.prepare("UPDATE modules SET status='not_started' WHERE user_id=? AND module_number=1 AND status='locked'").run(user.id);
+    }
+
+    return res.json({ success: true, message: `Paiement confirmé. Accès à la formation accordé à ${user.prenom} ${user.nom}.` });
+  } catch (err) {
+    console.error('[Admin] Confirm payment:', err);
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
+//  USERS — GRANT ACCESS (without payment, e.g. promo/test)
+// ════════════════════════════════════════════════════════════════════
+router.post('/users/:id/grant-access', (req, res) => {
+  try {
+    const db = getDb();
+    const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'Utilisateur introuvable.' });
+
+    const { reason } = req.body;
+
+    db.prepare(`UPDATE users SET
+      role='apprenant', status='active', qualification_done=1,
+      payment_notes=COALESCE(?,'Accès accordé manuellement par admin')
+    WHERE id=?`).run(reason || null, user.id);
+
+    const existing = db.prepare('SELECT COUNT(*) cnt FROM modules WHERE user_id=?').get(user.id);
+    if (existing.cnt === 0) {
+      const ins = db.prepare('INSERT OR IGNORE INTO modules (user_id,module_number,status) VALUES (?,?,?)');
+      for (let i = 1; i <= 14; i++) ins.run(user.id, i, i === 1 ? 'not_started' : 'locked');
+    } else {
+      db.prepare("UPDATE modules SET status='not_started' WHERE user_id=? AND module_number=1 AND status='locked'").run(user.id);
+    }
+
+    return res.json({ success: true, message: `Accès formation accordé à ${user.prenom} ${user.nom}.` });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
+//  USERS — BLOCK
+// ════════════════════════════════════════════════════════════════════
+router.post('/users/:id/block', (req, res) => {
+  try {
+    const db = getDb();
+    const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'Utilisateur introuvable.' });
+    if (user.role === 'admin') return res.status(403).json({ success: false, message: 'Impossible de bloquer un admin.' });
+
+    const { reason } = req.body;
+    db.prepare("UPDATE users SET status='blocked', payment_notes=COALESCE(?,payment_notes) WHERE id=?")
+      .run(reason ? `[BLOQUÉ] ${reason}` : null, user.id);
+
+    return res.json({ success: true, message: `Compte de ${user.prenom} ${user.nom} bloqué.` });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
+//  USERS — UNBLOCK
+// ════════════════════════════════════════════════════════════════════
+router.post('/users/:id/unblock', (req, res) => {
+  try {
+    const db = getDb();
+    const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'Utilisateur introuvable.' });
+
+    const newStatus = user.payment_confirmed ? 'active' : 'trial';
+    db.prepare("UPDATE users SET status=? WHERE id=?").run(newStatus, user.id);
+
+    return res.json({ success: true, message: `Compte de ${user.prenom} ${user.nom} débloqué.` });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
+//  USERS — DELETE
+// ════════════════════════════════════════════════════════════════════
+router.delete('/users/:id', (req, res) => {
+  try {
+    const db = getDb();
+    const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'Utilisateur introuvable.' });
+    if (user.role === 'admin') return res.status(403).json({ success: false, message: 'Impossible de supprimer un admin.' });
+
+    // Delete all related data
+    db.prepare('DELETE FROM tests WHERE user_id=?').run(user.id);
+    db.prepare('DELETE FROM modules WHERE user_id=?').run(user.id);
+    db.prepare('DELETE FROM certificates WHERE user_id=?').run(user.id);
+    db.prepare('DELETE FROM users WHERE id=?').run(user.id);
+
+    return res.json({ success: true, message: `Compte de ${user.prenom} ${user.nom} supprimé définitivement.` });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
+//  USERS — RESET FINAL TEST ATTEMPTS
+// ════════════════════════════════════════════════════════════════════
+router.post('/users/:id/reset-final-test', (req, res) => {
+  try {
+    const db = getDb();
+    const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'Utilisateur introuvable.' });
+
+    db.prepare("DELETE FROM tests WHERE user_id=? AND test_type='final'").run(user.id);
+    db.prepare("UPDATE users SET final_test_done=0, final_test_score=0, final_test_passed=0 WHERE id=?").run(user.id);
+
+    return res.json({ success: true, message: `Tentatives du test final réinitialisées pour ${user.prenom} ${user.nom}.` });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
+//  USERS — RESET MODULE PROGRESS
+// ════════════════════════════════════════════════════════════════════
+router.post('/users/:id/reset-modules', (req, res) => {
+  try {
+    const db = getDb();
+    const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'Utilisateur introuvable.' });
+
+    db.prepare('DELETE FROM modules WHERE user_id=?').run(user.id);
+    db.prepare("UPDATE users SET current_module=1, all_modules_done=0, final_test_done=0, final_test_score=0, final_test_passed=0 WHERE id=?").run(user.id);
+    db.prepare("DELETE FROM tests WHERE user_id=? AND test_type='final'").run(user.id);
+
+    // Re-create locked modules
+    const ins = db.prepare('INSERT INTO modules (user_id,module_number,status) VALUES (?,?,?)');
+    for (let i = 1; i <= 14; i++) ins.run(user.id, i, i === 1 ? 'not_started' : 'locked');
+
+    return res.json({ success: true, message: `Progression modules réinitialisée pour ${user.prenom} ${user.nom}.` });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
+//  USERS — REVOKE ACCESS (suspend)
+// ════════════════════════════════════════════════════════════════════
+router.post('/users/:id/revoke-access', (req, res) => {
+  try {
+    const db = getDb();
+    const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'Utilisateur introuvable.' });
+
+    db.prepare("UPDATE users SET payment_confirmed=0, status='suspended', role='prospect' WHERE id=?").run(user.id);
+
+    return res.json({ success: true, message: `Accès révoqué pour ${user.prenom} ${user.nom}.` });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
+//  PAYMENTS — LIST pending / all
+// ════════════════════════════════════════════════════════════════════
+router.get('/payments', (req, res) => {
+  try {
+    const db = getDb();
+    const { status } = req.query; // 'pending' | 'confirmed' | all
+
+    let q = `SELECT id,nom,prenom,email,telephone,pays,role,status,
+      payment_plan,payment_method,payment_confirmed,payment_date,payment_notes,created_at
+      FROM users WHERE role!='admin'`;
+
+    if (status === 'pending')   q += " AND (payment_confirmed=0 AND role='apprenant')";
+    if (status === 'confirmed') q += ' AND payment_confirmed=1';
+
+    q += ' ORDER BY created_at DESC';
+
+    const payments = db.prepare(q).all();
+    return res.json({ success: true, data: { payments, total: payments.length } });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
+//  PROSPECTS
+// ════════════════════════════════════════════════════════════════════
 router.get('/prospects', (req, res) => {
   try {
     const db = getDb();
@@ -184,32 +420,34 @@ router.get('/prospects', (req, res) => {
   }
 });
 
-// GET /api/admin/tests
+// ════════════════════════════════════════════════════════════════════
+//  TESTS
+// ════════════════════════════════════════════════════════════════════
 router.get('/tests', (req, res) => {
   try {
     const db = getDb();
     const { type } = req.query;
-    let query = `SELECT t.*, u.nom, u.prenom, u.email FROM tests t
-      JOIN users u ON t.user_id = u.id WHERE 1=1`;
-    const params = [];
-    if (type) { query += ' AND t.test_type = ?'; params.push(type); }
-    query += ' ORDER BY t.created_at DESC LIMIT 200';
-
-    const tests = db.prepare(query).all(...params);
+    let q = `SELECT t.*,u.nom,u.prenom,u.email FROM tests t
+      JOIN users u ON t.user_id=u.id WHERE 1=1`;
+    const p = [];
+    if (type) { q += ' AND t.test_type=?'; p.push(type); }
+    q += ' ORDER BY t.created_at DESC LIMIT 500';
+    const tests = db.prepare(q).all(...p);
     return res.json({ success: true, data: { tests, total: tests.length } });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
   }
 });
 
-// GET /api/admin/certificates
+// ════════════════════════════════════════════════════════════════════
+//  CERTIFICATES
+// ════════════════════════════════════════════════════════════════════
 router.get('/certificates', (req, res) => {
   try {
     const db = getDb();
     const certs = db.prepare(`
-      SELECT c.*, u.email, u.pays FROM certificates c
-      JOIN users u ON c.user_id = u.id
-      ORDER BY c.issued_at DESC
+      SELECT c.*,u.email,u.pays FROM certificates c
+      JOIN users u ON c.user_id=u.id ORDER BY c.issued_at DESC
     `).all();
     return res.json({ success: true, data: { certificates: certs, total: certs.length } });
   } catch (err) {
@@ -217,80 +455,112 @@ router.get('/certificates', (req, res) => {
   }
 });
 
-// GET /api/admin/export/csv
-router.get('/export/csv', (req, res) => {
+// ════════════════════════════════════════════════════════════════════
+//  SEND EMAIL TO USER
+// ════════════════════════════════════════════════════════════════════
+router.post('/users/:id/email', async (req, res) => {
   try {
     const db = getDb();
-    const users = db.prepare(`
-      SELECT nom, prenom, email, telephone, pays, role, status, payment_plan, created_at,
-      trial_done, trial_score, qualification_done, qualification_level, qualification_score,
-      all_modules_done, final_test_passed, final_test_score
-      FROM users WHERE role != 'admin' ORDER BY created_at DESC
-    `).all();
+    const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'Utilisateur introuvable.' });
 
-    const headers = Object.keys(users[0] || {}).join(',');
-    const rows = users.map((u) => Object.values(u).map((v) => `"${v !== null && v !== undefined ? String(v).replace(/"/g, '""') : ''}"`).join(','));
-    const csv = [headers, ...rows].join('\n');
+    const { subject, message } = req.body;
+    if (!subject || !message)
+      return res.status(400).json({ success: false, message: 'Sujet et message requis.' });
 
-    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-    res.setHeader('Content-Disposition', `attachment; filename="arcadins_users_${Date.now()}.csv"`);
-    return res.send('﻿' + csv); // BOM for Excel
+    const html = `<p>Bonjour <strong>${user.prenom} ${user.nom}</strong>,</p>
+      <div style="margin:20px 0;padding:16px;background:#f9f9f9;border-radius:6px;">${message.replace(/\n/g,'<br>')}</div>
+      <p style="color:#666;font-size:13px;">L'équipe ARCADINS Training Center</p>`;
+
+    await sendUserEmail(user.email, subject, html);
+    return res.json({ success: true, message: `Email envoyé à ${user.email}.` });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: "Erreur lors de l'envoi." });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
+//  SETTINGS
+// ════════════════════════════════════════════════════════════════════
+router.get('/settings', (req, res) => {
+  try {
+    const db = getDb();
+    const rows = db.prepare('SELECT * FROM admin_settings').all();
+    const settings = {};
+    rows.forEach(r => { settings[r.key] = r.value; });
+    return res.json({ success: true, data: { settings } });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
   }
 });
 
-// PUT /api/admin/settings
 router.put('/settings', (req, res) => {
   try {
     const db = getDb();
     const { settings } = req.body;
-
-    if (!settings || typeof settings !== 'object') {
+    if (!settings || typeof settings !== 'object')
       return res.status(400).json({ success: false, message: 'Settings requis.' });
-    }
 
-    const upsert = db.prepare('INSERT OR REPLACE INTO admin_settings (key, value) VALUES (?, ?)');
-    const updateMany = db.transaction((entries) => {
-      entries.forEach(([key, value]) => upsert.run(key, String(value)));
-    });
+    const upsert = db.prepare('INSERT OR REPLACE INTO admin_settings (key,value) VALUES (?,?)');
+    const tx = db.transaction((entries) => { entries.forEach(([k,v]) => upsert.run(k, String(v))); });
+    tx(Object.entries(settings));
 
-    updateMany(Object.entries(settings));
-
-    const allSettings = db.prepare('SELECT * FROM admin_settings').all();
-    return res.json({ success: true, data: { settings: allSettings }, message: 'Paramètres mis à jour.' });
+    return res.json({ success: true, message: 'Paramètres enregistrés.' });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
   }
 });
 
-// POST /api/admin/users/:id/email
-router.post('/users/:id/email', async (req, res) => {
+// ════════════════════════════════════════════════════════════════════
+//  EXPORT CSV
+// ════════════════════════════════════════════════════════════════════
+router.get('/export/csv', (req, res) => {
   try {
     const db = getDb();
-    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.params.id);
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'Utilisateur non trouvé.' });
-    }
+    const users = db.prepare(`
+      SELECT nom,prenom,email,telephone,pays,role,status,payment_plan,payment_method,
+      payment_confirmed,payment_date,created_at,trial_done,trial_score,
+      qualification_done,qualification_level,qualification_score,
+      all_modules_done,final_test_passed,final_test_score
+      FROM users WHERE role!='admin' ORDER BY created_at DESC
+    `).all();
 
-    const { subject, message } = req.body;
-    if (!subject || !message) {
-      return res.status(400).json({ success: false, message: 'Sujet et message requis.' });
-    }
+    if (!users.length) return res.send('Aucun utilisateur');
 
-    const htmlContent = `
-      <p>Bonjour <strong>${user.prenom} ${user.nom}</strong>,</p>
-      <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 4px;">
-        ${message.replace(/\n/g, '<br>')}
-      </div>
-      <p style="color: #666; font-size: 13px; margin-top: 20px;">L'équipe ARCADINS Training Center</p>
-    `;
+    const headers = Object.keys(users[0]).join(',');
+    const rows = users.map(u =>
+      Object.values(u).map(v => `"${v !== null && v !== undefined ? String(v).replace(/"/g,'""') : ''}"`).join(',')
+    );
 
-    await sendUserEmail(user.email, subject, htmlContent);
-    return res.json({ success: true, message: `Email envoyé à ${user.email}.` });
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="arcadins_users_${Date.now()}.csv"`);
+    return res.send('﻿' + [headers, ...rows].join('\n'));
   } catch (err) {
-    console.error('[Admin] Send email error:', err);
-    return res.status(500).json({ success: false, message: 'Erreur lors de l\'envoi.' });
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
+//  EMAIL — TEST CONNEXION SMTP
+// ════════════════════════════════════════════════════════════════════
+router.get('/email/test', async (req, res) => {
+  const result = await testConnection();
+  return res.json({ success: result.ok, message: result.message, configured: isConfigured() });
+});
+
+// POST /api/admin/email/test-send — envoie un email de test à l'admin
+router.post('/email/test-send', async (req, res) => {
+  try {
+    await sendUserEmail(
+      process.env.ADMIN_EMAIL || 'arcadinstrainingcenter@gmail.com',
+      '[ARCADINS] ✅ Test email — Configuration Gmail OK',
+      `<h2 style="color:#0d2060;">✅ Connexion Gmail opérationnelle</h2>
+       <p>La connexion SMTP Gmail fonctionne correctement.</p>
+       <p style="color:#6b7a99;font-size:13px;">Tous les emails de la plateforme ARCADINS seront envoyés depuis ce compte.</p>`
+    );
+    return res.json({ success: true, message: 'Email de test envoyé à arcadinstrainingcenter@gmail.com' });
+  } catch(err) {
+    return res.status(500).json({ success: false, message: err.message });
   }
 });
 

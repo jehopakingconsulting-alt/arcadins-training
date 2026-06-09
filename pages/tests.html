@@ -219,7 +219,7 @@
   </style>
 </head>
 <body>
-<div class="topbar">🍁 Programme de Tutorat 100% en ligne · TEF & TCF Canada · <a href="mailto:info@arcadins-training.com">info@arcadins-training.com</a> · 📞 514-451-3436</div>
+<div class="topbar" data-i18n="topbar">🍁 Programme de Tutorat 100% en ligne · TEF & TCF Canada · <a href="mailto:info@arcadins-training.com">info@arcadins-training.com</a> · 📞 514-451-3436</div>
 <nav>
   <div class="nav-container">
     <a href="../index.html" class="logo"><img src="../assets/img/logo-nav.svg" alt="ARCADINS Training Center" height="50" style="display:block;" /></a>
@@ -227,11 +227,11 @@
       <li><a href="../index.html" data-i18n="nav.home">Accueil</a></li>
       <li><a href="tef-canada.html" data-i18n="nav.tef">TEF Canada</a></li>
       <li><a href="tcf-canada.html" data-i18n="nav.tcf">TCF Canada</a></li>
-      <li><a href="tests.html" style="color:var(--blue);font-weight:700;">Tests interactifs</a></li>
+      <li><a href="tests.html" data-i18n="nav.tests" style="color:var(--blue);font-weight:700;">Tests interactifs</a></li>
       <li><a href="tarifs.html" data-i18n="nav.tarifs">Tarifs</a></li>
       <li><a href="about.html" data-i18n="nav.about">À propos</a></li>
       <li><a href="faq.html" data-i18n="nav.faq">FAQ</a></li>
-      <li><a href="tuteur.html" style="color:var(--gold);font-weight:700;">🎓 Devenir Tuteur</a></li><li><a href="#" class="btn-login" onclick="openModal('login')" data-i18n="nav.login">Connexion</a></li>
+      <li><a href="tuteur.html" data-i18n="nav.tuteur" style="color:var(--gold);font-weight:700;">🎓 Devenir Tuteur</a></li><li><a href="#" class="btn-login" onclick="openModal('login')" data-i18n="nav.login">Connexion</a></li>
       <li><a href="../index.html#inscription" class="btn-cta" data-i18n="nav.register">S'inscrire</a></li>
     </ul>
     <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.3s;margin-right:8px;">🇬🇧 EN</button>
@@ -242,9 +242,9 @@
 <!-- HERO -->
 <section style="background:linear-gradient(135deg,var(--blue-dark),var(--blue));color:white;padding:56px 24px;text-align:center;">
   <div class="container" style="max-width:820px;">
-    <div class="hero-badge" style="margin:0 auto 14px;">🎯 Entraînement interactif</div>
-    <h1 style="font-size:2.2rem;font-weight:900;margin-bottom:10px;">Tests Interactifs</h1>
-    <p style="opacity:.9;font-size:1rem;max-width:580px;margin:auto;">
+    <div class="hero-badge" style="margin:0 auto 14px;" data-i18n="tests.hero.badge">🎯 Entraînement interactif</div>
+    <h1 style="font-size:2.2rem;font-weight:900;margin-bottom:10px;" data-i18n="tests.hero.h1">Tests Interactifs</h1>
+    <p style="opacity:.9;font-size:1rem;max-width:580px;margin:auto;" data-i18n="tests.hero.p">
       Évaluez votre niveau, entraînez-vous sur chaque compétence et obtenez votre estimation NCLC en temps réel.
       Corrections détaillées après chaque réponse.
     </p>
@@ -256,13 +256,13 @@
   <div class="container">
 
     <div class="tab-btns">
-      <button class="tab-btn active" onclick="showTab('niveau',this)">📊 Test de niveau</button>
-      <button class="tab-btn" onclick="showTab('grammaire',this)">📖 Grammaire</button>
-      <button class="tab-btn" onclick="showTab('vocabulaire',this)">💬 Vocabulaire</button>
-      <button class="tab-btn" onclick="showTab('lecture',this)">📄 Compréhension écrite</button>
-      <button class="tab-btn" onclick="showTab('expression',this)">✍️ Expression écrite</button>
-      <button class="tab-btn" onclick="showTab('oral',this)">🎤 Expression orale</button>
-      <button class="tab-btn" onclick="showTab('semiofficiel',this)" style="background:linear-gradient(135deg,var(--red-dark),var(--red));color:white;border-color:var(--red);">🏅 Test semi-officiel</button>
+      <button class="tab-btn active" onclick="showTab('niveau',this)" data-i18n="tests.tab.niveau">📊 Test de niveau</button>
+      <button class="tab-btn" onclick="showTab('grammaire',this)" data-i18n="tests.tab.grammaire">📖 Grammaire</button>
+      <button class="tab-btn" onclick="showTab('vocabulaire',this)" data-i18n="tests.tab.vocabulaire">💬 Vocabulaire</button>
+      <button class="tab-btn" onclick="showTab('lecture',this)" data-i18n="tests.tab.lecture">📄 Compréhension écrite</button>
+      <button class="tab-btn" onclick="showTab('expression',this)" data-i18n="tests.tab.expression">✍️ Expression écrite</button>
+      <button class="tab-btn" onclick="showTab('oral',this)" data-i18n="tests.tab.oral">🎤 Expression orale</button>
+      <button class="tab-btn" onclick="showTab('semiofficiel',this)" data-i18n="tests.tab.semiofficiel" style="background:linear-gradient(135deg,var(--red-dark),var(--red));color:white;border-color:var(--red);">🏅 Test semi-officiel</button>
     </div>
 
     <!-- ================================================ -->
@@ -272,12 +272,12 @@
       <div class="quiz-wrap" id="quiz-niveau">
         <div class="quiz-box">
           <div class="quiz-header">
-            <h3>📊 Test de niveau NCLC
-              <span style="background:#e8f5e9;color:#2e7d32;font-size:.68rem;padding:3px 10px;border-radius:12px;font-weight:700;margin-left:8px;">GRATUIT</span>
+            <h3><span data-i18n="tests.niveau.title">📊 Test de niveau NCLC</span>
+              <span style="background:#e8f5e9;color:#2e7d32;font-size:.68rem;padding:3px 10px;border-radius:12px;font-weight:700;margin-left:8px;" data-i18n="badge.free">ESSAI</span>
             </h3>
             <div class="quiz-timer" id="timer-niveau">⏱️ <span id="time-niveau">00:00</span></div>
           </div>
-          <p style="color:var(--gray-text);font-size:.88rem;margin-bottom:16px;">
+          <p style="color:var(--gray-text);font-size:.88rem;margin-bottom:16px;" data-i18n="tests.niveau.desc">
             10 questions progressives · Grammaire, vocabulaire, culture canadienne · Score NCLC estimé en fin de test
           </p>
           <div class="quiz-progress-label">
@@ -302,10 +302,10 @@
       <div class="quiz-wrap" id="quiz-grammaire">
         <div class="quiz-box">
           <div class="quiz-header">
-            <h3>📖 Quiz de grammaire</h3>
+            <h3 data-i18n="tests.gram.title">📖 Quiz de grammaire</h3>
             <div class="quiz-timer" id="timer-grammaire">⏱️ <span id="time-grammaire">00:00</span></div>
           </div>
-          <p style="color:var(--gray-text);font-size:.88rem;margin-bottom:16px;">
+          <p style="color:var(--gray-text);font-size:.88rem;margin-bottom:16px;" data-i18n="tests.gram.desc">
             10 questions · Conjugaison, accord, syntaxe, connecteurs · Niveau B1–C1
           </p>
           <div class="quiz-progress-label">
@@ -330,10 +330,10 @@
       <div class="quiz-wrap" id="quiz-vocabulaire">
         <div class="quiz-box">
           <div class="quiz-header">
-            <h3>💬 Vocabulaire immigration Canada / Québec</h3>
+            <h3 data-i18n="tests.vocab.title">💬 Vocabulaire immigration Canada / Québec</h3>
             <div class="quiz-timer" id="timer-vocabulaire">⏱️ <span id="time-vocabulaire">00:00</span></div>
           </div>
-          <p style="color:var(--gray-text);font-size:.88rem;margin-bottom:16px;">
+          <p style="color:var(--gray-text);font-size:.88rem;margin-bottom:16px;" data-i18n="tests.vocab.desc">
             10 questions · Termes IRCC, NCLC, Express Entry, immigration · Indispensable pour le TEF/TCF
           </p>
           <div class="quiz-progress-label">
@@ -358,10 +358,10 @@
       <div class="quiz-wrap" id="quiz-lecture">
         <div class="quiz-box">
           <div class="quiz-header">
-            <h3>📄 Compréhension écrite</h3>
+            <h3 data-i18n="tests.lecture.title">📄 Compréhension écrite</h3>
             <div class="quiz-timer" id="timer-lecture">⏱️ <span id="time-lecture">00:00</span></div>
           </div>
-          <p style="color:var(--gray-text);font-size:.88rem;margin-bottom:16px;">
+          <p style="color:var(--gray-text);font-size:.88rem;margin-bottom:16px;" data-i18n="tests.lecture.desc">
             Lisez le texte puis répondez aux 8 questions. Durée recommandée : 12 minutes.
           </p>
           <div class="question-context" id="lecture-text"></div>
@@ -387,10 +387,10 @@
       <div class="quiz-wrap">
         <div class="quiz-box">
           <div class="quiz-header">
-            <h3>✍️ Expression écrite — Simulation TEF/TCF</h3>
+            <h3 data-i18n="tests.expr.title">✍️ Expression écrite — Simulation TEF/TCF</h3>
             <div class="quiz-timer" id="timer-expression">⏱️ <span id="time-expression">60:00</span></div>
           </div>
-          <p style="color:var(--gray-text);font-size:.88rem;margin-bottom:16px;">
+          <p style="color:var(--gray-text);font-size:.88rem;margin-bottom:16px;" data-i18n="tests.expr.desc">
             Rédigez votre production en respectant les consignes. L'auto-évaluation vous guidera sur les critères de notation officiels.
           </p>
 
@@ -434,9 +434,9 @@
       <div class="quiz-wrap">
         <div class="quiz-box">
           <div class="quiz-header">
-            <h3>🎤 Expression orale — Simulation TEF/TCF</h3>
+            <h3 data-i18n="tests.oral.title">🎤 Expression orale — Simulation TEF/TCF</h3>
           </div>
-          <p style="color:var(--gray-text);font-size:.88rem;margin-bottom:20px;">
+          <p style="color:var(--gray-text);font-size:.88rem;margin-bottom:20px;" data-i18n="tests.oral.desc">
             Sélectionnez une tâche, préparez-vous, puis parlez pendant la durée impartie. Consultez ensuite les critères d'évaluation.
           </p>
 
@@ -491,15 +491,15 @@
       <div class="quiz-wrap" id="quiz-semiofficiel">
         <div class="quiz-box" style="border-top:4px solid var(--red);">
           <div class="quiz-header">
-            <h3 style="color:var(--red-dark);">🏅 Test semi-officiel d'évaluation
-              <span style="background:#fff0f0;color:var(--red);font-size:.68rem;padding:3px 10px;border-radius:12px;font-weight:700;margin-left:8px;">OBLIGATOIRE</span>
+            <h3 style="color:var(--red-dark);"><span data-i18n="tests.semi.title">🏅 Test semi-officiel d'évaluation</span>
+              <span style="background:#fff0f0;color:var(--red);font-size:.68rem;padding:3px 10px;border-radius:12px;font-weight:700;margin-left:8px;" data-i18n="tests.semi.badge">OBLIGATOIRE</span>
             </h3>
             <div class="quiz-timer warning" id="timer-semiofficiel">⏱️ <span id="time-semiofficiel">20:00</span></div>
           </div>
           <div style="background:#fff0f0;border-left:4px solid var(--red);border-radius:8px;padding:14px 18px;margin-bottom:20px;font-size:.85rem;color:#b71c1c;">
             <strong>⚠️ Test d'accès obligatoire :</strong> Avant d'accéder à l'accompagnement complet ARCADINS, vous devez réussir ce test de <strong>15 questions</strong> en <strong>20 minutes maximum</strong>. Ce test évalue votre vrai potentiel et nous permet de personnaliser votre parcours.
           </div>
-          <p style="color:var(--gray-text);font-size:.88rem;margin-bottom:16px;">
+          <p style="color:var(--gray-text);font-size:.88rem;margin-bottom:16px;" data-i18n="tests.semi.desc">
             15 questions aléatoires · Grammaire + Vocabulaire + Stratégies + Culture canadienne · Durée : 20 min
           </p>
           <div class="quiz-progress-label">
@@ -523,11 +523,11 @@
 <!-- CTA -->
 <section style="background:linear-gradient(135deg,var(--blue-dark),var(--blue));color:white;text-align:center;padding:60px 24px;">
   <div class="container" style="max-width:640px;">
-    <h2 style="font-size:1.8rem;font-weight:900;margin-bottom:12px;">Prêt pour une programme de tutorat complet ?</h2>
-    <p style="opacity:.9;margin-bottom:28px;">Accédez à 500+ exercices, 10 simulations chronométrées et votre tableau de bord NCLC.</p>
+    <h2 style="font-size:1.8rem;font-weight:900;margin-bottom:12px;" data-i18n="tests.cta.h2">Prêt pour une programme de tutorat complet ?</h2>
+    <p style="opacity:.9;margin-bottom:28px;" data-i18n="tests.cta.p">Accédez à 500+ exercices, 10 simulations chronométrées et votre tableau de bord NCLC.</p>
     <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
-      <a href="../index.html#inscription" class="btn-primary">✏️ S'inscrire maintenant</a>
-      <a href="tarifs.html" class="btn-gold">💰 Voir les tarifs</a>
+      <a href="../index.html#inscription" class="btn-primary" data-i18n="tests.cta.btn1">✏️ S'inscrire maintenant</a>
+      <a href="tarifs.html" class="btn-gold" data-i18n="tests.cta.btn2">💰 Voir les tarifs</a>
     </div>
   </div>
 </section>

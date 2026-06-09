@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { getDb } = require('../database');
 const authMiddleware = require('../middleware/auth');
-const { sendAdminNotification } = require('../services/email');
+const { sendAdminNotification, sendWelcomeEmail } = require('../services/email');
 
 function signToken(user) {
   return jwt.sign(
@@ -91,6 +91,7 @@ router.post('/register', async (req, res) => {
 
     // Send admin notification (async, don't block)
     sendAdminNotification({ nom: nom.trim(), prenom: prenom.trim(), email: email.toLowerCase().trim(), telephone, pays }).catch(() => {});
+    sendWelcomeEmail({ prenom: prenom.trim(), nom: nom.trim(), email: email.toLowerCase().trim() }).catch(() => {});
 
     const token = signToken(user);
 
