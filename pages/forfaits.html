@@ -148,16 +148,12 @@ let selectedPlan = null;
 
 // ── Init page ────────────────────────────────────────────────
 async function init() {
-  const token = getToken();
-  if (!token) { window.location.href = 'acces.html'; return; }
-
-  // Retour depuis Stripe ?
   const params = new URLSearchParams(location.search);
   const payment = params.get('payment');
   const sessionId = params.get('session_id');
 
+  // Retour depuis Stripe avec succès ?
   if (payment === 'success' && sessionId) {
-    // Afficher modal de vérification
     document.getElementById('paymentModal').classList.add('open');
     document.getElementById('paymentForm').style.display = 'none';
     document.getElementById('paymentVerifying').style.display = 'block';
@@ -166,20 +162,23 @@ async function init() {
   }
 
   if (payment === 'cancelled') {
-    // Rien — on recharge juste les forfaits normalement
     history.replaceState({}, '', location.pathname);
   }
 
-  // Vérifier si déjà payé
-  try {
-    const r = await fetch(API_BASE + '/access/me', { headers: { Authorization: 'Bearer ' + token } });
-    const d = await r.json();
-    if (d.success && d.data?.user?.payment_confirmed) {
-      window.location.href = 'formation.html'; return;
-    }
-  } catch(e) {}
-
+  // Charger les forfaits IMMÉDIATEMENT (données publiques, pas besoin de token)
   loadPlans();
+
+  // Vérification token en arrière-plan (pour rediriger si déjà payé)
+  const token = getToken();
+  if (token) {
+    try {
+      const r = await fetch(API_BASE + '/access/me', { headers: { Authorization: 'Bearer ' + token } });
+      const d = await r.json();
+      if (d.success && d.data?.user?.payment_confirmed) {
+        window.location.href = 'formation.html'; return;
+      }
+    } catch(e) { /* ignore — plans already loading */ }
+  }
 }
 
 // ── Vérification paiement après retour Stripe ────────────────
@@ -267,6 +266,11 @@ async function loadPlans() {
 
 // ── Sélection d'un forfait ───────────────────────────────────
 function selectPlan(id, name, price) {
+  // Si pas de token → rediriger vers acces.html pour s'inscrire/se connecter
+  if (!getToken()) {
+    window.location.href = 'acces.html?redirect=forfaits&plan=' + id;
+    return;
+  }
   selectedPlan = { id, name, price };
   document.getElementById('priceRecap').innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:center;">
