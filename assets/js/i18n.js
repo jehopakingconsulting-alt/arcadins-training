@@ -978,6 +978,32 @@ const translations = {
   },
   "priv.btn.home":  { fr: "← Retour à l'accueil", en: "← Back to home" },
   "priv.btn.terms": { fr: "Conditions d'utilisation", en: "Terms of Use" },
+
+  // ── Mentions légales ─────────────────────────────────────────────────────────
+  "legal.title":   { fr: "Mentions Légales", en: "Legal Notice" },
+  "legal.updated": { fr: "Dernière mise à jour : juin 2024", en: "Last updated: June 2024" },
+  "legal.s1.h": { fr: "Éditeur du site", en: "Site Publisher" },
+  "legal.s1.p": { fr: "<strong>ARCADINS Training Center</strong><br>Plateforme de programme de tutorat linguistique en ligne<br>📍 116 Albert Street, Suite 300, Ottawa (Ontario) Canada<br>📞 <a href='tel:+15144513436' style='color:var(--blue);'>514-451-3436</a><br>📧 <a href='mailto:info@arcadins-training.com' style='color:var(--blue);'>info@arcadins-training.com</a><br>📧 <a href='mailto:contact@arcadins-training.com' style='color:var(--blue);'>contact@arcadins-training.com</a><br>🌐 www.arcadins-training.com", en: "<strong>ARCADINS Training Center</strong><br>Online linguistic tutoring program platform<br>📍 116 Albert Street, Suite 300, Ottawa (Ontario) Canada<br>📞 <a href='tel:+15144513436' style='color:var(--blue);'>514-451-3436</a><br>📧 <a href='mailto:info@arcadins-training.com' style='color:var(--blue);'>info@arcadins-training.com</a><br>📧 <a href='mailto:contact@arcadins-training.com' style='color:var(--blue);'>contact@arcadins-training.com</a><br>🌐 www.arcadins-training.com" },
+  "legal.s2.h": { fr: "Hébergement", en: "Hosting" },
+  "legal.s2.p": { fr: "Ce site est hébergé par un prestataire d'hébergement professionnel. Pour toute demande relative à l'hébergement, contactez-nous à <a href='mailto:info@arcadins-training.com' style='color:var(--blue);'>info@arcadins-training.com</a>.", en: "This site is hosted by a professional hosting provider. For any hosting-related requests, contact us at <a href='mailto:info@arcadins-training.com' style='color:var(--blue);'>info@arcadins-training.com</a>." },
+  "legal.s3.h": { fr: "Nature de l'activité", en: "Nature of Activity" },
+  "legal.s3.p": { fr: "ARCADINS Training Center est une plateforme privée de <strong>formation et de préparation linguistique</strong> spécialisée dans les tests TEF & TCF Canada. Elle s'adresse aux candidats à l'immigration au Canada et au Québec souhaitant améliorer leur niveau de français et préparer leur examen linguistique officiel.", en: "ARCADINS Training Center is a private platform for <strong>language training and exam preparation</strong> specializing in TEF & TCF Canada tests. It is intended for candidates immigrating to Canada and Quebec who wish to improve their French level and prepare for their official language exam." },
+  "legal.s4.h":  { fr: "⚠️ Avertissement légal important", en: "⚠️ Important Legal Notice" },
+  "legal.s4.p1": { fr: "ARCADINS Training Center est une plateforme privée de programme de tutorat linguistique. Elle <strong>n'est pas un organisme gouvernemental</strong> et n'est affiliée ni à :", en: "ARCADINS Training Center is a private linguistic tutoring program platform. It is <strong>not a government agency</strong> and is not affiliated with:" },
+  "legal.s4.li1": { fr: "IRCC — Immigration, Réfugiés et Citoyenneté Canada", en: "IRCC — Immigration, Refugees and Citizenship Canada" },
+  "legal.s4.li2": { fr: "MIFI — Ministère de l'Immigration, de la Francisation et de l'Intégration (Québec)", en: "MIFI — Ministry of Immigration, Francization and Integration (Quebec)" },
+  "legal.s4.li3": { fr: "CCIP — Centre de langue de la CCI Paris Île-de-France (organisateur du TEF)", en: "CCIP — Language Centre of CCI Paris Île-de-France (TEF organizer)" },
+  "legal.s4.li4": { fr: "France Éducation international (organisateur du TCF)", en: "France Éducation international (TCF organizer)" },
+  "legal.s4.p2": { fr: "Elle <strong>ne garantit pas</strong> l'obtention d'un visa, d'une résidence permanente ou d'un résultat officiel au TEF & TCF Canada. Les scores obtenus lors de nos simulations sont indicatifs uniquement.", en: "It <strong>does not guarantee</strong> obtaining a visa, permanent residence, or an official TEF & TCF Canada score. Scores obtained in our simulations are indicative only." },
+  "legal.s5.h": { fr: "Propriété intellectuelle", en: "Intellectual Property" },
+  "legal.s5.p": { fr: "L'ensemble des contenus présents sur ce site (textes, images, exercices, design, logo) est la propriété exclusive d'ARCADINS Training Center et est protégé par les lois relatives à la propriété intellectuelle. Toute reproduction sans autorisation écrite est interdite.", en: "All content on this site (texts, images, exercises, design, logo) is the exclusive property of ARCADINS Training Center and is protected by intellectual property laws. Any reproduction without written authorization is prohibited." },
+  "legal.s6.h": { fr: "Données personnelles", en: "Personal Data" },
+  "legal.s6.p": { fr: "Le traitement des données personnelles est décrit dans notre <a href='confidentialite.html' style='color:var(--blue);'>Politique de confidentialité</a>. Conformément à la réglementation applicable, vous disposez d'un droit d'accès, de rectification et de suppression de vos données en contactant : <a href='mailto:info@arcadins-training.com' style='color:var(--blue);'>info@arcadins-training.com</a>", en: "The processing of personal data is described in our <a href='confidentialite.html' style='color:var(--blue);'>Privacy Policy</a>. You have the right to access, correct and delete your data by contacting: <a href='mailto:info@arcadins-training.com' style='color:var(--blue);'>info@arcadins-training.com</a>" },
+  "legal.s7.h": { fr: "Liens externes", en: "External Links" },
+  "legal.s7.p": { fr: "Ce site peut contenir des liens vers des sites externes (IRCC, centres TEF/TCF). ARCADINS Training Center n'est pas responsable du contenu de ces sites tiers et ne garantit pas leur disponibilité.", en: "This site may contain links to external sites (IRCC, TEF/TCF centres). ARCADINS Training Center is not responsible for the content of these third-party sites and does not guarantee their availability." },
+  "legal.btn.home":    { fr: "← Retour à l'accueil", en: "← Back to home" },
+  "legal.btn.privacy": { fr: "Confidentialité", en: "Privacy Policy" },
+  "legal.btn.terms":   { fr: "Conditions d'utilisation", en: "Terms of Use" },
 };
 
 // ============================================================

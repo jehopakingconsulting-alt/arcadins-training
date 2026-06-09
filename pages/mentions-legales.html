@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
@@ -14,17 +14,19 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="../index.html" data-i18n="nav.home">Accueil</a></li>
       <li><a href="faq.html" data-i18n="nav.faq">FAQ</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="tuteur.html" data-i18n="nav.tuteur" style="color:var(--gold);font-weight:700;">🎓 Devenir Tuteur</a></li><li><a href="#" class="btn-login" onclick="openModal('login')" data-i18n="nav.login">Connexion</a></li>
+      <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+      <li><a href="tuteur.html" data-i18n="nav.tuteur" style="color:var(--gold);font-weight:700;">🎓 Devenir Tuteur</a></li>
+      <li><a href="#" class="btn-login" onclick="openModal('login')" data-i18n="nav.login">Connexion</a></li>
       <li><a href="../index.html#inscription" class="btn-cta" data-i18n="nav.register">S'inscrire</a></li>
     </ul>
-    <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.3s;margin-right:8px;" title="Switch language">🇬🇧 EN</button><div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+    <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.3s;margin-right:8px;" title="Switch language">🇬🇧 EN</button>
+    <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
   </div>
 </nav>
 
 <section style="background:var(--blue-dark);color:white;padding:50px 24px;text-align:center;">
-  <h1 style="font-size:1.8rem;font-weight:800;">Mentions Légales</h1>
-  <p style="opacity:.8;margin-top:8px;font-size:.9rem;">Dernière mise à jour : juin 2024</p>
+  <h1 style="font-size:1.8rem;font-weight:800;" data-i18n="legal.title">Mentions Légales</h1>
+  <p style="opacity:.8;margin-top:8px;font-size:.9rem;" data-i18n="legal.updated">Dernière mise à jour : juin 2024</p>
 </section>
 
 <section>
@@ -32,8 +34,8 @@
     <div style="display:flex;flex-direction:column;gap:28px;font-size:.92rem;color:var(--text);line-height:1.8;">
 
       <div>
-        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;">Éditeur du site</h2>
-        <p>
+        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;" data-i18n="legal.s1.h">Éditeur du site</h2>
+        <p data-i18n="legal.s1.p">
           <strong>ARCADINS Training Center</strong><br>
           Plateforme de programme de tutorat linguistique en ligne<br>
           📍 116 Albert Street, Suite 300, Ottawa (Ontario) Canada<br>
@@ -45,60 +47,66 @@
       </div>
 
       <div>
-        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;">Hébergement</h2>
-        <p>Ce site est hébergé par un prestataire d'hébergement professionnel. Pour toute demande relative à l'hébergement, contactez-nous à <a href="mailto:info@arcadins-training.com" style="color:var(--blue);">info@arcadins-training.com</a>.</p>
+        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;" data-i18n="legal.s2.h">Hébergement</h2>
+        <p data-i18n="legal.s2.p">Ce site est hébergé par un prestataire d'hébergement professionnel. Pour toute demande relative à l'hébergement, contactez-nous à <a href="mailto:info@arcadins-training.com" style="color:var(--blue);">info@arcadins-training.com</a>.</p>
       </div>
 
       <div>
-        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;">Nature de l'activité</h2>
-        <p>ARCADINS Training Center est une plateforme privée de <strong>formation et de préparation linguistique</strong> spécialisée dans les tests TEF & TCF Canada. Elle s'adresse aux candidats à l'immigration au Canada et au Québec souhaitant améliorer leur niveau de français et préparer leur examen linguistique officiel.</p>
+        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;" data-i18n="legal.s3.h">Nature de l'activité</h2>
+        <p data-i18n="legal.s3.p">ARCADINS Training Center est une plateforme privée de <strong>formation et de préparation linguistique</strong> spécialisée dans les tests TEF & TCF Canada.</p>
       </div>
 
       <div style="background:#fff8e1;border-left:4px solid var(--gold);border-radius:10px;padding:18px 20px;">
-        <h2 style="font-size:1.1rem;font-weight:700;color:#5a4500;margin-bottom:10px;">⚠️ Avertissement légal important</h2>
-        <p style="color:#5a4500;">ARCADINS Training Center est une plateforme privée de programme de tutorat linguistique. Elle <strong>n'est pas un organisme gouvernemental</strong> et n'est affiliée ni à :</p>
+        <h2 style="font-size:1.1rem;font-weight:700;color:#5a4500;margin-bottom:10px;" data-i18n="legal.s4.h">⚠️ Avertissement légal important</h2>
+        <p style="color:#5a4500;" data-i18n="legal.s4.p1">ARCADINS Training Center est une plateforme privée de programme de tutorat linguistique. Elle <strong>n'est pas un organisme gouvernemental</strong> et n'est affiliée ni à :</p>
         <ul style="margin-left:18px;margin-top:8px;color:#5a4500;display:flex;flex-direction:column;gap:5px;">
-          <li>IRCC — Immigration, Réfugiés et Citoyenneté Canada</li>
-          <li>MIFI — Ministère de l'Immigration, de la Francisation et de l'Intégration (Québec)</li>
-          <li>CCIP — Centre de langue de la CCI Paris Île-de-France (organisateur du TEF)</li>
-          <li>France Éducation international (organisateur du TCF)</li>
+          <li data-i18n="legal.s4.li1">IRCC — Immigration, Réfugiés et Citoyenneté Canada</li>
+          <li data-i18n="legal.s4.li2">MIFI — Ministère de l'Immigration, de la Francisation et de l'Intégration (Québec)</li>
+          <li data-i18n="legal.s4.li3">CCIP — Centre de langue de la CCI Paris Île-de-France (organisateur du TEF)</li>
+          <li data-i18n="legal.s4.li4">France Éducation international (organisateur du TCF)</li>
         </ul>
-        <p style="margin-top:10px;color:#5a4500;">Elle <strong>ne garantit pas</strong> l'obtention d'un visa, d'une résidence permanente ou d'un résultat officiel au TEF & TCF Canada. Les scores obtenus lors de nos simulations sont indicatifs uniquement.</p>
+        <p style="margin-top:10px;color:#5a4500;" data-i18n="legal.s4.p2">Elle <strong>ne garantit pas</strong> l'obtention d'un visa, d'une résidence permanente ou d'un résultat officiel au TEF & TCF Canada.</p>
       </div>
 
       <div>
-        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;">Propriété intellectuelle</h2>
-        <p>L'ensemble des contenus présents sur ce site (textes, images, exercices, design, logo) est la propriété exclusive d'ARCADINS Training Center et est protégé par les lois relatives à la propriété intellectuelle. Toute reproduction sans autorisation écrite est interdite.</p>
+        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;" data-i18n="legal.s5.h">Propriété intellectuelle</h2>
+        <p data-i18n="legal.s5.p">L'ensemble des contenus présents sur ce site est la propriété exclusive d'ARCADINS Training Center et est protégé par les lois relatives à la propriété intellectuelle.</p>
       </div>
 
       <div>
-        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;">Données personnelles</h2>
-        <p>Le traitement des données personnelles est décrit dans notre <a href="confidentialite.html" style="color:var(--blue);">Politique de confidentialité</a>. Conformément à la réglementation applicable, vous disposez d'un droit d'accès, de rectification et de suppression de vos données en contactant : <a href="mailto:info@arcadins-training.com" style="color:var(--blue);">info@arcadins-training.com</a></p>
+        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;" data-i18n="legal.s6.h">Données personnelles</h2>
+        <p data-i18n="legal.s6.p">Le traitement des données personnelles est décrit dans notre <a href="confidentialite.html" style="color:var(--blue);">Politique de confidentialité</a>.</p>
       </div>
 
       <div>
-        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;">Liens externes</h2>
-        <p>Ce site peut contenir des liens vers des sites externes (IRCC, centres TEF/TCF). ARCADINS Training Center n'est pas responsable du contenu de ces sites tiers et ne garantit pas leur disponibilité.</p>
+        <h2 style="font-size:1.2rem;font-weight:700;color:var(--blue-dark);margin-bottom:10px;" data-i18n="legal.s7.h">Liens externes</h2>
+        <p data-i18n="legal.s7.p">Ce site peut contenir des liens vers des sites externes. ARCADINS Training Center n'est pas responsable du contenu de ces sites tiers.</p>
       </div>
+
     </div>
     <div style="margin-top:40px;display:flex;gap:14px;flex-wrap:wrap;">
-      <a href="../index.html" class="btn-primary" style="background:var(--blue);">← Retour à l'accueil</a>
-      <a href="confidentialite.html" class="btn-secondary" style="color:var(--blue);border-color:var(--blue);background:transparent;">Confidentialité</a>
-      <a href="conditions.html" class="btn-secondary" style="color:var(--blue);border-color:var(--blue);background:transparent;">Conditions d'utilisation</a>
+      <a href="../index.html" class="btn-primary" style="background:var(--blue);" data-i18n="legal.btn.home">← Retour à l'accueil</a>
+      <a href="confidentialite.html" class="btn-secondary" style="color:var(--blue);border-color:var(--blue);background:transparent;" data-i18n="legal.btn.privacy">Confidentialité</a>
+      <a href="conditions.html" class="btn-secondary" style="color:var(--blue);border-color:var(--blue);background:transparent;" data-i18n="legal.btn.terms">Conditions d'utilisation</a>
     </div>
   </div>
 </section>
 
 <footer style="background:var(--blue-dark);color:rgba(255,255,255,.7);text-align:center;padding:28px 24px;font-size:.85rem;">
-  © 2024 ARCADINS Training Center · <a href="confidentialite.html" style="color:var(--gold-light);">Confidentialité</a> · <a href="conditions.html" style="color:var(--gold-light);">Conditions</a> · <a href="../index.html" style="color:var(--gold-light);">Accueil</a>
+  © <span id="footerYear"></span> ARCADINS Training Center ·
+  <a href="confidentialite.html" style="color:var(--gold-light);">Confidentialité</a> ·
+  <a href="conditions.html" style="color:var(--gold-light);">Conditions</a> ·
+  <a href="../index.html" style="color:var(--gold-light);">Accueil</a>
 </footer>
+
 <div class="modal-overlay" id="authModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
-    <h2 data-i18n="auth.title">Bienvenue</h2><p data-i18n="auth.sub">Accédez à votre espace ARCADINS</p>
+    <h2 data-i18n="auth.title">Bienvenue</h2>
+    <p data-i18n="auth.sub">Accédez à votre espace ARCADINS</p>
     <div class="modal-tabs">
-      <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Connexion</button>
-      <button class="modal-tab" id="tabRegister" onclick="switchTab('register')">Créer un compte</button>
+      <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')" data-i18n="nav.login">Connexion</button>
+      <button class="modal-tab" id="tabRegister" onclick="switchTab('register')" data-i18n="auth.createBtn">Créer un compte</button>
     </div>
     <form class="modal-form active" id="loginForm" onsubmit="handleAuth(event,'login')">
       <div class="form-group"><label data-i18n="auth.email">Email</label><input type="email" required /></div>
@@ -113,16 +121,12 @@
     </form>
   </div>
 </div>
+
+<script src="../assets/js/config.js"></script>
 <script src="../assets/js/i18n.js"></script>
 <script src="../assets/js/main.js"></script>
+<script>
+  document.getElementById('footerYear').textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
