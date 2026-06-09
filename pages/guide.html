@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guide d'utilisation – ARCADINS Training Center</title>
+  <meta name="description" content="Découvrez comment utiliser la plateforme ARCADINS Training Center étape par étape, de l'inscription au certificat." />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    /* ── Hero ── */
+    .guide-hero {
+      background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+      color: white;
+      padding: 70px 24px 50px;
+      text-align: center;
+    }
+    .guide-hero h1 { font-size: 2.4rem; font-weight: 900; margin: 16px 0 12px; }
+    .guide-hero p  { opacity: .88; font-size: 1.05rem; max-width: 620px; margin: 0 auto; }
+
+    /* ── Steps timeline ── */
+    .steps-section { padding: 70px 24px; background: var(--gray-light); }
+    .steps-container { max-width: 860px; margin: 0 auto; }
+    .step-block {
+      display: flex;
+      gap: 28px;
+      margin-bottom: 48px;
+      background: white;
+      border-radius: 18px;
+      padding: 32px 28px;
+      box-shadow: var(--shadow);
+      position: relative;
+      border-left: 5px solid var(--blue);
+      align-items: flex-start;
+    }
+    .step-block.gold  { border-left-color: var(--gold); }
+    .step-block.green { border-left-color: #2e7d32; }
+    .step-num {
+      min-width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .step-block.gold  .step-num { background: var(--gold); color: var(--blue-dark); }
+    .step-block.green .step-num { background: #2e7d32; }
+    .step-content h3 { font-size: 1.15rem; font-weight: 800; color: var(--blue-dark); margin-bottom: 8px; }
+    .step-content p  { color: var(--gray-text); font-size: .9rem; line-height: 1.7; margin-bottom: 10px; }
+    .step-tip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e8f0fe;
+      color: var(--blue);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: .8rem;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .step-block.gold  .step-tip { background: #fff8e1; color: #7a5c00; }
+    .step-block.green .step-tip { background: #e8f5e9; color: #2e7d32; }
+    .step-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+    .step-actions a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: .82rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: .2s;
+    }
+    .step-btn-blue  { background: var(--blue);  color: white; }
+    .step-btn-gold  { background: var(--gold);  color: var(--blue-dark); }
+    .step-btn-green { background: #2e7d32; color: white; }
+    .step-actions a:hover { opacity: .85; transform: translateY(-1px); }
+
+    /* ── Progress bar visual ── */
+    .progress-bar-section { background: white; padding: 48px 24px; }
+    .progress-bar-container { max-width: 900px; margin: 0 auto; }
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      margin-top: 32px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .progress-steps::before {
+      content: '';
+      position: absolute;
+      top: 22px;
+      left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(to right, var(--blue), var(--gold));
+      z-index: 0;
+    }
+    .ps-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 1;
+      flex: 1;
+      min-width: 80px;
+    }
+    .ps-dot {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 800;
+      border: 3px solid white;
+      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    }
+    .ps-dot.gold { background: var(--gold); color: var(--blue-dark); }
+    .ps-label { font-size: .7rem; font-weight: 700; color: var(--gray-text); text-align: center; max-width: 80px; }
+
+    /* ── FAQ Guide ── */
+    .guide-faq { background: var(--gray-light); padding: 60px 24px; }
+    .guide-faq-inner { max-width: 760px; margin: 0 auto; }
+
+    /* ── Video placeholder ── */
+    .video-placeholder {
+      background: linear-gradient(135deg, #e8eef8, #d0dcf4);
+      border-radius: 16px;
+      padding: 60px 24px;
+      text-align: center;
+      margin: 32px 0;
+      border: 2px dashed var(--blue);
+    }
+
+    @media (max-width: 600px) {
+      .step-block { flex-direction: column; gap: 16px; }
+      .guide-hero h1 { font-size: 1.7rem; }
+      .progress-steps::before { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar" data-i18n="topbar">🍁 Programme de Tutorat 100% en ligne · TEF & TCF Canada</div>
+
+<nav>
+  <div class="nav-container">
+    <a href="../index.html" class="logo">
+      <img src="../assets/img/logo-nav.svg" alt="ARCADINS Training Center" height="50" style="display:block;" />
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html" data-i18n="nav.home">Accueil</a></li>
+      <li><a href="tef-canada.html">TEF Canada</a></li>
+      <li><a href="tcf-canada.html">TCF Canada</a></li>
+      <li><a href="tests.html" data-i18n="nav.tests">Tests interactifs</a></li>
+      <li><a href="tarifs.html" data-i18n="nav.tarifs">Tarifs</a></li>
+      <li><a href="about.html" data-i18n="nav.about">À propos</a></li>
+      <li><a href="tuteur.html" data-i18n="nav.tuteur" style="color:var(--gold);font-weight:700;">🎓 Devenir Tuteur</a></li>
+      <li><a href="#" class="btn-login" onclick="openModal('login')" data-i18n="nav.login">Connexion</a></li>
+      <li><a href="../index.html#inscription" class="btn-cta" data-i18n="nav.register">S'inscrire</a></li>
+    </ul>
+    <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;margin-right:8px;">🇬🇧 EN</button>
+    <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="guide-hero">
+  <span class="section-tag" style="background:rgba(201,168,76,.2);color:var(--gold-light);display:inline-block;">📚 Guide complet</span>
+  <h1>Comment utiliser la plateforme ARCADINS ?</h1>
+  <p>Suivez ces 8 étapes simples pour passer de l'inscription à votre certificat officiel. Tout est expliqué, rien n'est compliqué.</p>
+  <div style="margin-top:28px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
+    <a href="../index.html#inscription" class="btn-primary" style="background:var(--gold);color:var(--blue-dark);">✏️ Commencer maintenant</a>
+    <a href="tarifs.html" class="btn-secondary" style="border-color:rgba(255,255,255,.5);color:white;">Voir les plans →</a>
+  </div>
+</div>
+
+<!-- PARCOURS VISUEL -->
+<section class="progress-bar-section">
+  <div class="progress-bar-container">
+    <div class="section-header" style="margin-bottom:0;">
+      <span class="section-tag">Votre parcours</span>
+      <h2>De l'inscription au certificat en 8 étapes</h2>
+    </div>
+    <div class="progress-steps">
+      <div class="ps-item"><div class="ps-dot">1</div><div class="ps-label">Inscription</div></div>
+      <div class="ps-item"><div class="ps-dot">2</div><div class="ps-label">Test de niveau</div></div>
+      <div class="ps-item"><div class="ps-dot">3</div><div class="ps-label">Choisir un plan</div></div>
+      <div class="ps-item"><div class="ps-dot">4</div><div class="ps-label">Paiement</div></div>
+      <div class="ps-item"><div class="ps-dot">5</div><div class="ps-label">Qualification</div></div>
+      <div class="ps-item"><div class="ps-dot">6</div><div class="ps-label">14 Modules</div></div>
+      <div class="ps-item"><div class="ps-dot ps-dot gold">7</div><div class="ps-label">Test final</div></div>
+      <div class="ps-item"><div class="ps-dot ps-dot gold">8</div><div class="ps-label">Certificat 🎓</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ÉTAPES DÉTAILLÉES -->
+<section class="steps-section">
+  <div class="steps-container">
+
+    <div class="section-header" style="text-align:center;margin-bottom:40px;">
+      <h2>Les 8 étapes expliquées</h2>
+      <p>Chaque étape est conçue pour vous préparer progressivement au TEF ou TCF Canada.</p>
+    </div>
+
+    <!-- ÉTAPE 1 -->
+    <div class="step-block">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h3>📝 Créez votre compte gratuitement</h3>
+        <p>Remplissez le formulaire d'inscription sur la page d'accueil : votre nom, email, téléphone, pays, objectif (TEF ou TCF Canada) et niveau actuel. C'est gratuit et prend moins de 2 minutes.</p>
+        <p>Après l'inscription, vous recevez un <strong>email de confirmation</strong> avec vos identifiants d'accès. Vérifiez votre dossier spam si vous ne le voyez pas.</p>
+        <div class="step-tip">💡 Conseil : utilisez une adresse email active — tous vos accès y seront envoyés.</div>
+        <div class="step-actions">
+          <a href="../index.html#inscription" class="step-btn-blue">✏️ S'inscrire maintenant</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 2 -->
+    <div class="step-block">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h3>🎯 Passez le test de niveau gratuit</h3>
+        <p>Avant de choisir votre plan, effectuez notre <strong>test de niveau interactif</strong> (15-20 minutes). Ce test évalue vos 4 compétences : compréhension orale, compréhension écrite, expression écrite et expression orale.</p>
+        <p>Résultats instantanés avec votre score NCLC estimé. Ce diagnostic nous aide à personnaliser votre parcours.</p>
+        <div class="step-tip">💡 Conseil : passez ce test dans le calme, sans aide extérieure, pour avoir une évaluation réelle.</div>
+        <div class="step-actions">
+          <a href="tests.html" class="step-btn-blue">🎯 Accéder aux tests</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 3 -->
+    <div class="step-block gold">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h3>💳 Choisissez votre plan de formation</h3>
+        <p>En fonction de vos résultats au test de niveau et de votre budget, choisissez parmi nos 4 plans :</p>
+        <ul style="margin:8px 0 12px 16px;font-size:.88rem;color:var(--gray-text);line-height:2;">
+          <li><strong>Starter $97</strong> — 14 modules + 1 tentative test final · 6 semaines</li>
+          <li><strong>Essential $147</strong> — + 2 tentatives + certificat officiel · 6 semaines</li>
+          <li><strong>Premium $247</strong> — + 3 tentatives + 2h coaching · 6 semaines</li>
+          <li><strong>VIP $497</strong> — + 6 tentatives + 4h coaching privé + garantie · 8 semaines</li>
+        </ul>
+        <div class="step-tip">💡 Conseil : le plan Essential est le plus populaire pour un premier passage au TEF/TCF.</div>
+        <div class="step-actions">
+          <a href="tarifs.html" class="step-btn-gold">📋 Comparer les plans</a>
+          <a href="forfaits.html" class="step-btn-blue">💳 Choisir mon plan</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 4 -->
+    <div class="step-block gold">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h3>🔒 Payez en toute sécurité via Stripe</h3>
+        <p>Après avoir sélectionné votre plan, vous serez redirigé vers la <strong>page de paiement sécurisée Stripe</strong>. Nous acceptons Visa, Mastercard et American Express.</p>
+        <p>Votre paiement est chiffré SSL. ARCADINS ne conserve aucune donnée bancaire. Vous recevez une confirmation par email dans les secondes suivant le paiement.</p>
+        <div class="step-tip">⚠️ Important : ne fermez pas la page pendant la redirection Stripe — attendez la confirmation.</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center;">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" height="22" alt="Visa" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" height="22" alt="Mastercard" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg" height="22" alt="Amex" />
+          <span style="font-size:.75rem;color:var(--gray-text);margin-left:4px;">🔒 Paiement 100% sécurisé</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 5 -->
+    <div class="step-block">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <h3>📊 Test de qualification — Évaluation approfondie</h3>
+        <p>Une fois votre accès activé, vous commencez par un <strong>test de qualification</strong> plus complet (30-40 minutes). Ce test mesure précisément vos forces et vos zones d'amélioration dans les 4 compétences du TEF/TCF.</p>
+        <p>Les résultats de ce test guident l'ordre dans lequel vous aborderez les modules. Votre tableau de bord se met à jour en temps réel.</p>
+        <div class="step-tip">💡 Conseil : réservez 45 minutes sans interruption pour ce test.</div>
+        <div class="step-actions">
+          <a href="acces.html" class="step-btn-blue">🔐 Accéder à mon espace</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 6 -->
+    <div class="step-block">
+      <div class="step-num">6</div>
+      <div class="step-content">
+        <h3>📚 Suivez les 14 modules de formation</h3>
+        <p>Le cœur de votre préparation : <strong>14 modules progressifs</strong> couvrant toutes les compétences exigées au TEF et TCF Canada. Chaque module comprend :</p>
+        <ul style="margin:8px 0 12px 16px;font-size:.88rem;color:var(--gray-text);line-height:2;">
+          <li>📖 Leçons théoriques avec exemples concrets</li>
+          <li>✍️ Exercices pratiques avec corrections détaillées</li>
+          <li>⏱️ Simulations chronométrées en conditions réelles</li>
+          <li>📈 Suivi de progression automatique</li>
+        </ul>
+        <p>Travaillez à votre rythme — la plateforme est accessible 24h/24, 7j/7 depuis n'importe quel appareil (PC, tablette, téléphone).</p>
+        <div class="step-tip">💡 Conseil : consacrez 1 à 2 heures par jour pour un progrès optimal sur 6 semaines.</div>
+        <div class="step-actions">
+          <a href="formation.html" class="step-btn-blue">📚 Mes modules</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 7 -->
+    <div class="step-block gold">
+      <div class="step-num">7</div>
+      <div class="step-content">
+        <h3>🏆 Passez le test final ARCADINS</h3>
+        <p>Une fois les modules complétés, passez le <strong>test final officiel ARCADINS</strong>. Ce test simule les conditions réelles du TEF ou TCF Canada et évalue votre maîtrise globale.</p>
+        <p>Le nombre de tentatives dépend de votre plan :</p>
+        <ul style="margin:8px 0 12px 16px;font-size:.88rem;color:var(--gray-text);line-height:2;">
+          <li>Starter : 1 tentative</li>
+          <li>Essential : 2 tentatives</li>
+          <li>Premium : 3 tentatives</li>
+          <li>VIP : 6 tentatives</li>
+        </ul>
+        <div class="step-tip">💡 Conseil : ne passez le test final qu'après avoir terminé au moins 80% des modules.</div>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 8 -->
+    <div class="step-block green">
+      <div class="step-num">🎓</div>
+      <div class="step-content">
+        <h3>🎓 Recevez votre certificat ARCADINS</h3>
+        <p>Après avoir réussi le test final, votre <strong>certificat officiel ARCADINS Training Center</strong> est généré automatiquement en PDF. Il mentionne :</p>
+        <ul style="margin:8px 0 12px 16px;font-size:.88rem;color:var(--gray-text);line-height:2;">
+          <li>Votre nom complet et la date d'obtention</li>
+          <li>Votre score global et par compétence</li>
+          <li>Le niveau NCLC équivalent estimé</li>
+          <li>Le sceau officiel ARCADINS Training Center</li>
+        </ul>
+        <p>Téléchargez-le depuis votre espace membre et partagez-le avec votre conseiller en immigration.</p>
+        <div class="step-tip">🎉 Plan VIP : vous recevez également une lettre de recommandation signée.</div>
+        <div class="step-actions">
+          <a href="verifier-certificat.html" class="step-btn-green">🔍 Vérifier un certificat</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FONCTIONNALITÉS PLATEFORME -->
+<section style="background:var(--blue-dark);color:white;padding:60px 24px;">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" style="background:rgba(201,168,76,.2);color:var(--gold-light);">Fonctionnalités</span>
+      <h2 style="color:white;">Ce que vous trouverez sur la plateforme</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-top:8px;">
+      <div style="background:rgba(255,255,255,.07);border-radius:14px;padding:24px;border-left:4px solid var(--gold);">
+        <div style="font-size:2rem;margin-bottom:10px;">📊</div>
+        <h4 style="color:white;margin-bottom:6px;">Tableau de bord</h4>
+        <p style="color:rgba(255,255,255,.7);font-size:.85rem;">Suivez votre progression, vos scores et le temps passé sur chaque module en temps réel.</p>
+      </div>
+      <div style="background:rgba(255,255,255,.07);border-radius:14px;padding:24px;border-left:4px solid var(--gold);">
+        <div style="font-size:2rem;margin-bottom:10px;">⏱️</div>
+        <h4 style="color:white;margin-bottom:6px;">Simulations chronométrées</h4>
+        <p style="color:rgba(255,255,255,.7);font-size:.85rem;">Reproduisez exactement les conditions du vrai examen TEF/TCF avec minuterie intégrée.</p>
+      </div>
+      <div style="background:rgba(255,255,255,.07);border-radius:14px;padding:24px;border-left:4px solid var(--gold);">
+        <div style="font-size:2rem;margin-bottom:10px;">✅</div>
+        <h4 style="color:white;margin-bottom:6px;">Corrections détaillées</h4>
+        <p style="color:rgba(255,255,255,.7);font-size:.85rem;">Chaque exercice est corrigé avec des explications pédagogiques pour comprendre vos erreurs.</p>
+      </div>
+      <div style="background:rgba(255,255,255,.07);border-radius:14px;padding:24px;border-left:4px solid var(--gold);">
+        <div style="font-size:2rem;margin-bottom:10px;">📱</div>
+        <h4 style="color:white;margin-bottom:6px;">100% mobile</h4>
+        <p style="color:rgba(255,255,255,.7);font-size:.85rem;">Accédez à votre formation depuis votre téléphone, tablette ou ordinateur. Aucune installation requise.</p>
+      </div>
+      <div style="background:rgba(255,255,255,.07);border-radius:14px;padding:24px;border-left:4px solid var(--gold);">
+        <div style="font-size:2rem;margin-bottom:10px;">🔒</div>
+        <h4 style="color:white;margin-bottom:6px;">Espace membre sécurisé</h4>
+        <p style="color:rgba(255,255,255,.7);font-size:.85rem;">Vos données et résultats sont protégés. Accès par email + mot de passe personnel.</p>
+      </div>
+      <div style="background:rgba(255,255,255,.07);border-radius:14px;padding:24px;border-left:4px solid var(--gold);">
+        <div style="font-size:2rem;margin-bottom:10px;">🎧</div>
+        <h4 style="color:white;margin-bottom:6px;">Support réactif</h4>
+        <p style="color:rgba(255,255,255,.7);font-size:.85rem;">Une question ? Notre équipe répond par email et WhatsApp. VIP : support 24/7.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="guide-faq">
+  <div class="guide-faq-inner">
+    <div class="section-header">
+      <h2>Questions fréquentes</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span>Combien de temps ai-je accès à la plateforme ?</span> <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">Cela dépend de votre plan : <strong>6 semaines</strong> pour Starter, Essential et Premium, et <strong>8 semaines</strong> pour le plan VIP. L'accès commence à la date de confirmation de votre paiement.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span>Puis-je accéder à la plateforme depuis mon téléphone ?</span> <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">Oui ! La plateforme est entièrement responsive et optimisée pour mobile, tablette et ordinateur. Aucune application à télécharger — tout fonctionne depuis votre navigateur.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span>Que se passe-t-il si j'échoue au test final ?</span> <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">Vous pouvez repasser le test final selon le nombre de tentatives inclus dans votre plan (1 à 6). Chaque tentative vous permet de voir vos erreurs et de vous améliorer avant de réessayer.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span>Comment obtenir mon certificat ARCADINS ?</span> <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">Après avoir réussi le test final, votre certificat est généré automatiquement et disponible en téléchargement PDF depuis votre espace membre. Il est également envoyé par email.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span>Comment fonctionne le coaching individuel (plans Premium et VIP) ?</span> <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">Après votre paiement, notre équipe vous contacte par email pour planifier vos séances de coaching en visioconférence (Zoom/Teams). Premium : 2h, VIP : 4h de coaching privé avec un formateur expert.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span>Y a-t-il une garantie remboursement ?</span> <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">Oui. Nous offrons une garantie de remboursement de <strong>7 jours</strong> si vous n'êtes pas satisfait(e), à condition de n'avoir pas accédé à plus de 20% du contenu. Contactez-nous à info@arcadins-training.com.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span>J'ai oublié mon mot de passe — que faire ?</span> <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">Sur la page de connexion, cliquez sur "Mot de passe oublié ?". Entrez votre email et vous recevrez un lien de réinitialisation dans les 5 minutes. Vérifiez votre dossier spam.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span>Comment contacter le support ?</span> <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          📧 Email : <a href="mailto:info@arcadins-training.com" style="color:var(--blue);">info@arcadins-training.com</a><br>
+          💬 WhatsApp : <a href="https://wa.me/15144513436" style="color:var(--blue);">+1 514-451-3436</a><br>
+          Notre équipe répond sous 24h (VIP : sous 2h).
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section style="background:linear-gradient(135deg,var(--blue-dark),var(--blue));color:white;text-align:center;padding:70px 24px;">
+  <div class="container" style="max-width:600px;">
+    <div style="font-size:3rem;margin-bottom:16px;">🚀</div>
+    <h2 style="color:white;font-size:1.9rem;font-weight:900;margin-bottom:12px;">Prêt(e) à commencer ?</h2>
+    <p style="opacity:.88;margin-bottom:28px;">Inscrivez-vous gratuitement en 2 minutes et passez votre test de niveau. Votre préparation TEF/TCF Canada commence aujourd'hui.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <a href="../index.html#inscription" class="btn-primary" style="background:var(--gold);color:var(--blue-dark);padding:14px 32px;font-size:1rem;">✏️ S'inscrire gratuitement</a>
+      <a href="tarifs.html" class="btn-secondary" style="border-color:rgba(255,255,255,.5);color:white;padding:14px 28px;">Voir les plans →</a>
+    </div>
+  </div>
+</section>
+
+<footer style="background:var(--blue-dark);color:rgba(255,255,255,.7);text-align:center;padding:28px 24px;font-size:.85rem;">
+  © <span id="footerYear"></span> ARCADINS Training Center ·
+  <a href="confidentialite.html" style="color:var(--gold-light);">Confidentialité</a> ·
+  <a href="conditions.html" style="color:var(--gold-light);">Conditions</a> ·
+  <a href="../index.html" style="color:var(--gold-light);">Accueil</a>
+</footer>
+
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 data-i18n="auth.title">Bienvenue</h2>
+    <p data-i18n="auth.sub">Accédez à votre espace ARCADINS</p>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Connexion</button>
+      <button class="modal-tab" id="tabRegister" onclick="switchTab('register')">Créer un compte</button>
+    </div>
+    <form class="modal-form active" id="loginForm" onsubmit="handleAuth(event,'login')">
+      <div class="form-group"><label>Email</label><input type="email" required /></div>
+      <div class="form-group"><label>Mot de passe</label><input type="password" required /></div>
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Se connecter</button>
+    </form>
+    <form class="modal-form" id="registerForm" onsubmit="handleAuth(event,'register')">
+      <div class="form-group"><label>Nom complet</label><input type="text" required /></div>
+      <div class="form-group"><label>Email</label><input type="email" required /></div>
+      <div class="form-group"><label>Mot de passe</label><input type="password" required minlength="8" /></div>
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;background:var(--red);">Créer mon compte</button>
+    </form>
+  </div>
+</div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/access-popup.js"></script>
+<script>
+  document.getElementById('footerYear').textContent = new Date().getFullYear();
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+</script>
+</body>
+</html>
