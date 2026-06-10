@@ -391,8 +391,8 @@ const translations = {
     en: "© <span id='footerYear'></span> ARCADINS Training Center – Powered by <strong>Les Entreprises ARCADINS et ses Éditions</strong>"
   },
   "footer.tagline": {
-    fr: "Accompagnement TEF & TCF Canada | Immigration Canada / Québec 🍁",
-    en: "TEF & TCF Canada Tutoring | Canada / Quebec Immigration 🍁"
+    fr: "Accompagnement TEF & TCF Canada / Québec 🍁",
+    en: "TEF & TCF Canada / Quebec Tutoring 🍁"
   },
 
   // ===== MODAL CONNEXION =====
