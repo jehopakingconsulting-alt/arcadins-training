@@ -56,7 +56,7 @@ const translations = {
   "tag.inscription": { fr: "Inscription",               en: "Registration" },
   "tag.faq":         { fr: "Questions fréquentes",      en: "Frequently asked questions" },
   "tag.testi":       { fr: "Témoignages",               en: "Testimonials" },
-  "tag.blog":        { fr: "Ressources &amp; Conseils", en: "Resources &amp; Tips" },
+  "tag.blog":        { fr: "Ressources &amp; Information", en: "Resources &amp; Information" },
   "tag.newsletter":  { fr: "📬 Newsletter gratuite",    en: "📬 Free Newsletter" },
 
   // ===== POURQUOI ARCADINS =====
@@ -299,7 +299,7 @@ const translations = {
 
   // ===== BLOG =====
   "blog.h2":  { fr: "Articles sur l'immigration au Canada", en: "Articles on immigration to Canada" },
-  "blog.p":   { fr: "Conseils pratiques, actualités IRCC et guides pour maximiser vos chances de réussite.", en: "Practical tips, IRCC news and guides to maximize your chances of success." },
+  "blog.p":   { fr: "Informations générales, actualités IRCC et ressources éducatives pour mieux comprendre votre parcours linguistique.", en: "General information, IRCC news and educational resources to help you better understand your language journey." },
   "blog.all": { fr: "Voir tous les articles →", en: "View all articles →" },
   "blog.read":{ fr: "Lire →",                  en: "Read →" },
 
