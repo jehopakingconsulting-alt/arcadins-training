@@ -126,10 +126,34 @@ function initDatabase() {
     'ALTER TABLE users ADD COLUMN payment_method TEXT',
     'ALTER TABLE users ADD COLUMN payment_notes TEXT',
     'ALTER TABLE users ADD COLUMN stripe_session_id TEXT',
+    'ALTER TABLE users ADD COLUMN access_expires_at TEXT',
   ];
   migrations.forEach(sql => {
     try { db.prepare(sql).run(); } catch(e) { /* colonne déjà existante */ }
   });
+
+  // Backfill : calculer la date d'expiration pour les comptes déjà payés
+  // qui n'en ont pas encore (utilisateurs payants antérieurs à cette fonctionnalité)
+  try {
+    const { PLAN_DURATIONS_WEEKS } = require('./routes/plans');
+    const paidNoExpiry = db.prepare(`
+      SELECT id, payment_plan, payment_date, created_at FROM users
+      WHERE payment_confirmed = 1 AND (access_expires_at IS NULL OR access_expires_at = '')
+    `).all();
+    const updateExpiry = db.prepare('UPDATE users SET access_expires_at = ? WHERE id = ?');
+    paidNoExpiry.forEach(u => {
+      const weeks = (PLAN_DURATIONS_WEEKS && PLAN_DURATIONS_WEEKS[u.payment_plan]) || 6;
+      const base = u.payment_date || u.created_at || new Date().toISOString();
+      const baseDate = new Date(base.replace(' ', 'T') + (base.includes('Z') || base.includes('+') ? '' : 'Z'));
+      const expiry = new Date(baseDate.getTime() + weeks * 7 * 24 * 60 * 60 * 1000);
+      updateExpiry.run(expiry.toISOString(), u.id);
+    });
+    if (paidNoExpiry.length) {
+      console.log(`[DB] Backfill access_expires_at pour ${paidNoExpiry.length} utilisateur(s) payant(s)`);
+    }
+  } catch (e) {
+    console.error('[DB] Erreur backfill access_expires_at:', e.message);
+  }
 
   // Insert default admin user
   const existingAdmin = db.prepare('SELECT id FROM users WHERE email = ?').get('admin@arcadins-training.com');

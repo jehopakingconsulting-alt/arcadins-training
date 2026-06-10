@@ -29,6 +29,24 @@ const STEP_MESSAGES = {
   final_passed: 'Vous devez réussir le test final.',
 };
 
+// Étapes qui supposent un paiement confirmé : on y vérifie aussi l'expiration de l'accès.
+// Note : 'final_passed' (certificat) n'est pas inclus — un certificat déjà obtenu
+// reste accessible même après l'expiration de la période d'accès au contenu.
+const STEPS_REQUIRING_ACTIVE_ACCESS = new Set([
+  'payment_confirmed',
+  'qualification_done',
+  'modules_done',
+]);
+
+// Retourne true si l'accès payant de l'utilisateur est expiré (forfait arrivé à échéance)
+function isAccessExpired(user) {
+  if (user.payment_confirmed !== 1) return false;
+  if (!user.access_expires_at) return false;
+  const expiry = new Date(user.access_expires_at);
+  if (isNaN(expiry.getTime())) return false;
+  return expiry.getTime() < Date.now();
+}
+
 function stepGuard(step) {
   return function (req, res, next) {
     if (!req.user) {
@@ -45,8 +63,18 @@ function stepGuard(step) {
         required_step: step,
       });
     }
+    if (STEPS_REQUIRING_ACTIVE_ACCESS.has(step) && isAccessExpired(req.user)) {
+      return res.status(403).json({
+        success: false,
+        message: 'Votre accès a expiré. Veuillez renouveler votre forfait pour continuer.',
+        required_step: 'access_expired',
+        expired: true,
+        access_expires_at: req.user.access_expires_at,
+      });
+    }
     next();
   };
 }
 
 module.exports = stepGuard;
+module.exports.isAccessExpired = isAccessExpired;

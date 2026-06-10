@@ -182,6 +182,7 @@ async function init() {
   try {
     const me = await AuthAPI.me();
     const user = me.user;
+    if (user.access_expired) { window.location.href = 'forfaits.html?expired=1'; return; }
     if (!user.qualification_done) { window.location.href = 'qualification.html'; return; }
     if (user.nom || user.prenom) document.getElementById('userDisplayName').textContent = (user.prenom||'') + ' ' + (user.nom||'');
 

@@ -93,6 +93,7 @@ async function init() {
   try {
     const me = await AuthAPI.me();
     if (!me.user.payment_confirmed) { window.location.href = 'forfaits.html'; return; }
+    if (me.user.access_expired) { window.location.href = 'forfaits.html?expired=1'; return; }
     if (me.user.qualification_done) {
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('alreadyDone').style.display = 'block';

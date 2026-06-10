@@ -150,22 +150,34 @@ async function init() {
     document.getElementById('heroName').textContent = greet;
 
     // Profile
+    let accessRow = '';
+    if (u.payment_confirmed && u.access_expires_at) {
+      const expDate = new Date(u.access_expires_at);
+      const expStr = expDate.toLocaleDateString(lang==='fr'?'fr-CA':'en-CA');
+      if (u.access_expired) {
+        accessRow = `<div class="info-row"><span class="info-label">${lang==='fr'?'Accès':'Access'}</span><span class="info-value" style="color:var(--red);font-weight:700;">${lang==='fr'?`⏰ Expiré le ${expStr} — `:`⏰ Expired on ${expStr} — `}<a href="forfaits.html" style="color:var(--blue);text-decoration:underline;">${lang==='fr'?'Renouveler':'Renew'}</a></span></div>`;
+      } else {
+        accessRow = `<div class="info-row"><span class="info-label">${lang==='fr'?'Accès valide jusqu\'au':'Access valid until'}</span><span class="info-value">${expStr}</span></div>`;
+      }
+    }
+
     document.getElementById('profileInfo').innerHTML = `
       <div class="info-row"><span class="info-label">${lang==='fr'?'Nom complet':'Full name'}</span><span class="info-value">${u.prenom} ${u.nom}</span></div>
       <div class="info-row"><span class="info-label">Email</span><span class="info-value">${u.email}</span></div>
       <div class="info-row"><span class="info-label">${lang==='fr'?'Pays':'Country'}</span><span class="info-value">${u.pays||'—'}</span></div>
       <div class="info-row"><span class="info-label">${lang==='fr'?'Forfait':'Plan'}</span><span class="info-value">${u.payment_plan||'—'}</span></div>
       <div class="info-row"><span class="info-label">${lang==='fr'?'Niveau':'Level'}</span><span class="info-value">${u.qualification_level||'—'}</span></div>
-      <div class="info-row"><span class="info-label">${lang==='fr'?'Inscrit le':'Member since'}</span><span class="info-value">${new Date(u.created_at).toLocaleDateString(lang==='fr'?'fr-CA':'en-CA')}</span></div>`;
+      <div class="info-row"><span class="info-label">${lang==='fr'?'Inscrit le':'Member since'}</span><span class="info-value">${new Date(u.created_at).toLocaleDateString(lang==='fr'?'fr-CA':'en-CA')}</span></div>
+      ${accessRow}`;
 
     // Steps
     const steps = [
       { key:'registered', label: lang==='fr'?'Inscription':'Registration', icon:'✅', done: true, link: null },
       { key:'trial', label: lang==='fr'?'Test d'Essai':'Trial', icon: u.trial_done?'✅':'🔵', done:!!u.trial_done, link: u.trial_done?null:'essai-gratuit.html', linkLabel: lang==='fr'?'Faire le test →':'Take test →' },
       { key:'payment', label: lang==='fr'?'Paiement':'Payment', icon: u.payment_confirmed?'✅':'🔵', done:!!u.payment_confirmed, link: u.payment_confirmed||!u.trial_done?null:'forfaits.html', linkLabel: lang==='fr'?'Choisir un forfait →':'Choose plan →' },
-      { key:'qual', label: lang==='fr'?'Test de qualification':'Placement test', icon: u.qualification_done?'✅':u.payment_confirmed?'🔵':'🔒', done:!!u.qualification_done, link: u.qualification_done||!u.payment_confirmed?null:'qualification.html', linkLabel: lang==='fr'?'Passer le test →':'Take test →' },
-      { key:'formation', label: lang==='fr'?'Formation':'Training', icon: u.all_modules_done?'✅':u.qualification_done?'🔵':'🔒', done:!!u.all_modules_done, link: !u.qualification_done?null:'formation.html', linkLabel: lang==='fr'?'Ma formation →':'My training →' },
-      { key:'final', label: lang==='fr'?'Test final':'Final test', icon: u.final_test_passed?'✅':u.all_modules_done?'🔵':'🔒', done:!!u.final_test_passed, link: u.final_test_passed||!u.all_modules_done?null:'test-final.html', linkLabel: lang==='fr'?'Passer le test →':'Take test →' },
+      { key:'qual', label: lang==='fr'?'Test de qualification':'Placement test', icon: u.qualification_done?'✅':(u.payment_confirmed&&!u.access_expired)?'🔵':'🔒', done:!!u.qualification_done, link: (u.qualification_done||!u.payment_confirmed)?null:(u.access_expired?'forfaits.html':'qualification.html'), linkLabel: u.access_expired?(lang==='fr'?'Renouveler →':'Renew →'):(lang==='fr'?'Passer le test →':'Take test →') },
+      { key:'formation', label: lang==='fr'?'Formation':'Training', icon: u.all_modules_done?'✅':(u.qualification_done&&!u.access_expired)?'🔵':'🔒', done:!!u.all_modules_done, link: !u.qualification_done?null:(u.access_expired?'forfaits.html':'formation.html'), linkLabel: u.access_expired?(lang==='fr'?'Renouveler →':'Renew →'):(lang==='fr'?'Ma formation →':'My training →') },
+      { key:'final', label: lang==='fr'?'Test final':'Final test', icon: u.final_test_passed?'✅':(u.all_modules_done&&!u.access_expired)?'🔵':'🔒', done:!!u.final_test_passed, link: (u.final_test_passed||!u.all_modules_done)?null:(u.access_expired?'forfaits.html':'test-final.html'), linkLabel: u.access_expired?(lang==='fr'?'Renouveler →':'Renew →'):(lang==='fr'?'Passer le test →':'Take test →') },
       { key:'cert', label: lang==='fr'?'Certificat':'Certificate', icon: u.final_test_passed?'🏆':'🔒', done:!!u.final_test_passed, link: u.final_test_passed?'mon-certificat.html':null, linkLabel: lang==='fr'?'Mon certificat →':'My certificate →' },
     ];
     document.getElementById('progressSteps').innerHTML = steps.map(s=>`

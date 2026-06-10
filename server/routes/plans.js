@@ -5,6 +5,7 @@ const router  = express.Router();
 const { getDb } = require('../database');
 const authMiddleware = require('../middleware/auth');
 const { sendPaymentConfirmation } = require('../services/email');
+const { isAccessExpired } = require('../middleware/stepGuard');
 
 // ── Stripe init (lazy) ──────────────────────────────────────
 function getStripe() {
@@ -71,7 +72,7 @@ const PLANS = [
     price: 497,
     currency: 'usd',
     description: "L'excellence avec suivi personnalisé complet",
-    duration_weeks: 8,
+    duration_weeks: 12,
     features: [
       'Tout le plan Premium',
       'Test final · 6 tentatives',
@@ -79,11 +80,20 @@ const PLANS = [
       'Préparation orale intensive',
       'Garantie de résultat',
       'Support 24/7',
-      'Accès 8 semaines',
+      'Accès 12 semaines',
     ],
     recommended: false,
   },
 ];
+
+// ── Durées d'accès par plan (en semaines) + helper d'expiration ──
+const PLAN_DURATIONS_WEEKS = {};
+PLANS.forEach(p => { PLAN_DURATIONS_WEEKS[p.id] = p.duration_weeks; });
+
+function computeAccessExpiryISO(planId) {
+  const weeks = PLAN_DURATIONS_WEEKS[planId] || 6;
+  return new Date(Date.now() + weeks * 7 * 24 * 60 * 60 * 1000).toISOString();
+}
 
 // ── GET /api/plans ──────────────────────────────────────────
 router.get('/', (req, res) => {
@@ -97,7 +107,7 @@ router.post('/create-checkout-session', authMiddleware, async (req, res) => {
     const user = req.user;
     const db   = getDb();
 
-    if (user.payment_confirmed === 1) {
+    if (user.payment_confirmed === 1 && !isAccessExpired(user)) {
       return res.status(400).json({ success: false, message: 'Paiement déjà confirmé.' });
     }
 
@@ -183,8 +193,8 @@ router.get('/verify-payment', authMiddleware, async (req, res) => {
       return res.status(403).json({ success: false, message: 'Session invalide.' });
     }
 
-    // Déjà confirmé ?
-    if (user.payment_confirmed === 1) {
+    // Déjà confirmé et accès toujours actif ? Rien à refaire.
+    if (user.payment_confirmed === 1 && !isAccessExpired(user) && user.stripe_session_id === session_id) {
       const fresh = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id);
       const { password_hash, ...safeUser } = fresh;
       return res.json({ success: true, data: { user: safeUser }, message: 'Déjà activé.' });
@@ -192,15 +202,16 @@ router.get('/verify-payment', authMiddleware, async (req, res) => {
 
     const plan     = session.metadata.plan || 'essential';
     const planName = session.metadata.plan_name || plan;
+    const isRenewal = user.payment_confirmed === 1 && isAccessExpired(user);
 
-    // Activer le compte + créer les 14 modules
+    // Activer (ou renouveler) le compte + créer les 14 modules si nécessaire
     db.prepare(`
       UPDATE users
       SET payment_confirmed = 1, payment_plan = ?, payment_date = datetime('now'),
           role = 'apprenant', status = 'active',
-          stripe_session_id = ?
+          stripe_session_id = ?, access_expires_at = ?
       WHERE id = ?
-    `).run(plan, session_id, user.id);
+    `).run(plan, session_id, computeAccessExpiryISO(plan), user.id);
 
     // Créer les 14 modules si pas encore créés
     const existing = db.prepare('SELECT COUNT(*) as c FROM modules WHERE user_id = ?').get(user.id);
@@ -220,7 +231,9 @@ router.get('/verify-payment', authMiddleware, async (req, res) => {
     return res.json({
       success: true,
       data: { user: safeUser, plan, redirect: '/pages/formation.html' },
-      message: `Plan ${planName} activé avec succès ! Bienvenue dans votre formation.`,
+      message: isRenewal
+        ? `Votre accès a été renouvelé avec le plan ${planName} !`
+        : `Plan ${planName} activé avec succès ! Bienvenue dans votre formation.`,
     });
 
   } catch (err) {
@@ -262,9 +275,9 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
           UPDATE users
           SET payment_confirmed = 1, payment_plan = ?, payment_date = datetime('now'),
               role = 'apprenant', status = 'active',
-              stripe_session_id = ?
+              stripe_session_id = ?, access_expires_at = ?
           WHERE email = ?
-        `).run(plan, session.id, userEmail);
+        `).run(plan, session.id, computeAccessExpiryISO(plan), userEmail);
 
         const existing = db.prepare('SELECT COUNT(*) as c FROM modules WHERE user_id = (SELECT id FROM users WHERE email = ?)').get(userEmail);
         if (existing.c === 0) {
@@ -295,7 +308,7 @@ router.post('/checkout', authMiddleware, async (req, res) => {
     const user = req.user;
     const db   = getDb();
 
-    if (user.payment_confirmed === 1) {
+    if (user.payment_confirmed === 1 && !isAccessExpired(user)) {
       return res.status(400).json({ success: false, message: 'Paiement déjà confirmé.' });
     }
 
@@ -308,9 +321,10 @@ router.post('/checkout', authMiddleware, async (req, res) => {
     db.prepare(`
       UPDATE users
       SET payment_confirmed = 1, payment_plan = ?, payment_date = datetime('now'),
-          role = 'apprenant', status = 'active', qualification_done = 1
+          role = 'apprenant', status = 'active', qualification_done = 1,
+          access_expires_at = ?
       WHERE id = ?
-    `).run(plan, user.id);
+    `).run(plan, computeAccessExpiryISO(plan), user.id);
 
     const existing = db.prepare('SELECT COUNT(*) as c FROM modules WHERE user_id = ?').get(user.id);
     if (existing.c === 0) {
@@ -335,3 +349,6 @@ router.post('/checkout', authMiddleware, async (req, res) => {
 });
 
 module.exports = router;
+module.exports.PLAN_DURATIONS_WEEKS = PLAN_DURATIONS_WEEKS;
+module.exports.PLANS = PLANS;
+module.exports.computeAccessExpiryISO = computeAccessExpiryISO;

@@ -63,7 +63,7 @@
 <div class="forfait-hero">
   <span class="section-tag" style="background:rgba(201,168,76,.2);color:var(--gold-light);margin:0 auto 16px;display:inline-block;" data-i18n="plans.tag">Étape 2 — Choisir votre forfait</span>
   <h1 data-i18n="plans.h1">Choisissez votre plan de formation</h1>
-  <p style="opacity:.9;" data-i18n="plans.p">Accès valide 6 mois · Paiement sécurisé · Garantie 7 jours</p>
+  <p style="opacity:.9;" data-i18n="plans.p">Accès valide 6 à 12 semaines selon le forfait · Paiement sécurisé · Garantie 7 jours</p>
 </div>
 
 <!-- Indicateur d'étapes -->
@@ -182,11 +182,28 @@ async function init() {
     try {
       const r = await fetch(API_BASE + '/access/me', { headers: { Authorization: 'Bearer ' + token } });
       const d = await r.json();
-      if (d.success && d.data?.user?.payment_confirmed) {
-        window.location.href = 'formation.html'; return;
+      if (d.success && d.user?.payment_confirmed) {
+        if (d.user.access_expired) {
+          showExpiredBanner();
+        } else {
+          window.location.href = 'formation.html'; return;
+        }
       }
     } catch(e) { /* ignore — plans already loading */ }
   }
+}
+
+// ── Bannière "accès expiré" pour les utilisateurs dont le forfait est échu ──
+function showExpiredBanner() {
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+  const banner = document.createElement('div');
+  banner.style.cssText = 'max-width:760px;margin:24px auto 0;background:#fff3e0;border:2px solid #ffb74d;border-radius:12px;padding:16px 20px;text-align:center;color:#e65100;font-weight:600;';
+  banner.textContent = lang === 'fr'
+    ? '⏰ Votre période d\'accès est terminée. Choisissez un nouveau forfait ci-dessous pour renouveler votre accès.'
+    : '⏰ Your access period has ended. Choose a new plan below to renew your access.';
+  const hero = document.querySelector('.plans-hero, .pay-hero, header, .hero');
+  const container = document.querySelector('.quiz-container, .plans-container, main') || document.body;
+  container.parentNode.insertBefore(banner, container);
 }
 
 // ── Vérification paiement après retour Stripe ────────────────
@@ -277,7 +294,7 @@ function renderPlans() {
       "Test final · 6 tentatives": "Final test · 6 attempts",
       "Support par email": "Email support",
       "Accès 6 semaines": "6 weeks access",
-      "Accès 8 semaines": "8 weeks access",
+      "Accès 12 semaines": "12 weeks access",
       "Tout le plan Starter": "Everything in Starter",
       "Tout le plan Essential": "Everything in Essential",
       "Tout le plan Premium": "Everything in Premium",

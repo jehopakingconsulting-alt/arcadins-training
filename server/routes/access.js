@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const { getDb } = require('../database');
 const authMiddleware = require('../middleware/auth');
 const { sendAdminNotification, sendWelcomeEmail } = require('../services/email');
+const { isAccessExpired } = require('../middleware/stepGuard');
 
 function signToken(user) {
   return jwt.sign(
@@ -159,11 +160,14 @@ router.post('/login', async (req, res) => {
 router.get('/me', authMiddleware, (req, res) => {
   try {
     const user = sanitizeUser(req.user);
+    const expired = isAccessExpired(req.user);
+    user.access_expired = expired;
 
     // Determine next step
     let nextStep = null;
     if (!user.trial_done) nextStep = 'trial';
     else if (!user.payment_confirmed) nextStep = 'plans';
+    else if (expired) nextStep = 'renew';
     else if (!user.qualification_done) nextStep = 'qualification';
     else if (!user.all_modules_done) nextStep = 'modules';
     else if (!user.final_test_passed) nextStep = 'final_test';

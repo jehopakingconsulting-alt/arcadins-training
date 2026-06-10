@@ -106,6 +106,7 @@ async function init() {
   try {
     const me = await AuthAPI.me();
     const user = me.user;
+    if (user.access_expired) { window.location.href = 'forfaits.html?expired=1'; return; }
     if (!user.all_modules_done) {
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('notReady').style.display = 'block';
