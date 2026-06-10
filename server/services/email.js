@@ -35,12 +35,12 @@ const FROM = `"${FROM_NAME}" <${SMTP_USER}>`;
 function baseTemplate(content) {
   return `<!DOCTYPE html>
 <html lang="fr"><head><meta charset="UTF-8"/></head>
-<body style="margin:0;padding:0;background:#f0f4f8;font-family:Arial,Helvetica,sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f4f8;padding:30px 0;">
+<body style="margin:0;padding:0;background:#eef3f0;font-family:Arial,Helvetica,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#eef3f0;padding:30px 0;">
   <tr><td align="center">
     <table width="600" cellpadding="0" cellspacing="0" style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.08);">
       <!-- HEADER -->
-      <tr><td style="background:linear-gradient(135deg,#0d2060,#1a3a8c);padding:28px 36px;text-align:center;">
+      <tr><td style="background:linear-gradient(135deg,#074A2E,#1C8C5A);padding:28px 36px;text-align:center;">
         <div style="font-size:22px;font-weight:900;color:white;letter-spacing:2px;">🍁 ARCADINS</div>
         <div style="font-size:11px;color:#c9a84c;letter-spacing:3px;text-transform:uppercase;margin-top:4px;">Training Center</div>
       </td></tr>
@@ -49,12 +49,12 @@ function baseTemplate(content) {
         ${content}
       </td></tr>
       <!-- FOOTER -->
-      <tr><td style="background:#0d2060;padding:18px 36px;text-align:center;">
-        <p style="color:#8899bb;font-size:11px;margin:0;">© ${new Date().getFullYear()} ARCADINS Training Center · Tous droits réservés</p>
-        <p style="color:#5566aa;font-size:11px;margin:6px 0 0;">
+      <tr><td style="background:#074A2E;padding:18px 36px;text-align:center;">
+        <p style="color:#7a9a8c;font-size:11px;margin:0;">© ${new Date().getFullYear()} ARCADINS Training Center · Tous droits réservés</p>
+        <p style="color:#4a7a63;font-size:11px;margin:6px 0 0;">
           <a href="${SITE_URL}" style="color:#c9a84c;text-decoration:none;">www.arcadins-training.com</a>
           &nbsp;|&nbsp;
-          <a href="mailto:${ADMIN}" style="color:#8899bb;text-decoration:none;">${ADMIN}</a>
+          <a href="mailto:${ADMIN}" style="color:#7a9a8c;text-decoration:none;">${ADMIN}</a>
         </p>
       </td></tr>
     </table>
@@ -70,19 +70,19 @@ async function sendAdminNotification(prospect) {
     return;
   }
   const html = baseTemplate(`
-    <h2 style="color:#0d2060;margin:0 0 6px;">📥 Nouveau prospect enregistré</h2>
-    <p style="color:#6b7a99;font-size:13px;margin:0 0 24px;">${new Date().toLocaleString('fr-CA')}</p>
+    <h2 style="color:#074A2E;margin:0 0 6px;">📥 Nouveau prospect enregistré</h2>
+    <p style="color:#5d7a6e;font-size:13px;margin:0 0 24px;">${new Date().toLocaleString('fr-CA')}</p>
     <table style="width:100%;border-collapse:collapse;font-size:14px;">
-      <tr style="background:#f7f9fc;"><td style="padding:10px 14px;font-weight:700;color:#4a5568;width:40%;">Prénom Nom</td><td style="padding:10px 14px;color:#1a2340;">${prospect.prenom} ${prospect.nom}</td></tr>
-      <tr>                           <td style="padding:10px 14px;font-weight:700;color:#4a5568;border-top:1px solid #f0f4f8;">Email</td><td style="padding:10px 14px;border-top:1px solid #f0f4f8;"><a href="mailto:${prospect.email}" style="color:#1a56db;">${prospect.email}</a></td></tr>
+      <tr style="background:#f7f9fc;"><td style="padding:10px 14px;font-weight:700;color:#4a5568;width:40%;">Prénom Nom</td><td style="padding:10px 14px;color:#1a2e28;">${prospect.prenom} ${prospect.nom}</td></tr>
+      <tr>                           <td style="padding:10px 14px;font-weight:700;color:#4a5568;border-top:1px solid #eef3f0;">Email</td><td style="padding:10px 14px;border-top:1px solid #eef3f0;"><a href="mailto:${prospect.email}" style="color:#0B5D3B;">${prospect.email}</a></td></tr>
       <tr style="background:#f7f9fc;"><td style="padding:10px 14px;font-weight:700;color:#4a5568;">Téléphone</td><td style="padding:10px 14px;">${prospect.telephone || '—'}</td></tr>
-      <tr>                           <td style="padding:10px 14px;font-weight:700;color:#4a5568;border-top:1px solid #f0f4f8;">Pays</td><td style="padding:10px 14px;border-top:1px solid #f0f4f8;">${prospect.pays || '—'}</td></tr>
+      <tr>                           <td style="padding:10px 14px;font-weight:700;color:#4a5568;border-top:1px solid #eef3f0;">Pays</td><td style="padding:10px 14px;border-top:1px solid #eef3f0;">${prospect.pays || '—'}</td></tr>
     </table>
     <div style="margin-top:24px;padding:14px 18px;background:#fff8e1;border-left:4px solid #c9a84c;border-radius:4px;">
       <p style="margin:0;font-size:13px;color:#b8860b;">👉 Ce prospect vient de s'inscrire et démarrer son test de niveau d'essai.</p>
     </div>
     <div style="margin-top:20px;text-align:center;">
-      <a href="${SITE_URL}/pages/admin/" style="display:inline-block;background:#1a56db;color:white;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;">
+      <a href="${SITE_URL}/pages/admin/" style="display:inline-block;background:#0B5D3B;color:white;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;">
         📊 Voir le backoffice admin →
       </a>
     </div>
@@ -105,18 +105,18 @@ async function sendAdminNotification(prospect) {
 async function sendWelcomeEmail(user) {
   if (!isConfigured()) return;
   const html = baseTemplate(`
-    <h2 style="color:#0d2060;margin:0 0 8px;">Bienvenue, ${user.prenom} ! 🎉</h2>
-    <p style="color:#6b7a99;margin:0 0 24px;font-size:14px;">Votre compte ARCADINS Training Center a été créé avec succès.</p>
-    <p style="font-size:15px;color:#1a2340;line-height:1.7;">
+    <h2 style="color:#074A2E;margin:0 0 8px;">Bienvenue, ${user.prenom} ! 🎉</h2>
+    <p style="color:#5d7a6e;margin:0 0 24px;font-size:14px;">Votre compte ARCADINS Training Center a été créé avec succès.</p>
+    <p style="font-size:15px;color:#1a2e28;line-height:1.7;">
       Vous êtes maintenant inscrit(e) sur la plateforme de préparation au <strong>TEF Canada</strong> et <strong>TCF Canada</strong>.<br><br>
       Commencez dès maintenant par votre <strong>test de niveau d'essai</strong> pour évaluer votre niveau actuel.
     </p>
     <div style="text-align:center;margin:28px 0;">
-      <a href="${SITE_URL}/pages/essai-gratuit.html" style="display:inline-block;background:#1a56db;color:white;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;">
+      <a href="${SITE_URL}/pages/essai-gratuit.html" style="display:inline-block;background:#0B5D3B;color:white;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;">
         🎯 Démarrer mon test de niveau →
       </a>
     </div>
-    <p style="font-size:13px;color:#6b7a99;">Des questions ? Répondez directement à cet email, nous vous répondons sous 24h.</p>
+    <p style="font-size:13px;color:#5d7a6e;">Des questions ? Répondez directement à cet email, nous vous répondons sous 24h.</p>
   `);
   try {
     await createTransporter().sendMail({
@@ -137,14 +137,14 @@ async function sendWelcomeEmail(user) {
 async function sendPaymentConfirmation(user, plan) {
   if (!isConfigured()) return;
   const html = baseTemplate(`
-    <h2 style="color:#0d2060;margin:0 0 8px;">✅ Paiement confirmé — Accès activé !</h2>
-    <p style="color:#6b7a99;margin:0 0 24px;font-size:14px;">Merci ${user.prenom}, votre inscription est complète.</p>
+    <h2 style="color:#074A2E;margin:0 0 8px;">✅ Paiement confirmé — Accès activé !</h2>
+    <p style="color:#5d7a6e;margin:0 0 24px;font-size:14px;">Merci ${user.prenom}, votre inscription est complète.</p>
     <div style="background:#e8f5e9;border:1px solid #c8e6c9;border-radius:8px;padding:18px 22px;margin-bottom:24px;">
       <p style="margin:0;font-size:15px;color:#2e7d32;font-weight:700;">Plan souscrit : ${plan || user.payment_plan || 'Standard'}</p>
       <p style="margin:6px 0 0;font-size:13px;color:#4a7a4a;">Votre accès aux 14 modules de formation est maintenant actif.</p>
     </div>
-    <p style="font-size:15px;color:#1a2340;line-height:1.7;">Vous pouvez maintenant :</p>
-    <ul style="font-size:14px;color:#1a2340;line-height:2;">
+    <p style="font-size:15px;color:#1a2e28;line-height:1.7;">Vous pouvez maintenant :</p>
+    <ul style="font-size:14px;color:#1a2e28;line-height:2;">
       <li>📊 Passer votre test de qualification</li>
       <li>📚 Accéder aux 14 modules de formation</li>
       <li>🏆 Obtenir votre certificat officiel ARCADINS</li>
@@ -171,12 +171,12 @@ async function sendPaymentConfirmation(user, plan) {
       replyTo: REPLY_TO,
       subject: `[ARCADINS] 💳 Paiement confirmé : ${user.prenom} ${user.nom} — ${plan || user.payment_plan}`,
       html: baseTemplate(`
-        <h2 style="color:#0d2060;">💳 Nouveau paiement confirmé</h2>
+        <h2 style="color:#074A2E;">💳 Nouveau paiement confirmé</h2>
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
           <tr style="background:#f7f9fc;"><td style="padding:10px 14px;font-weight:700;width:40%;">Client</td><td style="padding:10px 14px;">${user.prenom} ${user.nom}</td></tr>
-          <tr><td style="padding:10px 14px;font-weight:700;border-top:1px solid #f0f4f8;">Email</td><td style="padding:10px 14px;border-top:1px solid #f0f4f8;">${user.email}</td></tr>
+          <tr><td style="padding:10px 14px;font-weight:700;border-top:1px solid #eef3f0;">Email</td><td style="padding:10px 14px;border-top:1px solid #eef3f0;">${user.email}</td></tr>
           <tr style="background:#f7f9fc;"><td style="padding:10px 14px;font-weight:700;">Plan</td><td style="padding:10px 14px;">${plan || user.payment_plan}</td></tr>
-          <tr><td style="padding:10px 14px;font-weight:700;border-top:1px solid #f0f4f8;">Pays</td><td style="padding:10px 14px;border-top:1px solid #f0f4f8;">${user.pays || '—'}</td></tr>
+          <tr><td style="padding:10px 14px;font-weight:700;border-top:1px solid #eef3f0;">Pays</td><td style="padding:10px 14px;border-top:1px solid #eef3f0;">${user.pays || '—'}</td></tr>
         </table>
       `),
     });
@@ -191,21 +191,21 @@ async function sendCertificateEmail(user, certificate) {
   if (!isConfigured()) return;
   const certUrl = `${SITE_URL}/pages/mon-certificat.html`;
   const html = baseTemplate(`
-    <h2 style="color:#0d2060;margin:0 0 8px;">🏆 Félicitations ${user.prenom} !</h2>
-    <p style="color:#6b7a99;margin:0 0 24px;font-size:14px;">Vous avez réussi votre test final avec succès.</p>
-    <div style="background:linear-gradient(135deg,#0d2060,#1a3a8c);border-radius:10px;padding:24px;text-align:center;margin-bottom:24px;">
+    <h2 style="color:#074A2E;margin:0 0 8px;">🏆 Félicitations ${user.prenom} !</h2>
+    <p style="color:#5d7a6e;margin:0 0 24px;font-size:14px;">Vous avez réussi votre test final avec succès.</p>
+    <div style="background:linear-gradient(135deg,#074A2E,#1C8C5A);border-radius:10px;padding:24px;text-align:center;margin-bottom:24px;">
       <p style="color:#c9a84c;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin:0 0 8px;">ARCADINS Training Center</p>
       <p style="color:white;font-size:22px;font-weight:900;margin:0 0 6px;">${user.prenom.toUpperCase()} ${user.nom.toUpperCase()}</p>
       <p style="color:#a0b0d0;font-size:13px;margin:0 0 12px;">Programme de Tutorat en TEF &amp; TCF Canada</p>
       <p style="color:#ffd700;font-size:28px;font-weight:900;margin:0;">Score : ${Math.round(certificate.score || 0)}%</p>
-      <p style="color:#8899bb;font-size:11px;margin:8px 0 0;">N° ${certificate.certificate_number}</p>
+      <p style="color:#7a9a8c;font-size:11px;margin:8px 0 0;">N° ${certificate.certificate_number}</p>
     </div>
     <div style="text-align:center;margin:24px 0;">
       <a href="${certUrl}" style="display:inline-block;background:#c9a84c;color:white;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;">
         📥 Télécharger mon certificat PDF →
       </a>
     </div>
-    <p style="font-size:13px;color:#6b7a99;text-align:center;">Votre certificat peut être vérifié en ligne par tout employeur ou institution.</p>
+    <p style="font-size:13px;color:#5d7a6e;text-align:center;">Votre certificat peut être vérifié en ligne par tout employeur ou institution.</p>
   `);
   try {
     await createTransporter().sendMail({

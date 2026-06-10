@@ -60,11 +60,11 @@ function generateCertificate(user, certificate) {
        .translate(logoX, logoY)
        .scale(sc)
        .path('M 20 4 L 40 0 L 60 4 L 60 36 L 40 48 L 20 36 Z')
-       .lineWidth(3).strokeColor('#8899bb').stroke()
+       .lineWidth(3).strokeColor('#7a9a8c').stroke()
        .restore();
 
     // Bars inside shield
-    doc.rect(logoX + 7*sc,  logoY + 26*sc, 5*sc, 12*sc).fill('#8899bb');
+    doc.rect(logoX + 7*sc,  logoY + 26*sc, 5*sc, 12*sc).fill('#7a9a8c');
     doc.rect(logoX + 15*sc, logoY + 18*sc, 5*sc, 20*sc).fill('#c9a84c');
     doc.rect(logoX + 23*sc, logoY + 12*sc, 5*sc, 26*sc).fill('#e6c06b');
 
@@ -78,7 +78,7 @@ function generateCertificate(user, certificate) {
     doc.font('Helvetica-Bold').fontSize(18).fillColor('#ffffff')
        .text('ARCADINS', textX, logoY + 4, { lineBreak: false });
     // TRAINING CENTER
-    doc.font('Helvetica').fontSize(7).fillColor('#8899bb')
+    doc.font('Helvetica').fontSize(7).fillColor('#7a9a8c')
        .text('TRAINING CENTER', textX + 1, logoY + 24, { lineBreak: false, characterSpacing: 2 });
 
     // Tagline centred

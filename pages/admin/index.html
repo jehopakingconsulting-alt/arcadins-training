@@ -6,8 +6,8 @@
   <title>Backoffice Admin – ARCADINS Training Center</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f4f8;color:#1a2340;}
-    :root{--blue:#1a56db;--blue-dark:#0d2060;--gold:#c9a84c;--red:#e53935;--green:#2e7d32;--purple:#7b1fa2;--gray:#f0f4f8;--shadow:0 2px 12px rgba(0,0,0,.08);}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#eef3f0;color:#1a2e28;}
+    :root{--blue:#0B5D3B;--blue-dark:#074A2E;--gold:#c9a84c;--red:#e53935;--green:#2e7d32;--purple:#7b1fa2;--gray:#eef3f0;--shadow:0 2px 12px rgba(0,0,0,.08);}
 
     /* LAYOUT */
     .layout{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
@@ -29,7 +29,7 @@
 
     /* STATS GRID */
     .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px;}
-    .stat-card{background:white;border-radius:12px;padding:18px 20px;box-shadow:var(--shadow);border-left:4px solid #e0e6f0;cursor:pointer;transition:.15s;}
+    .stat-card{background:white;border-radius:12px;padding:18px 20px;box-shadow:var(--shadow);border-left:4px solid #dde8e2;cursor:pointer;transition:.15s;}
     .stat-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.1);}
     .stat-card.c-blue{border-color:var(--blue);}
     .stat-card.c-green{border-color:#4caf50;}
@@ -37,7 +37,7 @@
     .stat-card.c-red{border-color:var(--red);}
     .stat-card.c-purple{border-color:var(--purple);}
     .stat-num{font-size:1.9rem;font-weight:900;color:var(--blue-dark);}
-    .stat-lbl{font-size:.74rem;color:#6b7a99;margin-top:4px;}
+    .stat-lbl{font-size:.74rem;color:#5d7a6e;margin-top:4px;}
 
     /* CARDS */
     .card{background:white;border-radius:14px;padding:22px;box-shadow:var(--shadow);margin-bottom:22px;}
@@ -46,7 +46,7 @@
     /* TABLE */
     .tbl{width:100%;border-collapse:collapse;font-size:.82rem;}
     .tbl th{padding:10px 14px;background:#f7f9fc;text-align:left;font-weight:700;color:#4a5568;border-bottom:2px solid #e8ecf4;}
-    .tbl td{padding:10px 14px;border-bottom:1px solid #f0f4f8;vertical-align:middle;}
+    .tbl td{padding:10px 14px;border-bottom:1px solid #eef3f0;vertical-align:middle;}
     .tbl tr:hover td{background:#fafbfc;}
     .tbl-scroll{overflow-x:auto;}
 
@@ -56,7 +56,7 @@
     .b-blue{background:#e3f2fd;color:#1565c0;}
     .b-gold{background:#fff8e1;color:#b8860b;}
     .b-red{background:#fce4ec;color:#c62828;}
-    .b-gray{background:#f0f4f8;color:#6b7a99;}
+    .b-gray{background:#eef3f0;color:#5d7a6e;}
     .b-purple{background:#f3e5f5;color:#7b1fa2;}
     .b-orange{background:#fff3e0;color:#e65100;}
 
@@ -67,17 +67,17 @@
     .btn-success{background:#4caf50;color:white;}
     .btn-danger{background:var(--red);color:white;}
     .btn-warning{background:#f57c00;color:white;}
-    .btn-secondary{background:#e0e6f0;color:var(--blue-dark);}
+    .btn-secondary{background:#dde8e2;color:var(--blue-dark);}
     .btn-sm{padding:4px 10px;font-size:.74rem;border-radius:6px;}
 
     /* FILTER BAR */
     .filter-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
-    .filter-bar input,.filter-bar select{border:2px solid #e0e6f0;border-radius:8px;padding:7px 12px;font-size:.82rem;font-family:inherit;outline:none;}
+    .filter-bar input,.filter-bar select{border:2px solid #dde8e2;border-radius:8px;padding:7px 12px;font-size:.82rem;font-family:inherit;outline:none;}
     .filter-bar input:focus,.filter-bar select:focus{border-color:var(--blue);}
 
     /* TABS */
-    .tabs{display:flex;border-bottom:2px solid #e0e6f0;margin-bottom:18px;overflow-x:auto;gap:0;}
-    .tab{padding:9px 18px;border:none;background:none;cursor:pointer;font-family:inherit;font-size:.84rem;font-weight:600;color:#6b7a99;border-bottom:3px solid transparent;margin-bottom:-2px;transition:.15s;white-space:nowrap;}
+    .tabs{display:flex;border-bottom:2px solid #dde8e2;margin-bottom:18px;overflow-x:auto;gap:0;}
+    .tab{padding:9px 18px;border:none;background:none;cursor:pointer;font-family:inherit;font-size:.84rem;font-weight:600;color:#5d7a6e;border-bottom:3px solid transparent;margin-bottom:-2px;transition:.15s;white-space:nowrap;}
     .tab.active{color:var(--blue);border-bottom-color:var(--blue);}
 
     /* MODAL */
@@ -85,16 +85,16 @@
     .modal-bg.open{display:flex;}
     .modal{background:white;border-radius:16px;padding:28px;max-width:580px;width:100%;max-height:90vh;overflow-y:auto;position:relative;}
     .modal h3{font-size:1.1rem;font-weight:800;color:var(--blue-dark);margin-bottom:18px;}
-    .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#6b7a99;line-height:1;}
+    .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#5d7a6e;line-height:1;}
 
     /* FORM */
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
     .form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
     .form-group.full{grid-column:1/-1;}
     .form-group label{font-size:.77rem;font-weight:700;color:var(--blue-dark);}
-    .form-group input,.form-group select,.form-group textarea{border:2px solid #e0e6f0;border-radius:8px;padding:8px 12px;font-size:.87rem;font-family:inherit;outline:none;transition:.15s;}
+    .form-group input,.form-group select,.form-group textarea{border:2px solid #dde8e2;border-radius:8px;padding:8px 12px;font-size:.87rem;font-family:inherit;outline:none;transition:.15s;}
     .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--blue);}
-    .form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;padding-top:14px;border-top:1px solid #f0f4f8;}
+    .form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;padding-top:14px;border-top:1px solid #eef3f0;}
 
     /* ALERT */
     .alert{border-radius:10px;padding:12px 16px;font-size:.85rem;margin-bottom:16px;}
@@ -104,7 +104,7 @@
     .alert-warning{background:#fff8e1;color:#b8860b;border:1px solid #ffe082;}
 
     /* PROGRESS BAR */
-    .progress-track{background:#e0e6f0;border-radius:4px;height:7px;width:100px;display:inline-block;vertical-align:middle;}
+    .progress-track{background:#dde8e2;border-radius:4px;height:7px;width:100px;display:inline-block;vertical-align:middle;}
     .progress-fill{background:var(--blue);height:100%;border-radius:4px;}
 
     /* USER INFO GRID */
@@ -113,7 +113,7 @@
     .info-grid dd{color:var(--blue-dark);}
 
     /* LOADING */
-    .loading{text-align:center;padding:40px;color:#6b7a99;}
+    .loading{text-align:center;padding:40px;color:#5d7a6e;}
 
     /* RESPONSIVE */
     @media(max-width:800px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}.form-grid{grid-template-columns:1fr;}}
@@ -295,8 +295,8 @@
         <div class="alert alert-info">⏳ Vérification de la connexion Gmail…</div>
       </div>
       <div style="background:#f7f9fc;border-radius:8px;padding:14px 18px;margin-bottom:16px;font-size:.84rem;">
-        <p style="margin:0 0 6px;color:#4a5568;"><strong>Email configuré :</strong> <span style="color:#1a56db;">arcadinstrainingcenter@gmail.com</span></p>
-        <p style="margin:0;color:#6b7a99;font-size:.78rem;">Tous les emails de la plateforme sont envoyés depuis ce compte.</p>
+        <p style="margin:0 0 6px;color:#4a5568;"><strong>Email configuré :</strong> <span style="color:#0B5D3B;">arcadinstrainingcenter@gmail.com</span></p>
+        <p style="margin:0;color:#5d7a6e;font-size:.78rem;">Tous les emails de la plateforme sont envoyés depuis ce compte.</p>
       </div>
       <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:14px 18px;margin-bottom:16px;font-size:.83rem;color:#b8860b;">
         <strong>⚠️ Si le statut est "Non configuré" :</strong><br>
@@ -312,7 +312,7 @@
     </div>
     <div class="card" style="max-width:520px;">
       <h3>Accès admin</h3>
-      <p style="color:#6b7a99;font-size:.85rem;line-height:1.6;">
+      <p style="color:#5d7a6e;font-size:.85rem;line-height:1.6;">
         Connecté en tant qu'administrateur.<br>
         Pour changer le mot de passe admin, utilisez la section <em>Modifier profil</em> depuis la fiche utilisateur admin.
       </p>
@@ -400,7 +400,7 @@
     <h3>💳 Confirmer le paiement</h3>
     <div id="cpAlert"></div>
     <input type="hidden" id="cp_id"/>
-    <p id="cp_name" style="color:#6b7a99;font-size:.88rem;margin-bottom:16px;"></p>
+    <p id="cp_name" style="color:#5d7a6e;font-size:.88rem;margin-bottom:16px;"></p>
     <div class="form-group"><label>Plan souscrit</label>
       <select id="cp_plan"><option value="">— Sélectionner —</option><option>Découverte</option><option>Standard</option><option>Premium</option><option>VIP</option></select>
     </div>
@@ -421,7 +421,7 @@
     <button class="modal-close" onclick="closeModal('grantModal')">✕</button>
     <h3>🎓 Accorder l'accès à la formation</h3>
     <input type="hidden" id="gr_id"/>
-    <p id="gr_name" style="color:#6b7a99;font-size:.88rem;margin-bottom:16px;"></p>
+    <p id="gr_name" style="color:#5d7a6e;font-size:.88rem;margin-bottom:16px;"></p>
     <div class="alert alert-warning">⚠️ L'accès sera donné sans paiement confirmé (promo, test, etc.).</div>
     <div class="form-group"><label>Raison / Note interne</label><textarea id="gr_reason" rows="2" placeholder="Ex : accès promotionnel, testeur bêta…"></textarea></div>
     <div class="form-actions">
@@ -452,7 +452,7 @@
     <button class="modal-close" onclick="closeModal('blockModal')">✕</button>
     <h3>🚫 Bloquer le compte</h3>
     <input type="hidden" id="blk_id"/>
-    <p id="blk_name" style="color:#6b7a99;font-size:.88rem;margin-bottom:12px;"></p>
+    <p id="blk_name" style="color:#5d7a6e;font-size:.88rem;margin-bottom:12px;"></p>
     <div class="form-group"><label>Raison du blocage</label><textarea id="blk_reason" rows="2" placeholder="Ex : non-paiement, comportement abusif…"></textarea></div>
     <div class="form-actions">
       <button class="btn btn-secondary" onclick="closeModal('blockModal')">Annuler</button>
@@ -564,7 +564,7 @@ async function loadDashboard() {
     document.getElementById('recentProspects').innerHTML = rp.length ? `
       <table class="tbl"><thead><tr><th>Nom</th><th>Email</th><th>Pays</th><th>Date</th></tr></thead>
       <tbody>${rp.map(p=>`<tr><td><strong>${p.prenom} ${p.nom}</strong></td><td>${p.email}</td><td>${p.pays||'—'}</td><td>${fmt(p.created_at)}</td></tr>`).join('')}</tbody></table>
-    ` : '<p style="color:#6b7a99;font-size:.85rem;">Aucun prospect récent.</p>';
+    ` : '<p style="color:#5d7a6e;font-size:.85rem;">Aucun prospect récent.</p>';
 
     // Recent certs
     const rc = await api('/admin/certificates');
@@ -572,7 +572,7 @@ async function loadDashboard() {
     document.getElementById('recentCerts').innerHTML = certs.length ? `
       <table class="tbl"><thead><tr><th>Apprenant</th><th>Score</th><th>Date</th></tr></thead>
       <tbody>${certs.map(c=>`<tr><td><strong>${c.prenom} ${c.nom}</strong></td><td><strong>${Math.round(c.score)}%</strong></td><td>${fmt(c.issued_at)}</td></tr>`).join('')}</tbody></table>
-    ` : '<p style="color:#6b7a99;font-size:.85rem;">Aucun certificat encore généré.</p>';
+    ` : '<p style="color:#5d7a6e;font-size:.85rem;">Aucun certificat encore généré.</p>';
 
   } catch(e) { toast(e.message,'error'); }
 }
@@ -602,7 +602,7 @@ function renderUsers() {
     return true;
   });
 
-  if (!data.length) { document.getElementById('usersTable').innerHTML = '<p style="color:#6b7a99;padding:20px;">Aucun utilisateur trouvé.</p>'; return; }
+  if (!data.length) { document.getElementById('usersTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucun utilisateur trouvé.</p>'; return; }
 
   document.getElementById('usersTable').innerHTML = `
     <table class="tbl">
@@ -616,7 +616,7 @@ function renderUsers() {
         <td>${u.payment_confirmed ? '<span class="badge b-green">✓</span>' : '<span class="badge b-red">✗</span>'}</td>
         <td>
           ${u.all_modules_done ? '<span class="badge b-green">✓ Terminé</span>' :
-            u.qualification_done ? `<div class="progress-track"><div class="progress-fill" style="width:${Math.round((u.current_module||1)/14*100)}%"></div></div> <span style="font-size:.72rem;color:#6b7a99;">${u.current_module||1}/14</span>` : '—'}
+            u.qualification_done ? `<div class="progress-track"><div class="progress-fill" style="width:${Math.round((u.current_module||1)/14*100)}%"></div></div> <span style="font-size:.72rem;color:#5d7a6e;">${u.current_module||1}/14</span>` : '—'}
         </td>
         <td>${u.final_test_passed ? '<span class="badge b-green">✓</span>' : '—'}</td>
         <td style="font-size:.75rem;">${fmt(u.created_at)}</td>
@@ -634,7 +634,7 @@ function renderUsers() {
         </td>
       </tr>`).join('')}</tbody>
     </table>
-    <div style="padding:10px 14px;font-size:.78rem;color:#6b7a99;">${data.length} utilisateur(s) affiché(s)</div>`;
+    <div style="padding:10px 14px;font-size:.78rem;color:#5d7a6e;">${data.length} utilisateur(s) affiché(s)</div>`;
 }
 
 // ── USER DETAIL ──────────────────────────────────────────────────────
@@ -656,9 +656,9 @@ async function viewUser(id) {
         <dt>Rôle</dt><dd>${roleBadge(u.role)}</dd>
         <dt>Statut</dt><dd>${statusBadge(u.status||'trial')}</dd>
         <dt>Plan</dt><dd>${u.payment_plan||'—'}</dd>
-        <dt>Paiement confirmé</dt><dd>${yn(u.payment_confirmed)} ${u.payment_date?'<span style="font-size:.75rem;color:#6b7a99;">le '+fmt(u.payment_date)+'</span>':''}</dd>
+        <dt>Paiement confirmé</dt><dd>${yn(u.payment_confirmed)} ${u.payment_date?'<span style="font-size:.75rem;color:#5d7a6e;">le '+fmt(u.payment_date)+'</span>':''}</dd>
         <dt>Méthode de paiement</dt><dd>${u.payment_method||'—'}</dd>
-        <dt>Notes internes</dt><dd style="font-size:.8rem;color:#6b7a99;">${u.payment_notes||'—'}</dd>
+        <dt>Notes internes</dt><dd style="font-size:.8rem;color:#5d7a6e;">${u.payment_notes||'—'}</dd>
         <dt>Test d'Essai</dt><dd>${yn(u.trial_done)} ${u.trial_score?'Score : '+u.trial_score:''}</dd>
         <dt>Qualification</dt><dd>${yn(u.qualification_done)} ${u.qualification_level?'Niveau : <strong>'+u.qualification_level+'</strong>':''}</dd>
         <dt>Modules</dt><dd>${done}/14 complétés ${u.all_modules_done?'<span class="badge b-green">✓ Terminé</span>':''}</dd>
@@ -666,7 +666,7 @@ async function viewUser(id) {
         <dt>Certificat</dt><dd>${u.certificate_id?'<span class="badge b-green">✓ Généré</span>':'—'}</dd>
         <dt>Inscrit le</dt><dd>${fmtDt(u.created_at)}</dd>
       </dl>
-      <div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;padding-top:14px;border-top:1px solid #f0f4f8;">
+      <div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;padding-top:14px;border-top:1px solid #eef3f0;">
         <button class="btn btn-sm btn-secondary" onclick="openEdit(${u.id});closeModal('userDetailModal')">✏️ Modifier</button>
         ${!u.payment_confirmed?`<button class="btn btn-sm btn-success" onclick="openConfirmPay(${u.id},'${u.prenom} ${u.nom}');closeModal('userDetailModal')">💳 Confirmer paiement</button>`:''}
         <button class="btn btn-sm" style="background:#e3f2fd;color:#1565c0;" onclick="openGrantModal(${u.id},'${u.prenom} ${u.nom}')">🎓 Accorder accès</button>
@@ -897,7 +897,7 @@ async function loadProspects() {
 function renderProspects() {
   const s = document.getElementById('pSearch').value.toLowerCase();
   const data = allProspects.filter(p => (p.nom+' '+p.prenom+' '+p.email).toLowerCase().includes(s));
-  if (!data.length) { document.getElementById('prospectsTable').innerHTML = '<p style="color:#6b7a99;padding:20px;">Aucun prospect.</p>'; return; }
+  if (!data.length) { document.getElementById('prospectsTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucun prospect.</p>'; return; }
   document.getElementById('prospectsTable').innerHTML = `
     <table class="tbl">
       <thead><tr><th>Nom</th><th>Email</th><th>Téléphone</th><th>Pays</th><th>Source</th><th>Date</th></tr></thead>
@@ -910,7 +910,7 @@ function renderProspects() {
         <td>${fmt(p.created_at)}</td>
       </tr>`).join('')}</tbody>
     </table>
-    <div style="padding:10px 14px;font-size:.78rem;color:#6b7a99;">${data.length} prospect(s)</div>`;
+    <div style="padding:10px 14px;font-size:.78rem;color:#5d7a6e;">${data.length} prospect(s)</div>`;
 }
 
 // ── PAYMENTS ─────────────────────────────────────────────────────────
@@ -926,19 +926,19 @@ async function loadPayments(filter) {
     if (pending > 0 && filter !== 'confirmed')
       setAlert('payAlert', `⚠️ ${pending} paiement(s) en attente de confirmation manuelle.`, 'warning');
 
-    if (!allPayments.length) { document.getElementById('paymentsTable').innerHTML = '<p style="color:#6b7a99;padding:20px;">Aucun paiement.</p>'; return; }
+    if (!allPayments.length) { document.getElementById('paymentsTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucun paiement.</p>'; return; }
 
     document.getElementById('paymentsTable').innerHTML = `
       <table class="tbl">
         <thead><tr><th>Nom</th><th>Email</th><th>Plan</th><th>Méthode</th><th>Statut</th><th>Date</th><th>Notes</th><th>Actions</th></tr></thead>
         <tbody>${allPayments.map(u=>`<tr>
-          <td><strong>${u.prenom} ${u.nom}</strong><br><span style="font-size:.73rem;color:#6b7a99;">${u.pays||''}</span></td>
+          <td><strong>${u.prenom} ${u.nom}</strong><br><span style="font-size:.73rem;color:#5d7a6e;">${u.pays||''}</span></td>
           <td style="font-size:.78rem;">${u.email}</td>
           <td>${u.payment_plan?`<span class="badge b-blue">${u.payment_plan}</span>`:'—'}</td>
           <td>${u.payment_method||'—'}</td>
           <td>${u.payment_confirmed?'<span class="badge b-green">✅ Confirmé</span>':'<span class="badge b-gold">⏳ En attente</span>'}</td>
           <td style="font-size:.78rem;">${u.payment_date?fmt(u.payment_date):'—'}</td>
-          <td style="font-size:.75rem;color:#6b7a99;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.payment_notes||'—'}</td>
+          <td style="font-size:.75rem;color:#5d7a6e;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.payment_notes||'—'}</td>
           <td>
             ${!u.payment_confirmed?`<button class="btn btn-sm btn-success" onclick="openConfirmPay(${u.id},'${u.prenom} ${u.nom}')">💳 Confirmer</button>`:
               `<button class="btn btn-sm btn-danger" onclick="doRevokeAccess(${u.id})">❌ Révoquer</button>`}
@@ -946,7 +946,7 @@ async function loadPayments(filter) {
           </td>
         </tr>`).join('')}</tbody>
       </table>
-      <div style="padding:10px 14px;font-size:.78rem;color:#6b7a99;">${allPayments.length} entrée(s)</div>`;
+      <div style="padding:10px 14px;font-size:.78rem;color:#5d7a6e;">${allPayments.length} entrée(s)</div>`;
   } catch(e) { document.getElementById('paymentsTable').innerHTML = `<p style="color:var(--red)">${e.message}</p>`; }
 }
 
@@ -962,7 +962,7 @@ async function loadModules() {
   try {
     const d = await api('/admin/users');
     const users = (d.users||[]).filter(u=>u.role!=='admin'&&u.qualification_done);
-    if (!users.length) { document.getElementById('modulesTable').innerHTML = '<p style="color:#6b7a99;padding:20px;">Aucun apprenant en formation.</p>'; return; }
+    if (!users.length) { document.getElementById('modulesTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucun apprenant en formation.</p>'; return; }
     document.getElementById('modulesTable').innerHTML = `
       <table class="tbl">
         <thead><tr><th>Apprenant</th><th>Email</th><th>Niveau</th><th>Progression</th><th>Formation</th><th>Test final</th><th>Actions</th></tr></thead>
@@ -973,7 +973,7 @@ async function loadModules() {
           <td>
             <div style="display:flex;align-items:center;gap:8px;">
               <div class="progress-track" style="width:120px;"><div class="progress-fill" style="width:${Math.round((u.current_module||1)/14*100)}%;"></div></div>
-              <span style="font-size:.75rem;color:#6b7a99;">${u.current_module||1}/14 (${Math.round((u.current_module||1)/14*100)}%)</span>
+              <span style="font-size:.75rem;color:#5d7a6e;">${u.current_module||1}/14 (${Math.round((u.current_module||1)/14*100)}%)</span>
             </div>
           </td>
           <td>${u.all_modules_done?'<span class="badge b-green">✅ Terminé</span>':'<span class="badge b-gold">En cours</span>'}</td>
@@ -995,19 +995,19 @@ async function loadTests(tab) {
   try {
     const d = await api('/admin/tests?type=' + currentTestTab);
     const tests = d.tests || [];
-    if (!tests.length) { document.getElementById('testsTable').innerHTML = '<p style="color:#6b7a99;padding:20px;">Aucun résultat.</p>'; return; }
+    if (!tests.length) { document.getElementById('testsTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucun résultat.</p>'; return; }
     document.getElementById('testsTable').innerHTML = `
       <table class="tbl">
         <thead><tr><th>Utilisateur</th><th>Score</th><th>Résultat</th><th>Tentative</th><th>Date</th></tr></thead>
         <tbody>${tests.map(t=>`<tr>
-          <td><strong>${t.prenom||''} ${t.nom||''}</strong><br><span style="font-size:.75rem;color:#6b7a99;">${t.email}</span></td>
+          <td><strong>${t.prenom||''} ${t.nom||''}</strong><br><span style="font-size:.75rem;color:#5d7a6e;">${t.email}</span></td>
           <td><strong>${Math.round(t.score||0)}${currentTestTab==='trial'?'/10':'%'}</strong></td>
           <td>${t.passed?'<span class="badge b-green">✅ Réussi</span>':'<span class="badge b-red">❌ Échoué</span>'}</td>
           <td>${t.attempt_number}</td>
           <td>${fmtDt(t.created_at)}</td>
         </tr>`).join('')}</tbody>
       </table>
-      <div style="padding:10px 14px;font-size:.78rem;color:#6b7a99;">${tests.length} résultat(s)</div>`;
+      <div style="padding:10px 14px;font-size:.78rem;color:#5d7a6e;">${tests.length} résultat(s)</div>`;
   } catch(e) { document.getElementById('testsTable').innerHTML = `<p style="color:var(--red)">${e.message}</p>`; }
 }
 
@@ -1023,12 +1023,12 @@ async function loadCertificates() {
   try {
     const d = await api('/admin/certificates');
     const certs = d.certificates || [];
-    if (!certs.length) { document.getElementById('certsTable').innerHTML = '<p style="color:#6b7a99;padding:20px;">Aucun certificat.</p>'; return; }
+    if (!certs.length) { document.getElementById('certsTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucun certificat.</p>'; return; }
     document.getElementById('certsTable').innerHTML = `
       <table class="tbl">
         <thead><tr><th>Apprenant</th><th>Programme</th><th>Score</th><th>N° Certificat</th><th>Date</th><th>Actions</th></tr></thead>
         <tbody>${certs.map(c=>`<tr>
-          <td><strong>${c.prenom} ${c.nom}</strong><br><span style="font-size:.75rem;color:#6b7a99;">${c.email}</span></td>
+          <td><strong>${c.prenom} ${c.nom}</strong><br><span style="font-size:.75rem;color:#5d7a6e;">${c.email}</span></td>
           <td style="font-size:.8rem;">${c.programme}</td>
           <td><strong>${Math.round(c.score)}%</strong></td>
           <td style="font-family:monospace;font-size:.72rem;">${c.certificate_number}</td>
@@ -1039,7 +1039,7 @@ async function loadCertificates() {
           </td>
         </tr>`).join('')}</tbody>
       </table>
-      <div style="padding:10px 14px;font-size:.78rem;color:#6b7a99;">${certs.length} certificat(s)</div>`;
+      <div style="padding:10px 14px;font-size:.78rem;color:#5d7a6e;">${certs.length} certificat(s)</div>`;
   } catch(e) { document.getElementById('certsTable').innerHTML = `<p style="color:var(--red)">${e.message}</p>`; }
 }
 

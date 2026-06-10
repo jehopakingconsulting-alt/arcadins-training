@@ -554,9 +554,9 @@ router.post('/email/test-send', async (req, res) => {
     await sendUserEmail(
       process.env.ADMIN_EMAIL || 'arcadinstrainingcenter@gmail.com',
       '[ARCADINS] ✅ Test email — Configuration Gmail OK',
-      `<h2 style="color:#0d2060;">✅ Connexion Gmail opérationnelle</h2>
+      `<h2 style="color:#074A2E;">✅ Connexion Gmail opérationnelle</h2>
        <p>La connexion SMTP Gmail fonctionne correctement.</p>
-       <p style="color:#6b7a99;font-size:13px;">Tous les emails de la plateforme ARCADINS seront envoyés depuis ce compte.</p>`
+       <p style="color:#5d7a6e;font-size:13px;">Tous les emails de la plateforme ARCADINS seront envoyés depuis ce compte.</p>`
     );
     return res.json({ success: true, message: 'Email de test envoyé à arcadinstrainingcenter@gmail.com' });
   } catch(err) {
