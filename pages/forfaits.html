@@ -117,6 +117,21 @@
         <button class="btn-secondary" onclick="closePayment()" style="flex:1;">Annuler</button>
         <button class="btn-primary" onclick="processPayment()" style="flex:2;" id="payBtn">💳 Payer avec Stripe →</button>
       </div>
+
+      <!-- Séparateur -->
+      <div style="display:flex;align-items:center;gap:12px;margin:18px 0;">
+        <div style="flex:1;height:1px;background:#e0e6f0;"></div>
+        <span style="font-size:.78rem;color:#9aa5b8;font-weight:700;" data-i18n="pay.or">OU</span>
+        <div style="flex:1;height:1px;background:#e0e6f0;"></div>
+      </div>
+
+      <!-- PayPal -->
+      <button class="btn-plan" onclick="payWithPaypal()" style="width:100%;background:#ffc439;color:#003087;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <span style="font-size:1.1rem;">🅿️</span> <span data-i18n="pay.paypal.btn">Payer avec PayPal</span>
+      </button>
+      <div style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:10px;padding:12px 14px;margin-top:12px;font-size:.78rem;color:#7a5c00;line-height:1.6;" data-i18n="pay.paypal.note">
+        Vous serez redirigé vers PayPal pour effectuer le paiement. Une fois le paiement effectué, envoyez une capture d'écran ou le numéro de transaction à <strong>arcadinstrainingcenter@gmail.com</strong> avec votre email de compte et le plan choisi. Votre accès sera activé sous 24h.
+      </div>
     </div>
     <div id="paymentSuccess" class="payment-success" style="display:none;">
       <div class="big-check">✅</div>
@@ -280,6 +295,14 @@ function selectPlan(id, name, price) {
 
 function closePayment() {
   document.getElementById('paymentModal').classList.remove('open');
+}
+
+// ── Paiement via PayPal (manuel, en attendant Stripe Live) ───
+function payWithPaypal() {
+  if (!selectedPlan) return;
+  const amount = selectedPlan.price;
+  const url = `https://www.paypal.com/paypalme/arcadinstrainingcenter/${amount}USD`;
+  window.open(url, '_blank');
 }
 
 // ── Lancement Stripe Checkout ────────────────────────────────

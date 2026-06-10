@@ -822,6 +822,9 @@ const translations = {
   "pay.expiry":        { fr: "MM/AA", en: "MM/YY" },
   "pay.btn":           { fr: "Payer maintenant →", en: "Pay Now →" },
   "pay.secure":        { fr: "🔒 Paiement sécurisé par Stripe · Données chiffrées", en: "🔒 Secure payment by Stripe · Encrypted data" },
+  "pay.or":            { fr: "OU", en: "OR" },
+  "pay.paypal.btn":    { fr: "Payer avec PayPal", en: "Pay with PayPal" },
+  "pay.paypal.note":   { fr: "Vous serez redirigé vers PayPal pour effectuer le paiement. Une fois le paiement effectué, envoyez une capture d'écran ou le numéro de transaction à <strong>arcadinstrainingcenter@gmail.com</strong> avec votre email de compte et le plan choisi. Votre accès sera activé sous 24h.", en: "You will be redirected to PayPal to complete your payment. Once paid, send a screenshot or the transaction number to <strong>arcadinstrainingcenter@gmail.com</strong> with your account email and chosen plan. Your access will be activated within 24h." },
   "step.label":        { fr: "Étape", en: "Step" },
 
   // ===== QUALIFICATION (qualification.html) =====
