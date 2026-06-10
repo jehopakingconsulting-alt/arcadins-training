@@ -127,7 +127,8 @@ async function init() {
     renderQuestion();
     startTimer();
   } catch(e) {
-    document.getElementById('loadingState').innerHTML = `<p style="color:red">${e.message}</p><a href="acces.html">← Retour</a>`;
+    const lang0 = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+    document.getElementById('loadingState').innerHTML = `<p style="color:red">${e.message}</p><a href="acces.html">${lang0==='fr'?'← Retour':'← Back'}</a>`;
   }
 }
 
@@ -194,8 +195,9 @@ async function submitTest() {
     // Redirect to plans after a delay if backend says so
     if (payload.redirect) setTimeout(() => { window.location.href = payload.redirect.replace('/plans','forfaits.html'); }, 4000);
   } catch(e) {
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
     document.getElementById('resultArea').style.display = 'block';
-    document.getElementById('resultArea').innerHTML = `<div class="result-card"><p style="color:red">${e.message}</p><a href="forfaits.html" class="btn-primary" style="margin-top:16px;">Continuer →</a></div>`;
+    document.getElementById('resultArea').innerHTML = `<div class="result-card"><p style="color:red">${e.message}</p><a href="forfaits.html" class="btn-primary" style="margin-top:16px;">${lang==='fr'?'Continuer →':'Continue →'}</a></div>`;
   }
 }
 

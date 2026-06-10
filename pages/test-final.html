@@ -193,7 +193,8 @@ async function submitFinal() {
       }
     }
   } catch(e) {
-    document.getElementById('resultArea').innerHTML = `<div class="result-card"><p style="color:red">${e.message}</p><a href="formation.html" class="btn-primary" style="margin-top:16px;">← Retour</a></div>`;
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+    document.getElementById('resultArea').innerHTML = `<div class="result-card"><p style="color:red">${e.message}</p><a href="formation.html" class="btn-primary" style="margin-top:16px;">${lang==='fr'?'← Retour':'← Back'}</a></div>`;
   }
 }
 

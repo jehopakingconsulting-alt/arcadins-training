@@ -114,8 +114,8 @@
       </div>
       <div id="payError" style="display:none;background:#fce4ec;border:1.5px solid #ef9a9a;border-radius:8px;padding:10px 14px;font-size:.85rem;color:#c62828;margin-bottom:14px;"></div>
       <div style="display:flex;gap:12px;margin-top:4px;">
-        <button class="btn-secondary" onclick="closePayment()" style="flex:1;">Annuler</button>
-        <button class="btn-primary" onclick="processPayment()" style="flex:2;" id="payBtn">💳 Payer avec Stripe →</button>
+        <button class="btn-secondary" onclick="closePayment()" style="flex:1;" data-i18n="pay.cancel">Annuler</button>
+        <button class="btn-primary" onclick="processPayment()" style="flex:2;" id="payBtn" data-i18n="pay.stripe.btn">💳 Payer avec Stripe →</button>
       </div>
 
       <!-- Séparateur -->
@@ -350,8 +350,9 @@ async function processPayment() {
   if (!selectedPlan) return;
   const btn = document.getElementById('payBtn');
   const errEl = document.getElementById('payError');
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
   btn.disabled = true;
-  btn.textContent = '⏳ Connexion à Stripe...';
+  btn.textContent = lang === 'fr' ? '⏳ Connexion à Stripe...' : '⏳ Connecting to Stripe...';
   errEl.style.display = 'none';
 
   try {
@@ -374,7 +375,7 @@ async function processPayment() {
 
   } catch(e) {
     btn.disabled = false;
-    btn.textContent = '💳 Payer avec Stripe →';
+    btn.textContent = lang === 'fr' ? '💳 Payer avec Stripe →' : '💳 Pay with Stripe →';
     errEl.textContent = e.message;
     errEl.style.display = 'block';
   }

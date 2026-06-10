@@ -168,7 +168,8 @@ async function submitQual() {
     };
     document.getElementById('resultMsg').textContent = msgs[lang][lv] || '';
   } catch(e) {
-    document.getElementById('resultArea').innerHTML = `<div class="result-card"><p style="color:red">${e.message}</p><a href="formation.html" class="btn-primary" style="margin-top:16px;">Continuer →</a></div>`;
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+    document.getElementById('resultArea').innerHTML = `<div class="result-card"><p style="color:red">${e.message}</p><a href="formation.html" class="btn-primary" style="margin-top:16px;">${lang==='fr'?'Continuer →':'Continue →'}</a></div>`;
     document.getElementById('resultArea').style.display = 'block';
   }
 }
