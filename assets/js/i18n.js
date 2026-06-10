@@ -6,8 +6,8 @@ const translations = {
 
   // ===== TOPBAR =====
   "topbar": {
-    fr: "🍁 Programme de Tutorat 100% en ligne · TEF &amp; TCF Canada · Immigration Canada / Québec &nbsp;|&nbsp; <a href='mailto:info@arcadins-training.com'>info@arcadins-training.com</a>",
-    en: "🍁 100% Online Tutoring Program · TEF &amp; TCF Canada · Canada / Quebec Immigration &nbsp;|&nbsp; <a href='mailto:info@arcadins-training.com'>info@arcadins-training.com</a>"
+    fr: "🍁 Programme de Tutorat 100% en ligne · TEF &amp; TCF Canada / Québec &nbsp;|&nbsp; <a href='mailto:info@arcadins-training.com'>info@arcadins-training.com</a>",
+    en: "🍁 100% Online Tutoring Program · TEF &amp; TCF Canada / Quebec &nbsp;|&nbsp; <a href='mailto:info@arcadins-training.com'>info@arcadins-training.com</a>"
   },
 
   // ===== NAVBAR =====
