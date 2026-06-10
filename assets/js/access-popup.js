@@ -165,7 +165,7 @@
         #arcPopupBox::-webkit-scrollbar { width:4px; }
         #arcPopupBox::-webkit-scrollbar-thumb { background:#e0e0e0; border-radius:4px; }
         .arc-popup-header {
-          background:linear-gradient(135deg,#001f6b,#003399);
+          background:linear-gradient(135deg,#074A2E,#003399);
           border-radius:20px 20px 0 0;
           padding:28px 28px 20px;
           text-align:center; color:white;
@@ -184,19 +184,19 @@
           color:#888; cursor:pointer; transition:.2s;
           border-bottom:3px solid transparent; margin-bottom:-2px;
         }
-        .arc-tab-btn.active { color:#001f6b; border-bottom-color:#C9A84C; background:white; }
+        .arc-tab-btn.active { color:#074A2E; border-bottom-color:#C9A84C; background:white; }
         .arc-popup-body { padding:24px 28px 20px; }
         .arc-form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
         @media(max-width:480px) { .arc-form-row { grid-template-columns:1fr; } }
         .arc-field { display:flex; flex-direction:column; gap:5px; margin-bottom:14px; }
-        .arc-field label { font-size:.78rem; font-weight:700; color:#001f6b; }
+        .arc-field label { font-size:.78rem; font-weight:700; color:#074A2E; }
         .arc-field input, .arc-field select {
           border:2px solid #e0e6f0; border-radius:10px;
           padding:10px 14px; font-family:inherit; font-size:.9rem;
           transition:.2s; background:white; color:#222;
         }
         .arc-field input:focus, .arc-field select:focus {
-          border-color:#001f6b; outline:none;
+          border-color:#074A2E; outline:none;
           box-shadow:0 0 0 3px rgba(0,31,107,.08);
         }
         .arc-field input.err, .arc-field select.err { border-color:#d32f2f; }
@@ -227,7 +227,7 @@
         .arc-badge {
           background:#f0f4ff; border:1px solid #d0d8f0;
           border-radius:20px; padding:4px 12px;
-          font-size:.72rem; color:#001f6b; font-weight:600;
+          font-size:.72rem; color:#074A2E; font-weight:600;
         }
       </style>
 

@@ -366,7 +366,7 @@ function closeWelcome() {
 
 // ===== TOAST NOTIFICATIONS =====
 function showToast(msg, type = 'info') {
-  const colors = { success: '#2e7d32', error: '#c62828', info: '#0033A0', warning: '#f57f17' };
+  const colors = { success: '#2e7d32', error: '#c62828', info: '#0B5D3B', warning: '#f57f17' };
   const toast = document.createElement('div');
   toast.style.cssText = `position:fixed;top:24px;right:24px;z-index:99999;background:${colors[type]};color:white;padding:14px 20px;border-radius:10px;font-size:.88rem;font-weight:600;box-shadow:0 4px 24px rgba(0,0,0,.2);max-width:340px;animation:popIn .3s ease;`;
   toast.textContent = msg;
