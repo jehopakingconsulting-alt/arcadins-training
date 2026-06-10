@@ -32,6 +32,8 @@ app.use(cors({
     if (!origin) return callback(null, true);
     // Allow any onrender.com subdomain (covers web service URL)
     if (origin.endsWith('.onrender.com')) return callback(null, true);
+    // Allow our custom domain (with or without www, http or https)
+    if (/^https?:\/\/(www\.)?arcadins-training\.com$/.test(origin)) return callback(null, true);
     // Allow explicitly listed origins
     if (allowedOrigins.includes(origin)) return callback(null, true);
     callback(new Error(`CORS: origin ${origin} not allowed`));
