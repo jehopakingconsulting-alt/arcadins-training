@@ -642,10 +642,12 @@ const translations = {
   "tarifs.faq.h":  { fr: "Questions sur les tarifs", en: "Pricing questions" },
   "tarifs.faq.q1": { fr: "Le paiement est-il sécurisé ?", en: "Is payment secure?" },
   "tarifs.faq.a1": { fr: "Oui. Tous les paiements sont traités via des plateformes sécurisées (SSL). Nous n'avons jamais accès à vos données bancaires.", en: "Yes. All payments are processed through secure platforms (SSL). We never have access to your banking details." },
-  "tarifs.faq.q2": { fr: "Y a-t-il une garantie satisfait ou remboursé ?", en: "Is there a money-back guarantee?" },
-  "tarifs.faq.a2": { fr: "Oui. Nous offrons une garantie de remboursement de 7 jours si vous n'êtes pas satisfait(e), sans question posée, à condition de n'avoir pas accédé à plus de 20% du contenu.", en: "Yes. We offer a 7-day money-back guarantee if you are not satisfied, no questions asked, provided you have not accessed more than 20% of the content." },
+  "tarifs.faq.q2": { fr: "Quelle est la durée d'accès à la formation ?", en: "How long do I have access to the training?" },
+  "tarifs.faq.a2": { fr: "L'accès est valide 6 semaines pour les plans Starter, Essential et Premium, et 8 semaines pour le plan VIP, à compter de l'activation de votre compte.", en: "Access is valid for 6 weeks for the Starter, Essential and Premium plans, and 8 weeks for the VIP plan, starting from your account activation." },
   "tarifs.faq.q3": { fr: "Puis-je changer de plan après l'inscription ?", en: "Can I change my plan after registration?" },
   "tarifs.faq.a3": { fr: "Oui. Vous pouvez passer à un plan supérieur à tout moment. La différence de prix sera calculée au prorata du temps restant sur votre plan actuel.", en: "Yes. You can upgrade to a higher plan at any time. The price difference will be calculated pro-rata based on the time remaining on your current plan." },
+  "tarifs.faq.q4": { fr: "Le certificat est-il reconnu officiellement ?", en: "Is the certificate officially recognized?" },
+  "tarifs.faq.a4": { fr: "Le certificat ARCADINS atteste de votre participation et de votre niveau de préparation au sein de notre programme. Il est distinct des résultats officiels du TEF/TCF, délivrés uniquement par les centres d'examen agréés (France Éducation international, Pearson).", en: "The ARCADINS certificate confirms your participation and preparation level in our program. It is separate from official TEF/TCF results, which are issued only by accredited testing centers (France Éducation international, Pearson)." },
 
   // ===== PAGE FAQ — Sections Q&A complètes =====
   "faq.s1.h":  { fr: "📋 TEF &amp; TCF Canada", en: "📋 TEF &amp; TCF Canada" },
