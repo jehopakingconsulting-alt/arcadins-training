@@ -301,7 +301,7 @@ function closePayment() {
 function payWithPaypal() {
   if (!selectedPlan) return;
   const amount = selectedPlan.price;
-  const url = `https://www.paypal.com/paypalme/arcadinstrainingcenter/${amount}USD`;
+  const url = `https://www.paypal.com/paypalme/arcadinstrainingcent/${amount}USD`;
   window.open(url, '_blank');
 }
 
