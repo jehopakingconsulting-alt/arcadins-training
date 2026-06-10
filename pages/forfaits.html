@@ -54,7 +54,7 @@
   <div class="nav-container">
     <a href="../index.html" class="logo"><img src="../assets/img/logo-nav.svg" alt="ARCADINS" height="50" style="display:block;"></a>
     <div style="display:flex;align-items:center;gap:12px;">
-      <button id="langToggle" onclick="switchLang()" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;">🇬🇧 EN</button>
+      <button id="langToggle" onclick="switchLang(); if (cachedPlans.length) renderPlans();" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;">🇬🇧 EN</button>
       <a href="espace-membre.html" style="font-size:.85rem;" data-i18n="nav.dashboard">Mon espace</a>
     </div>
   </div>
@@ -218,6 +218,9 @@ async function verifyPayment(sessionId) {
   }
 }
 
+// ── Cache des forfaits (pour re-rendu lors du changement de langue) ──
+let cachedPlans = [];
+
 // ── Chargement des forfaits ──────────────────────────────────
 async function loadPlans() {
   // Afficher message "serveur qui démarre" après 5s
@@ -229,35 +232,11 @@ async function loadPlans() {
   try {
     const r = await fetch(API_BASE + '/plans');
     const res = await r.json();
-    const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
-    const plans = res.data?.plans || [];
+    cachedPlans = res.data?.plans || [];
 
     clearTimeout(slowTimer);
     document.getElementById('loadingPlans').style.display = 'none';
-    const grid = document.getElementById('plansGrid');
-    grid.style.display = 'grid';
-
-    const btnLabel = { fr: '💳 Choisir ce forfait', en: '💳 Choose this plan' };
-    const perLabel = { fr: 'accès unique', en: 'one-time access' };
-
-    plans.forEach(p => {
-      const card = document.createElement('div');
-      card.className = 'plan-card' + (p.recommended ? ' popular' : '');
-      const features = Array.isArray(p.features) ? p.features : [];
-
-      card.innerHTML = `
-        <div class="plan-name">${p.name}</div>
-        <div class="plan-price-big">${p.price}<sup style="font-size:1rem;">$</sup>
-          <sub style="font-size:.85rem;color:var(--gray-text);font-weight:400;"> / ${perLabel[lang]}</sub>
-        </div>
-        <div class="plan-desc">${p.description}</div>
-        <ul class="plan-features">${features.map(f => `<li>✅ ${f}</li>`).join('')}</ul>
-        <button class="btn-plan ${p.recommended ? 'btn-plan-gold' : 'btn-plan-blue'}"
-          onclick="selectPlan('${p.id}','${p.name}',${p.price})">
-          ${btnLabel[lang]}
-        </button>`;
-      grid.appendChild(card);
-    });
+    renderPlans();
   } catch(e) {
     clearTimeout(slowTimer);
     document.getElementById('loadingPlans').innerHTML = `
@@ -270,6 +249,67 @@ async function loadPlans() {
     // Auto-retry after 15s
     setTimeout(() => location.reload(), 15000);
   }
+}
+
+// ── Rendu (re-rendu possible lors du changement de langue) ──
+function renderPlans() {
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+    const plans = cachedPlans;
+
+    const grid = document.getElementById('plansGrid');
+    grid.style.display = 'grid';
+    grid.innerHTML = '';
+
+    const btnLabel = { fr: '💳 Choisir ce forfait', en: '💳 Choose this plan' };
+    const perLabel = { fr: 'accès unique', en: 'one-time access' };
+
+    // Traductions FR -> EN pour les descriptions et caractéristiques renvoyées par l'API
+    const PLAN_TR = {
+      "Idéal pour débuter votre préparation TEF/TCF": "Ideal for starting your TEF/TCF preparation",
+      "Le choix le plus populaire pour une préparation complète": "The most popular choice for a complete preparation",
+      "Préparez-vous avec un accompagnement personnalisé": "Prepare with personalized coaching",
+      "L'excellence avec suivi personnalisé complet": "Excellence with full personalized support",
+      "Accès aux 14 modules de formation": "Access to all 14 training modules",
+      "Test de qualification inclus": "Qualification test included",
+      "Test final · 1 tentative": "Final test · 1 attempt",
+      "Test final · 2 tentatives": "Final test · 2 attempts",
+      "Test final · 3 tentatives": "Final test · 3 attempts",
+      "Test final · 6 tentatives": "Final test · 6 attempts",
+      "Support par email": "Email support",
+      "Accès 6 semaines": "6 weeks access",
+      "Accès 8 semaines": "8 weeks access",
+      "Tout le plan Starter": "Everything in Starter",
+      "Tout le plan Essential": "Everything in Essential",
+      "Tout le plan Premium": "Everything in Premium",
+      "Certificat officiel ARCADINS": "Official ARCADINS certificate",
+      "Support prioritaire": "Priority support",
+      "Coaching individuel · 2h": "1-on-1 coaching · 2h",
+      "Ressources supplémentaires": "Additional resources",
+      "Coaching privé · 4h": "Private coaching · 4h",
+      "Préparation orale intensive": "Intensive oral preparation",
+      "Garantie de résultat": "Result guarantee",
+      "Support 24/7": "24/7 support",
+    };
+    const tr = (txt) => (lang === 'en' && PLAN_TR[txt]) ? PLAN_TR[txt] : txt;
+
+    plans.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'plan-card' + (p.recommended ? ' popular' : '');
+      const features = Array.isArray(p.features) ? p.features : [];
+
+      card.innerHTML = `
+        <div class="plan-name">${p.name}</div>
+        <div class="plan-price-big">${p.price}<sup style="font-size:1rem;">$</sup>
+          <sub style="font-size:.85rem;color:var(--gray-text);font-weight:400;"> / ${perLabel[lang]}</sub>
+        </div>
+        <div class="plan-desc">${tr(p.description)}</div>
+        <ul class="plan-features">${features.map(f => `<li>✅ ${tr(f)}</li>`).join('')}</ul>
+        <button class="btn-plan ${p.recommended ? 'btn-plan-gold' : 'btn-plan-blue'}"
+          onclick="selectPlan('${p.id}','${p.name}',${p.price})">
+          ${btnLabel[lang]}
+        </button>`;
+      grid.appendChild(card);
+    });
 }
 
 // ── Sélection d'un forfait ───────────────────────────────────
