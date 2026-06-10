@@ -666,7 +666,7 @@ const translations = {
   "faq.s2.q2": { fr: "Est-ce que le programme de tutorat est entièrement en ligne ?", en: "Is the tutoring program fully online?" },
   "faq.s2.a2": { fr: "Oui, toutes nos programmes de tutorat sont <strong>100% en ligne</strong>, accessibles 24h/24 depuis un ordinateur, une tablette ou un smartphone. Le coaching individuel (plan VIP) se déroule par visioconférence.", en: "Yes, all our tutoring programs are <strong>100% online</strong>, accessible 24/7 from a computer, tablet or smartphone. Individual coaching (VIP plan) takes place by video conference." },
   "faq.s2.q3": { fr: "Combien de temps mon accès est-il valide ?", en: "How long is my access valid?" },
-  "faq.s2.a3": { fr: "L'accès est valide <strong>6 mois</strong> à compter de l'activation de votre compte. Des extensions sont disponibles sur demande.", en: "Access is valid for <strong>6 months</strong> from the activation of your account. Extensions are available upon request." },
+  "faq.s2.a3": { fr: "Entre <strong>6 et 12 semaines</strong>, selon le forfait ou le plan souscrit.", en: "Between <strong>6 and 12 weeks</strong>, depending on the plan you choose." },
   "faq.s2.q4": { fr: "Y a-t-il des exercices audio pour la compréhension orale ?", en: "Are there audio exercises for listening comprehension?" },
   "faq.s2.a4": { fr: "Oui. Les plans Standard, Premium et VIP incluent des exercices de compréhension orale avec des enregistrements audio variés (dialogues, monologues, annonces) accompagnés de questions et de corrections.", en: "Yes. Standard, Premium and VIP plans include listening comprehension exercises with varied audio recordings (dialogues, monologues, announcements) accompanied by questions and corrections." },
 
