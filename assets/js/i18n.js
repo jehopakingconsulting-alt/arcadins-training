@@ -86,7 +86,7 @@ const translations = {
   "why.f8.p": { fr: "Coaching optionnel avec un formateur expert pour corriger vos productions écrites et orales.", en: "Optional coaching with an expert trainer to correct your written and oral productions." },
 
   // ===== PROGRAMMES DE TUTORAT =====
-  "form.h2": { fr: "Programmes de Tutorat TEF &amp; TCF Canada", en: "TEF &amp; TCF Canada Tutoring Programs" },
+  "form.h2": { fr: "Programmes de Tutorat en TEF &amp; TCF Canada", en: "Tutoring Programs in TEF &amp; TCF Canada" },
   "form.p":  { fr: "Choisissez votre test cible et accédez à un parcours d'accompagnement en TEF et en TCF Canada complet et structuré.", en: "Choose your target test and access a complete, structured TEF and TCF Canada coaching program." },
 
   "form.tef.badge": { fr: "STANDARD CANADA / QUÉBEC",         en: "STANDARD CANADA / QUEBEC" },
