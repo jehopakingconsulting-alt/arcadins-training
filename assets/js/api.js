@@ -126,7 +126,8 @@ const TuteurAPI = {
   verifyPayment: (sessionId) => apiFetch(`/tuteur/verify-payment?session_id=${encodeURIComponent(sessionId)}`),
   modules: () => apiFetch('/tuteur/modules'),
   completeModule: (num) => apiFetch(`/tuteur/modules/${num}/complete`, { method: 'POST' }),
-  submitTest: (score) => apiFetch('/tuteur/test/submit', { method: 'POST', body: JSON.stringify({ score }) })
+  startTest: () => apiFetch('/tuteur/test/start'),
+  submitTest: (answers) => apiFetch('/tuteur/test/submit', { method: 'POST', body: JSON.stringify({ answers }) })
 };
 
 // ---- Helper: get base path (root vs pages/) ----

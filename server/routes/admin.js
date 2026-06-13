@@ -395,7 +395,7 @@ router.get('/payments', (req, res) => {
       payment_plan,payment_method,payment_confirmed,payment_date,payment_notes,created_at
       FROM users WHERE role!='admin'`;
 
-    if (status === 'pending')   q += " AND (payment_confirmed=0 AND role='apprenant')";
+    if (status === 'pending')   q += " AND payment_confirmed=0 AND (role='apprenant' OR payment_method IS NOT NULL)";
     if (status === 'confirmed') q += ' AND payment_confirmed=1';
 
     q += ' ORDER BY created_at DESC';
@@ -527,9 +527,18 @@ router.get('/export/csv', (req, res) => {
 
     if (!users.length) return res.send('Aucun utilisateur');
 
+    // Neutralise l'injection de formules Excel/Sheets : si une valeur commence
+    // par =, +, -, @ ou une tabulation, Excel peut l'interpréter comme une
+    // formule à l'ouverture. On préfixe d'une apostrophe pour la forcer en texte.
+    const sanitizeCsvCell = (v) => {
+      let s = v !== null && v !== undefined ? String(v) : '';
+      if (/^[=+\-@\t]/.test(s)) s = `'${s}`;
+      return `"${s.replace(/"/g, '""')}"`;
+    };
+
     const headers = Object.keys(users[0]).join(',');
     const rows = users.map(u =>
-      Object.values(u).map(v => `"${v !== null && v !== undefined ? String(v).replace(/"/g,'""') : ''}"`).join(',')
+      Object.values(u).map(sanitizeCsvCell).join(',')
     );
 
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');

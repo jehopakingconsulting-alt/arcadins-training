@@ -4,10 +4,21 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const rateLimit = require('express-rate-limit');
 const { getDb, generateReferralCode } = require('../database');
 const authMiddleware = require('../middleware/auth');
-const { sendAdminNotification, sendWelcomeEmail } = require('../services/email');
+const { sendAdminNotification, sendWelcomeEmail, sendPasswordResetEmail } = require('../services/email');
 const { isAccessExpired } = require('../middleware/stepGuard');
+
+// Limite les tentatives de connexion/inscription pour freiner le brute-force
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Trop de tentatives. Veuillez réessayer dans quelques minutes.' },
+});
 
 function signToken(user) {
   return jwt.sign(
@@ -23,7 +34,7 @@ function sanitizeUser(user) {
 }
 
 // POST /api/access/register
-router.post('/register', async (req, res) => {
+router.post('/register', authLimiter, async (req, res) => {
   try {
     const { nom, prenom, email, telephone, pays, password, lang, ref } = req.body;
 
@@ -56,8 +67,10 @@ router.post('/register', async (req, res) => {
         const token = signToken(existing);
         return res.json({ success: true, token, user: sanitizeUser(existing), message: 'Reconnexion réussie.' });
       }
-      // Return existing token for prospect re-entry
-      if (existing.role === 'prospect' || existing.trial_done === 0) {
+      // Return existing token for prospect re-entry (uniquement si aucun
+      // mot de passe n'a encore été défini sur ce compte, sinon n'importe
+      // qui connaissant l'email pourrait usurper le compte sans mot de passe)
+      if (!existing.password_hash && (existing.role === 'prospect' || existing.trial_done === 0)) {
         const token = signToken(existing);
         return res.json({ success: true, token, user: sanitizeUser(existing), message: 'Compte existant récupéré.' });
       }
@@ -120,7 +133,7 @@ router.post('/register', async (req, res) => {
 });
 
 // POST /api/access/login
-router.post('/login', async (req, res) => {
+router.post('/login', authLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -163,6 +176,70 @@ router.post('/login', async (req, res) => {
     });
   } catch (err) {
     console.error('[Access] Login error:', err);
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// POST /api/access/forgot-password
+router.post('/forgot-password', authLimiter, async (req, res) => {
+  try {
+    const { email } = req.body;
+    const genericMessage = 'Si un compte existe avec cet email, un lien de réinitialisation vient de lui être envoyé.';
+
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Email requis.' });
+    }
+
+    const db = getDb();
+    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email.toLowerCase().trim());
+
+    // Réponse identique que le compte existe ou non, pour éviter l'énumération d'emails
+    if (!user || !user.password_hash) {
+      return res.json({ success: true, message: genericMessage });
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const expires = new Date(Date.now() + 60 * 60 * 1000).toISOString(); // 1h
+
+    db.prepare('UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?')
+      .run(token, expires, user.id);
+
+    const SITE = process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 3000}`;
+    const resetLink = `${SITE}/pages/reinitialiser-mot-de-passe.html?token=${token}`;
+    sendPasswordResetEmail(user, resetLink).catch(() => {});
+
+    return res.json({ success: true, message: genericMessage });
+  } catch (err) {
+    console.error('[Access] Forgot-password error:', err);
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// POST /api/access/reset-password
+router.post('/reset-password', authLimiter, async (req, res) => {
+  try {
+    const { token, password } = req.body;
+    if (!token || !password) {
+      return res.status(400).json({ success: false, message: 'Token et mot de passe requis.' });
+    }
+    if (password.length < 6) {
+      return res.status(400).json({ success: false, message: 'Le mot de passe doit contenir au moins 6 caractères.' });
+    }
+
+    const db = getDb();
+    const user = db.prepare('SELECT * FROM users WHERE reset_token = ?').get(token);
+
+    if (!user || !user.reset_token_expires || new Date(user.reset_token_expires) < new Date()) {
+      return res.status(400).json({ success: false, message: 'Lien de réinitialisation invalide ou expiré.' });
+    }
+
+    const password_hash = bcrypt.hashSync(password, 10);
+    db.prepare('UPDATE users SET password_hash = ?, reset_token = NULL, reset_token_expires = NULL WHERE id = ?')
+      .run(password_hash, user.id);
+
+    return res.json({ success: true, message: 'Mot de passe réinitialisé avec succès. Vous pouvez maintenant vous connecter.' });
+  } catch (err) {
+    console.error('[Access] Reset-password error:', err);
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
   }
 });

@@ -50,13 +50,9 @@
       display: flex; align-items: center; gap: 10px; margin-bottom: 8px; width: 100%;
     }
     .opt-btn-t:hover:not(:disabled) { border-color: var(--blue); background: #eef2ff; }
-    .opt-btn-t.correct { background: #e8f5e9; border-color: #2e7d32; color: #1b5e20; }
-    .opt-btn-t.wrong { background: #ffebee; border-color: #c62828; color: #b71c1c; }
+    .opt-btn-t.selected { background: #e3f2fd; border-color: var(--blue); color: var(--blue-dark); }
     .opt-letter-t { width: 26px; height: 26px; border-radius: 50%; background: white; border: 2px solid var(--gray); display: flex; align-items: center; justify-content: center; font-size: .72rem; font-weight: 700; flex-shrink: 0; }
-    .opt-btn-t.correct .opt-letter-t { background: #2e7d32; border-color: #2e7d32; color: white; }
-    .opt-btn-t.wrong .opt-letter-t { background: #c62828; border-color: #c62828; color: white; }
-    .expl-t { display: none; margin-top: 10px; background: #fff8e1; border-left: 4px solid var(--gold); border-radius: 8px; padding: 10px 14px; font-size: .83rem; color: #5a4500; }
-    .expl-t.show { display: block; }
+    .opt-btn-t.selected .opt-letter-t { background: var(--blue); border-color: var(--blue); color: white; }
     .result-tutor { display: none; background: white; border-radius: 18px; padding: 36px; box-shadow: var(--shadow); text-align: center; margin-top: 20px; }
     .result-tutor.show { display: block; }
     .quiz-timer { background: var(--gray-light); border-radius: 10px; padding: 8px 16px; font-weight: 700; font-size: .9rem; display:inline-block; margin-bottom:16px; }
@@ -147,7 +143,6 @@
 <script src="../assets/js/config.js"></script>
 <script src="../assets/js/i18n.js"></script>
 <script src="../assets/js/api.js"></script>
-<script src="../assets/js/questions.js"></script>
 <script>
 const TUTEUR_MODULE_NAMES = {
   fr: [
@@ -375,20 +370,29 @@ async function completeModule(num) {
 }
 
 // ===== TEST D'HABILITATION TUTEUR =====
-let tuteurState = { questions: [], current: 0, score: 0, answered: [], results: [], startTime: null, timerInterval: null };
+// Les questions et la correction sont générées et vérifiées côté serveur
+// (voir /api/tuteur/test/start et /api/tuteur/test/submit).
+let tuteurState = { questions: [], answers: [], current: 0, total: 30, passingScore: 22, timeLimit: 30*60, timerInterval: null };
 
-function initTuteurTest() {
-  tuteurState.questions = buildQuizQuestions('tuteur');
-  tuteurState.current = 0; tuteurState.score = 0;
-  tuteurState.answered = new Array(tuteurState.questions.length).fill(false);
-  tuteurState.results = [];
-  tuteurState.startTime = Date.now();
-  startTuteurTimer();
-  renderTuteurQuestion();
+async function initTuteurTest() {
+  try {
+    const res = await TuteurAPI.startTest();
+    const data = res.data || res;
+    tuteurState.questions = data.questions || [];
+    tuteurState.total = data.total || tuteurState.questions.length;
+    tuteurState.passingScore = data.passing_score || 22;
+    tuteurState.timeLimit = data.time_limit || 30*60;
+    tuteurState.answers = new Array(tuteurState.questions.length).fill(null);
+    tuteurState.current = 0;
+    startTuteurTimer();
+    renderTuteurQuestion();
+  } catch (e) {
+    alert(e.message);
+  }
 }
 
 function startTuteurTimer() {
-  let sec = 30 * 60;
+  let sec = tuteurState.timeLimit;
   tuteurState.timerInterval = setInterval(() => {
     sec--;
     const m = String(Math.floor(sec/60)).padStart(2,'0');
@@ -406,41 +410,39 @@ function renderTuteurQuestion() {
   const pct = (tuteurState.current / total) * 100;
   document.getElementById('tuteur-prog-fill').style.width = pct+'%';
   document.getElementById('tuteur-prog-label').textContent = `Question ${tuteurState.current+1} / ${total}`;
-  document.getElementById('tuteur-prog-score').textContent = `Score : ${tuteurState.score} / ${tuteurState.current}`;
+  document.getElementById('tuteur-prog-score').textContent = `Répondues : ${tuteurState.answers.filter(a=>a!==null).length} / ${total}`;
   const letters = ['A','B','C','D'];
   document.getElementById('tuteur-question-area').innerHTML = `
     <div style="font-size:.7rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Question ${tuteurState.current+1} sur ${total}</div>
     <div style="font-size:.97rem;font-weight:600;color:var(--text);margin-bottom:16px;">${q.q}</div>
     ${q.opts.map((o,i) => `<button class="opt-btn-t" onclick="answerTuteur(${i})" id="tuteur-opt-${i}"><span class="opt-letter-t">${letters[i]}</span>${o}</button>`).join('')}
-    <div class="expl-t" id="tuteur-expl">${q.expl}</div>
   `;
   document.getElementById('tuteur-feedback').textContent = '';
-  document.getElementById('tuteur-next-btn').style.display = 'none';
+
+  // Réafficher la sélection si la question a déjà été répondue
+  const chosen = tuteurState.answers[tuteurState.current];
+  if (chosen !== null) {
+    q.opts.forEach((_,i) => {
+      const btn = document.getElementById(`tuteur-opt-${i}`);
+      if (i === chosen) btn.classList.add('selected');
+    });
+    document.getElementById('tuteur-feedback').innerHTML = '<span style="color:var(--blue);">✓ Réponse enregistrée</span>';
+  }
+
+  const nextBtn = document.getElementById('tuteur-next-btn');
+  nextBtn.style.display = 'inline-flex';
+  nextBtn.textContent = tuteurState.current < total-1 ? 'Question suivante →' : 'Terminer le test →';
 }
 
 function answerTuteur(chosen) {
-  if (tuteurState.answered[tuteurState.current]) return;
-  tuteurState.answered[tuteurState.current] = true;
-  const q = tuteurState.questions[tuteurState.current];
-  const correct = chosen === q.ans;
-  if (correct) tuteurState.score++;
-  tuteurState.results.push({ correct, chosen, ans: q.ans });
+  tuteurState.answers[tuteurState.current] = chosen;
   const letters = ['A','B','C','D'];
-  q.opts.forEach((_,i) => {
+  tuteurState.questions[tuteurState.current].opts.forEach((_,i) => {
     const btn = document.getElementById(`tuteur-opt-${i}`);
-    btn.disabled = true;
-    if (i===q.ans) btn.classList.add('correct');
-    else if (i===chosen && !correct) btn.classList.add('wrong');
-    else btn.style.opacity='.5';
+    btn.classList.toggle('selected', i === chosen);
   });
-  document.getElementById('tuteur-expl').classList.add('show');
-  document.getElementById('tuteur-prog-score').textContent = `Score : ${tuteurState.score} / ${tuteurState.current+1}`;
-  document.getElementById('tuteur-feedback').innerHTML = correct
-    ? '<span style="color:#2e7d32;">✅ Bonne réponse !</span>'
-    : `<span style="color:#c62828;">❌ Incorrect — Bonne réponse : ${letters[q.ans]}</span>`;
-  const nextBtn = document.getElementById('tuteur-next-btn');
-  nextBtn.style.display = 'inline-flex';
-  nextBtn.textContent = tuteurState.current < tuteurState.questions.length-1 ? 'Question suivante →' : 'Voir mes résultats →';
+  document.getElementById('tuteur-prog-score').textContent = `Répondues : ${tuteurState.answers.filter(a=>a!==null).length} / ${tuteurState.questions.length}`;
+  document.getElementById('tuteur-feedback').innerHTML = '<span style="color:var(--blue);">✓ Réponse enregistrée</span>';
 }
 
 function tuteurNext() {
@@ -454,21 +456,20 @@ function tuteurNext() {
 
 async function finishTuteurTest() {
   clearInterval(tuteurState.timerInterval);
-  const score = tuteurState.score;
-  let passed = score >= 22;
-  try {
-    const res = await TuteurAPI.submitTest(score);
-    const data = res.data || res;
-    if (typeof data.passed === 'boolean') passed = data.passed;
-  } catch (e) { /* keep client-computed result */ }
-
   document.getElementById('tuteurQuizBox').style.display = 'none';
-  showTestResult(score, passed);
+  try {
+    const answers = tuteurState.answers.map(a => a === null ? -1 : a);
+    const res = await TuteurAPI.submitTest(answers);
+    const data = res.data || res;
+    showTestResult(data.score, data.passed, data.total);
+  } catch (e) {
+    alert(e.message);
+  }
 }
 
-function showTestResult(score, passed) {
+function showTestResult(score, passed, total) {
   const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
-  const total = TEST_TOTAL_QUESTIONS_FALLBACK(score);
+  total = total || tuteurState.total || 30;
   const pct = Math.round((score/total)*100);
 
   document.getElementById('testPanel').style.display = 'block';
@@ -495,10 +496,6 @@ function showTestResult(score, passed) {
   `;
   result.classList.add('show');
   if (typeof applyTranslations === 'function') applyTranslations();
-}
-
-function TEST_TOTAL_QUESTIONS_FALLBACK(score) {
-  return Math.max(tuteurState.questions.length || 30, 1);
 }
 
 function retryTuteur() {

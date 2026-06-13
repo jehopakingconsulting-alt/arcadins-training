@@ -1016,6 +1016,19 @@ const translations = {
   "acc.login.h2":      { fr: "Se connecter", en: "Log In" },
   "acc.login.btn":     { fr: "Se connecter →", en: "Log In →" },
   "acc.forgot":        { fr: "Mot de passe oublié ?", en: "Forgot password?" },
+  "acc.forgot.h1":     { fr: "Mot de passe oublié", en: "Forgot password" },
+  "acc.forgot.sub":    { fr: "Entrez votre email, nous vous envoyons un lien de réinitialisation.", en: "Enter your email and we'll send you a reset link." },
+  "acc.forgot.btn":    { fr: "Envoyer le lien de réinitialisation", en: "Send reset link" },
+  "acc.forgot.back":   { fr: "← Retour à la connexion", en: "← Back to login" },
+  "acc.reset.h1":      { fr: "Réinitialiser le mot de passe", en: "Reset password" },
+  "acc.reset.sub":     { fr: "Choisissez un nouveau mot de passe pour votre compte.", en: "Choose a new password for your account." },
+  "acc.reset.newpass": { fr: "Nouveau mot de passe", en: "New password" },
+  "acc.reset.confirm": { fr: "Confirmer le mot de passe", en: "Confirm password" },
+  "acc.reset.btn":     { fr: "Réinitialiser mon mot de passe", en: "Reset my password" },
+  "acc.reset.success": { fr: "✅ Mot de passe réinitialisé avec succès !", en: "✅ Password reset successfully!" },
+  "acc.reset.goLogin": { fr: "Aller à la connexion →", en: "Go to login →" },
+  "acc.reset.mismatch": { fr: "Les mots de passe ne correspondent pas.", en: "Passwords do not match." },
+  "acc.reset.invalid": { fr: "Lien invalide ou expiré. Veuillez refaire une demande.", en: "Invalid or expired link. Please request a new one." },
 
   // ===== Test d'Essai (essai-gratuit.html) =====
   "trial.tag":         { fr: "Test d'Essai", en: "Trial" },
@@ -1050,7 +1063,10 @@ const translations = {
   "pay.secure":        { fr: "🔒 Paiement sécurisé par Stripe · Données chiffrées", en: "🔒 Secure payment by Stripe · Encrypted data" },
   "pay.or":            { fr: "OU", en: "OR" },
   "pay.paypal.btn":    { fr: "Payer avec PayPal", en: "Pay with PayPal" },
-  "pay.paypal.note":   { fr: "Vous serez redirigé vers PayPal pour effectuer le paiement. Une fois le paiement effectué, envoyez une capture d'écran ou le numéro de transaction à <strong>arcadinstrainingcenter@gmail.com</strong> avec votre email de compte et le plan choisi. Votre accès sera activé sous 24h.", en: "You will be redirected to PayPal to complete your payment. Once paid, send a screenshot or the transaction number to <strong>arcadinstrainingcenter@gmail.com</strong> with your account email and chosen plan. Your access will be activated within 24h." },
+  "pay.paypal.note":   { fr: "Vous serez redirigé vers PayPal pour effectuer le paiement. Une fois le paiement effectué, indiquez votre numéro de transaction ci-dessous et confirmez. Notre équipe vérifiera et activera votre accès sous 24h.", en: "You will be redirected to PayPal to complete your payment. Once paid, enter your transaction number below and confirm. Our team will verify and activate your access within 24h." },
+  "pay.paypal.refLabel": { fr: "Numéro de transaction PayPal (optionnel)", en: "PayPal transaction number (optional)" },
+  "pay.paypal.confirmBtn": { fr: "✅ J'ai effectué le paiement", en: "✅ I have made the payment" },
+  "pay.paypal.intentSuccess": { fr: "✅ Merci ! Votre paiement a été déclaré. Votre accès sera activé sous 24h après vérification.", en: "✅ Thank you! Your payment has been declared. Your access will be activated within 24h after verification." },
   "step.label":        { fr: "Étape", en: "Step" },
 
   // ===== QUALIFICATION (qualification.html) =====

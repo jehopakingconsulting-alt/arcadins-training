@@ -9,6 +9,8 @@ const stepGuard = require('../middleware/stepGuard');
 const { generateCertificate } = require('../services/pdf');
 const { sendCertificateEmail } = require('../services/email');
 
+const FINAL_TEST_TIME_LIMIT_SECONDS = 45 * 60; // 45 minutes (correspond au timer client)
+
 const FINAL_QUESTIONS = [
   // Compréhension orale (CO) - simulated via text
   {
@@ -498,6 +500,12 @@ router.get('/questions', authMiddleware, stepGuard('modules_done'), (req, res) =
       });
     }
 
+    // Démarre le chrono côté serveur (sans le réinitialiser si déjà en cours,
+    // pour empêcher de regagner du temps en rafraîchissant la page)
+    if (!user.final_test_started_at) {
+      db.prepare('UPDATE users SET final_test_started_at = ? WHERE id = ?').run(new Date().toISOString(), user.id);
+    }
+
     const questions = FINAL_QUESTIONS.map(({ correct, ...q }) => q);
     return res.json({
       success: true,
@@ -506,6 +514,7 @@ router.get('/questions', authMiddleware, stepGuard('modules_done'), (req, res) =
         total: questions.length,
         attempts_used: attempts.cnt,
         max_attempts: maxAttempts,
+        time_limit: FINAL_TEST_TIME_LIMIT_SECONDS,
       },
     });
   } catch (err) {
@@ -543,11 +552,19 @@ router.post('/submit', authMiddleware, stepGuard('modules_done'), async (req, re
       return res.status(400).json({ success: false, message: 'Réponses manquantes.' });
     }
 
+    // Vérifie le temps écoulé depuis le début du test (anti-triche : un
+    // rafraîchissement de page ne redonne pas de temps côté serveur)
+    let timeExceeded = false;
+    if (user.final_test_started_at) {
+      const elapsedSeconds = (Date.now() - new Date(user.final_test_started_at).getTime()) / 1000;
+      timeExceeded = elapsedSeconds > FINAL_TEST_TIME_LIMIT_SECONDS + 15;
+    }
+
     // Calculate score
     let score = 0;
     const results = FINAL_QUESTIONS.map((q, idx) => {
       const userAnswer = answers[idx] !== undefined ? answers[idx] : -1;
-      const isCorrect = userAnswer === q.correct;
+      const isCorrect = !timeExceeded && userAnswer === q.correct;
       if (isCorrect) score += q.points;
       return { id: q.id, correct: q.correct, user_answer: userAnswer, is_correct: isCorrect, skill: q.skill };
     });
@@ -564,7 +581,7 @@ router.post('/submit', authMiddleware, stepGuard('modules_done'), async (req, re
     `).run(user.id, scorePercent, passed ? 1 : 0, attemptNum, JSON.stringify(answers));
 
     // Update user
-    db.prepare('UPDATE users SET final_test_done = 1, final_test_score = ? WHERE id = ?').run(scorePercent, user.id);
+    db.prepare('UPDATE users SET final_test_done = 1, final_test_score = ?, final_test_started_at = NULL WHERE id = ?').run(scorePercent, user.id);
 
     if (passed) {
       // Mark as passed

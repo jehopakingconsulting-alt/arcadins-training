@@ -163,8 +163,13 @@ function initDatabase() {
     'ALTER TABLE users ADD COLUMN tuteur_test_done INTEGER DEFAULT 0',
     'ALTER TABLE users ADD COLUMN tuteur_test_score REAL DEFAULT 0',
     'ALTER TABLE users ADD COLUMN tuteur_test_passed INTEGER DEFAULT 0',
+    'ALTER TABLE users ADD COLUMN tuteur_test_session TEXT',
+    'ALTER TABLE users ADD COLUMN qualification_started_at TEXT',
+    'ALTER TABLE users ADD COLUMN final_test_started_at TEXT',
     'ALTER TABLE users ADD COLUMN referral_code TEXT',
     'ALTER TABLE users ADD COLUMN referred_by INTEGER',
+    'ALTER TABLE users ADD COLUMN reset_token TEXT',
+    'ALTER TABLE users ADD COLUMN reset_token_expires TEXT',
   ];
   migrations.forEach(sql => {
     try { db.prepare(sql).run(); } catch(e) { /* colonne déjà existante */ }
@@ -205,17 +210,23 @@ function initDatabase() {
     console.error('[DB] Erreur backfill access_expires_at:', e.message);
   }
 
-  // Insert default admin user
-  const existingAdmin = db.prepare('SELECT id FROM users WHERE email = ?').get('admin@arcadins-training.com');
-  if (!existingAdmin) {
-    const hash = bcrypt.hashSync('Admin2024!', 10);
-    const result = db.prepare(`
-      INSERT INTO users (nom, prenom, email, password_hash, role, status, payment_confirmed, trial_done, qualification_done, all_modules_done, final_test_passed)
-      VALUES (?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0)
-    `).run('Admin', 'ARCADINS', 'admin@arcadins-training.com', hash, 'admin', 'active');
-    db.prepare('UPDATE users SET referral_code = ? WHERE id = ?')
-      .run(generateReferralCode(db, result.lastInsertRowid), result.lastInsertRowid);
-    console.log('[DB] Admin user created: admin@arcadins-training.com / Admin2024!');
+  // Insert default admin user (identifiants pris depuis .env — jamais codés en dur)
+  const adminEmail = process.env.ADMIN_LOGIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (adminEmail && adminPassword) {
+    const existingAdmin = db.prepare('SELECT id FROM users WHERE email = ?').get(adminEmail);
+    if (!existingAdmin) {
+      const hash = bcrypt.hashSync(adminPassword, 10);
+      const result = db.prepare(`
+        INSERT INTO users (nom, prenom, email, password_hash, role, status, payment_confirmed, trial_done, qualification_done, all_modules_done, final_test_passed)
+        VALUES (?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0)
+      `).run('Admin', 'ARCADINS', adminEmail, hash, 'admin', 'active');
+      db.prepare('UPDATE users SET referral_code = ? WHERE id = ?')
+        .run(generateReferralCode(db, result.lastInsertRowid), result.lastInsertRowid);
+      console.log(`[DB] Admin user created: ${adminEmail}`);
+    }
+  } else {
+    console.warn('[DB] ADMIN_LOGIN_EMAIL / ADMIN_PASSWORD non définis dans .env — aucun compte admin créé.');
   }
 
   console.log('[DB] Database initialized at', DB_PATH);

@@ -276,6 +276,8 @@ const QUALIFICATION_QUESTIONS = [
   },
 ];
 
+const QUALIFICATION_TIME_LIMIT_SECONDS = 30 * 60; // 30 minutes (correspond au timer client)
+
 // GET /api/qualification/questions
 router.get('/questions', authMiddleware, stepGuard('payment_confirmed'), (req, res) => {
   try {
@@ -289,8 +291,14 @@ router.get('/questions', authMiddleware, stepGuard('payment_confirmed'), (req, r
         },
       });
     }
+    // Démarre le chrono côté serveur (sans le réinitialiser si déjà en cours,
+    // pour empêcher de regagner du temps en rafraîchissant la page)
+    if (!req.user.qualification_started_at) {
+      const db = getDb();
+      db.prepare('UPDATE users SET qualification_started_at = ? WHERE id = ?').run(new Date().toISOString(), req.user.id);
+    }
     const questions = QUALIFICATION_QUESTIONS.map(({ correct, ...q }) => q);
-    return res.json({ success: true, data: { questions, total: questions.length } });
+    return res.json({ success: true, data: { questions, total: questions.length, time_limit: QUALIFICATION_TIME_LIMIT_SECONDS } });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
   }
@@ -315,9 +323,17 @@ router.post('/submit', authMiddleware, stepGuard('payment_confirmed'), (req, res
       return res.status(400).json({ success: false, message: 'Réponses manquantes.' });
     }
 
+    // Vérifie le temps écoulé depuis le début du test (anti-triche : un
+    // rafraîchissement de page ne redonne pas de temps côté serveur)
+    let timeExceeded = false;
+    if (user.qualification_started_at) {
+      const elapsedSeconds = (Date.now() - new Date(user.qualification_started_at).getTime()) / 1000;
+      timeExceeded = elapsedSeconds > QUALIFICATION_TIME_LIMIT_SECONDS + 15;
+    }
+
     let score = 0;
     QUALIFICATION_QUESTIONS.forEach((q, idx) => {
-      if (answers[idx] === q.correct) score += q.points;
+      if (!timeExceeded && answers[idx] === q.correct) score += q.points;
     });
 
     const scorePercent = (score / QUALIFICATION_QUESTIONS.length) * 100;
@@ -346,7 +362,7 @@ router.post('/submit', authMiddleware, stepGuard('payment_confirmed'), (req, res
 
     // Update user
     db.prepare(`
-      UPDATE users SET qualification_done = 1, qualification_score = ?, qualification_level = ?, current_module = 1
+      UPDATE users SET qualification_done = 1, qualification_score = ?, qualification_level = ?, current_module = 1, qualification_started_at = NULL
       WHERE id = ?
     `).run(scorePercent, level, user.id);
 

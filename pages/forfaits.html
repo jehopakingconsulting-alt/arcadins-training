@@ -126,11 +126,22 @@
       </div>
 
       <!-- PayPal -->
-      <button class="btn-plan" onclick="payWithPaypal()" style="width:100%;background:#ffc439;color:#003087;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <button class="btn-plan" id="paypalBtn" onclick="payWithPaypal()" style="width:100%;background:#ffc439;color:#003087;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;">
         <span style="font-size:1.1rem;">🅿️</span> <span data-i18n="pay.paypal.btn">Payer avec PayPal</span>
       </button>
       <div style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:10px;padding:12px 14px;margin-top:12px;font-size:.78rem;color:#7a5c00;line-height:1.6;" data-i18n="pay.paypal.note">
-        Vous serez redirigé vers PayPal pour effectuer le paiement. Une fois le paiement effectué, envoyez une capture d'écran ou le numéro de transaction à <strong>arcadinstrainingcenter@gmail.com</strong> avec votre email de compte et le plan choisi. Votre accès sera activé sous 24h.
+        Vous serez redirigé vers PayPal pour effectuer le paiement. Une fois le paiement effectué, indiquez votre numéro de transaction ci-dessous et confirmez. Notre équipe vérifiera et activera votre accès sous 24h.
+      </div>
+
+      <!-- Confirmation PayPal (affichée après ouverture de PayPal) -->
+      <div id="paypalConfirm" style="display:none;margin-top:14px;border:1.5px solid #e0e6f0;border-radius:10px;padding:14px 16px;">
+        <label style="font-size:.82rem;font-weight:700;color:#074A2E;display:block;margin-bottom:6px;" data-i18n="pay.paypal.refLabel">Numéro de transaction PayPal (optionnel)</label>
+        <input id="paypalReference" type="text" placeholder="ex: 8XK12345AB678901C" style="width:100%;padding:10px 12px;border:1.5px solid #e0e6f0;border-radius:8px;font-size:.88rem;box-sizing:border-box;margin-bottom:10px;" />
+        <div id="paypalIntentError" style="display:none;background:#fce4ec;border:1.5px solid #ef9a9a;border-radius:8px;padding:8px 12px;font-size:.82rem;color:#c62828;margin-bottom:10px;"></div>
+        <button class="btn-primary" style="width:100%;" onclick="confirmPaypalIntent()" id="paypalConfirmBtn" data-i18n="pay.paypal.confirmBtn">✅ J'ai effectué le paiement</button>
+      </div>
+      <div id="paypalIntentSuccess" style="display:none;margin-top:14px;background:#eaf7f0;border:1.5px solid #a8ddc0;border-radius:10px;padding:14px 16px;text-align:center;color:#074A2E;font-weight:600;font-size:.88rem;" data-i18n="pay.paypal.intentSuccess">
+        ✅ Merci ! Votre paiement a été déclaré. Votre accès sera activé sous 24h après vérification.
       </div>
     </div>
     <div id="paymentSuccess" class="payment-success" style="display:none;">
@@ -344,6 +355,9 @@ function selectPlan(id, name, price) {
     </div>
     <div style="font-size:.8rem;color:var(--gray-text);margin-top:4px;">Accès unique · Paiement sécurisé Stripe</div>`;
   document.getElementById('payError').style.display = 'none';
+  document.getElementById('paypalConfirm').style.display = 'none';
+  document.getElementById('paypalIntentSuccess').style.display = 'none';
+  document.getElementById('paypalReference').value = '';
   document.getElementById('paymentForm').style.display = 'block';
   document.getElementById('paymentSuccess').style.display = 'none';
   document.getElementById('paymentVerifying').style.display = 'none';
@@ -354,12 +368,51 @@ function closePayment() {
   document.getElementById('paymentModal').classList.remove('open');
 }
 
-// ── Paiement via PayPal (manuel, en attendant Stripe Live) ───
+// ── Paiement via PayPal (paypal.me + déclaration côté backoffice) ───
 function payWithPaypal() {
   if (!selectedPlan) return;
   const amount = selectedPlan.price;
   const url = `https://www.paypal.com/paypalme/arcadinstrainingcent/${amount}USD`;
   window.open(url, '_blank');
+  document.getElementById('paypalConfirm').style.display = 'block';
+  document.getElementById('paypalIntentSuccess').style.display = 'none';
+}
+
+// ── Déclaration du paiement PayPal effectué ──────────────────
+async function confirmPaypalIntent() {
+  if (!selectedPlan) return;
+  const btn = document.getElementById('paypalConfirmBtn');
+  const errEl = document.getElementById('paypalIntentError');
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+  const reference = document.getElementById('paypalReference').value.trim();
+  btn.disabled = true;
+  btn.textContent = lang === 'fr' ? '⏳ Envoi...' : '⏳ Sending...';
+  errEl.style.display = 'none';
+
+  try {
+    const r = await fetch(API_BASE + '/plans/paypal-intent', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + getToken()
+      },
+      body: JSON.stringify({ plan: selectedPlan.id, reference })
+    });
+    const d = await r.json();
+
+    if (!r.ok || !d.success) {
+      throw new Error(d.message || 'Erreur');
+    }
+
+    document.getElementById('paypalConfirm').style.display = 'none';
+    document.getElementById('paypalIntentSuccess').style.display = 'block';
+  } catch(e) {
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = lang === 'fr' ? "✅ J'ai effectué le paiement" : '✅ I have made the payment';
+  }
 }
 
 // ── Lancement Stripe Checkout ────────────────────────────────

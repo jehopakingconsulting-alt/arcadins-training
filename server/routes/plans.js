@@ -4,7 +4,7 @@ const express = require('express');
 const router  = express.Router();
 const { getDb } = require('../database');
 const authMiddleware = require('../middleware/auth');
-const { sendPaymentConfirmation } = require('../services/email');
+const { sendPaymentConfirmation, sendPaypalPaymentDeclared } = require('../services/email');
 const { isAccessExpired } = require('../middleware/stepGuard');
 
 // ── Stripe init (lazy) ──────────────────────────────────────
@@ -329,11 +329,54 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
   return res.json({ received: true });
 });
 
+// ── POST /api/plans/paypal-intent ───────────────────────────
+// L'utilisateur déclare avoir effectué un paiement PayPal. On enregistre
+// la déclaration (sans activer le compte) et on notifie l'admin, qui
+// confirme manuellement via le backoffice après vérification sur PayPal.
+router.post('/paypal-intent', authMiddleware, async (req, res) => {
+  try {
+    const user = req.user;
+    const db   = getDb();
+
+    if (user.payment_confirmed === 1 && !isAccessExpired(user)) {
+      return res.status(400).json({ success: false, message: 'Paiement déjà confirmé.' });
+    }
+
+    const { plan, reference } = req.body;
+    const selectedPlan = PLANS.find(p => p.id === plan);
+    if (!selectedPlan) {
+      return res.status(400).json({ success: false, message: 'Plan invalide.' });
+    }
+
+    const cleanReference = typeof reference === 'string' ? reference.trim().slice(0, 100) : '';
+    const notes = `PayPal — référence: ${cleanReference || 'non fournie'} (déclaré le ${new Date().toLocaleString('fr-CA')})`;
+
+    db.prepare(`
+      UPDATE users
+      SET payment_plan = ?, payment_method = 'PayPal', payment_notes = ?
+      WHERE id = ?
+    `).run(selectedPlan.id, notes, user.id);
+
+    sendPaypalPaymentDeclared(user, selectedPlan.name, cleanReference).catch(() => {});
+
+    return res.json({
+      success: true,
+      message: 'Votre paiement a été déclaré. Notre équipe va le vérifier et activer votre accès sous 24h.',
+    });
+  } catch (err) {
+    console.error('[Plans] paypal-intent error:', err);
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
 // ── POST /api/plans/checkout (mode test sans Stripe) ────────
-// Gardé pour les tests manuels admin
+// Réservé aux administrateurs (activation manuelle d'un compte de test)
 router.post('/checkout', authMiddleware, async (req, res) => {
   try {
     const user = req.user;
+    if (user.role !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Accès réservé aux administrateurs.' });
+    }
     const db   = getDb();
 
     if (user.payment_confirmed === 1 && !isAccessExpired(user)) {

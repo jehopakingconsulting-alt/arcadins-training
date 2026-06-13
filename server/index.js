@@ -1,10 +1,10 @@
 'use strict';
 
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const fs = require('fs');
 
 const { initDatabase } = require('./database');
@@ -121,8 +121,13 @@ app.listen(PORT, () => {
   console.log(`║  Health check:      http://localhost:${PORT}/api/health ║`);
   console.log('╚═══════════════════════════════════════════════════╝');
   console.log('');
-  console.log('[Admin] Default credentials: admin@arcadins-training.com / Admin2024!');
-  console.log('');
+
+  if (!process.env.STRIPE_WEBHOOK_SECRET || process.env.STRIPE_WEBHOOK_SECRET.includes('YOUR_WEBHOOK')) {
+    console.warn('[Stripe] ⚠️  STRIPE_WEBHOOK_SECRET non configuré — le webhook est désactivé (activation via /verify-payment uniquement).');
+  }
+  if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'changeme_super_secret_jwt_key_arcadins_2024') {
+    console.warn('[Auth] ⚠️  JWT_SECRET non configuré ou faible — définissez une valeur forte dans .env.');
+  }
 });
 
 module.exports = app;

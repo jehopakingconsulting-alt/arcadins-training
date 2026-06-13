@@ -165,7 +165,7 @@ router.post('/:num/complete', authMiddleware, stepGuard('qualification_done'), a
     }
 
     const { score } = req.body;
-    const moduleScore = typeof score === 'number' ? score : 100;
+    const moduleScore = typeof score === 'number' ? Math.min(100, Math.max(0, score)) : 100;
 
     // Mark as completed
     db.prepare(`UPDATE modules SET status = 'completed', completed_at = datetime('now'), score = ? WHERE user_id = ? AND module_number = ?`).run(moduleScore, user.id, num);

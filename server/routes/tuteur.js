@@ -4,14 +4,25 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
 const { getDb } = require('../database');
 const authMiddleware = require('../middleware/auth');
-const { sendAdminNotification } = require('../services/email');
+const { sendAdminNotification, sendTuteurTestPassedNotification } = require('../services/email');
+
+const postulerLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Trop de tentatives. Veuillez réessayer dans quelques minutes.' },
+});
+
+const { buildTuteurTest, TUTEUR_TEST_CONFIG } = require('../data/tuteurTest');
 
 const TUTEUR_FEE = { amount: 100, currency: 'cad', label: 'Frais de dossier — Devenir Tuteur ARCADINS' };
 const TOTAL_TUTEUR_MODULES = 5;
-const TEST_PASSING_SCORE = 22;
-const TEST_TOTAL_QUESTIONS = 30;
+const TEST_PASSING_SCORE = TUTEUR_TEST_CONFIG.passingScore;
+const TEST_TOTAL_QUESTIONS = TUTEUR_TEST_CONFIG.total;
 
 function getStripe() {
   const key = process.env.STRIPE_SECRET_KEY || '';
@@ -39,7 +50,7 @@ function sanitizeUser(user) {
 
 // ── POST /api/tuteur/postuler ───────────────────────────────
 // Crée (ou met à jour) un compte candidat tuteur à partir du formulaire
-router.post('/postuler', async (req, res) => {
+router.post('/postuler', postulerLimiter, async (req, res) => {
   try {
     const { nom, email, telephone, pays, password, application, lang } = req.body;
 
@@ -322,28 +333,80 @@ router.post('/modules/:num/complete', authMiddleware, requireTuteurPayment, (req
   }
 });
 
+// ── GET /api/tuteur/test/start ───────────────────────────────
+// Génère 30 questions aléatoires (sans les réponses) et conserve la
+// grille de correction côté serveur pour une notation fiable.
+router.get('/test/start', authMiddleware, requireTuteurPayment, (req, res) => {
+  try {
+    if (req.user.tuteur_all_modules_done !== 1) {
+      return res.status(403).json({ success: false, message: 'Veuillez terminer tous les modules de formation avant le test d\'habilitation.' });
+    }
+    if (req.user.tuteur_test_passed === 1) {
+      return res.status(400).json({ success: false, message: 'Vous avez déjà réussi le test d\'habilitation.' });
+    }
+
+    const { questions, answerKey } = buildTuteurTest();
+    const session = { answerKey, startedAt: Date.now() };
+
+    const db = getDb();
+    db.prepare('UPDATE users SET tuteur_test_session = ? WHERE id = ?').run(JSON.stringify(session), req.user.id);
+
+    return res.json({
+      success: true,
+      data: {
+        questions,
+        total: TEST_TOTAL_QUESTIONS,
+        passing_score: TEST_PASSING_SCORE,
+        time_limit: TUTEUR_TEST_CONFIG.timeLimitSeconds,
+      },
+    });
+  } catch (err) {
+    console.error('[Tuteur] test start error:', err);
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
 // ── POST /api/tuteur/test/submit ─────────────────────────────
-// Le test (30 questions, banque côté client) est corrigé côté client ;
-// ce endpoint enregistre le résultat côté serveur après les modules complétés.
+// Notation côté serveur à partir de la grille générée par /test/start.
 router.post('/test/submit', authMiddleware, requireTuteurPayment, (req, res) => {
   try {
     if (req.user.tuteur_all_modules_done !== 1) {
       return res.status(403).json({ success: false, message: 'Veuillez terminer tous les modules de formation avant le test d\'habilitation.' });
     }
 
-    const { score } = req.body;
-    const numericScore = parseInt(score, 10);
-    if (isNaN(numericScore) || numericScore < 0 || numericScore > TEST_TOTAL_QUESTIONS) {
-      return res.status(400).json({ success: false, message: 'Score invalide.' });
+    let session;
+    try { session = JSON.parse(req.user.tuteur_test_session || 'null'); } catch (e) { session = null; }
+    if (!session || !Array.isArray(session.answerKey)) {
+      return res.status(400).json({ success: false, message: 'Aucun test en cours. Veuillez démarrer le test.' });
     }
+
+    const { answers } = req.body;
+    if (!Array.isArray(answers)) {
+      return res.status(400).json({ success: false, message: 'Réponses manquantes.' });
+    }
+
+    const elapsedSeconds = (Date.now() - session.startedAt) / 1000;
+    const timeExceeded = elapsedSeconds > TUTEUR_TEST_CONFIG.timeLimitSeconds + 15; // marge réseau
+
+    let numericScore = 0;
+    session.answerKey.forEach((correctIndex, i) => {
+      if (!timeExceeded && answers[i] === correctIndex) numericScore++;
+    });
 
     const passed = numericScore >= TEST_PASSING_SCORE;
     const db = getDb();
     db.prepare(`
       UPDATE users
-      SET tuteur_test_done = 1, tuteur_test_score = ?, tuteur_test_passed = ?
+      SET tuteur_test_done = 1, tuteur_test_score = ?, tuteur_test_passed = ?, tuteur_test_session = NULL
       WHERE id = ?
     `).run(numericScore, passed ? 1 : 0, req.user.id);
+
+    if (passed) {
+      sendTuteurTestPassedNotification({
+        nom: req.user.nom, prenom: req.user.prenom, email: req.user.email,
+        tuteur_test_score: numericScore,
+      }).catch(() => {});
+    }
 
     return res.json({
       success: true,
@@ -352,6 +415,7 @@ router.post('/test/submit', authMiddleware, requireTuteurPayment, (req, res) => 
         total: TEST_TOTAL_QUESTIONS,
         passing_score: TEST_PASSING_SCORE,
         passed,
+        correct_answers: session.answerKey,
       },
       message: passed
         ? 'Félicitations ! Vous avez réussi le test d\'habilitation tuteur.'

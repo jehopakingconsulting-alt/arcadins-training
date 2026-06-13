@@ -186,6 +186,40 @@ async function sendPaymentConfirmation(user, plan) {
   }
 }
 
+// ── 3b. Réinitialisation de mot de passe ────────────────────────────
+async function sendPasswordResetEmail(user, resetLink) {
+  if (!isConfigured()) {
+    console.warn('[Email] Non configuré — email réinitialisation ignoré pour:', user.email);
+    return;
+  }
+  const html = baseTemplate(`
+    <h2 style="color:#074A2E;margin:0 0 8px;">🔑 Réinitialisation de votre mot de passe</h2>
+    <p style="font-size:15px;color:#1a2e28;line-height:1.7;">
+      Bonjour ${user.prenom},<br><br>
+      Vous avez demandé la réinitialisation du mot de passe de votre compte ARCADINS Training Center.
+      Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe. Ce lien est valable 1 heure.
+    </p>
+    <div style="text-align:center;margin:28px 0;">
+      <a href="${resetLink}" style="display:inline-block;background:#0B5D3B;color:white;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;">
+        🔑 Réinitialiser mon mot de passe →
+      </a>
+    </div>
+    <p style="font-size:13px;color:#5d7a6e;">Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet email — votre mot de passe ne sera pas modifié.</p>
+  `);
+  try {
+    await createTransporter().sendMail({
+      from: FROM,
+      to: user.email,
+      replyTo: REPLY_TO,
+      subject: `[ARCADINS] 🔑 Réinitialisation de votre mot de passe`,
+      html,
+    });
+    console.log('[Email] ✅ Email réinitialisation envoyé à:', user.email);
+  } catch(err) {
+    console.error('[Email] ❌ Email réinitialisation échoué:', err.message);
+  }
+}
+
 // ── 4. Certificat généré ────────────────────────────────────────────
 async function sendCertificateEmail(user, certificate) {
   if (!isConfigured()) return;
@@ -219,6 +253,81 @@ async function sendCertificateEmail(user, certificate) {
     console.log('[Email] ✅ Certificat envoyé à:', user.email);
   } catch(err) {
     console.error('[Email] ❌ Envoi certificat échoué:', err.message);
+  }
+}
+
+// ── 2b. Notification admin — paiement PayPal déclaré par l'utilisateur ──
+async function sendPaypalPaymentDeclared(user, plan, reference) {
+  if (!isConfigured()) {
+    console.warn('[Email] Non configuré — notif PayPal ignorée pour:', user.email);
+    return;
+  }
+  const html = baseTemplate(`
+    <h2 style="color:#074A2E;margin:0 0 6px;">🅿️ Paiement PayPal déclaré</h2>
+    <p style="color:#5d7a6e;font-size:13px;margin:0 0 24px;">${new Date().toLocaleString('fr-CA')}</p>
+    <table style="width:100%;border-collapse:collapse;font-size:14px;">
+      <tr style="background:#f7f9fc;"><td style="padding:10px 14px;font-weight:700;color:#4a5568;width:40%;">Prénom Nom</td><td style="padding:10px 14px;color:#1a2e28;">${user.prenom} ${user.nom}</td></tr>
+      <tr>                           <td style="padding:10px 14px;font-weight:700;color:#4a5568;border-top:1px solid #eef3f0;">Email</td><td style="padding:10px 14px;border-top:1px solid #eef3f0;"><a href="mailto:${user.email}" style="color:#0B5D3B;">${user.email}</a></td></tr>
+      <tr style="background:#f7f9fc;"><td style="padding:10px 14px;font-weight:700;color:#4a5568;">Plan demandé</td><td style="padding:10px 14px;">${plan}</td></tr>
+      <tr>                           <td style="padding:10px 14px;font-weight:700;color:#4a5568;border-top:1px solid #eef3f0;">Référence PayPal</td><td style="padding:10px 14px;border-top:1px solid #eef3f0;">${reference || 'non fournie'}</td></tr>
+    </table>
+    <div style="margin-top:24px;padding:14px 18px;background:#fff8e1;border-left:4px solid #c9a84c;border-radius:4px;">
+      <p style="margin:0;font-size:13px;color:#b8860b;">👉 Vérifiez la réception du paiement sur votre compte PayPal, puis confirmez-le dans le backoffice admin pour débloquer l'accès.</p>
+    </div>
+    <div style="margin-top:20px;text-align:center;">
+      <a href="${SITE_URL}/pages/admin/" style="display:inline-block;background:#0B5D3B;color:white;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;">
+        📊 Voir le backoffice admin →
+      </a>
+    </div>
+  `);
+  try {
+    await createTransporter().sendMail({
+      from: FROM,
+      to: ADMIN,
+      replyTo: REPLY_TO,
+      subject: `[ARCADINS] 🅿️ Paiement PayPal déclaré : ${user.prenom} ${user.nom} (${plan})`,
+      html,
+    });
+    console.log('[Email] ✅ Notif admin (PayPal déclaré) envoyée pour:', user.email);
+  } catch(err) {
+    console.error('[Email] ❌ Notif admin (PayPal déclaré) échouée:', err.message);
+  }
+}
+
+// ── 4b. Notification admin — candidat tuteur a réussi le test d'habilitation ──
+async function sendTuteurTestPassedNotification(user) {
+  if (!isConfigured()) {
+    console.warn('[Email] Non configuré — notif admin (test tuteur) ignorée pour:', user.email);
+    return;
+  }
+  const html = baseTemplate(`
+    <h2 style="color:#074A2E;margin:0 0 6px;">🎓 Candidat tuteur — Test d'habilitation réussi</h2>
+    <p style="color:#5d7a6e;font-size:13px;margin:0 0 24px;">${new Date().toLocaleString('fr-CA')}</p>
+    <table style="width:100%;border-collapse:collapse;font-size:14px;">
+      <tr style="background:#f7f9fc;"><td style="padding:10px 14px;font-weight:700;color:#4a5568;width:40%;">Prénom Nom</td><td style="padding:10px 14px;color:#1a2e28;">${user.prenom} ${user.nom}</td></tr>
+      <tr>                           <td style="padding:10px 14px;font-weight:700;color:#4a5568;border-top:1px solid #eef3f0;">Email</td><td style="padding:10px 14px;border-top:1px solid #eef3f0;"><a href="mailto:${user.email}" style="color:#0B5D3B;">${user.email}</a></td></tr>
+      <tr style="background:#f7f9fc;"><td style="padding:10px 14px;font-weight:700;color:#4a5568;">Score</td><td style="padding:10px 14px;">${user.tuteur_test_score} / 30</td></tr>
+    </table>
+    <div style="margin-top:24px;padding:14px 18px;background:#fff8e1;border-left:4px solid #c9a84c;border-radius:4px;">
+      <p style="margin:0;font-size:13px;color:#b8860b;">👉 Ce candidat est prêt pour l'entretien de sélection. Contactez-le pour planifier la suite.</p>
+    </div>
+    <div style="margin-top:20px;text-align:center;">
+      <a href="${SITE_URL}/pages/admin/" style="display:inline-block;background:#0B5D3B;color:white;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;">
+        📊 Voir le backoffice admin →
+      </a>
+    </div>
+  `);
+  try {
+    await createTransporter().sendMail({
+      from: FROM,
+      to: ADMIN,
+      replyTo: REPLY_TO,
+      subject: `[ARCADINS] 🎓 Candidat tuteur prêt pour entretien : ${user.prenom} ${user.nom}`,
+      html,
+    });
+    console.log('[Email] ✅ Notif admin (test tuteur réussi) envoyée pour:', user.email);
+  } catch(err) {
+    console.error('[Email] ❌ Notif admin (test tuteur réussi) échouée:', err.message);
   }
 }
 
@@ -261,6 +370,9 @@ module.exports = {
   sendWelcomeEmail,
   sendPaymentConfirmation,
   sendCertificateEmail,
+  sendTuteurTestPassedNotification,
+  sendPaypalPaymentDeclared,
+  sendPasswordResetEmail,
   sendUserEmail,
   testConnection,
   isConfigured,
