@@ -69,7 +69,7 @@ const PLANS = [
   {
     id: 'vip',
     name: 'VIP',
-    price: 350,
+    price: 347,
     currency: 'usd',
     description: "L'excellence avec suivi personnalisé complet",
     duration_weeks: 12,
