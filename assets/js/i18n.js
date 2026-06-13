@@ -1109,7 +1109,7 @@ const translations = {
   "guide.s3.li1":  { fr: "<strong>Starter $97</strong> — 14 modules + 1 tentative test final · 6 semaines", en: "<strong>Starter $97</strong> — 14 modules + 1 final test attempt · 6 weeks" },
   "guide.s3.li2":  { fr: "<strong>Essential $147</strong> — + 2 tentatives + certificat officiel · 6 semaines", en: "<strong>Essential $147</strong> — + 2 attempts + official certificate · 6 weeks" },
   "guide.s3.li3":  { fr: "<strong>Premium $247</strong> — + 3 tentatives + 2h coaching · 6 semaines", en: "<strong>Premium $247</strong> — + 3 attempts + 2h coaching · 6 weeks" },
-  "guide.s3.li4":  { fr: "<strong>VIP $497</strong> — + 6 tentatives + 4h coaching privé + garantie · 12 semaines", en: "<strong>VIP $497</strong> — + 6 attempts + 4h private coaching + guarantee · 12 weeks" },
+  "guide.s3.li4":  { fr: "<strong>VIP $350</strong> — + 6 tentatives + 4h coaching privé + garantie · 12 semaines", en: "<strong>VIP $350</strong> — + 6 attempts + 4h private coaching + guarantee · 12 weeks" },
   "guide.s3.tip":  { fr: "💡 Conseil : le plan Essential est le plus populaire pour un premier passage au TEF/TCF.", en: "💡 Tip: the Essential plan is the most popular for a first TEF/TCF attempt." },
   "guide.s3.btn1": { fr: "📋 Comparer les plans", en: "📋 Compare Plans" },
   "guide.s3.btn2": { fr: "💳 Choisir mon plan", en: "💳 Choose My Plan" },
