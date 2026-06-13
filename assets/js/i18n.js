@@ -395,6 +395,14 @@ const translations = {
   "footer.terms":     { fr: "Conditions d'utilisation",  en: "Terms of Use" },
   "footer.mentions":  { fr: "Mentions légales",          en: "Legal Notice" },
   "footer.phone.note":{ fr: "(Appel direct &amp; WhatsApp)", en: "(Direct call &amp; WhatsApp)" },
+  "footer.address": {
+    fr: "116 Albert Street, Suite 300, Ottawa (Ontario) Canada · 514-451-3436 (Appel &amp; WhatsApp)",
+    en: "116 Albert Street, Suite 300, Ottawa (Ontario) Canada · 514-451-3436 (Call &amp; WhatsApp)"
+  },
+  "footer.address.line2": {
+    fr: "📍 116 Albert Street, Suite 300, Ottawa, ON K1P 5G3 · Canada",
+    en: "📍 116 Albert Street, Suite 300, Ottawa, ON K1P 5G3 · Canada"
+  },
   "footer.copy.line": {
     fr: "© <span id='footerYear'></span> ARCADINS Training Center – Propulsé par <strong>Les Entreprises ARCADINS et ses Éditions</strong>",
     en: "© <span id='footerYear'></span> ARCADINS Training Center – Powered by <strong>Les Entreprises ARCADINS et ses Éditions</strong>"
