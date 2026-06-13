@@ -135,6 +135,16 @@ function initDatabase() {
       FOREIGN KEY (referrer_id) REFERENCES users(id),
       FOREIGN KEY (referred_user_id) REFERENCES users(id)
     );
+
+    CREATE TABLE IF NOT EXISTS admin_audit_log (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      admin_id INTEGER NOT NULL,
+      action TEXT NOT NULL,
+      target_user_id INTEGER,
+      details TEXT,
+      ip TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    );
   `);
 
   // Insert default admin settings
@@ -170,6 +180,11 @@ function initDatabase() {
     'ALTER TABLE users ADD COLUMN referred_by INTEGER',
     'ALTER TABLE users ADD COLUMN reset_token TEXT',
     'ALTER TABLE users ADD COLUMN reset_token_expires TEXT',
+    'ALTER TABLE users ADD COLUMN telephone_normalized TEXT',
+    'ALTER TABLE users ADD COLUMN signup_ip TEXT',
+    'ALTER TABLE users ADD COLUMN last_login_at TEXT',
+    'ALTER TABLE users ADD COLUMN last_login_ip TEXT',
+    'ALTER TABLE users ADD COLUMN last_login_device TEXT',
   ];
   migrations.forEach(sql => {
     try { db.prepare(sql).run(); } catch(e) { /* colonne déjà existante */ }
@@ -229,6 +244,18 @@ function initDatabase() {
     console.warn('[DB] ADMIN_LOGIN_EMAIL / ADMIN_PASSWORD non définis dans .env — aucun compte admin créé.');
   }
 
+  // Backfill : normaliser les numéros de téléphone existants pour la détection de doublons
+  try {
+    const noNorm = db.prepare("SELECT id, telephone FROM users WHERE telephone IS NOT NULL AND telephone != '' AND (telephone_normalized IS NULL OR telephone_normalized = '')").all();
+    const setNorm = db.prepare('UPDATE users SET telephone_normalized = ? WHERE id = ?');
+    noNorm.forEach(u => setNorm.run(normalizePhone(u.telephone), u.id));
+    if (noNorm.length) {
+      console.log(`[DB] Backfill telephone_normalized pour ${noNorm.length} utilisateur(s)`);
+    }
+  } catch (e) {
+    console.error('[DB] Erreur backfill telephone_normalized:', e.message);
+  }
+
   console.log('[DB] Database initialized at', DB_PATH);
   return db;
 }
@@ -244,4 +271,24 @@ function generateReferralCode(db, userId) {
   return code;
 }
 
-module.exports = { getDb, initDatabase, generateReferralCode };
+// Normalise un numéro de téléphone pour la détection de doublons (chiffres uniquement,
+// en ignorant un éventuel "00" ou "0" de préfixe international/local)
+function normalizePhone(phone) {
+  if (!phone) return '';
+  let digits = String(phone).replace(/\D/g, '');
+  digits = digits.replace(/^00/, '');
+  if (digits.length > 9 && digits.startsWith('0')) digits = digits.slice(1);
+  return digits;
+}
+
+// Enregistre une action sensible effectuée par un admin (traçabilité / audit)
+function logAdminAction(db, adminId, action, targetUserId, details) {
+  try {
+    db.prepare('INSERT INTO admin_audit_log (admin_id, action, target_user_id, details) VALUES (?, ?, ?, ?)')
+      .run(adminId, action, targetUserId || null, details ? JSON.stringify(details) : null);
+  } catch (e) {
+    console.error('[DB] Erreur audit log:', e.message);
+  }
+}
+
+module.exports = { getDb, initDatabase, generateReferralCode, normalizePhone, logAdminAction };

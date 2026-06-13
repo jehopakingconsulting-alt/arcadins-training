@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const { getDb } = require('../database');
+const { getDb, normalizePhone, logAdminAction } = require('../database');
 const authMiddleware = require('../middleware/auth');
 const { sendUserEmail, testConnection, isConfigured } = require('../services/email');
 
@@ -177,8 +177,21 @@ router.put('/users/:id/profile', async (req, res) => {
 
     if (nom)       { updates.push('nom=?');       params.push(nom.trim()); }
     if (prenom)    { updates.push('prenom=?');     params.push(prenom.trim()); }
-    if (email)     { updates.push('email=?');      params.push(email.trim().toLowerCase()); }
-    if (telephone !== undefined) { updates.push('telephone=?'); params.push(telephone || null); }
+    if (email) {
+      const normalizedEmail = email.trim().toLowerCase();
+      const existingEmail = db.prepare('SELECT id FROM users WHERE email=? AND id!=?').get(normalizedEmail, user.id);
+      if (existingEmail) return res.status(409).json({ success: false, message: 'Cet email est déjà utilisé par un autre compte.' });
+      updates.push('email=?'); params.push(normalizedEmail);
+    }
+    if (telephone !== undefined) {
+      const phoneNormalized = normalizePhone(telephone);
+      if (phoneNormalized) {
+        const existingPhone = db.prepare('SELECT id FROM users WHERE telephone_normalized=? AND id!=?').get(phoneNormalized, user.id);
+        if (existingPhone) return res.status(409).json({ success: false, message: 'Ce numéro de téléphone est déjà utilisé par un autre compte.' });
+      }
+      updates.push('telephone=?'); params.push(telephone || null);
+      updates.push('telephone_normalized=?'); params.push(phoneNormalized || null);
+    }
     if (pays !== undefined)      { updates.push('pays=?');      params.push(pays || null); }
     if (plan !== undefined)      { updates.push('payment_plan=?'); params.push(plan || null); }
     if (notes !== undefined)     { updates.push('payment_notes=?'); params.push(notes || null); }
@@ -192,6 +205,7 @@ router.put('/users/:id/profile', async (req, res) => {
     params.push(req.params.id);
     db.prepare(`UPDATE users SET ${updates.join(',')} WHERE id=?`).run(...params);
 
+    logAdminAction(db, req.user.id, 'edit_profile', user.id, { fields: Object.keys(req.body) });
     return res.json({ success: true, message: 'Profil mis à jour.' });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
@@ -228,6 +242,7 @@ router.post('/users/:id/confirm-payment', (req, res) => {
       db.prepare("UPDATE modules SET status='not_started' WHERE user_id=? AND module_number=1 AND status='locked'").run(user.id);
     }
 
+    logAdminAction(db, req.user.id, 'confirm_payment', user.id, { plan, payment_method, notes });
     return res.json({ success: true, message: `Paiement confirmé. Accès à la formation accordé à ${user.prenom} ${user.nom}.` });
   } catch (err) {
     console.error('[Admin] Confirm payment:', err);
@@ -259,6 +274,7 @@ router.post('/users/:id/grant-access', (req, res) => {
       db.prepare("UPDATE modules SET status='not_started' WHERE user_id=? AND module_number=1 AND status='locked'").run(user.id);
     }
 
+    logAdminAction(db, req.user.id, 'grant_access', user.id, { reason });
     return res.json({ success: true, message: `Accès formation accordé à ${user.prenom} ${user.nom}.` });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
@@ -279,6 +295,7 @@ router.post('/users/:id/block', (req, res) => {
     db.prepare("UPDATE users SET status='blocked', payment_notes=COALESCE(?,payment_notes) WHERE id=?")
       .run(reason ? `[BLOQUÉ] ${reason}` : null, user.id);
 
+    logAdminAction(db, req.user.id, 'block_user', user.id, { reason });
     return res.json({ success: true, message: `Compte de ${user.prenom} ${user.nom} bloqué.` });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
@@ -297,6 +314,7 @@ router.post('/users/:id/unblock', (req, res) => {
     const newStatus = user.payment_confirmed ? 'active' : 'trial';
     db.prepare("UPDATE users SET status=? WHERE id=?").run(newStatus, user.id);
 
+    logAdminAction(db, req.user.id, 'unblock_user', user.id, { newStatus });
     return res.json({ success: true, message: `Compte de ${user.prenom} ${user.nom} débloqué.` });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
@@ -312,6 +330,8 @@ router.delete('/users/:id', (req, res) => {
     const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
     if (!user) return res.status(404).json({ success: false, message: 'Utilisateur introuvable.' });
     if (user.role === 'admin') return res.status(403).json({ success: false, message: 'Impossible de supprimer un admin.' });
+
+    logAdminAction(db, req.user.id, 'delete_user', user.id, { email: user.email, nom: user.nom, prenom: user.prenom });
 
     // Delete all related data
     db.prepare('DELETE FROM tests WHERE user_id=?').run(user.id);
@@ -337,6 +357,7 @@ router.post('/users/:id/reset-final-test', (req, res) => {
     db.prepare("DELETE FROM tests WHERE user_id=? AND test_type='final'").run(user.id);
     db.prepare("UPDATE users SET final_test_done=0, final_test_score=0, final_test_passed=0 WHERE id=?").run(user.id);
 
+    logAdminAction(db, req.user.id, 'reset_final_test', user.id, null);
     return res.json({ success: true, message: `Tentatives du test final réinitialisées pour ${user.prenom} ${user.nom}.` });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
@@ -360,6 +381,7 @@ router.post('/users/:id/reset-modules', (req, res) => {
     const ins = db.prepare('INSERT INTO modules (user_id,module_number,status) VALUES (?,?,?)');
     for (let i = 1; i <= 14; i++) ins.run(user.id, i, i === 1 ? 'not_started' : 'locked');
 
+    logAdminAction(db, req.user.id, 'reset_modules', user.id, null);
     return res.json({ success: true, message: `Progression modules réinitialisée pour ${user.prenom} ${user.nom}.` });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
@@ -377,6 +399,7 @@ router.post('/users/:id/revoke-access', (req, res) => {
 
     db.prepare("UPDATE users SET payment_confirmed=0, status='suspended', role='prospect' WHERE id=?").run(user.id);
 
+    logAdminAction(db, req.user.id, 'revoke_access', user.id, null);
     return res.json({ success: true, message: `Accès révoqué pour ${user.prenom} ${user.nom}.` });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
@@ -623,9 +646,29 @@ router.put('/affiliates/:id', (req, res) => {
       WHERE id = ?
     `).run(status, status, req.params.id);
 
+    logAdminAction(db, req.user.id, 'update_affiliate_commission', null, { commission_id: req.params.id, status });
     return res.json({ success: true, message: 'Statut mis à jour.' });
   } catch (err) {
     console.error('[Admin] Affiliates update:', err);
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
+//  AUDIT LOG — historique des actions sensibles admin
+// ════════════════════════════════════════════════════════════════════
+router.get('/audit-log', (req, res) => {
+  try {
+    const db = getDb();
+    const logs = db.prepare(`
+      SELECT l.*, a.email as admin_email, u.email as target_email, u.nom as target_nom, u.prenom as target_prenom
+      FROM admin_audit_log l
+      LEFT JOIN users a ON a.id = l.admin_id
+      LEFT JOIN users u ON u.id = l.target_user_id
+      ORDER BY l.created_at DESC LIMIT 200
+    `).all();
+    return res.json({ success: true, data: { logs, total: logs.length } });
+  } catch (err) {
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
   }
 });

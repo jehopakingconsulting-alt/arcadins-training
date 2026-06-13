@@ -48,6 +48,20 @@
     .pill-gray { background:#f0f0f0; color:#666; }
     .cert-preview-mini { border:2px solid var(--gold); border-radius:12px; padding:20px; text-align:center; background:linear-gradient(135deg,#fffbf0,white); }
     .cert-preview-mini .cert-num { font-family:monospace; font-size:.72rem; color:#999; margin-top:8px; word-break:break-all; }
+    .acc-form-group { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
+    .acc-form-group label { font-size:.78rem; font-weight:600; color:var(--blue-dark); }
+    .acc-form-group input, .acc-form-group select { border:2px solid #e0e6f0; border-radius:8px; padding:9px 11px; font-family:inherit; font-size:.85rem; transition:.25s; outline:none; }
+    .acc-form-group input:focus, .acc-form-group select:focus { border-color:var(--blue); }
+    .acc-row2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    @media(max-width:480px) { .acc-row2 { grid-template-columns:1fr; } }
+    .acc-msg { font-size:.8rem; border-radius:8px; padding:9px 12px; margin-top:8px; display:none; }
+    .acc-msg.ok { background:#eaf7f0; color:#0B5D3B; border:1.5px solid #a8ddc0; display:block; }
+    .acc-msg.err { background:#fff0f0; color:var(--red); border:1.5px solid #ffcccc; display:block; }
+    .btn-toggle-edit { background:transparent; border:1.5px solid var(--blue); color:var(--blue); border-radius:8px; padding:5px 12px; font-size:.78rem; font-weight:700; cursor:pointer; font-family:inherit; }
+    .btn-toggle-edit:hover { background:var(--blue); color:white; }
+    .acc-card-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+    .acc-card-head h3 { margin:0; }
+    .tutor-card-badge { display:inline-flex; align-items:center; gap:8px; border-radius:12px; padding:14px 16px; font-size:.85rem; margin-bottom:14px; }
   </style>
 </head>
 <body>
@@ -74,9 +88,71 @@
   <!-- Left column -->
   <div>
     <div class="card" style="margin-bottom:24px;">
-      <h3>👤 Mon Profil</h3>
+      <div class="acc-card-head">
+        <h3 style="margin:0;">👤 Mon Profil</h3>
+        <button class="btn-toggle-edit" id="toggleEditBtn" onclick="toggleEditProfile()" data-i18n="member.profile.edit">✏️ Modifier</button>
+      </div>
       <div id="profileInfo"></div>
+
+      <form id="editProfileForm" style="display:none;margin-top:16px;border-top:1px solid #f0f4f8;padding-top:16px;">
+        <div class="acc-row2">
+          <div class="acc-form-group">
+            <label data-i18n="acc.prenom">Prénom</label>
+            <input type="text" id="editPrenom" required />
+          </div>
+          <div class="acc-form-group">
+            <label data-i18n="acc.nom">Nom</label>
+            <input type="text" id="editNom" required />
+          </div>
+        </div>
+        <div class="acc-row2">
+          <div class="acc-form-group">
+            <label data-i18n="acc.tel">Téléphone</label>
+            <input type="tel" id="editTelephone" required />
+          </div>
+          <div class="acc-form-group">
+            <label data-i18n="acc.pays">Pays</label>
+            <input type="text" id="editPays" required />
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:6px;">
+          <button type="submit" class="btn-primary" style="font-size:.85rem;" data-i18n="member.profile.save">Enregistrer</button>
+          <button type="button" class="btn-toggle-edit" onclick="toggleEditProfile()" data-i18n="member.profile.cancel">Annuler</button>
+        </div>
+        <div class="acc-msg" id="editProfileMsg"></div>
+      </form>
     </div>
+
+    <div class="card" style="margin-bottom:24px;">
+      <div class="acc-card-head">
+        <h3 style="margin:0;" data-i18n="member.security.h">🔒 Sécurité</h3>
+        <button class="btn-toggle-edit" id="togglePassBtn" onclick="toggleChangePassword()" data-i18n="member.password.change">🔑 Mot de passe</button>
+      </div>
+      <p style="font-size:.82rem;color:var(--gray-text);margin:0;" id="securityHint" data-i18n="member.security.hint">Gérez votre mot de passe et la sécurité de votre compte.</p>
+
+      <form id="changePasswordForm" style="display:none;margin-top:16px;border-top:1px solid #f0f4f8;padding-top:16px;">
+        <div class="acc-form-group">
+          <label data-i18n="member.password.current">Mot de passe actuel</label>
+          <input type="password" id="curPass" required />
+        </div>
+        <div class="acc-row2">
+          <div class="acc-form-group">
+            <label data-i18n="acc.reset.newpass">Nouveau mot de passe</label>
+            <input type="password" id="newPass" required minlength="6" />
+          </div>
+          <div class="acc-form-group">
+            <label data-i18n="acc.reset.confirm">Confirmer le mot de passe</label>
+            <input type="password" id="newPass2" required minlength="6" />
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:6px;">
+          <button type="submit" class="btn-primary" style="font-size:.85rem;" data-i18n="member.profile.save">Enregistrer</button>
+          <button type="button" class="btn-toggle-edit" onclick="toggleChangePassword()" data-i18n="member.profile.cancel">Annuler</button>
+        </div>
+        <div class="acc-msg" id="changePassMsg"></div>
+      </form>
+    </div>
+
     <div class="card">
       <h3>🗺️ Mon Parcours</h3>
       <div class="progress-steps" id="progressSteps"></div>
@@ -128,10 +204,26 @@
       <div id="scoresContent"></div>
     </div>
 
+    <!-- Tutor space -->
+    <div class="card" id="tutorCard" style="margin-bottom:24px;">
+      <h3 data-i18n="member.tutor.h">🎓 Espace Tuteur</h3>
+      <div id="tutorContent"></div>
+    </div>
+
     <!-- Affiliate program -->
     <div class="card">
-      <h3 data-i18n="aff.mylink.h">🔗 Votre lien d'affiliation</h3>
+      <h3 data-i18n="aff.mylink.h">🔗 Mon Programme de Parrainage</h3>
       <p style="font-size:.85rem;color:var(--gray-text);margin-bottom:14px;" data-i18n="aff.p">Partagez votre lien d'affiliation personnel. Dès qu'une personne s'inscrit grâce à vous et souscrit à un forfait, vous recevez automatiquement une commission.</p>
+      <div class="stat-grid" id="affStatGrid" style="display:none;margin-bottom:16px;">
+        <div class="mini-stat">
+          <div class="mini-stat-num" id="affReferred">—</div>
+          <div class="mini-stat-lbl" data-i18n="aff.stat.referred">Filleuls</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-num" id="affPaid">—</div>
+          <div class="mini-stat-lbl" data-i18n="aff.stat.paid">Commissions payées</div>
+        </div>
+      </div>
       <a href="parrainage.html" class="btn-primary" style="font-size:.85rem;" data-i18n="member.go.affiliate">Voir mon programme de parrainage →</a>
     </div>
   </div>
@@ -175,12 +267,13 @@ async function init() {
       <div class="info-row"><span class="info-label">${lang==='fr'?'Forfait':'Plan'}</span><span class="info-value">${u.payment_plan||'—'}</span></div>
       <div class="info-row"><span class="info-label">${lang==='fr'?'Niveau':'Level'}</span><span class="info-value">${u.qualification_level||'—'}</span></div>
       <div class="info-row"><span class="info-label">${lang==='fr'?'Inscrit le':'Member since'}</span><span class="info-value">${new Date(u.created_at).toLocaleDateString(lang==='fr'?'fr-CA':'en-CA')}</span></div>
-      ${accessRow}`;
+      ${accessRow}
+      ${u.last_login_at ? `<div class="info-row"><span class="info-label">${lang==='fr'?'Dernière connexion':'Last login'}</span><span class="info-value" style="font-size:.78rem;">${new Date(u.last_login_at).toLocaleString(lang==='fr'?'fr-CA':'en-CA')}${u.last_login_ip?` · ${u.last_login_ip}`:''}</span></div>` : ''}`;
 
     // Steps
     const steps = [
       { key:'registered', label: lang==='fr'?'Inscription':'Registration', icon:'✅', done: true, link: null },
-      { key:'trial', label: lang==='fr'?'Test d'Essai':'Trial', icon: u.trial_done?'✅':'🔵', done:!!u.trial_done, link: u.trial_done?null:'essai-gratuit.html', linkLabel: lang==='fr'?'Faire le test →':'Take test →' },
+      { key:'trial', label: lang==='fr'?"Test d'Essai":'Trial', icon: u.trial_done?'✅':'🔵', done:!!u.trial_done, link: u.trial_done?null:'essai-gratuit.html', linkLabel: lang==='fr'?'Faire le test →':'Take test →' },
       { key:'payment', label: lang==='fr'?'Paiement':'Payment', icon: u.payment_confirmed?'✅':'🔵', done:!!u.payment_confirmed, link: u.payment_confirmed||!u.trial_done?null:'forfaits.html', linkLabel: lang==='fr'?'Choisir un forfait →':'Choose plan →' },
       { key:'qual', label: lang==='fr'?'Test de qualification':'Placement test', icon: u.qualification_done?'✅':(u.payment_confirmed&&!u.access_expired)?'🔵':'🔒', done:!!u.qualification_done, link: (u.qualification_done||!u.payment_confirmed)?null:(u.access_expired?'forfaits.html':'qualification.html'), linkLabel: u.access_expired?(lang==='fr'?'Renouveler →':'Renew →'):(lang==='fr'?'Passer le test →':'Take test →') },
       { key:'formation', label: lang==='fr'?'Formation':'Training', icon: u.all_modules_done?'✅':(u.qualification_done&&!u.access_expired)?'🔵':'🔒', done:!!u.all_modules_done, link: !u.qualification_done?null:(u.access_expired?'forfaits.html':'formation.html'), linkLabel: u.access_expired?(lang==='fr'?'Renouveler →':'Renew →'):(lang==='fr'?'Ma formation →':'My training →') },
@@ -222,7 +315,7 @@ async function init() {
 
     // Scores summary
     const scores = [];
-    if (u.trial_done) scores.push({ label: lang==='fr'?'Test d'Essai':'Trial', val: `${u.trial_score||0}/10` });
+    if (u.trial_done) scores.push({ label: lang==='fr'?"Test d'Essai":'Trial', val: `${u.trial_score||0}/10` });
     if (u.qualification_done) scores.push({ label: lang==='fr'?'Qualification':'Placement', val: `${u.qualification_score||0}/20`, sub: u.qualification_level });
     if (u.final_test_done) scores.push({ label: lang==='fr'?'Test final':'Final test', val: `${Math.round(u.final_test_score||0)}%`, pill: u.final_test_passed?'green':'orange' });
 
@@ -233,10 +326,128 @@ async function init() {
       ? scores.map(s=>`<div class="info-row"><span class="info-label">${s.label}</span><span class="info-value">${s.val} ${s.sub?`<span class="badge-pill pill-blue">${s.sub}</span>`:''}${s.pill?`<span class="badge-pill pill-${s.pill}">${s.pill==='green'?lang==='fr'?'Réussi':'Passed':lang==='fr'?'Échoué':'Failed'}</span>`:''}</span></div>`).join('')
       : `<p style="color:var(--gray-text);font-size:.85rem;">${lang==='fr'?'Aucun score enregistré pour le moment.':'No scores recorded yet.'}</p>`;
 
+    // Edit profile form prefill
+    document.getElementById('editPrenom').value = u.prenom || '';
+    document.getElementById('editNom').value = u.nom || '';
+    document.getElementById('editTelephone').value = u.telephone || '';
+    document.getElementById('editPays').value = u.pays || '';
+
+    // Tutor space card
+    renderTutorCard(u, lang);
+
+    // Affiliate stats
+    try {
+      const ar = await AffiliateAPI.me();
+      const data = ar.data || ar;
+      document.getElementById('affStatGrid').style.display = 'grid';
+      document.getElementById('affReferred').textContent = data.referred_count ?? 0;
+      document.getElementById('affPaid').textContent = (data.totals && data.totals.paid ? data.totals.paid : 0) + ' $';
+    } catch(e) {}
+
   } catch(e) {
     document.getElementById('loadingState').innerHTML = `<p style="color:red;text-align:center;">${e.message}</p>`;
   }
 }
+
+function renderTutorCard(u, lang) {
+  const el = document.getElementById('tutorContent');
+  if (!u.is_tuteur_candidat) {
+    el.innerHTML = `
+      <p style="font-size:.85rem;color:var(--gray-text);margin-bottom:14px;" data-i18n="member.tutor.cta.p">Vous souhaitez devenir tuteur ARCADINS et accompagner de futurs candidats au TEF &amp; TCF Canada ?</p>
+      <a href="tuteur.html" class="btn-primary" style="font-size:.85rem;" data-i18n="member.tutor.cta.btn">Devenir tuteur →</a>`;
+    return;
+  }
+
+  if (!u.tuteur_payment_confirmed) {
+    el.innerHTML = `
+      <div class="tutor-card-badge" style="background:#fff3e0;color:#e65100;">⏳ <span data-i18n="member.tutor.pending">Votre candidature est enregistrée. Réglez les frais de dossier pour accéder à la formation tuteur.</span></div>
+      <a href="tuteur-espace.html" class="btn-primary" style="font-size:.85rem;" data-i18n="member.tutor.go">Accéder à mon espace tuteur →</a>`;
+    return;
+  }
+
+  if (u.tuteur_test_done && u.tuteur_test_passed) {
+    el.innerHTML = `
+      <div class="tutor-card-badge" style="background:#e8f5e9;color:#2e7d32;">🏆 <span data-i18n="member.tutor.passed">Félicitations, vous êtes habilité comme tuteur ARCADINS !</span></div>
+      <div class="info-row"><span class="info-label">${lang==='fr'?'Score test':'Test score'}</span><span class="info-value">${u.tuteur_test_score||0}/30</span></div>
+      <a href="tuteur-espace.html" class="btn-primary" style="font-size:.85rem;margin-top:10px;" data-i18n="member.tutor.go">Accéder à mon espace tuteur →</a>`;
+    return;
+  }
+
+  if (u.tuteur_test_done && !u.tuteur_test_passed) {
+    el.innerHTML = `
+      <div class="tutor-card-badge" style="background:#fff0f0;color:var(--red);">📚 <span data-i18n="member.tutor.failed">Score insuffisant au test d'habilitation. Vous pouvez le retenter.</span></div>
+      <a href="tuteur-espace.html" class="btn-primary" style="font-size:.85rem;" data-i18n="member.tutor.go">Accéder à mon espace tuteur →</a>`;
+    return;
+  }
+
+  const pct = Math.round(((u.tuteur_current_module||1)-1)/5*100);
+  el.innerHTML = `
+    <div class="prog-bar-wrap">
+      <div class="prog-bar-label"><span data-i18n="member.prog.label">Avancement</span><span>${pct}%</span></div>
+      <div class="prog-bar"><div class="prog-bar-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div style="font-size:.85rem;color:var(--gray-text);margin-bottom:14px;">${u.tuteur_all_modules_done?(lang==='fr'?'✅ Formation tuteur terminée, prêt pour le test !':'✅ Tutor training complete, ready for the test!'):(lang==='fr'?`Module actuel : ${u.tuteur_current_module||1} / 5`:`Current module: ${u.tuteur_current_module||1} / 5`)}</div>
+    <a href="tuteur-espace.html" class="btn-primary" style="font-size:.85rem;" data-i18n="member.tutor.go">Accéder à mon espace tuteur →</a>`;
+}
+
+function toggleEditProfile() {
+  const form = document.getElementById('editProfileForm');
+  const info = document.getElementById('profileInfo');
+  const showing = form.style.display === 'none';
+  form.style.display = showing ? 'block' : 'none';
+  info.style.display = showing ? 'none' : 'block';
+}
+
+function toggleChangePassword() {
+  const form = document.getElementById('changePasswordForm');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const msg = document.getElementById('editProfileMsg');
+  msg.className = 'acc-msg';
+  msg.style.display = 'none';
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+  try {
+    await AuthAPI.updateProfile({
+      prenom: document.getElementById('editPrenom').value.trim(),
+      nom: document.getElementById('editNom').value.trim(),
+      telephone: document.getElementById('editTelephone').value.trim(),
+      pays: document.getElementById('editPays').value.trim()
+    });
+    msg.textContent = lang==='fr' ? 'Profil mis à jour avec succès.' : 'Profile updated successfully.';
+    msg.className = 'acc-msg ok';
+    setTimeout(() => init(), 800);
+  } catch (err) {
+    msg.textContent = err.message;
+    msg.className = 'acc-msg err';
+  }
+});
+
+document.getElementById('changePasswordForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const msg = document.getElementById('changePassMsg');
+  msg.className = 'acc-msg';
+  msg.style.display = 'none';
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+  const newPass = document.getElementById('newPass').value;
+  const newPass2 = document.getElementById('newPass2').value;
+  if (newPass !== newPass2) {
+    msg.textContent = lang==='fr' ? 'Les mots de passe ne correspondent pas.' : 'Passwords do not match.';
+    msg.className = 'acc-msg err';
+    return;
+  }
+  try {
+    const res = await AuthAPI.changePassword(document.getElementById('curPass').value, newPass);
+    msg.textContent = res.message;
+    msg.className = 'acc-msg ok';
+    document.getElementById('changePasswordForm').reset();
+  } catch (err) {
+    msg.textContent = err.message;
+    msg.className = 'acc-msg err';
+  }
+});
 
 function downloadCert(e) {
   e.preventDefault();

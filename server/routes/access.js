@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
-const { getDb, generateReferralCode } = require('../database');
+const { getDb, generateReferralCode, normalizePhone } = require('../database');
 const authMiddleware = require('../middleware/auth');
 const { sendAdminNotification, sendWelcomeEmail, sendPasswordResetEmail } = require('../services/email');
 const { isAccessExpired } = require('../middleware/stepGuard');
@@ -58,6 +58,9 @@ router.post('/register', authLimiter, async (req, res) => {
     }
 
     const db = getDb();
+    const clientIp = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.ip;
+    const userAgent = req.headers['user-agent'] || null;
+    const phoneNormalized = normalizePhone(telephone);
 
     // Check if email already exists
     const existing = db.prepare('SELECT * FROM users WHERE email = ?').get(email.toLowerCase().trim());
@@ -65,6 +68,8 @@ router.post('/register', authLimiter, async (req, res) => {
       // If they have a password and match, allow re-login
       if (password && existing.password_hash && bcrypt.compareSync(password, existing.password_hash)) {
         const token = signToken(existing);
+        db.prepare('UPDATE users SET last_login_at = ?, last_login_ip = ?, last_login_device = ? WHERE id = ?')
+          .run(new Date().toISOString(), clientIp, userAgent, existing.id);
         return res.json({ success: true, token, user: sanitizeUser(existing), message: 'Reconnexion réussie.' });
       }
       // Return existing token for prospect re-entry (uniquement si aucun
@@ -72,9 +77,19 @@ router.post('/register', authLimiter, async (req, res) => {
       // qui connaissant l'email pourrait usurper le compte sans mot de passe)
       if (!existing.password_hash && (existing.role === 'prospect' || existing.trial_done === 0)) {
         const token = signToken(existing);
+        db.prepare('UPDATE users SET last_login_at = ?, last_login_ip = ?, last_login_device = ? WHERE id = ?')
+          .run(new Date().toISOString(), clientIp, userAgent, existing.id);
         return res.json({ success: true, token, user: sanitizeUser(existing), message: 'Compte existant récupéré.' });
       }
       return res.status(409).json({ success: false, message: 'Un compte existe déjà avec cet email. Veuillez vous connecter.' });
+    }
+
+    // Un seul compte par numéro de téléphone
+    if (phoneNormalized) {
+      const existingPhone = db.prepare('SELECT id FROM users WHERE telephone_normalized = ?').get(phoneNormalized);
+      if (existingPhone) {
+        return res.status(409).json({ success: false, message: 'Un compte existe déjà avec ce numéro de téléphone. Veuillez vous connecter.' });
+      }
     }
 
     // Hash password if provided
@@ -92,12 +107,12 @@ router.post('/register', authLimiter, async (req, res) => {
 
     // Create user
     const result = db.prepare(`
-      INSERT INTO users (nom, prenom, email, telephone, pays, password_hash, role, status, lang, referred_by)
-      VALUES (?, ?, ?, ?, ?, ?, 'prospect', 'trial', ?, ?)
+      INSERT INTO users (nom, prenom, email, telephone, telephone_normalized, pays, password_hash, role, status, lang, referred_by, signup_ip, last_login_at, last_login_ip, last_login_device)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'prospect', 'trial', ?, ?, ?, ?, ?, ?)
     `).run(
       nom.trim(), prenom.trim(), email.toLowerCase().trim(),
-      telephone.trim(), pays.trim(), password_hash,
-      lang || 'fr', referredBy
+      telephone.trim(), phoneNormalized, pays.trim(), password_hash,
+      lang || 'fr', referredBy, clientIp, new Date().toISOString(), clientIp, userAgent
     );
 
     const userId = result.lastInsertRowid;
@@ -155,6 +170,14 @@ router.post('/login', authLimiter, async (req, res) => {
     if (!bcrypt.compareSync(password, user.password_hash)) {
       return res.status(401).json({ success: false, message: 'Email ou mot de passe incorrect.' });
     }
+
+    const clientIp = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.ip;
+    const userAgent = req.headers['user-agent'] || null;
+    db.prepare('UPDATE users SET last_login_at = ?, last_login_ip = ?, last_login_device = ? WHERE id = ?')
+      .run(new Date().toISOString(), clientIp, userAgent, user.id);
+    user.last_login_at = new Date().toISOString();
+    user.last_login_ip = clientIp;
+    user.last_login_device = userAgent;
 
     const token = signToken(user);
 
@@ -240,6 +263,74 @@ router.post('/reset-password', authLimiter, async (req, res) => {
     return res.json({ success: true, message: 'Mot de passe réinitialisé avec succès. Vous pouvez maintenant vous connecter.' });
   } catch (err) {
     console.error('[Access] Reset-password error:', err);
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// PUT /api/access/profile
+router.put('/profile', authMiddleware, (req, res) => {
+  try {
+    const { nom, prenom, telephone, pays, lang } = req.body;
+    const db = getDb();
+
+    const fields = [];
+    const values = [];
+    if (nom !== undefined) { fields.push('nom = ?'); values.push(String(nom).trim()); }
+    if (prenom !== undefined) { fields.push('prenom = ?'); values.push(String(prenom).trim()); }
+    if (telephone !== undefined) {
+      if (String(telephone).replace(/\D/g, '').length < 7) {
+        return res.status(400).json({ success: false, message: 'Numéro de téléphone invalide (minimum 7 chiffres).' });
+      }
+      const phoneNormalized = normalizePhone(telephone);
+      const existingPhone = db.prepare('SELECT id FROM users WHERE telephone_normalized = ? AND id != ?').get(phoneNormalized, req.user.id);
+      if (existingPhone) {
+        return res.status(409).json({ success: false, message: 'Un compte existe déjà avec ce numéro de téléphone.' });
+      }
+      fields.push('telephone = ?'); values.push(String(telephone).trim());
+      fields.push('telephone_normalized = ?'); values.push(phoneNormalized);
+    }
+    if (pays !== undefined) { fields.push('pays = ?'); values.push(String(pays).trim()); }
+    if (lang !== undefined) { fields.push('lang = ?'); values.push(String(lang).trim()); }
+
+    if (!fields.length) {
+      return res.status(400).json({ success: false, message: 'Aucune donnée à mettre à jour.' });
+    }
+
+    values.push(req.user.id);
+    db.prepare(`UPDATE users SET ${fields.join(', ')} WHERE id = ?`).run(...values);
+
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
+    return res.json({ success: true, user: sanitizeUser(user), message: 'Profil mis à jour avec succès.' });
+  } catch (err) {
+    console.error('[Access] Update profile error:', err);
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// PUT /api/access/password
+router.put('/password', authMiddleware, (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ success: false, message: 'Mot de passe actuel et nouveau mot de passe requis.' });
+    }
+    if (newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: 'Le nouveau mot de passe doit contenir au moins 6 caractères.' });
+    }
+
+    const db = getDb();
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
+
+    if (!user.password_hash || !bcrypt.compareSync(currentPassword, user.password_hash)) {
+      return res.status(401).json({ success: false, message: 'Mot de passe actuel incorrect.' });
+    }
+
+    const password_hash = bcrypt.hashSync(newPassword, 10);
+    db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(password_hash, req.user.id);
+
+    return res.json({ success: true, message: 'Mot de passe modifié avec succès.' });
+  } catch (err) {
+    console.error('[Access] Change password error:', err);
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
   }
 });

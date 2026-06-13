@@ -5,9 +5,18 @@ require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const fs = require('fs');
 
 const { initDatabase } = require('./database');
+
+// En production, refuser de démarrer avec une clé JWT absente ou par défaut
+// (sinon les tokens d'authentification seraient signés avec une clé connue/publique)
+const WEAK_JWT_SECRET = 'changeme_super_secret_jwt_key_arcadins_2024';
+if (process.env.NODE_ENV === 'production' && (!process.env.JWT_SECRET || process.env.JWT_SECRET === WEAK_JWT_SECRET)) {
+  console.error('[Auth] ❌ JWT_SECRET manquant ou par défaut en production. Définissez une valeur forte dans les variables d\'environnement avant de démarrer.');
+  process.exit(1);
+}
 
 // Initialize DB before anything else
 initDatabase();
@@ -15,6 +24,23 @@ initDatabase();
 const app = express();
 // Render injecte automatiquement $PORT (10000 en général)
 const PORT = process.env.PORT || 3000;
+
+// Fait confiance au reverse proxy (Render) pour récupérer la vraie IP du
+// client via X-Forwarded-For (utilisé pour la sécurité et l'anti-fraude)
+app.set('trust proxy', 1);
+
+// ─── SÉCURITÉ / ANTI-CLONAGE ───────────────────────────────────────────────────
+app.use(helmet({
+  contentSecurityPolicy: false, // le frontend charge des ressources cross-origin (Stripe, polices...)
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+}));
+app.disable('x-powered-by');
+app.use((req, res, next) => {
+  // Balise de propriété — permet d'identifier les copies non autorisées de l'API
+  res.setHeader('X-Application', 'ARCADINS Training Center');
+  res.setHeader('X-Copyright', `(c) ${new Date().getFullYear()} ARCADINS Training Center - All rights reserved`);
+  next();
+});
 
 // ─── CORS ────────────────────────────────────────────────────────────────────
 const allowedOrigins = [
@@ -60,6 +86,16 @@ app.use('/certificates', express.static(certsDir));
 // Serve the main frontend (static HTML from parent directory)
 const frontendDir = path.join(__dirname, '..');
 app.use(express.static(frontendDir));
+
+// ─── RATE LIMITING GLOBAL (anti-scraping / anti-abus) ────────────────────────
+const rateLimit = require('express-rate-limit');
+app.use('/api', rateLimit({
+  windowMs: 60 * 1000,
+  max: 120,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Trop de requêtes. Veuillez réessayer dans un instant.' },
+}));
 
 // ─── API ROUTES ──────────────────────────────────────────────────────────────
 app.use('/api/access', require('./routes/access'));

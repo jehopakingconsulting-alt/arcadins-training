@@ -1,5 +1,9 @@
 User-agent: *
 Allow: /
 Disallow: /pages/dashboard.html
+Disallow: /pages/espace-membre.html
+Disallow: /pages/tuteur-espace.html
+Disallow: /pages/admin/
+Disallow: /api/
 
 Sitemap: https://www.arcadins-training.com/sitemap.xml

@@ -3,6 +3,23 @@
 // Wrapper autour de fetch pour communiquer avec le backend
 // ============================================================
 
+// ---- Anti-clonage / propriété intellectuelle ----
+// Cette plateforme et son code source sont la propriété exclusive d'ARCADINS
+// Training Center. Toute copie, reproduction ou réutilisation non autorisée
+// de cette application ou de son API est interdite.
+(function () {
+  try {
+    console.log('%c⚠️ ARCADINS Training Center', 'color:#1565c0;font-size:16px;font-weight:bold;');
+    console.log('%cCette application et son API sont la propriété exclusive d\'ARCADINS Training Center. Toute copie ou reproduction non autorisée est interdite et fera l\'objet de poursuites.', 'color:#666;font-size:12px;');
+    if (!document.querySelector('meta[name="copyright"]')) {
+      const meta = document.createElement('meta');
+      meta.name = 'copyright';
+      meta.content = `© ${new Date().getFullYear()} ARCADINS Training Center — Tous droits réservés`;
+      document.head.appendChild(meta);
+    }
+  } catch (e) {}
+})();
+
 // API_BASE : défini par config.js (auto-détection localhost/production)
 const API_BASE = window.ARCADINS_API_BASE || (
   ['localhost','127.0.0.1'].includes(window.location.hostname)
@@ -53,6 +70,12 @@ const AuthAPI = {
     if (res.user) setUser(res.user);
     return res;
   },
+  async updateProfile(data) {
+    const res = await apiFetch('/access/profile', { method: 'PUT', body: JSON.stringify(data) });
+    if (res.user) setUser(res.user);
+    return res;
+  },
+  changePassword: (currentPassword, newPassword) => apiFetch('/access/password', { method: 'PUT', body: JSON.stringify({ currentPassword, newPassword }) }),
   logout() { clearToken(); window.location.href = getBasePath() + 'pages/acces.html'; }
 };
 
