@@ -108,6 +108,20 @@ const AdminAPI = {
   sendEmail: (id, subj, body) => apiFetch(`/admin/users/${id}/email`, { method: 'POST', body: JSON.stringify({ subject: subj, body }) })
 };
 
+// ---- Tuteur API ----
+const TuteurAPI = {
+  async postuler(data) {
+    const res = await apiFetch('/tuteur/postuler', { method: 'POST', body: JSON.stringify(data) });
+    if (res.token) { setToken(res.token); setUser(res.user); }
+    return res;
+  },
+  createCheckout: () => apiFetch('/tuteur/create-checkout-session', { method: 'POST' }),
+  verifyPayment: (sessionId) => apiFetch(`/tuteur/verify-payment?session_id=${encodeURIComponent(sessionId)}`),
+  modules: () => apiFetch('/tuteur/modules'),
+  completeModule: (num) => apiFetch(`/tuteur/modules/${num}/complete`, { method: 'POST' }),
+  submitTest: (score) => apiFetch('/tuteur/test/submit', { method: 'POST', body: JSON.stringify({ score }) })
+};
+
 // ---- Helper: get base path (root vs pages/) ----
 function getBasePath() {
   return window.location.pathname.includes('/pages/') ? '../' : '';

@@ -195,6 +195,18 @@ const TEST_CONFIG = {
     total: 10,
     timeLimit: null
   },
+  strategies: {
+    title: "Stratégies d'examen",
+    categories: [{ cat: 'strategies', count: 10 }],
+    total: 10,
+    timeLimit: null
+  },
+  culture: {
+    title: "Culture canadienne",
+    categories: [{ cat: 'culture', count: 10 }],
+    total: 10,
+    timeLimit: null
+  },
   tuteur: {
     title: "Test d'habilitation TUTEUR",
     categories: [

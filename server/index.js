@@ -46,6 +46,7 @@ app.use(cors({
 // ─── BODY PARSERS ────────────────────────────────────────────────────────────
 // Raw body for Stripe webhooks (must come before json parser for that route)
 app.use('/api/plans/stripe-webhook', express.raw({ type: 'application/json' }));
+app.use('/api/tuteur/webhook', express.raw({ type: 'application/json' }));
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
@@ -70,6 +71,7 @@ app.use('/api/final-test', require('./routes/finalTest'));
 app.use('/api/certificate', require('./routes/certificate'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/contact', require('./routes/contact'));
+app.use('/api/tuteur', require('./routes/tuteur'));
 
 // ─── HEALTH CHECK ────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {

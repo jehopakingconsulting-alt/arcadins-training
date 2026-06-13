@@ -262,6 +262,8 @@
       <button class="tab-btn" onclick="showTab('lecture',this)" data-i18n="tests.tab.lecture">📄 Compréhension écrite</button>
       <button class="tab-btn" onclick="showTab('expression',this)" data-i18n="tests.tab.expression">✍️ Expression écrite</button>
       <button class="tab-btn" onclick="showTab('oral',this)" data-i18n="tests.tab.oral">🎤 Expression orale</button>
+      <button class="tab-btn" onclick="showTab('strategies',this)" data-i18n="tests.tab.strategies">🎯 Stratégies</button>
+      <button class="tab-btn" onclick="showTab('culture',this)" data-i18n="tests.tab.culture">🍁 Culture canadienne</button>
       <button class="tab-btn" onclick="showTab('semiofficiel',this)" data-i18n="tests.tab.semiofficiel" style="background:linear-gradient(135deg,var(--red-dark),var(--red));color:white;border-color:var(--red);">🏅 Test semi-officiel</button>
     </div>
 
@@ -485,6 +487,62 @@
 
 
     <!-- ================================================ -->
+    <!-- TAB STRATÉGIES D'EXAMEN                          -->
+    <!-- ================================================ -->
+    <div class="tab-content" id="tab-strategies">
+      <div class="quiz-wrap" id="quiz-strategies">
+        <div class="quiz-box">
+          <div class="quiz-header">
+            <h3 data-i18n="tests.strat.title">🎯 Stratégies d'examen</h3>
+            <div class="quiz-timer" id="timer-strategies">⏱️ <span id="time-strategies">00:00</span></div>
+          </div>
+          <p style="color:var(--gray-text);font-size:.88rem;margin-bottom:16px;" data-i18n="tests.strat.desc">
+            10 questions · Techniques et astuces pour réussir le TEF/TCF
+          </p>
+          <div class="quiz-progress-label">
+            <span id="prog-label-strategies">Question 1 / 10</span>
+            <span id="prog-score-strategies">Score : 0 / 0</span>
+          </div>
+          <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="prog-fill-strategies" style="width:0%"></div></div>
+          <div id="questions-strategies"></div>
+          <div class="quiz-nav">
+            <span id="feedback-strategies" style="font-size:.85rem;font-weight:600;"></span>
+            <button class="btn-next" id="next-strategies" onclick="nextQuestion('strategies')">Question suivante →</button>
+          </div>
+        </div>
+        <div class="result-panel" id="result-strategies"></div>
+      </div>
+    </div>
+
+    <!-- ================================================ -->
+    <!-- TAB CULTURE CANADIENNE                           -->
+    <!-- ================================================ -->
+    <div class="tab-content" id="tab-culture">
+      <div class="quiz-wrap" id="quiz-culture">
+        <div class="quiz-box">
+          <div class="quiz-header">
+            <h3 data-i18n="tests.cult.title">🍁 Culture canadienne</h3>
+            <div class="quiz-timer" id="timer-culture">⏱️ <span id="time-culture">00:00</span></div>
+          </div>
+          <p style="color:var(--gray-text);font-size:.88rem;margin-bottom:16px;" data-i18n="tests.cult.desc">
+            10 questions · Société, institutions et vie au Canada/Québec
+          </p>
+          <div class="quiz-progress-label">
+            <span id="prog-label-culture">Question 1 / 10</span>
+            <span id="prog-score-culture">Score : 0 / 0</span>
+          </div>
+          <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="prog-fill-culture" style="width:0%"></div></div>
+          <div id="questions-culture"></div>
+          <div class="quiz-nav">
+            <span id="feedback-culture" style="font-size:.85rem;font-weight:600;"></span>
+            <button class="btn-next" id="next-culture" onclick="nextQuestion('culture')">Question suivante →</button>
+          </div>
+        </div>
+        <div class="result-panel" id="result-culture"></div>
+      </div>
+    </div>
+
+    <!-- ================================================ -->
     <!-- TAB SEMI-OFFICIEL — 15 QUESTIONS                 -->
     <!-- ================================================ -->
     <div class="tab-content" id="tab-semiofficiel">
@@ -575,6 +633,16 @@
 
 // ===== QUESTION BANKS =====
 const quizData = {
+
+  strategies: {
+    title: "Stratégies d'examen",
+    questions: []
+  },
+
+  culture: {
+    title: "Culture canadienne",
+    questions: []
+  },
 
   niveau: {
     title: "Test de niveau",
@@ -1175,7 +1243,7 @@ function showTab(id, btn) {
   if (btn) btn.classList.add('active');
 
   // Init quiz on first open
-  if (['niveau', 'grammaire', 'vocabulaire', 'lecture'].includes(id)) {
+  if (['niveau', 'grammaire', 'vocabulaire', 'lecture', 'strategies', 'culture'].includes(id)) {
     if (!state[id]) initQuiz(id);
   }
   if (id === 'expression' && !writingInitialized) initWriting();
@@ -1416,6 +1484,8 @@ function initAllQuizzesRandom() {
     quizData.grammaire.questions = buildQuizQuestions('grammaire');
     quizData.vocabulaire.questions = buildQuizQuestions('vocabulaire');
     quizData.lecture.questions = buildQuizQuestions('lecture');
+    quizData.strategies.questions = buildQuizQuestions('strategies');
+    quizData.culture.questions = buildQuizQuestions('culture');
     // Ajouter la config semi-officiel
     quizData.semiofficiel = {
       title: "Test semi-officiel",

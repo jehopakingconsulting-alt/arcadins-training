@@ -109,6 +109,17 @@ function initDatabase() {
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS tuteur_modules (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      module_number INTEGER NOT NULL,
+      status TEXT DEFAULT 'locked',
+      started_at TEXT,
+      completed_at TEXT,
+      FOREIGN KEY (user_id) REFERENCES users(id),
+      UNIQUE(user_id, module_number)
+    );
   `);
 
   // Insert default admin settings
@@ -127,6 +138,16 @@ function initDatabase() {
     'ALTER TABLE users ADD COLUMN payment_notes TEXT',
     'ALTER TABLE users ADD COLUMN stripe_session_id TEXT',
     'ALTER TABLE users ADD COLUMN access_expires_at TEXT',
+    'ALTER TABLE users ADD COLUMN is_tuteur_candidat INTEGER DEFAULT 0',
+    'ALTER TABLE users ADD COLUMN tuteur_application TEXT',
+    'ALTER TABLE users ADD COLUMN tuteur_payment_confirmed INTEGER DEFAULT 0',
+    'ALTER TABLE users ADD COLUMN tuteur_payment_date TEXT',
+    'ALTER TABLE users ADD COLUMN tuteur_stripe_session_id TEXT',
+    'ALTER TABLE users ADD COLUMN tuteur_current_module INTEGER DEFAULT 1',
+    'ALTER TABLE users ADD COLUMN tuteur_all_modules_done INTEGER DEFAULT 0',
+    'ALTER TABLE users ADD COLUMN tuteur_test_done INTEGER DEFAULT 0',
+    'ALTER TABLE users ADD COLUMN tuteur_test_score REAL DEFAULT 0',
+    'ALTER TABLE users ADD COLUMN tuteur_test_passed INTEGER DEFAULT 0',
   ];
   migrations.forEach(sql => {
     try { db.prepare(sql).run(); } catch(e) { /* colonne déjà existante */ }
