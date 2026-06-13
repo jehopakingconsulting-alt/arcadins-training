@@ -199,7 +199,7 @@ document.getElementById('accessForm').addEventListener('submit', async function(
   document.getElementById('accessError').style.display = 'none';
 
   try {
-    await AuthAPI.register({ nom, prenom, email, telephone: tel, pays, lang: currentLang });
+    await AuthAPI.register({ nom, prenom, email, telephone: tel, pays, lang: currentLang, ref: localStorage.getItem('arc_ref') || null });
     window.location.href = 'essai-gratuit.html';
   } catch(err) {
     document.getElementById('accessError').textContent = err.message;

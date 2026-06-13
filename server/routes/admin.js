@@ -564,4 +564,61 @@ router.post('/email/test-send', async (req, res) => {
   }
 });
 
+// ════════════════════════════════════════════════════════════════════
+//  AFFILIATION — Programme de parrainage
+// ════════════════════════════════════════════════════════════════════
+
+// GET /api/admin/affiliates — liste de toutes les commissions
+router.get('/affiliates', (req, res) => {
+  try {
+    const db = getDb();
+    const commissions = db.prepare(`
+      SELECT ac.id, ac.plan, ac.amount, ac.status, ac.created_at, ac.paid_at,
+             r.id as referrer_id, r.nom as referrer_nom, r.prenom as referrer_prenom, r.email as referrer_email, r.referral_code,
+             u.id as referred_id, u.nom as referred_nom, u.prenom as referred_prenom, u.email as referred_email
+      FROM affiliate_commissions ac
+      JOIN users r ON r.id = ac.referrer_id
+      JOIN users u ON u.id = ac.referred_user_id
+      ORDER BY ac.created_at DESC
+    `).all();
+
+    const totals = commissions.reduce((acc, c) => {
+      acc.total += c.amount;
+      if (c.status === 'paid') acc.paid += c.amount;
+      else acc.pending += c.amount;
+      return acc;
+    }, { total: 0, pending: 0, paid: 0 });
+
+    return res.json({ success: true, data: { commissions, totals } });
+  } catch (err) {
+    console.error('[Admin] Affiliates list:', err);
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// PUT /api/admin/affiliates/:id — met à jour le statut d'une commission (pending/paid)
+router.put('/affiliates/:id', (req, res) => {
+  try {
+    const db = getDb();
+    const { status } = req.body;
+    if (!['pending', 'paid'].includes(status)) {
+      return res.status(400).json({ success: false, message: 'Statut invalide.' });
+    }
+    const commission = db.prepare('SELECT id FROM affiliate_commissions WHERE id = ?').get(req.params.id);
+    if (!commission) {
+      return res.status(404).json({ success: false, message: 'Commission introuvable.' });
+    }
+    db.prepare(`
+      UPDATE affiliate_commissions
+      SET status = ?, paid_at = CASE WHEN ? = 'paid' THEN datetime('now') ELSE NULL END
+      WHERE id = ?
+    `).run(status, status, req.params.id);
+
+    return res.json({ success: true, message: 'Statut mis à jour.' });
+  } catch (err) {
+    console.error('[Admin] Affiliates update:', err);
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
 module.exports = router;

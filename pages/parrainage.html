@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Programme de Parrainage – ARCADINS Training Center</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    .aff-hero { background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:white; padding:60px 24px; text-align:center; }
+    .aff-hero h1 { font-size:2.2rem; font-weight:900; margin-bottom:12px; }
+    .aff-hero p { opacity:.9; max-width:680px; margin:0 auto; }
+    .aff-badge { display:inline-block; background:rgba(255,255,255,.15); border-radius:30px; padding:10px 22px; font-size:1.3rem; font-weight:900; margin-top:18px; }
+    .aff-container { max-width:980px; margin:0 auto; padding:50px 24px 70px; }
+    .aff-steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:24px; margin:36px 0 50px; }
+    .aff-step { background:white; border-radius:16px; padding:26px; box-shadow:var(--shadow); text-align:center; }
+    .aff-step .num { width:44px; height:44px; border-radius:50%; background:var(--blue); color:white; font-weight:900; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-size:1.1rem; }
+    .aff-step h3 { font-size:1rem; font-weight:800; color:var(--blue-dark); margin-bottom:8px; }
+    .aff-step p { font-size:.85rem; color:var(--gray-text); line-height:1.5; }
+    .aff-card { background:white; border-radius:18px; padding:30px; box-shadow:var(--shadow); margin-bottom:24px; }
+    .aff-card h2 { font-size:1.2rem; font-weight:800; color:var(--blue-dark); margin-bottom:16px; }
+    .aff-link-box { display:flex; gap:10px; flex-wrap:wrap; align-items:center; background:var(--gray-light); border-radius:10px; padding:14px 16px; }
+    .aff-link-box input { flex:1; min-width:180px; border:none; background:transparent; font-family:monospace; font-size:.85rem; color:var(--blue-dark); font-weight:700; }
+    .aff-copy-btn { background:var(--blue); color:white; border:none; border-radius:8px; padding:10px 18px; font-weight:700; font-size:.85rem; cursor:pointer; font-family:inherit; }
+    .aff-copy-btn:hover { opacity:.9; }
+    .aff-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:14px; margin-top:18px; }
+    .aff-stat { background:var(--gray-light); border-radius:10px; padding:16px; text-align:center; }
+    .aff-stat-num { font-size:1.7rem; font-weight:900; color:var(--blue-dark); }
+    .aff-stat-lbl { font-size:.74rem; color:var(--gray-text); margin-top:4px; }
+    .aff-table { width:100%; border-collapse:collapse; margin-top:10px; font-size:.85rem; }
+    .aff-table th, .aff-table td { text-align:left; padding:10px 8px; border-bottom:1px solid #f0f0f0; }
+    .aff-table th { color:var(--gray-text); font-weight:700; font-size:.78rem; }
+    .badge-pill { display:inline-block; padding:3px 10px; border-radius:12px; font-size:.72rem; font-weight:700; }
+    .pill-green { background:#e8f5e9; color:#2e7d32; }
+    .pill-orange { background:#fff3e0; color:#e65100; }
+    .aff-cta { text-align:center; }
+    .aff-cta .btn-primary, .aff-cta .btn-secondary { margin:6px; }
+  </style>
+</head>
+<body>
+<div class="topbar" data-i18n="topbar">🍁 Programme de Tutorat 100% en ligne · TEF &amp; TCF Canada</div>
+<nav>
+  <div class="nav-container">
+    <a href="../index.html" class="logo"><img src="../assets/img/logo-nav.svg" alt="ARCADINS" height="50" style="display:block;"></a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="langToggle" onclick="switchLang(); init();" style="background:transparent;border:2px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;">🇬🇧 EN</button>
+      <a href="espace-membre.html" style="font-size:.85rem;" data-i18n="nav.dashboard">Mon espace</a>
+    </div>
+  </div>
+</nav>
+
+<div class="aff-hero">
+  <span class="section-tag" style="background:rgba(255,255,255,.15);color:white;margin:0 auto 12px;display:inline-block;" data-i18n="aff.tag">Programme de Parrainage</span>
+  <h1 data-i18n="aff.h1">Recommandez ARCADINS, gagnez des commissions</h1>
+  <p data-i18n="aff.p">Partagez votre lien d'affiliation personnel. Dès qu'une personne s'inscrit grâce à vous et souscrit à un forfait, vous recevez automatiquement une commission.</p>
+  <div class="aff-badge" data-i18n="aff.badge">💰 10% de commission sur chaque inscription parrainée</div>
+</div>
+
+<div class="aff-container">
+
+  <div class="aff-steps">
+    <div class="aff-step">
+      <div class="num">1</div>
+      <h3 data-i18n="aff.step1.h">Obtenez votre lien</h3>
+      <p data-i18n="aff.step1.p">Connectez-vous à votre espace pour récupérer votre lien d'affiliation unique, généré automatiquement pour chaque utilisateur.</p>
+    </div>
+    <div class="aff-step">
+      <div class="num">2</div>
+      <h3 data-i18n="aff.step2.h">Partagez-le</h3>
+      <p data-i18n="aff.step2.p">Diffusez votre lien à votre entourage, sur les réseaux sociaux ou par message — autant de personnes que vous le souhaitez.</p>
+    </div>
+    <div class="aff-step">
+      <div class="num">3</div>
+      <h3 data-i18n="aff.step3.h">Gagnez 10%</h3>
+      <p data-i18n="aff.step3.p">Quand une personne inscrite via votre lien souscrit à un forfait payant, vous recevez 10% du montant en commission.</p>
+    </div>
+  </div>
+
+  <!-- Connecté : lien + stats -->
+  <div id="affLoggedIn" style="display:none;">
+    <div class="aff-card">
+      <h2 data-i18n="aff.mylink.h">🔗 Votre lien d'affiliation</h2>
+      <div class="aff-link-box">
+        <input type="text" id="affLinkInput" readonly>
+        <button class="aff-copy-btn" onclick="copyAffLink()" id="affCopyBtn" data-i18n="aff.copy">Copier</button>
+      </div>
+      <div class="aff-stats">
+        <div class="aff-stat"><div class="aff-stat-num" id="affReferred">0</div><div class="aff-stat-lbl" data-i18n="aff.stat.referred">Personnes parrainées</div></div>
+        <div class="aff-stat"><div class="aff-stat-num" id="affPending">$0</div><div class="aff-stat-lbl" data-i18n="aff.stat.pending">En attente</div></div>
+        <div class="aff-stat"><div class="aff-stat-num" id="affPaid">$0</div><div class="aff-stat-lbl" data-i18n="aff.stat.paid">Versées</div></div>
+        <div class="aff-stat"><div class="aff-stat-num" id="affTotal">$0</div><div class="aff-stat-lbl" data-i18n="aff.stat.total">Total gagné</div></div>
+      </div>
+    </div>
+
+    <div class="aff-card">
+      <h2 data-i18n="aff.commissions.h">💸 Mes commissions</h2>
+      <div id="affCommissionsContent">
+        <p style="color:var(--gray-text);font-size:.85rem;" data-i18n="aff.commissions.empty">Aucune commission pour le moment. Partagez votre lien pour commencer à gagner !</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Non connecté -->
+  <div id="affLoggedOut" class="aff-card aff-cta" style="display:none;">
+    <h2 data-i18n="aff.login.h">Connectez-vous pour obtenir votre lien</h2>
+    <p style="color:var(--gray-text);font-size:.9rem;margin-bottom:18px;" data-i18n="aff.login.p">Chaque utilisateur inscrit sur ARCADINS dispose automatiquement de son propre lien de parrainage.</p>
+    <a href="acces.html" class="btn-primary" data-i18n="aff.login.btn1">🔑 Connexion / Créer un compte</a>
+  </div>
+
+  <div class="aff-card">
+    <h2 data-i18n="aff.terms.h">📋 Conditions du programme</h2>
+    <ul style="font-size:.85rem;color:var(--gray-text);line-height:1.8;padding-left:20px;">
+      <li data-i18n="aff.terms.1">Chaque utilisateur inscrit reçoit automatiquement un lien de parrainage unique.</li>
+      <li data-i18n="aff.terms.2">La commission de 10% est calculée sur le montant du premier forfait acheté par la personne parrainée.</li>
+      <li data-i18n="aff.terms.3">La commission est créditée dès la confirmation du paiement de la personne parrainée.</li>
+      <li data-i18n="aff.terms.4">Le versement des commissions est géré manuellement par l'équipe ARCADINS (PayPal, virement, etc.).</li>
+      <li data-i18n="aff.terms.5">Pour toute question, contactez-nous à <a href="mailto:contact@arcadins-training.com">contact@arcadins-training.com</a>.</li>
+    </ul>
+  </div>
+
+</div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/api.js"></script>
+<script>
+function getSiteOrigin() {
+  return window.location.origin;
+}
+
+async function init() {
+  const token = getToken();
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+
+  if (!token) {
+    document.getElementById('affLoggedIn').style.display = 'none';
+    document.getElementById('affLoggedOut').style.display = 'block';
+    return;
+  }
+
+  try {
+    const res = await AffiliateAPI.me();
+    const d = res.data;
+
+    document.getElementById('affLoggedOut').style.display = 'none';
+    document.getElementById('affLoggedIn').style.display = 'block';
+
+    const link = `${getSiteOrigin()}/?ref=${d.referral_code}`;
+    document.getElementById('affLinkInput').value = link;
+
+    document.getElementById('affReferred').textContent = d.referred_count;
+    document.getElementById('affPending').textContent = '$' + d.totals.pending.toFixed(2);
+    document.getElementById('affPaid').textContent = '$' + d.totals.paid.toFixed(2);
+    document.getElementById('affTotal').textContent = '$' + d.totals.total.toFixed(2);
+
+    if (d.commissions.length) {
+      const rows = d.commissions.map(c => `
+        <tr>
+          <td>${c.prenom} ${c.nom}</td>
+          <td>${(c.plan||'').toUpperCase()}</td>
+          <td>$${c.amount.toFixed(2)}</td>
+          <td><span class="badge-pill ${c.status==='paid'?'pill-green':'pill-orange'}">${c.status==='paid'?(lang==='fr'?'Versée':'Paid'):(lang==='fr'?'En attente':'Pending')}</span></td>
+          <td>${new Date(c.created_at).toLocaleDateString(lang==='fr'?'fr-CA':'en-CA')}</td>
+        </tr>`).join('');
+      document.getElementById('affCommissionsContent').innerHTML = `
+        <table class="aff-table">
+          <thead><tr>
+            <th>${lang==='fr'?'Filleul':'Referred'}</th>
+            <th>${lang==='fr'?'Forfait':'Plan'}</th>
+            <th>${lang==='fr'?'Commission':'Commission'}</th>
+            <th>${lang==='fr'?'Statut':'Status'}</th>
+            <th>${lang==='fr'?'Date':'Date'}</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+    }
+  } catch (e) {
+    document.getElementById('affLoggedOut').style.display = 'block';
+  }
+}
+
+function copyAffLink() {
+  const input = document.getElementById('affLinkInput');
+  input.select();
+  navigator.clipboard.writeText(input.value).then(() => {
+    const btn = document.getElementById('affCopyBtn');
+    const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+    const original = btn.textContent;
+    btn.textContent = lang === 'fr' ? '✅ Copié !' : '✅ Copied!';
+    setTimeout(() => { btn.textContent = original; }, 2000);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

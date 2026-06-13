@@ -95,6 +95,20 @@ function computeAccessExpiryISO(planId) {
   return new Date(Date.now() + weeks * 7 * 24 * 60 * 60 * 1000).toISOString();
 }
 
+// ── Programme de parrainage : commission de 10% sur le premier achat ───
+function creditAffiliateCommission(db, referredUserId, referrerId, planId) {
+  if (!referrerId || referrerId === referredUserId) return;
+  const existing = db.prepare('SELECT id FROM affiliate_commissions WHERE referred_user_id = ?').get(referredUserId);
+  if (existing) return;
+  const plan = PLANS.find(p => p.id === planId);
+  if (!plan) return;
+  const amount = Math.round(plan.price * 0.10 * 100) / 100;
+  db.prepare(`
+    INSERT INTO affiliate_commissions (referrer_id, referred_user_id, plan, amount, status)
+    VALUES (?, ?, ?, ?, 'pending')
+  `).run(referrerId, referredUserId, planId, amount);
+}
+
 // ── GET /api/plans ──────────────────────────────────────────
 router.get('/', (req, res) => {
   return res.json({ success: true, data: { plans: PLANS } });
@@ -203,6 +217,7 @@ router.get('/verify-payment', authMiddleware, async (req, res) => {
     const plan     = session.metadata.plan || 'essential';
     const planName = session.metadata.plan_name || plan;
     const isRenewal = user.payment_confirmed === 1 && isAccessExpired(user);
+    const isFirstPayment = user.payment_confirmed !== 1;
 
     // Activer (ou renouveler) le compte + créer les 14 modules si nécessaire
     db.prepare(`
@@ -212,6 +227,11 @@ router.get('/verify-payment', authMiddleware, async (req, res) => {
           stripe_session_id = ?, access_expires_at = ?
       WHERE id = ?
     `).run(plan, session_id, computeAccessExpiryISO(plan), user.id);
+
+    // Programme de parrainage : crédite 10% au parrain sur le premier achat
+    if (isFirstPayment && user.referred_by) {
+      creditAffiliateCommission(db, user.id, user.referred_by, plan);
+    }
 
     // Créer les 14 modules si pas encore créés
     const existing = db.prepare('SELECT COUNT(*) as c FROM modules WHERE user_id = ?').get(user.id);
@@ -271,6 +291,9 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
     if (userEmail) {
       try {
         const db = getDb();
+        const existingUser = db.prepare('SELECT id, payment_confirmed, referred_by FROM users WHERE email = ?').get(userEmail);
+        const isFirstPayment = !!existingUser && existingUser.payment_confirmed !== 1;
+
         db.prepare(`
           UPDATE users
           SET payment_confirmed = 1, payment_plan = ?, payment_date = datetime('now'),
@@ -278,6 +301,11 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
               stripe_session_id = ?, access_expires_at = ?
           WHERE email = ?
         `).run(plan, session.id, computeAccessExpiryISO(plan), userEmail);
+
+        // Programme de parrainage : crédite 10% au parrain sur le premier achat
+        if (isFirstPayment && existingUser.referred_by) {
+          creditAffiliateCommission(db, existingUser.id, existingUser.referred_by, plan);
+        }
 
         const existing = db.prepare('SELECT COUNT(*) as c FROM modules WHERE user_id = (SELECT id FROM users WHERE email = ?)').get(userEmail);
         if (existing.c === 0) {
@@ -318,6 +346,8 @@ router.post('/checkout', authMiddleware, async (req, res) => {
       return res.status(400).json({ success: false, message: 'Plan invalide.' });
     }
 
+    const isFirstPayment = user.payment_confirmed !== 1;
+
     db.prepare(`
       UPDATE users
       SET payment_confirmed = 1, payment_plan = ?, payment_date = datetime('now'),
@@ -325,6 +355,11 @@ router.post('/checkout', authMiddleware, async (req, res) => {
           access_expires_at = ?
       WHERE id = ?
     `).run(plan, computeAccessExpiryISO(plan), user.id);
+
+    // Programme de parrainage : crédite 10% au parrain sur le premier achat
+    if (isFirstPayment && user.referred_by) {
+      creditAffiliateCommission(db, user.id, user.referred_by, plan);
+    }
 
     const existing = db.prepare('SELECT COUNT(*) as c FROM modules WHERE user_id = ?').get(user.id);
     if (existing.c === 0) {

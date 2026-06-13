@@ -94,6 +94,11 @@ const CertAPI = {
   verify: (id) => apiFetch(`/certificate/verify/${id}`)
 };
 
+// ---- Affiliate API ----
+const AffiliateAPI = {
+  me: () => apiFetch('/affiliate/me')
+};
+
 // ---- Admin API ----
 const AdminAPI = {
   stats: () => apiFetch('/admin/stats'),
@@ -105,7 +110,9 @@ const AdminAPI = {
   certificates: () => apiFetch('/admin/certificates'),
   exportCsv: () => API_BASE + '/admin/export/csv?token=' + getToken(),
   settings: (data) => apiFetch('/admin/settings', { method: 'PUT', body: JSON.stringify(data) }),
-  sendEmail: (id, subj, body) => apiFetch(`/admin/users/${id}/email`, { method: 'POST', body: JSON.stringify({ subject: subj, body }) })
+  sendEmail: (id, subj, body) => apiFetch(`/admin/users/${id}/email`, { method: 'POST', body: JSON.stringify({ subject: subj, body }) }),
+  affiliates: () => apiFetch('/admin/affiliates'),
+  updateAffiliate: (id, status) => apiFetch(`/admin/affiliates/${id}`, { method: 'PUT', body: JSON.stringify({ status }) })
 };
 
 // ---- Tuteur API ----

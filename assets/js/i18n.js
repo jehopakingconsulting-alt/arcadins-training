@@ -27,6 +27,7 @@ const translations = {
   "nav.register": { fr: "S'inscrire",        en: "Sign Up" },
   "nav.blog":     { fr: "Blog",              en: "Blog" },
   "nav.tuteur":   { fr: "🎓 Devenir Tuteur", en: "🎓 Become a Tutor" },
+  "nav.affiliate": { fr: "🤝 Parrainage", en: "🤝 Referral Program" },
 
   // ===== HERO =====
   "hero.badge": {
@@ -1116,6 +1117,7 @@ const translations = {
   "member.stat.score":   { fr: "Score test final", en: "Final test score" },
   "member.prog.label":   { fr: "Avancement", en: "Progress" },
   "member.go.formation": { fr: "Continuer ma formation →", en: "Continue My Training →" },
+  "member.go.affiliate": { fr: "Voir mon programme de parrainage →", en: "View my referral program →" },
   "member.cert.title":   { fr: "Certificat de Réussite", en: "Certificate of Achievement" },
   "member.cert.view":    { fr: "Voir le certificat", en: "View Certificate" },
   "member.cert.download":{ fr: "📥 PDF", en: "📥 PDF" },
@@ -1552,6 +1554,53 @@ const translations = {
   "tesp.test.failed.p": { fr: "Note insuffisante — note requise : 22/30. Vous pouvez retenter le test après une nouvelle préparation.", en: "Insufficient score — required score: 22/30. You can retake the test after further preparation." },
   "tesp.test.retry": { fr: "↺ Retenter le test", en: "↺ Retake the test" },
 };
+
+// ===== PARRAINAGE — pages/parrainage.html =====
+Object.assign(translations, {
+  "aff.tag":   { fr: "Programme de Parrainage", en: "Referral Program" },
+  "aff.h1":    { fr: "Recommandez ARCADINS, gagnez des commissions", en: "Recommend ARCADINS, earn commissions" },
+  "aff.p":     { fr: "Partagez votre lien d'affiliation personnel. Dès qu'une personne s'inscrit grâce à vous et souscrit à un forfait, vous recevez automatiquement une commission.", en: "Share your personal referral link. As soon as someone signs up through you and subscribes to a plan, you automatically earn a commission." },
+  "aff.badge": { fr: "💰 10% de commission sur chaque inscription parrainée", en: "💰 10% commission on every referred subscription" },
+
+  "aff.step1.h": { fr: "Obtenez votre lien", en: "Get your link" },
+  "aff.step1.p": { fr: "Connectez-vous à votre espace pour récupérer votre lien d'affiliation unique, généré automatiquement pour chaque utilisateur.", en: "Log in to your dashboard to get your unique referral link, automatically generated for every user." },
+  "aff.step2.h": { fr: "Partagez-le", en: "Share it" },
+  "aff.step2.p": { fr: "Diffusez votre lien à votre entourage, sur les réseaux sociaux ou par message — autant de personnes que vous le souhaitez.", en: "Share your link with friends, family, on social media or by message — as many people as you like." },
+  "aff.step3.h": { fr: "Gagnez 10%", en: "Earn 10%" },
+  "aff.step3.p": { fr: "Quand une personne inscrite via votre lien souscrit à un forfait payant, vous recevez 10% du montant en commission.", en: "When someone who signed up through your link subscribes to a paid plan, you receive 10% of the amount as a commission." },
+
+  "aff.mylink.h": { fr: "🔗 Votre lien d'affiliation", en: "🔗 Your referral link" },
+  "aff.copy":     { fr: "Copier", en: "Copy" },
+  "aff.stat.referred": { fr: "Personnes parrainées", en: "Referred people" },
+  "aff.stat.pending":  { fr: "En attente", en: "Pending" },
+  "aff.stat.paid":     { fr: "Versées", en: "Paid" },
+  "aff.stat.total":    { fr: "Total gagné", en: "Total earned" },
+
+  "aff.commissions.h":     { fr: "💸 Mes commissions", en: "💸 My commissions" },
+  "aff.commissions.empty": { fr: "Aucune commission pour le moment. Partagez votre lien pour commencer à gagner !", en: "No commissions yet. Share your link to start earning!" },
+
+  "aff.login.h":    { fr: "Connectez-vous pour obtenir votre lien", en: "Log in to get your link" },
+  "aff.login.p":    { fr: "Chaque utilisateur inscrit sur ARCADINS dispose automatiquement de son propre lien de parrainage.", en: "Every user registered on ARCADINS automatically has their own referral link." },
+  "aff.login.btn1": { fr: "🔑 Connexion / Créer un compte", en: "🔑 Login / Create account" },
+
+  "aff.terms.h": { fr: "📋 Conditions du programme", en: "📋 Program terms" },
+  "aff.terms.1": { fr: "Chaque utilisateur inscrit reçoit automatiquement un lien de parrainage unique.", en: "Every registered user automatically receives a unique referral link." },
+  "aff.terms.2": { fr: "La commission de 10% est calculée sur le montant du premier forfait acheté par la personne parrainée.", en: "The 10% commission is calculated on the amount of the first plan purchased by the referred person." },
+  "aff.terms.3": { fr: "La commission est créditée dès la confirmation du paiement de la personne parrainée.", en: "The commission is credited as soon as the referred person's payment is confirmed." },
+  "aff.terms.4": { fr: "Le versement des commissions est géré manuellement par l'équipe ARCADINS (PayPal, virement, etc.).", en: "Commission payouts are handled manually by the ARCADINS team (PayPal, bank transfer, etc.)." },
+  "aff.terms.5": { fr: "Pour toute question, contactez-nous à <a href='mailto:contact@arcadins-training.com'>contact@arcadins-training.com</a>.", en: "For any questions, contact us at <a href='mailto:contact@arcadins-training.com'>contact@arcadins-training.com</a>." },
+});
+
+// ============================================================
+// PROGRAMME DE PARRAINAGE — capture du code d'affiliation (?ref=CODE)
+// ============================================================
+(function captureReferralCode() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('ref');
+    if (ref) localStorage.setItem('arc_ref', ref.trim().toUpperCase());
+  } catch (e) {}
+})();
 
 // ============================================================
 // MOTEUR DE TRADUCTION

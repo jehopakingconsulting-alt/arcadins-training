@@ -54,7 +54,9 @@ function initDatabase() {
       modules_progress TEXT DEFAULT '{}',
       current_module INTEGER DEFAULT 1,
       all_modules_done INTEGER DEFAULT 0,
-      lang TEXT DEFAULT 'fr'
+      lang TEXT DEFAULT 'fr',
+      referral_code TEXT UNIQUE,
+      referred_by INTEGER
     );
 
     CREATE TABLE IF NOT EXISTS prospects (
@@ -120,6 +122,19 @@ function initDatabase() {
       FOREIGN KEY (user_id) REFERENCES users(id),
       UNIQUE(user_id, module_number)
     );
+
+    CREATE TABLE IF NOT EXISTS affiliate_commissions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      referrer_id INTEGER NOT NULL,
+      referred_user_id INTEGER NOT NULL,
+      plan TEXT,
+      amount REAL DEFAULT 0,
+      status TEXT DEFAULT 'pending',
+      created_at TEXT DEFAULT (datetime('now')),
+      paid_at TEXT,
+      FOREIGN KEY (referrer_id) REFERENCES users(id),
+      FOREIGN KEY (referred_user_id) REFERENCES users(id)
+    );
   `);
 
   // Insert default admin settings
@@ -148,10 +163,24 @@ function initDatabase() {
     'ALTER TABLE users ADD COLUMN tuteur_test_done INTEGER DEFAULT 0',
     'ALTER TABLE users ADD COLUMN tuteur_test_score REAL DEFAULT 0',
     'ALTER TABLE users ADD COLUMN tuteur_test_passed INTEGER DEFAULT 0',
+    'ALTER TABLE users ADD COLUMN referral_code TEXT',
+    'ALTER TABLE users ADD COLUMN referred_by INTEGER',
   ];
   migrations.forEach(sql => {
     try { db.prepare(sql).run(); } catch(e) { /* colonne déjà existante */ }
   });
+
+  // Backfill : générer un code de parrainage pour les utilisateurs qui n'en ont pas
+  try {
+    const noCode = db.prepare('SELECT id FROM users WHERE referral_code IS NULL OR referral_code = \'\'').all();
+    const setCode = db.prepare('UPDATE users SET referral_code = ? WHERE id = ?');
+    noCode.forEach(u => setCode.run(generateReferralCode(db, u.id), u.id));
+    if (noCode.length) {
+      console.log(`[DB] Backfill referral_code pour ${noCode.length} utilisateur(s)`);
+    }
+  } catch (e) {
+    console.error('[DB] Erreur backfill referral_code:', e.message);
+  }
 
   // Backfill : calculer la date d'expiration pour les comptes déjà payés
   // qui n'en ont pas encore (utilisateurs payants antérieurs à cette fonctionnalité)
@@ -180,10 +209,12 @@ function initDatabase() {
   const existingAdmin = db.prepare('SELECT id FROM users WHERE email = ?').get('admin@arcadins-training.com');
   if (!existingAdmin) {
     const hash = bcrypt.hashSync('Admin2024!', 10);
-    db.prepare(`
+    const result = db.prepare(`
       INSERT INTO users (nom, prenom, email, password_hash, role, status, payment_confirmed, trial_done, qualification_done, all_modules_done, final_test_passed)
       VALUES (?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0)
     `).run('Admin', 'ARCADINS', 'admin@arcadins-training.com', hash, 'admin', 'active');
+    db.prepare('UPDATE users SET referral_code = ? WHERE id = ?')
+      .run(generateReferralCode(db, result.lastInsertRowid), result.lastInsertRowid);
     console.log('[DB] Admin user created: admin@arcadins-training.com / Admin2024!');
   }
 
@@ -191,4 +222,15 @@ function initDatabase() {
   return db;
 }
 
-module.exports = { getDb, initDatabase };
+// Génère un code de parrainage unique à 8 caractères (alphanumérique majuscule)
+function generateReferralCode(db, userId) {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code;
+  do {
+    code = '';
+    for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  } while (db.prepare('SELECT id FROM users WHERE referral_code = ?').get(code));
+  return code;
+}
+
+module.exports = { getDb, initDatabase, generateReferralCode };

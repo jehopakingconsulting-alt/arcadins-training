@@ -72,6 +72,7 @@ app.use('/api/certificate', require('./routes/certificate'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/tuteur', require('./routes/tuteur'));
+app.use('/api/affiliate', require('./routes/affiliate'));
 
 // ─── HEALTH CHECK ────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {

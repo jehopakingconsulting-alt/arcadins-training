@@ -138,6 +138,7 @@
 
     <div class="nav-section">Paiements</div>
     <div class="nav-item" onclick="go('payments')">💳 Gestion paiements</div>
+    <div class="nav-item" onclick="go('affiliates')">🤝 Parrainage</div>
 
     <div class="nav-section">Formation</div>
     <div class="nav-item" onclick="go('modules')">📚 Progression modules</div>
@@ -236,6 +237,15 @@
         <button class="tab" onclick="switchPayTab('pending',this)">⏳ En attente</button>
       </div>
       <div class="tbl-scroll" id="paymentsTable"><div class="loading">⏳</div></div>
+    </div>
+  </div>
+
+  <!-- ── AFFILIATES ── -->
+  <div id="p-affiliates" style="display:none;">
+    <div class="page-header"><h1>🤝 Programme de Parrainage</h1></div>
+    <div class="stats-grid" id="affStatsGrid"></div>
+    <div class="card">
+      <div class="tbl-scroll" id="affiliatesTable"><div class="loading">⏳</div></div>
     </div>
   </div>
 
@@ -501,6 +511,7 @@ const loaders = {
   users: loadUsers,
   prospects: loadProspects,
   payments: () => loadPayments('all'),
+  affiliates: loadAffiliates,
   modules: loadModules,
   tests: () => loadTests('trial'),
   certificates: loadCertificates,
@@ -1041,6 +1052,53 @@ async function loadCertificates() {
       </table>
       <div style="padding:10px 14px;font-size:.78rem;color:#5d7a6e;">${certs.length} certificat(s)</div>`;
   } catch(e) { document.getElementById('certsTable').innerHTML = `<p style="color:var(--red)">${e.message}</p>`; }
+}
+
+// ── AFFILIATES ───────────────────────────────────────────────────────
+async function loadAffiliates() {
+  document.getElementById('affiliatesTable').innerHTML = '<div class="loading">⏳</div>';
+  document.getElementById('affStatsGrid').innerHTML = '';
+  try {
+    const d = await api('/admin/affiliates');
+    const commissions = d.commissions || [];
+    const t = d.totals || { total:0, pending:0, paid:0 };
+
+    document.getElementById('affStatsGrid').innerHTML = `
+      <div class="stat-card c-blue"><div class="stat-num">${commissions.length}</div><div class="stat-lbl">🤝 Commissions générées</div></div>
+      <div class="stat-card c-gold"><div class="stat-num">$${t.pending.toFixed(2)}</div><div class="stat-lbl">⏳ En attente de paiement</div></div>
+      <div class="stat-card c-green"><div class="stat-num">$${t.paid.toFixed(2)}</div><div class="stat-lbl">✅ Déjà versées</div></div>
+      <div class="stat-card c-purple"><div class="stat-num">$${t.total.toFixed(2)}</div><div class="stat-lbl">💰 Total commissions</div></div>`;
+
+    if (!commissions.length) {
+      document.getElementById('affiliatesTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucune commission de parrainage pour le moment.</p>';
+      return;
+    }
+
+    document.getElementById('affiliatesTable').innerHTML = `
+      <table class="tbl">
+        <thead><tr><th>Affilié (parrain)</th><th>Filleul</th><th>Forfait</th><th>Commission</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody>${commissions.map(c=>`<tr>
+          <td><strong>${c.referrer_prenom} ${c.referrer_nom}</strong><br><span style="font-size:.75rem;color:#5d7a6e;">${c.referrer_email} · ${c.referral_code}</span></td>
+          <td>${c.referred_prenom} ${c.referred_nom}<br><span style="font-size:.75rem;color:#5d7a6e;">${c.referred_email}</span></td>
+          <td style="font-size:.8rem;">${(c.plan||'').toUpperCase()}</td>
+          <td><strong>$${c.amount.toFixed(2)}</strong></td>
+          <td>${c.status==='paid' ? '<span class="badge b-green">✅ Versée</span>' : '<span class="badge b-orange">⏳ En attente</span>'}</td>
+          <td>${fmt(c.created_at)}</td>
+          <td>${c.status==='paid'
+            ? `<button class="btn btn-sm btn-secondary" onclick="setAffiliateStatus(${c.id},'pending')">Marquer en attente</button>`
+            : `<button class="btn btn-sm btn-success" onclick="setAffiliateStatus(${c.id},'paid')">Marquer payée</button>`}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+      <div style="padding:10px 14px;font-size:.78rem;color:#5d7a6e;">${commissions.length} commission(s)</div>`;
+  } catch(e) { document.getElementById('affiliatesTable').innerHTML = `<p style="color:var(--red)">${e.message}</p>`; }
+}
+
+async function setAffiliateStatus(id, status) {
+  try {
+    await api(`/admin/affiliates/${id}`, { method:'PUT', body: JSON.stringify({ status }) });
+    toast('✅ Statut mis à jour', 'success');
+    loadAffiliates();
+  } catch(e) { toast(e.message, 'error'); }
 }
 
 // ── SETTINGS ─────────────────────────────────────────────────────────

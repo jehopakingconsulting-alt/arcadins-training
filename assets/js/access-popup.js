@@ -363,10 +363,11 @@
     btn.textContent = tx.loading;
 
     try {
+      const ref = localStorage.getItem('arc_ref') || null;
       const res = await fetch(API_BASE + '/access/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prenom, nom, email, telephone: tel, pays, password })
+        body: JSON.stringify({ prenom, nom, email, telephone: tel, pays, password, ref })
       });
       const data = await res.json();
 

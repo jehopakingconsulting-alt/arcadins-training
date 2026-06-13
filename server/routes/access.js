@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { getDb } = require('../database');
+const { getDb, generateReferralCode } = require('../database');
 const authMiddleware = require('../middleware/auth');
 const { sendAdminNotification, sendWelcomeEmail } = require('../services/email');
 const { isAccessExpired } = require('../middleware/stepGuard');
@@ -25,7 +25,7 @@ function sanitizeUser(user) {
 // POST /api/access/register
 router.post('/register', async (req, res) => {
   try {
-    const { nom, prenom, email, telephone, pays, password, lang } = req.body;
+    const { nom, prenom, email, telephone, pays, password, lang, ref } = req.body;
 
     // Validate required fields
     if (!nom || !prenom || !email || !telephone || !pays) {
@@ -70,17 +70,28 @@ router.post('/register', async (req, res) => {
       password_hash = bcrypt.hashSync(password, 10);
     }
 
+    // Programme de parrainage : retrouver le parrain via son code d'affiliation
+    let referredBy = null;
+    if (ref) {
+      const referrer = db.prepare('SELECT id FROM users WHERE referral_code = ?').get(String(ref).trim().toUpperCase());
+      if (referrer) referredBy = referrer.id;
+    }
+
     // Create user
     const result = db.prepare(`
-      INSERT INTO users (nom, prenom, email, telephone, pays, password_hash, role, status, lang)
-      VALUES (?, ?, ?, ?, ?, ?, 'prospect', 'trial', ?)
+      INSERT INTO users (nom, prenom, email, telephone, pays, password_hash, role, status, lang, referred_by)
+      VALUES (?, ?, ?, ?, ?, ?, 'prospect', 'trial', ?, ?)
     `).run(
       nom.trim(), prenom.trim(), email.toLowerCase().trim(),
       telephone.trim(), pays.trim(), password_hash,
-      lang || 'fr'
+      lang || 'fr', referredBy
     );
 
     const userId = result.lastInsertRowid;
+
+    // Générer le code de parrainage du nouvel utilisateur
+    db.prepare('UPDATE users SET referral_code = ? WHERE id = ?')
+      .run(generateReferralCode(db, userId), userId);
 
     // Insert into prospects table
     db.prepare(`

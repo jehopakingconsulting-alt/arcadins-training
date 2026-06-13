@@ -112,7 +112,7 @@ async function submitForm(e) {
     const res = await fetch('/api/access/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nom, prenom, email, telephone: telephone || '0000000000', pays: pays || 'Autre', lang })
+      body: JSON.stringify({ nom, prenom, email, telephone: telephone || '0000000000', pays: pays || 'Autre', lang, ref: localStorage.getItem('arc_ref') || null })
     });
     const data = await res.json();
     if (data.success && data.token) {
