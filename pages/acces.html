@@ -199,6 +199,11 @@ function showForgotPassword() {
   document.getElementById('forgotSection').style.display = 'block';
 }
 
+// Ouvre directement le formulaire "mot de passe oublié" si demandé via ?forgot=1
+if (new URLSearchParams(window.location.search).get('forgot') === '1') {
+  showForgotPassword();
+}
+
 function togglePasswordVisibility() {
   const input = document.getElementById('lPass');
   const icon = document.getElementById('lPassEyeIcon');

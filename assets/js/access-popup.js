@@ -98,6 +98,8 @@
       btnLogin: 'Se connecter →',
       loginEmail: 'Email',
       loginPass: 'Mot de passe',
+      forgotPass: 'Mot de passe oublié ?',
+      showPass: 'Afficher/masquer le mot de passe',
       loading: 'Connexion en cours...',
       privacy: '🔒 Vos données sont confidentielles et ne seront jamais partagées.',
       errRequired: 'Tous les champs sont obligatoires.',
@@ -122,6 +124,8 @@
       btnLogin: 'Log in →',
       loginEmail: 'Email',
       loginPass: 'Password',
+      forgotPass: 'Forgot password?',
+      showPass: 'Show/hide password',
       loading: 'Connecting...',
       privacy: '🔒 Your data is confidential and will never be shared.',
       errRequired: 'All fields are required.',
@@ -140,6 +144,7 @@
     document.body.style.overflow = 'hidden';
 
     const paysOptions = PAYS.map(p => `<option value="${p}">${p}</option>`).join('');
+    const forgotUrl = (typeof getBasePath === 'function' ? getBasePath() : '') + 'pages/acces.html?forgot=1';
 
     const overlay = document.createElement('div');
     overlay.id = 'arcAccessPopup';
@@ -200,6 +205,19 @@
           box-shadow:0 0 0 3px rgba(0,31,107,.08);
         }
         .arc-field input.err, .arc-field select.err { border-color:#d32f2f; }
+        .arc-pass-wrap { position:relative; display:flex; }
+        .arc-pass-wrap input { flex:1; padding-right:42px; }
+        .arc-pass-eye {
+          position:absolute; right:4px; top:50%; transform:translateY(-50%);
+          background:none; border:none; cursor:pointer;
+          font-size:1.05rem; line-height:1; padding:6px;
+        }
+        .arc-forgot-link { text-align:right; margin:-6px 0 14px; }
+        .arc-forgot-link a {
+          font-size:.78rem; color:#074A2E; font-weight:700;
+          text-decoration:none;
+        }
+        .arc-forgot-link a:hover { text-decoration:underline; }
         .arc-error-msg {
           background:#fce4ec; border:1.5px solid #ef9a9a;
           border-radius:8px; padding:10px 14px;
@@ -275,7 +293,10 @@
             </div>
             <div class="arc-field">
               <label id="lblPass">${tx.password}</label>
-              <input type="password" id="arcPass" autocomplete="new-password" />
+              <div class="arc-pass-wrap">
+                <input type="password" id="arcPass" autocomplete="new-password" />
+                <button type="button" class="arc-pass-eye" aria-label="${tx.showPass}" onclick="arcTogglePass('arcPass',this)">👁️</button>
+              </div>
             </div>
             <div class="arc-error-msg" id="arcRegErr"></div>
             <button type="submit" class="arc-btn-submit" id="arcRegBtn">${tx.btnRegister}</button>
@@ -289,8 +310,12 @@
             </div>
             <div class="arc-field">
               <label id="lblLoginPass">${tx.loginPass}</label>
-              <input type="password" id="arcLoginPass" autocomplete="current-password" />
+              <div class="arc-pass-wrap">
+                <input type="password" id="arcLoginPass" autocomplete="current-password" />
+                <button type="button" class="arc-pass-eye" aria-label="${tx.showPass}" onclick="arcTogglePass('arcLoginPass',this)">👁️</button>
+              </div>
             </div>
+            <div class="arc-forgot-link"><a href="${forgotUrl}">${tx.forgotPass}</a></div>
             <div class="arc-error-msg" id="arcLoginErr"></div>
             <button type="submit" class="arc-btn-submit" id="arcLoginBtn">${tx.btnLogin}</button>
           </form>
@@ -317,6 +342,18 @@
       }
     });
   }
+
+  // ── Afficher/masquer le mot de passe ──────────────────────
+  window.arcTogglePass = function(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.textContent = '🙈';
+    } else {
+      input.type = 'password';
+      btn.textContent = '👁️';
+    }
+  };
 
   // ── Gestion des onglets ───────────────────────────────────
   window.arcSwitchTab = function(tab) {
