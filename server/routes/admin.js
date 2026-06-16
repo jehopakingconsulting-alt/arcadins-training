@@ -655,6 +655,92 @@ router.put('/affiliates/:id', (req, res) => {
 });
 
 // ════════════════════════════════════════════════════════════════════
+//  TUTEURS — gestion des candidats tuteurs
+// ════════════════════════════════════════════════════════════════════
+
+// GET /api/admin/tuteurs — liste tous les candidats tuteurs
+router.get('/tuteurs', (req, res) => {
+  try {
+    const db = getDb();
+    const tuteurs = db.prepare(`
+      SELECT id,nom,prenom,email,telephone,pays,status,created_at,
+        is_tuteur_candidat,tuteur_application,
+        tuteur_payment_confirmed,tuteur_payment_date,tuteur_stripe_session_id,
+        tuteur_current_module,tuteur_all_modules_done,
+        tuteur_test_done,tuteur_test_score,tuteur_test_passed
+      FROM users WHERE is_tuteur_candidat=1 ORDER BY created_at DESC
+    `).all();
+    return res.json({ success: true, data: { tuteurs, total: tuteurs.length } });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// POST /api/admin/tuteurs/:id/confirm-payment — confirme paiement tuteur manuellement
+router.post('/tuteurs/:id/confirm-payment', (req, res) => {
+  try {
+    const db = getDb();
+    const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'Utilisateur introuvable.' });
+    const { notes } = req.body;
+    db.prepare(`UPDATE users SET tuteur_payment_confirmed=1, tuteur_payment_date=datetime('now'),
+      tuteur_application=COALESCE(?,tuteur_application) WHERE id=?`)
+      .run(notes || null, user.id);
+    logAdminAction(db, req.user.id, 'tuteur_confirm_payment', user.id, { notes });
+    return res.json({ success: true, message: `Paiement tuteur confirmé pour ${user.prenom} ${user.nom}.` });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// POST /api/admin/tuteurs/:id/approve — approuve manuellement le test tuteur
+router.post('/tuteurs/:id/approve', (req, res) => {
+  try {
+    const db = getDb();
+    const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'Utilisateur introuvable.' });
+    db.prepare(`UPDATE users SET tuteur_test_done=1, tuteur_test_passed=1, tuteur_test_score=100 WHERE id=?`).run(user.id);
+    logAdminAction(db, req.user.id, 'tuteur_approve', user.id, null);
+    return res.json({ success: true, message: `Statut tuteur approuvé pour ${user.prenom} ${user.nom}.` });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// POST /api/admin/broadcast — envoie un email à tous les utilisateurs (ou par rôle)
+router.post('/broadcast', async (req, res) => {
+  try {
+    const db = getDb();
+    const { subject, message, target } = req.body;
+    if (!subject || !message) return res.status(400).json({ success: false, message: 'Sujet et message requis.' });
+
+    const { sendUserEmail } = require('../services/email');
+    let q = "SELECT email,prenom,nom FROM users WHERE status!='blocked' AND role!='admin'";
+    if (target === 'apprenants') q += " AND role='apprenant'";
+    if (target === 'prospects')  q += " AND role='prospect'";
+    if (target === 'payants')    q += " AND payment_confirmed=1";
+    const users = db.prepare(q).all();
+
+    let sent = 0;
+    for (const u of users) {
+      try {
+        const html = `<p>Bonjour <strong>${u.prenom} ${u.nom}</strong>,</p>
+          <div style="margin:20px 0;padding:16px;background:#f9f9f9;border-radius:6px;">${message.replace(/\n/g,'<br>')}</div>
+          <p style="color:#666;font-size:13px;">L'équipe ARCADINS Training Center</p>`;
+        await sendUserEmail(u.email, subject, html);
+        sent++;
+      } catch {}
+    }
+
+    logAdminAction(db, req.user.id, 'broadcast_email', null, { subject, target, sent, total: users.length });
+    return res.json({ success: true, message: `Email envoyé à ${sent}/${users.length} destinataires.` });
+  } catch (err) {
+    console.error('[Admin] Broadcast:', err);
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
 //  AUDIT LOG — historique des actions sensibles admin
 // ════════════════════════════════════════════════════════════════════
 router.get('/audit-log', (req, res) => {

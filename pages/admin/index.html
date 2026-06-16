@@ -143,11 +143,16 @@
     <div class="nav-section">Formation</div>
     <div class="nav-item" onclick="go('modules')">📚 Progression modules</div>
     <div class="nav-item" onclick="go('tests')">📝 Tests &amp; Scores</div>
+    <div class="nav-item" onclick="go('tuteurs')">🎓 Tuteurs en devenir</div>
 
     <div class="nav-section">Certifications</div>
     <div class="nav-item" onclick="go('certificates')">🏆 Certificats</div>
 
+    <div class="nav-section">Communication</div>
+    <div class="nav-item" onclick="go('broadcast')">📢 Email groupé</div>
+
     <div class="nav-section">Admin</div>
+    <div class="nav-item" onclick="go('audit')">🔍 Journal d'audit</div>
     <div class="nav-item" onclick="go('settings')">⚙️ Paramètres</div>
     <div class="nav-item" onclick="exportCsv()">📤 Export CSV</div>
     <div class="nav-item" onclick="doLogout()">🚪 Déconnexion</div>
@@ -329,6 +334,56 @@
     </div>
   </div>
 
+
+  <!-- ── TUTEURS ── -->
+  <div id="p-tuteurs" style="display:none;">
+    <div class="page-header">
+      <h1>🎓 Tuteurs en devenir</h1>
+      <button class="btn btn-secondary" onclick="loadTuteurs()">🔄 Actualiser</button>
+    </div>
+    <div id="tuteurAlert"></div>
+    <div class="card">
+      <div class="tbl-scroll" id="tuteursTable"><div class="loading">⏳</div></div>
+    </div>
+  </div>
+
+  <!-- ── BROADCAST ── -->
+  <div id="p-broadcast" style="display:none;">
+    <div class="page-header"><h1>📢 Email groupé</h1></div>
+    <div class="card" style="max-width:600px;">
+      <h3>Envoyer un email à un groupe d'utilisateurs</h3>
+      <div id="broadcastAlert"></div>
+      <form onsubmit="doBroadcast(event)">
+        <div class="form-group">
+          <label>Destinataires</label>
+          <select id="bc_target">
+            <option value="all">Tous les utilisateurs actifs</option>
+            <option value="apprenants">Apprenants uniquement</option>
+            <option value="prospects">Prospects uniquement</option>
+            <option value="payants">Payants (accès confirmé)</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Objet de l'email *</label><input id="bc_subject" required placeholder="Ex : Nouveau module disponible !"/></div>
+        <div class="form-group"><label>Message *</label><textarea id="bc_message" rows="8" required placeholder="Contenu du message…"></textarea></div>
+        <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:.83rem;color:#b8860b;">
+          ⚠️ <strong>Action irréversible.</strong> Cet email sera envoyé immédiatement à tous les destinataires du groupe sélectionné.
+        </div>
+        <button type="submit" class="btn btn-primary" id="bcBtn">📤 Envoyer l'email groupé</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── AUDIT LOG ── -->
+  <div id="p-audit" style="display:none;">
+    <div class="page-header">
+      <h1>🔍 Journal d'audit</h1>
+      <button class="btn btn-secondary" onclick="loadAuditLog()">🔄 Actualiser</button>
+    </div>
+    <div class="card">
+      <div class="tbl-scroll" id="auditTable"><div class="loading">⏳</div></div>
+    </div>
+  </div>
+
 </main>
 </div>
 
@@ -353,7 +408,7 @@
         <select id="cu_plan"><option value="">— Sélectionner —</option><option>Découverte</option><option>Standard</option><option>Premium</option><option>VIP</option></select>
       </div>
       <div class="form-group"><label>Méthode de paiement</label>
-        <select id="cu_method"><option value="">— Sélectionner —</option><option value="Stripe">Carte (Stripe)</option><option value="Interac">Virement Interac</option><option value="Cash">Cash</option><option value="PayPal">PayPal</option><option value="Virement">Virement bancaire</option><option value="Autre">Autre</option></select>
+        <select id="cu_method"><option value="">— Sélectionner —</option><option value="Stripe">Carte (Stripe)</option><option value="PayPal">PayPal</option><option value="Interac">Virement Interac / e-Transfer</option><option value="MonCash">MonCash</option><option value="NatCash">NatCash</option><option value="Virement">Virement bancaire</option><option value="Cash">Cash / Espèces</option><option value="Autre">Autre</option></select>
       </div>
       <div class="form-group full">
         <label><input type="checkbox" id="cu_paid" onchange="togglePayConfirm()"/> &nbsp;Paiement déjà confirmé — donner accès immédiat à la formation</label>
@@ -415,9 +470,11 @@
       <select id="cp_plan"><option value="">— Sélectionner —</option><option>Découverte</option><option>Standard</option><option>Premium</option><option>VIP</option></select>
     </div>
     <div class="form-group"><label>Méthode de paiement</label>
-      <select id="cp_method"><option value="Interac">Virement Interac</option><option value="Cash">Cash</option><option value="Virement">Virement bancaire</option><option value="PayPal">PayPal</option><option value="Stripe">Carte (Stripe)</option><option value="Autre">Autre</option></select>
+      <select id="cp_method"><option value="MonCash">MonCash</option><option value="NatCash">NatCash</option><option value="Interac">Virement Interac / e-Transfer</option><option value="Virement">Virement bancaire</option><option value="PayPal">PayPal</option><option value="Stripe">Carte (Stripe)</option><option value="Cash">Cash / Espèces</option><option value="Autre">Autre</option></select>
     </div>
-    <div class="form-group"><label>Notes (montant, référence…)</label><textarea id="cp_notes" rows="2" placeholder="Ex : Interac reçu 199$ le 8 juin 2026"></textarea></div>
+    <div class="form-group"><label>N° de transaction / référence</label><input id="cp_ref" placeholder="Ex : REF-20260613-001, N° confirmation MonCash…"/></div>
+    <div class="form-group"><label>Montant reçu ($)</label><input id="cp_amount" type="number" step="0.01" placeholder="Ex : 199.00"/></div>
+    <div class="form-group"><label>Notes internes</label><textarea id="cp_notes" rows="2" placeholder="Ex : MonCash reçu 199$ le 8 juin 2026 – confirmé par SMS"></textarea></div>
     <div class="form-actions">
       <button class="btn btn-secondary" onclick="closeModal('confirmPayModal')">Annuler</button>
       <button class="btn btn-success" onclick="doConfirmPayment()">✅ Confirmer &amp; Débloquer l'accès</button>
@@ -452,6 +509,22 @@
     <div class="form-actions">
       <button class="btn btn-secondary" onclick="closeModal('emailModal')">Annuler</button>
       <button class="btn btn-primary" onclick="doSendEmail()">📤 Envoyer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tuteur Payment Modal -->
+<div class="modal-bg" id="tuteurPayModal">
+  <div class="modal" style="max-width:440px;">
+    <button class="modal-close" onclick="closeModal('tuteurPayModal')">✕</button>
+    <h3>💳 Confirmer paiement tuteur</h3>
+    <input type="hidden" id="tp_id"/>
+    <p id="tp_name" style="color:#5d7a6e;font-size:.88rem;margin-bottom:16px;"></p>
+    <div class="form-group"><label>Notes / référence de paiement</label><textarea id="tp_notes" rows="2" placeholder="Ex : MonCash reçu 49$ le 8 juin 2026…"></textarea></div>
+    <div id="tpAlert"></div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="closeModal('tuteurPayModal')">Annuler</button>
+      <button class="btn btn-success" onclick="doTuteurConfirmPay()">✅ Confirmer le paiement</button>
     </div>
   </div>
 </div>
@@ -515,8 +588,13 @@ const loaders = {
   modules: loadModules,
   tests: () => loadTests('trial'),
   certificates: loadCertificates,
+  tuteurs: loadTuteurs,
+  broadcast: () => setAlert('broadcastAlert',''),
+  audit: loadAuditLog,
   settings: () => { loadSettings(); checkSmtp(); },
 };
+
+let currentPayFilter = 'all';
 
 function go(page) {
   document.querySelectorAll('[id^="p-"]').forEach(el => el.style.display = 'none');
@@ -764,6 +842,8 @@ function openConfirmPay(id, name) {
   document.getElementById('cp_id').value = id;
   document.getElementById('cp_name').textContent = 'Client : ' + name;
   document.getElementById('cp_plan').value = '';
+  document.getElementById('cp_ref').value = '';
+  document.getElementById('cp_amount').value = '';
   document.getElementById('cp_notes').value = '';
   openModal('confirmPayModal');
 }
@@ -771,16 +851,21 @@ function openConfirmPay(id, name) {
 async function doConfirmPayment() {
   setAlert('cpAlert','');
   const id = document.getElementById('cp_id').value;
+  const ref    = document.getElementById('cp_ref').value.trim();
+  const amount = document.getElementById('cp_amount').value;
+  const rawNotes = document.getElementById('cp_notes').value.trim();
+  const notesWithRef = [ref ? `Réf: ${ref}` : '', amount ? `Montant: $${amount}` : '', rawNotes].filter(Boolean).join(' — ');
   const body = {
     plan: document.getElementById('cp_plan').value,
     payment_method: document.getElementById('cp_method').value,
-    notes: document.getElementById('cp_notes').value.trim(),
+    notes: notesWithRef || null,
   };
+  if (!body.plan) return setAlert('cpAlert', 'Veuillez sélectionner un plan.', 'error');
   try {
-    const r = await api('/admin/users/' + id + '/confirm-payment', { method:'POST', body: JSON.stringify(body) });
+    await api('/admin/users/' + id + '/confirm-payment', { method:'POST', body: JSON.stringify(body) });
     toast('✅ Paiement confirmé — accès formation accordé.');
     closeModal('confirmPayModal');
-    loadUsers();
+    loadPayments(currentPayFilter || 'all');
   } catch(e) { setAlert('cpAlert', e.message, 'error'); }
 }
 
@@ -962,6 +1047,7 @@ async function loadPayments(filter) {
 }
 
 function switchPayTab(filter, btn) {
+  currentPayFilter = filter;
   document.querySelectorAll('#p-payments .tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   loadPayments(filter);
@@ -1144,6 +1230,126 @@ async function saveSettings(e) {
 // ── CSV EXPORT ───────────────────────────────────────────────────────
 function exportCsv() {
   window.open(API + '/admin/export/csv?token=' + getToken(), '_blank');
+}
+
+// ── TUTEURS ──────────────────────────────────────────────────────────
+async function loadTuteurs() {
+  document.getElementById('tuteursTable').innerHTML = '<div class="loading">⏳</div>';
+  setAlert('tuteurAlert','');
+  try {
+    const d = await api('/admin/tuteurs');
+    const tuteurs = d.tuteurs || [];
+    const pending = tuteurs.filter(t => !t.tuteur_payment_confirmed).length;
+    if (pending > 0) setAlert('tuteurAlert', `⚠️ ${pending} candidat(s) en attente de confirmation de paiement.`, 'warning');
+    if (!tuteurs.length) { document.getElementById('tuteursTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucun candidat tuteur pour le moment.</p>'; return; }
+    document.getElementById('tuteursTable').innerHTML = `
+      <table class="tbl">
+        <thead><tr><th>Candidat</th><th>Pays</th><th>Paiement</th><th>Modules tuteur</th><th>Test tuteur</th><th>Date candidature</th><th>Actions</th></tr></thead>
+        <tbody>${tuteurs.map(t=>`<tr>
+          <td><strong>${t.prenom} ${t.nom}</strong><br><span style="font-size:.75rem;color:#5d7a6e;">${t.email}</span></td>
+          <td style="font-size:.8rem;">${t.pays||'—'}</td>
+          <td>${t.tuteur_payment_confirmed
+            ? `<span class="badge b-green">✅ Payé</span><br><span style="font-size:.72rem;color:#5d7a6e;">${fmt(t.tuteur_payment_date)}</span>`
+            : `<span class="badge b-orange">⏳ En attente</span>`}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div class="progress-track" style="width:90px;"><div class="progress-fill" style="width:${Math.round((t.tuteur_current_module||0)/5*100)}%;"></div></div>
+              <span style="font-size:.73rem;color:#5d7a6e;">${t.tuteur_current_module||0}/5</span>
+            </div>
+            ${t.tuteur_all_modules_done ? '<span class="badge b-green" style="margin-top:4px;">✅ Terminé</span>' : ''}
+          </td>
+          <td>${t.tuteur_test_passed
+            ? `<span class="badge b-green">✅ Réussi ${Math.round(t.tuteur_test_score||0)}%</span>`
+            : t.tuteur_test_done
+              ? `<span class="badge b-red">❌ Échoué ${Math.round(t.tuteur_test_score||0)}%</span>`
+              : '<span class="badge b-gray">—</span>'}</td>
+          <td style="font-size:.78rem;">${fmt(t.created_at)}</td>
+          <td style="display:flex;flex-wrap:wrap;gap:4px;">
+            ${!t.tuteur_payment_confirmed ? `<button class="btn btn-sm btn-success" onclick="openTuteurPay(${t.id},'${t.prenom} ${t.nom}')">💳 Confirmer paiement</button>` : ''}
+            ${t.tuteur_payment_confirmed && !t.tuteur_test_passed ? `<button class="btn btn-sm btn-primary" onclick="doTuteurApprove(${t.id})">🎓 Approuver test</button>` : ''}
+            <button class="btn btn-sm btn-secondary" onclick="viewUser(${t.id})">👁</button>
+          </td>
+        </tr>`).join('')}</tbody>
+      </table>
+      <div style="padding:10px 14px;font-size:.78rem;color:#5d7a6e;">${tuteurs.length} candidat(s)</div>`;
+  } catch(e) { document.getElementById('tuteursTable').innerHTML = `<p style="color:var(--red)">${e.message}</p>`; }
+}
+
+function openTuteurPay(id, name) {
+  document.getElementById('tp_id').value = id;
+  document.getElementById('tp_name').textContent = 'Candidat : ' + name;
+  document.getElementById('tp_notes').value = '';
+  setAlert('tpAlert','');
+  openModal('tuteurPayModal');
+}
+
+async function doTuteurConfirmPay() {
+  const id = document.getElementById('tp_id').value;
+  const notes = document.getElementById('tp_notes').value.trim();
+  try {
+    const r = await api(`/admin/tuteurs/${id}/confirm-payment`, { method:'POST', body: JSON.stringify({ notes }) });
+    toast('✅ ' + r.message);
+    closeModal('tuteurPayModal');
+    loadTuteurs();
+  } catch(e) { setAlert('tpAlert', e.message, 'error'); }
+}
+
+async function doTuteurApprove(id) {
+  if (!confirm('Approuver manuellement le test tuteur de cet utilisateur ?')) return;
+  try {
+    const r = await api(`/admin/tuteurs/${id}/approve`, { method:'POST' });
+    toast('✅ ' + r.message);
+    loadTuteurs();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+// ── BROADCAST EMAIL ───────────────────────────────────────────────────
+async function doBroadcast(e) {
+  e.preventDefault();
+  const btn = document.getElementById('bcBtn');
+  const subject = document.getElementById('bc_subject').value.trim();
+  const message = document.getElementById('bc_message').value.trim();
+  const target  = document.getElementById('bc_target').value;
+  if (!confirm(`Envoyer cet email au groupe "${document.getElementById('bc_target').options[document.getElementById('bc_target').selectedIndex].text}" ? Cette action est irréversible.`)) return;
+  btn.disabled = true; btn.textContent = '⏳ Envoi en cours…';
+  setAlert('broadcastAlert','');
+  try {
+    const r = await api('/admin/broadcast', { method:'POST', body: JSON.stringify({ subject, message, target }) });
+    setAlert('broadcastAlert', '✅ ' + r.message, 'success');
+    document.getElementById('bc_subject').value = '';
+    document.getElementById('bc_message').value = '';
+  } catch(e) { setAlert('broadcastAlert', e.message, 'error'); }
+  finally { btn.disabled = false; btn.textContent = '📤 Envoyer l\'email groupé'; }
+}
+
+// ── AUDIT LOG ─────────────────────────────────────────────────────────
+const ACTION_LABELS = {
+  edit_profile:'✏️ Modif. profil', confirm_payment:'💳 Confirm. paiement', grant_access:'🎓 Accès accordé',
+  block_user:'🚫 Blocage', unblock_user:'✅ Déblocage', delete_user:'🗑️ Suppression',
+  reset_final_test:'🔄 Reset test final', reset_modules:'🔄 Reset modules', revoke_access:'❌ Révocation',
+  update_affiliate_commission:'🤝 Commission affilié', tuteur_confirm_payment:'💳 Paiement tuteur',
+  tuteur_approve:'🎓 Approbation tuteur', broadcast_email:'📢 Email groupé',
+};
+
+async function loadAuditLog() {
+  document.getElementById('auditTable').innerHTML = '<div class="loading">⏳</div>';
+  try {
+    const d = await api('/admin/audit-log');
+    const logs = d.logs || [];
+    if (!logs.length) { document.getElementById('auditTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucune action enregistrée pour l\'instant.</p>'; return; }
+    document.getElementById('auditTable').innerHTML = `
+      <table class="tbl">
+        <thead><tr><th>Date/Heure</th><th>Admin</th><th>Action</th><th>Cible</th><th>Détails</th></tr></thead>
+        <tbody>${logs.map(l=>`<tr>
+          <td style="font-size:.78rem;white-space:nowrap;">${fmtDt(l.created_at)}</td>
+          <td style="font-size:.8rem;">${l.admin_email||'—'}</td>
+          <td><span class="badge b-blue">${ACTION_LABELS[l.action]||l.action}</span></td>
+          <td style="font-size:.8rem;">${l.target_email ? `${l.target_prenom||''} ${l.target_nom||''}<br><span style="color:#5d7a6e;font-size:.72rem;">${l.target_email}</span>` : '—'}</td>
+          <td style="font-size:.75rem;color:#5d7a6e;max-width:200px;">${l.details ? JSON.stringify(JSON.parse(l.details), null, 0).replace(/[{}"]/g,'').replace(/,/g,' · ').substring(0,120) : '—'}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+      <div style="padding:10px 14px;font-size:.78rem;color:#5d7a6e;">${logs.length} entrée(s) — 200 dernières actions</div>`;
+  } catch(e) { document.getElementById('auditTable').innerHTML = `<p style="color:var(--red)">${e.message}</p>`; }
 }
 
 // ── MISC HELPERS ─────────────────────────────────────────────────────
