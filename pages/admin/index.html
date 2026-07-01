@@ -785,11 +785,11 @@ function renderUsers() {
             <button class="btn btn-sm btn-secondary" onclick="viewUser(${u.id})">👁</button>
             <button class="btn btn-sm" style="background:#e3f2fd;color:#1565c0;" onclick="openEdit(${u.id})">✏️</button>
             <button class="btn btn-sm" style="background:#e8f5e9;color:#2e7d32;" onclick="openEmail(${u.id})">📧</button>
-            ${!u.payment_confirmed ? `<button class="btn btn-sm btn-success" onclick="openConfirmPay(${u.id},'${(u.prenom||'')} ${(u.nom||'')}')">💳</button>` : ''}
-            ${u.status==='blocked' ?
+            ${currentRole==='admin' && !u.payment_confirmed ? `<button class="btn btn-sm btn-success" onclick="openConfirmPay(${u.id},'${(u.prenom||'')} ${(u.nom||'')}')">💳</button>` : ''}
+            ${currentRole==='admin' ? (u.status==='blocked' ?
               `<button class="btn btn-sm" style="background:#e8f5e9;color:#2e7d32;" onclick="doUnblock(${u.id})">✅</button>` :
-              `<button class="btn btn-sm btn-danger" onclick="openBlock(${u.id},'${(u.prenom||'')} ${(u.nom||'')}')">🚫</button>`}
-            <button class="btn btn-sm btn-danger" onclick="confirmDelete(${u.id},'${(u.prenom||'')} ${(u.nom||'')}')">🗑</button>
+              `<button class="btn btn-sm btn-danger" onclick="openBlock(${u.id},'${(u.prenom||'')} ${(u.nom||'')}')">🚫</button>`) : ''}
+            ${currentRole==='admin' ? `<button class="btn btn-sm btn-danger" onclick="confirmDelete(${u.id},'${(u.prenom||'')} ${(u.nom||'')}')">🗑</button>` : ''}
           </div>
         </td>
       </tr>`).join('')}</tbody>
@@ -1107,8 +1107,8 @@ async function loadPayments(filter) {
           <td style="font-size:.78rem;">${u.payment_date?fmt(u.payment_date):'—'}</td>
           <td style="font-size:.75rem;color:#5d7a6e;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.payment_notes||'—'}</td>
           <td>
-            ${!u.payment_confirmed?`<button class="btn btn-sm btn-success" onclick="openConfirmPay(${u.id},'${u.prenom} ${u.nom}')">💳 Confirmer</button>`:
-              `<button class="btn btn-sm btn-danger" onclick="doRevokeAccess(${u.id})">❌ Révoquer</button>`}
+            ${currentRole==='admin'?(!u.payment_confirmed?`<button class="btn btn-sm btn-success" onclick="openConfirmPay(${u.id},'${u.prenom} ${u.nom}')">💳 Confirmer</button>`:
+              `<button class="btn btn-sm btn-danger" onclick="doRevokeAccess(${u.id})">❌ Révoquer</button>`):''}
             <button class="btn btn-sm btn-secondary" onclick="viewUser(${u.id})">👁</button>
           </td>
         </tr>`).join('')}</tbody>
@@ -1336,8 +1336,8 @@ async function loadTuteurs() {
               : '<span class="badge b-gray">—</span>'}</td>
           <td style="font-size:.78rem;">${fmt(t.created_at)}</td>
           <td style="display:flex;flex-wrap:wrap;gap:4px;">
-            ${!t.tuteur_payment_confirmed ? `<button class="btn btn-sm btn-success" onclick="openTuteurPay(${t.id},'${t.prenom} ${t.nom}')">💳 Confirmer paiement</button>` : ''}
-            ${t.tuteur_payment_confirmed && !t.tuteur_test_passed ? `<button class="btn btn-sm btn-primary" onclick="doTuteurApprove(${t.id})">🎓 Approuver test</button>` : ''}
+            ${currentRole==='admin' && !t.tuteur_payment_confirmed ? `<button class="btn btn-sm btn-success" onclick="openTuteurPay(${t.id},'${t.prenom} ${t.nom}')">💳 Confirmer paiement</button>` : ''}
+            ${currentRole==='admin' && t.tuteur_payment_confirmed && !t.tuteur_test_passed ? `<button class="btn btn-sm btn-primary" onclick="doTuteurApprove(${t.id})">🎓 Approuver test</button>` : ''}
             <button class="btn btn-sm btn-secondary" onclick="viewUser(${t.id})">👁</button>
           </td>
         </tr>`).join('')}</tbody>
