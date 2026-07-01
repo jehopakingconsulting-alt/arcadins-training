@@ -126,7 +126,8 @@
 <aside class="sidebar">
   <div class="brand">
     <h2>🍁 ARCADINS Admin</h2>
-    <p id="adminWelcome">Backoffice administrateur</p>
+    <p id="adminWelcome">Backoffice</p>
+    <span id="roleBadge" style="display:inline-block;margin-top:5px;padding:2px 8px;border-radius:12px;font-size:.65rem;font-weight:700;background:rgba(201,168,76,.25);color:#c9a84c;"></span>
   </div>
   <nav class="nav">
     <div class="nav-section">Vue d'ensemble</div>
@@ -138,7 +139,7 @@
 
     <div class="nav-section">Paiements</div>
     <div class="nav-item" onclick="go('payments')">💳 Gestion paiements</div>
-    <div class="nav-item" onclick="go('affiliates')">🤝 Parrainage</div>
+    <div class="nav-item admin-only-nav" onclick="go('affiliates')">🤝 Parrainage</div>
 
     <div class="nav-section">Formation</div>
     <div class="nav-item" onclick="go('modules')">📚 Progression modules</div>
@@ -148,13 +149,14 @@
     <div class="nav-section">Certifications</div>
     <div class="nav-item" onclick="go('certificates')">🏆 Certificats</div>
 
-    <div class="nav-section">Communication</div>
-    <div class="nav-item" onclick="go('broadcast')">📢 Email groupé</div>
+    <div class="nav-section admin-only-nav">Communication</div>
+    <div class="nav-item admin-only-nav" onclick="go('broadcast')">📢 Email groupé</div>
 
     <div class="nav-section">Admin</div>
     <div class="nav-item" onclick="go('audit')">🔍 Journal d'audit</div>
-    <div class="nav-item" onclick="go('settings')">⚙️ Paramètres</div>
-    <div class="nav-item" onclick="exportCsv()">📤 Export CSV</div>
+    <div class="nav-item admin-only-nav" onclick="go('moderators')">👮 Modérateurs</div>
+    <div class="nav-item admin-only-nav" onclick="go('settings')">⚙️ Paramètres</div>
+    <div class="nav-item admin-only-nav" onclick="exportCsv()">📤 Export CSV</div>
     <div class="nav-item" onclick="doLogout()">🚪 Déconnexion</div>
   </nav>
   <div class="sidebar-footer" id="sidebarTime"></div>
@@ -187,8 +189,8 @@
     <div class="page-header">
       <h1>👥 Gestion des comptes</h1>
       <div style="display:flex;gap:10px;">
-        <button class="btn btn-success" onclick="openModal('createUserModal')">➕ Créer un compte</button>
-        <button class="btn btn-secondary" onclick="exportCsv()">📤 CSV</button>
+        <button class="btn btn-success admin-only" onclick="openModal('createUserModal')">➕ Créer un compte</button>
+        <button class="btn btn-secondary admin-only" onclick="exportCsv()">📤 CSV</button>
       </div>
     </div>
     <div class="card">
@@ -384,6 +386,20 @@
     </div>
   </div>
 
+  <!-- ── MODÉRATEURS ── -->
+  <div id="p-moderators" style="display:none;">
+    <div class="page-header">
+      <h1>👮 Gestion des modérateurs</h1>
+      <button class="btn btn-success" onclick="openModal('createModModal')">➕ Nouveau modérateur</button>
+    </div>
+    <div class="alert alert-info" style="margin-bottom:18px;">
+      <strong>ℹ️ Rôle modérateur :</strong> Peut consulter les données, modifier les profils et envoyer des emails individuels. Ne peut <strong>pas</strong> confirmer des paiements, bloquer/supprimer des comptes, broadcaster des emails ou modifier les paramètres.
+    </div>
+    <div class="card">
+      <div class="tbl-scroll" id="moderatorsTable"><div class="loading">⏳</div></div>
+    </div>
+  </div>
+
 </main>
 </div>
 
@@ -544,6 +560,44 @@
   </div>
 </div>
 
+<!-- Create Moderator Modal -->
+<div class="modal-bg" id="createModModal">
+  <div class="modal" style="max-width:480px;">
+    <button class="modal-close" onclick="closeModal('createModModal')">✕</button>
+    <h3>👮 Nouveau modérateur</h3>
+    <div id="createModAlert"></div>
+    <div class="form-grid">
+      <div class="form-group"><label>Prénom *</label><input id="mod_prenom" placeholder="Prénom"/></div>
+      <div class="form-group"><label>Nom *</label><input id="mod_nom" placeholder="Nom"/></div>
+      <div class="form-group full"><label>Email *</label><input id="mod_email" type="email" placeholder="moderateur@exemple.com"/></div>
+      <div class="form-group full"><label>Mot de passe * (min. 8 caractères)</label><input id="mod_pwd" type="password" placeholder="Mot de passe sécurisé"/></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="closeModal('createModModal')">Annuler</button>
+      <button class="btn btn-primary" onclick="doCreateMod()">✅ Créer le modérateur</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Moderator Modal -->
+<div class="modal-bg" id="editModModal">
+  <div class="modal" style="max-width:480px;">
+    <button class="modal-close" onclick="closeModal('editModModal')">✕</button>
+    <h3>✏️ Modifier le modérateur</h3>
+    <input type="hidden" id="emod_id"/>
+    <div id="editModAlert"></div>
+    <div class="form-grid">
+      <div class="form-group"><label>Prénom</label><input id="emod_prenom" placeholder="Prénom"/></div>
+      <div class="form-group"><label>Nom</label><input id="emod_nom" placeholder="Nom"/></div>
+      <div class="form-group full"><label>Nouveau mot de passe (laisser vide = inchangé)</label><input id="emod_pwd" type="password" placeholder="Nouveau mot de passe…"/></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="closeModal('editModModal')">Annuler</button>
+      <button class="btn btn-primary" onclick="doUpdateMod()">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════════════════════════════════════
      SCRIPTS
 ══════════════════════════════════════════════ -->
@@ -561,14 +615,30 @@ async function api(path, opts = {}) {
   return j.data || j;
 }
 
+// ── ROLE STATE ──────────────────────────────────────────────────────
+let currentRole = null;
+
+function applyRoleUI(role) {
+  currentRole = role;
+  // Badge sidebar
+  const badge = document.getElementById('roleBadge');
+  if (role === 'admin') { badge.textContent = 'Administrateur'; badge.style.background = 'rgba(201,168,76,.25)'; badge.style.color = '#c9a84c'; }
+  else { badge.textContent = 'Modérateur'; badge.style.background = 'rgba(100,180,255,.2)'; badge.style.color = '#90caf9'; }
+  // Masquer les éléments admin-only pour les modérateurs
+  document.querySelectorAll('.admin-only, .admin-only-nav').forEach(el => {
+    el.style.display = role === 'admin' ? '' : 'none';
+  });
+}
+
 // ── AUTH CHECK ──────────────────────────────────────────────────────
 (async () => {
   if (!getToken()) { location.href = '../acces.html'; return; }
   try {
     const r = await api('/access/me');
     const u = r.user || r;
-    if (u.role !== 'admin') { location.href = '../espace-membre.html'; return; }
+    if (!['admin','moderator'].includes(u.role)) { location.href = '../espace-membre.html'; return; }
     document.getElementById('adminWelcome').textContent = u.prenom + ' ' + u.nom;
+    applyRoleUI(u.role);
     loadDashboard();
     setInterval(() => {
       document.getElementById('sidebarTime').textContent = new Date().toLocaleTimeString('fr-CA');
@@ -591,6 +661,7 @@ const loaders = {
   tuteurs: loadTuteurs,
   broadcast: () => setAlert('broadcastAlert',''),
   audit: loadAuditLog,
+  moderators: loadModerators,
   settings: () => { loadSettings(); checkSmtp(); },
 };
 
@@ -757,16 +828,16 @@ async function viewUser(id) {
       </dl>
       <div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;padding-top:14px;border-top:1px solid #eef3f0;">
         <button class="btn btn-sm btn-secondary" onclick="openEdit(${u.id});closeModal('userDetailModal')">✏️ Modifier</button>
-        ${!u.payment_confirmed?`<button class="btn btn-sm btn-success" onclick="openConfirmPay(${u.id},'${u.prenom} ${u.nom}');closeModal('userDetailModal')">💳 Confirmer paiement</button>`:''}
-        <button class="btn btn-sm" style="background:#e3f2fd;color:#1565c0;" onclick="openGrantModal(${u.id},'${u.prenom} ${u.nom}')">🎓 Accorder accès</button>
         <button class="btn btn-sm" style="background:#e8f5e9;color:#2e7d32;" onclick="openEmail(${u.id})">📧 Email</button>
-        ${d.final_attempts>0?`<button class="btn btn-sm btn-warning" onclick="doResetTest(${u.id})">🔄 Reset test final</button>`:''}
-        <button class="btn btn-sm btn-warning" onclick="doResetModules(${u.id})">🔄 Reset modules</button>
-        ${u.status==='blocked'?
+        ${currentRole==='admin' && !u.payment_confirmed?`<button class="btn btn-sm btn-success" onclick="openConfirmPay(${u.id},'${u.prenom} ${u.nom}');closeModal('userDetailModal')">💳 Confirmer paiement</button>`:''}
+        ${currentRole==='admin'?`<button class="btn btn-sm" style="background:#e3f2fd;color:#1565c0;" onclick="openGrantModal(${u.id},'${u.prenom} ${u.nom}')">🎓 Accorder accès</button>`:''}
+        ${currentRole==='admin' && d.final_attempts>0?`<button class="btn btn-sm btn-warning" onclick="doResetTest(${u.id})">🔄 Reset test final</button>`:''}
+        ${currentRole==='admin'?`<button class="btn btn-sm btn-warning" onclick="doResetModules(${u.id})">🔄 Reset modules</button>`:''}
+        ${currentRole==='admin'?(u.status==='blocked'?
           `<button class="btn btn-sm btn-success" onclick="doUnblock(${u.id})">✅ Débloquer</button>`:
-          `<button class="btn btn-sm btn-danger" onclick="openBlock(${u.id},'${u.prenom} ${u.nom}')">🚫 Bloquer</button>`}
-        ${u.payment_confirmed?`<button class="btn btn-sm btn-danger" onclick="doRevokeAccess(${u.id})">❌ Révoquer accès</button>`:''}
-        <button class="btn btn-sm btn-danger" onclick="confirmDelete(${u.id},'${u.prenom} ${u.nom}')">🗑 Supprimer</button>
+          `<button class="btn btn-sm btn-danger" onclick="openBlock(${u.id},'${u.prenom} ${u.nom}')">🚫 Bloquer</button>`):''}
+        ${currentRole==='admin' && u.payment_confirmed?`<button class="btn btn-sm btn-danger" onclick="doRevokeAccess(${u.id})">❌ Révoquer accès</button>`:''}
+        ${currentRole==='admin'?`<button class="btn btn-sm btn-danger" onclick="confirmDelete(${u.id},'${u.prenom} ${u.nom}')">🗑 Supprimer</button>`:''}
       </div>`;
   } catch(e) { setAlert('udAlert', e.message, 'error'); }
 }
@@ -1365,6 +1436,94 @@ function closeModal(id) { document.getElementById(id).classList.remove('open'); 
 document.querySelectorAll('.modal-bg').forEach(m => {
   m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
 });
+
+// ── MODÉRATEURS ──────────────────────────────────────────────────────
+let moderatorsList = [];
+
+async function loadModerators() {
+  document.getElementById('moderatorsTable').innerHTML = '<div class="loading">⏳ Chargement…</div>';
+  try {
+    const d = await api('/admin/moderators');
+    moderatorsList = d.moderators || [];
+    if (!moderatorsList.length) {
+      document.getElementById('moderatorsTable').innerHTML = '<p style="padding:20px;color:#5d7a6e;">Aucun modérateur créé. Cliquez sur « Nouveau modérateur » pour commencer.</p>';
+      return;
+    }
+    document.getElementById('moderatorsTable').innerHTML = `
+      <table class="tbl">
+        <thead><tr><th>Nom</th><th>Email</th><th>Statut</th><th>Créé le</th><th>Dernière connexion</th><th>Actions</th></tr></thead>
+        <tbody>${moderatorsList.map(m => `
+          <tr>
+            <td><strong>${m.prenom} ${m.nom}</strong></td>
+            <td>${m.email}</td>
+            <td><span class="badge b-blue">Modérateur</span></td>
+            <td>${fmt(m.created_at)}</td>
+            <td>${m.last_login_at ? fmtDt(m.last_login_at) : '<span style="color:#aaa;">Jamais</span>'}</td>
+            <td>
+              <button class="btn btn-sm btn-secondary" onclick="openEditMod(${m.id},'${m.prenom}','${m.nom}')">✏️ Modifier</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteMod(${m.id},'${m.prenom} ${m.nom}')">🗑 Supprimer</button>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+  } catch(e) { document.getElementById('moderatorsTable').innerHTML = `<div class="alert alert-error">${e.message}</div>`; }
+}
+
+async function doCreateMod() {
+  setAlert('createModAlert','');
+  const body = {
+    prenom: document.getElementById('mod_prenom').value.trim(),
+    nom:    document.getElementById('mod_nom').value.trim(),
+    email:  document.getElementById('mod_email').value.trim(),
+    password: document.getElementById('mod_pwd').value,
+  };
+  if (!body.prenom || !body.nom || !body.email || !body.password)
+    return setAlert('createModAlert','Tous les champs sont requis.','error');
+  try {
+    await api('/admin/moderators', { method:'POST', body: JSON.stringify(body) });
+    toast('✅ Modérateur créé avec succès.');
+    closeModal('createModModal');
+    ['mod_prenom','mod_nom','mod_email','mod_pwd'].forEach(id => document.getElementById(id).value = '');
+    loadModerators();
+  } catch(e) { setAlert('createModAlert', e.message, 'error'); }
+}
+
+function openEditMod(id, prenom, nom) {
+  document.getElementById('emod_id').value = id;
+  document.getElementById('emod_prenom').value = prenom;
+  document.getElementById('emod_nom').value = nom;
+  document.getElementById('emod_pwd').value = '';
+  setAlert('editModAlert','');
+  openModal('editModModal');
+}
+
+async function doUpdateMod() {
+  setAlert('editModAlert','');
+  const id = document.getElementById('emod_id').value;
+  const body = {};
+  const prenom = document.getElementById('emod_prenom').value.trim();
+  const nom    = document.getElementById('emod_nom').value.trim();
+  const pwd    = document.getElementById('emod_pwd').value;
+  if (prenom) body.prenom = prenom;
+  if (nom)    body.nom = nom;
+  if (pwd)    body.password = pwd;
+  if (!Object.keys(body).length) return setAlert('editModAlert','Aucune modification.','error');
+  try {
+    await api('/admin/moderators/' + id, { method:'PUT', body: JSON.stringify(body) });
+    toast('✅ Modérateur mis à jour.');
+    closeModal('editModModal');
+    loadModerators();
+  } catch(e) { setAlert('editModAlert', e.message, 'error'); }
+}
+
+async function deleteMod(id, name) {
+  if (!confirm(`Supprimer le modérateur ${name} ? Cette action est irréversible.`)) return;
+  try {
+    await api('/admin/moderators/' + id, { method:'DELETE' });
+    toast('🗑 Modérateur supprimé.');
+    loadModerators();
+  } catch(e) { toast(e.message, 'error'); }
+}
 </script>
 </body>
 </html>

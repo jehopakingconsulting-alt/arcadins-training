@@ -7,13 +7,22 @@ const { getDb, normalizePhone, logAdminAction } = require('../database');
 const authMiddleware = require('../middleware/auth');
 const { sendUserEmail, testConnection, isConfigured } = require('../services/email');
 
-// ── Admin guard ─────────────────────────────────────────────────────────────
+// ── Admin guard (admin + modérateur) ────────────────────────────────────────
 function adminOnly(req, res, next) {
-  if (!req.user || req.user.role !== 'admin') {
+  if (!req.user || !['admin', 'moderator'].includes(req.user.role)) {
     return res.status(403).json({ success: false, message: 'Accès réservé aux administrateurs.' });
   }
   next();
 }
+
+// ── Full admin guard (admin uniquement — actions sensibles) ──────────────────
+function fullAdminOnly(req, res, next) {
+  if (!req.user || req.user.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'Action réservée à l\'administrateur principal.' });
+  }
+  next();
+}
+
 router.use(authMiddleware, adminOnly);
 
 // ════════════════════════════════════════════════════════════════════
@@ -115,7 +124,7 @@ router.get('/users/:id', (req, res) => {
 // ════════════════════════════════════════════════════════════════════
 //  USERS — CREATE MANUALLY
 // ════════════════════════════════════════════════════════════════════
-router.post('/users', async (req, res) => {
+router.post('/users', fullAdminOnly, async (req, res) => {
   try {
     const db = getDb();
     const { nom, prenom, email, telephone, pays, password, plan, payment_method, payment_confirmed, notes } = req.body;
@@ -215,7 +224,7 @@ router.put('/users/:id/profile', async (req, res) => {
 // ════════════════════════════════════════════════════════════════════
 //  USERS — CONFIRM PAYMENT (cash, Interac, virement…)
 // ════════════════════════════════════════════════════════════════════
-router.post('/users/:id/confirm-payment', (req, res) => {
+router.post('/users/:id/confirm-payment', fullAdminOnly, (req, res) => {
   try {
     const db = getDb();
     const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
@@ -253,7 +262,7 @@ router.post('/users/:id/confirm-payment', (req, res) => {
 // ════════════════════════════════════════════════════════════════════
 //  USERS — GRANT ACCESS (without payment, e.g. promo/test)
 // ════════════════════════════════════════════════════════════════════
-router.post('/users/:id/grant-access', (req, res) => {
+router.post('/users/:id/grant-access', fullAdminOnly, (req, res) => {
   try {
     const db = getDb();
     const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
@@ -284,7 +293,7 @@ router.post('/users/:id/grant-access', (req, res) => {
 // ════════════════════════════════════════════════════════════════════
 //  USERS — BLOCK
 // ════════════════════════════════════════════════════════════════════
-router.post('/users/:id/block', (req, res) => {
+router.post('/users/:id/block', fullAdminOnly, (req, res) => {
   try {
     const db = getDb();
     const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
@@ -305,7 +314,7 @@ router.post('/users/:id/block', (req, res) => {
 // ════════════════════════════════════════════════════════════════════
 //  USERS — UNBLOCK
 // ════════════════════════════════════════════════════════════════════
-router.post('/users/:id/unblock', (req, res) => {
+router.post('/users/:id/unblock', fullAdminOnly, (req, res) => {
   try {
     const db = getDb();
     const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
@@ -324,7 +333,7 @@ router.post('/users/:id/unblock', (req, res) => {
 // ════════════════════════════════════════════════════════════════════
 //  USERS — DELETE
 // ════════════════════════════════════════════════════════════════════
-router.delete('/users/:id', (req, res) => {
+router.delete('/users/:id', fullAdminOnly, (req, res) => {
   try {
     const db = getDb();
     const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
@@ -348,7 +357,7 @@ router.delete('/users/:id', (req, res) => {
 // ════════════════════════════════════════════════════════════════════
 //  USERS — RESET FINAL TEST ATTEMPTS
 // ════════════════════════════════════════════════════════════════════
-router.post('/users/:id/reset-final-test', (req, res) => {
+router.post('/users/:id/reset-final-test', fullAdminOnly, (req, res) => {
   try {
     const db = getDb();
     const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
@@ -367,7 +376,7 @@ router.post('/users/:id/reset-final-test', (req, res) => {
 // ════════════════════════════════════════════════════════════════════
 //  USERS — RESET MODULE PROGRESS
 // ════════════════════════════════════════════════════════════════════
-router.post('/users/:id/reset-modules', (req, res) => {
+router.post('/users/:id/reset-modules', fullAdminOnly, (req, res) => {
   try {
     const db = getDb();
     const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
@@ -391,7 +400,7 @@ router.post('/users/:id/reset-modules', (req, res) => {
 // ════════════════════════════════════════════════════════════════════
 //  USERS — REVOKE ACCESS (suspend)
 // ════════════════════════════════════════════════════════════════════
-router.post('/users/:id/revoke-access', (req, res) => {
+router.post('/users/:id/revoke-access', fullAdminOnly, (req, res) => {
   try {
     const db = getDb();
     const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
@@ -517,7 +526,7 @@ router.get('/settings', (req, res) => {
   }
 });
 
-router.put('/settings', (req, res) => {
+router.put('/settings', fullAdminOnly, (req, res) => {
   try {
     const db = getDb();
     const { settings } = req.body;
@@ -629,7 +638,7 @@ router.get('/affiliates', (req, res) => {
 });
 
 // PUT /api/admin/affiliates/:id — met à jour le statut d'une commission (pending/paid)
-router.put('/affiliates/:id', (req, res) => {
+router.put('/affiliates/:id', fullAdminOnly, (req, res) => {
   try {
     const db = getDb();
     const { status } = req.body;
@@ -677,7 +686,7 @@ router.get('/tuteurs', (req, res) => {
 });
 
 // POST /api/admin/tuteurs/:id/confirm-payment — confirme paiement tuteur manuellement
-router.post('/tuteurs/:id/confirm-payment', (req, res) => {
+router.post('/tuteurs/:id/confirm-payment', fullAdminOnly, (req, res) => {
   try {
     const db = getDb();
     const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
@@ -694,7 +703,7 @@ router.post('/tuteurs/:id/confirm-payment', (req, res) => {
 });
 
 // POST /api/admin/tuteurs/:id/approve — approuve manuellement le test tuteur
-router.post('/tuteurs/:id/approve', (req, res) => {
+router.post('/tuteurs/:id/approve', fullAdminOnly, (req, res) => {
   try {
     const db = getDb();
     const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
@@ -708,7 +717,7 @@ router.post('/tuteurs/:id/approve', (req, res) => {
 });
 
 // POST /api/admin/broadcast — envoie un email à tous les utilisateurs (ou par rôle)
-router.post('/broadcast', async (req, res) => {
+router.post('/broadcast', fullAdminOnly, async (req, res) => {
   try {
     const db = getDb();
     const { subject, message, target } = req.body;
@@ -736,6 +745,105 @@ router.post('/broadcast', async (req, res) => {
     return res.json({ success: true, message: `Email envoyé à ${sent}/${users.length} destinataires.` });
   } catch (err) {
     console.error('[Admin] Broadcast:', err);
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
+//  ME — profil de l'admin/modérateur connecté
+// ════════════════════════════════════════════════════════════════════
+router.get('/me', (req, res) => {
+  try {
+    const db = getDb();
+    const me = db.prepare('SELECT id,nom,prenom,email,role FROM users WHERE id=?').get(req.user.id);
+    return res.json({ success: true, data: { user: me } });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
+//  MODÉRATEURS — gestion des comptes modérateurs (admin uniquement)
+// ════════════════════════════════════════════════════════════════════
+
+// GET /api/admin/moderators — liste tous les modérateurs
+router.get('/moderators', fullAdminOnly, (req, res) => {
+  try {
+    const db = getDb();
+    const mods = db.prepare(
+      "SELECT id,nom,prenom,email,status,created_at,last_login_at FROM users WHERE role='moderator' ORDER BY created_at DESC"
+    ).all();
+    return res.json({ success: true, data: { moderators: mods, total: mods.length } });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// POST /api/admin/moderators — crée un nouveau modérateur
+router.post('/moderators', fullAdminOnly, async (req, res) => {
+  try {
+    const db = getDb();
+    const { nom, prenom, email, password } = req.body;
+    if (!nom || !prenom || !email || !password)
+      return res.status(400).json({ success: false, message: 'Nom, prénom, email et mot de passe requis.' });
+    if (password.length < 8)
+      return res.status(400).json({ success: false, message: 'Le mot de passe doit contenir au moins 8 caractères.' });
+
+    const existing = db.prepare('SELECT id FROM users WHERE email=?').get(email.trim().toLowerCase());
+    if (existing) return res.status(409).json({ success: false, message: 'Cet email est déjà utilisé.' });
+
+    const hash = await bcrypt.hash(password, 10);
+    const info = db.prepare(`
+      INSERT INTO users (nom,prenom,email,password_hash,role,status,payment_confirmed,trial_done,qualification_done,all_modules_done,final_test_passed)
+      VALUES (?,?,?,?,'moderator','active',0,0,0,0,0)
+    `).run(nom.trim(), prenom.trim(), email.trim().toLowerCase(), hash);
+
+    logAdminAction(db, req.user.id, 'create_moderator', info.lastInsertRowid, { email });
+    const created = db.prepare('SELECT id,nom,prenom,email,role,status,created_at FROM users WHERE id=?').get(info.lastInsertRowid);
+    return res.status(201).json({ success: true, data: { moderator: created }, message: 'Modérateur créé avec succès.' });
+  } catch (err) {
+    console.error('[Admin] Create moderator:', err);
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// PUT /api/admin/moderators/:id — modifie un modérateur (nom, prénom, mot de passe)
+router.put('/moderators/:id', fullAdminOnly, async (req, res) => {
+  try {
+    const db = getDb();
+    const mod = db.prepare("SELECT * FROM users WHERE id=? AND role='moderator'").get(req.params.id);
+    if (!mod) return res.status(404).json({ success: false, message: 'Modérateur introuvable.' });
+
+    const { nom, prenom, password } = req.body;
+    const updates = []; const params = [];
+    if (nom)    { updates.push('nom=?');    params.push(nom.trim()); }
+    if (prenom) { updates.push('prenom=?'); params.push(prenom.trim()); }
+    if (password) {
+      if (password.length < 8) return res.status(400).json({ success: false, message: 'Mot de passe trop court (8 caractères min).' });
+      updates.push('password_hash=?'); params.push(await bcrypt.hash(password, 10));
+    }
+    if (!updates.length) return res.status(400).json({ success: false, message: 'Aucune modification.' });
+
+    params.push(req.params.id);
+    db.prepare(`UPDATE users SET ${updates.join(',')} WHERE id=?`).run(...params);
+    logAdminAction(db, req.user.id, 'edit_moderator', mod.id, { fields: Object.keys(req.body) });
+    return res.json({ success: true, message: 'Modérateur mis à jour.' });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// DELETE /api/admin/moderators/:id — supprime un modérateur
+router.delete('/moderators/:id', fullAdminOnly, (req, res) => {
+  try {
+    const db = getDb();
+    const mod = db.prepare("SELECT * FROM users WHERE id=? AND role='moderator'").get(req.params.id);
+    if (!mod) return res.status(404).json({ success: false, message: 'Modérateur introuvable.' });
+
+    logAdminAction(db, req.user.id, 'delete_moderator', mod.id, { email: mod.email });
+    db.prepare('DELETE FROM users WHERE id=?').run(mod.id);
+    return res.json({ success: true, message: `Modérateur ${mod.prenom} ${mod.nom} supprimé.` });
+  } catch (err) {
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
   }
 });
