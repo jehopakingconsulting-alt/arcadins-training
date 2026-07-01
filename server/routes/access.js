@@ -217,7 +217,7 @@ router.post('/forgot-password', authLimiter, async (req, res) => {
     const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email.toLowerCase().trim());
 
     // Réponse identique que le compte existe ou non, pour éviter l'énumération d'emails
-    if (!user || !user.password_hash) {
+    if (!user) {
       return res.json({ success: true, message: genericMessage });
     }
 
@@ -227,9 +227,16 @@ router.post('/forgot-password', authLimiter, async (req, res) => {
     db.prepare('UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?')
       .run(token, expires, user.id);
 
-    const SITE = process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 3000}`;
+    // Priorité : domaine custom → FRONTEND_URL → localhost
+    const SITE = process.env.CUSTOM_DOMAIN || process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 3000}`;
     const resetLink = `${SITE}/pages/reinitialiser-mot-de-passe.html?token=${token}`;
-    sendPasswordResetEmail(user, resetLink).catch(() => {});
+
+    try {
+      await sendPasswordResetEmail(user, resetLink);
+    } catch (emailErr) {
+      console.error('[Access] Forgot-password email failed:', emailErr.message);
+      return res.status(500).json({ success: false, message: 'Impossible d\'envoyer l\'email. Veuillez réessayer ou contacter le support.' });
+    }
 
     return res.json({ success: true, message: genericMessage });
   } catch (err) {
