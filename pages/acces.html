@@ -174,7 +174,7 @@
 
 function getUserStepLocal(user) {
   if (!user) return null;
-  if (user.role === 'admin') return 'admin';
+  if (user.role === 'admin' || user.role === 'moderator') return 'admin';
   if (user.final_test_passed) return 'final_passed';
   if (user.all_modules_done) return 'modules_done';
   if (user.qualification_done) return 'qualification_done';
