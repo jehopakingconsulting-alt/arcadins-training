@@ -185,6 +185,13 @@ function initDatabase() {
     'ALTER TABLE users ADD COLUMN last_login_at TEXT',
     'ALTER TABLE users ADD COLUMN last_login_ip TEXT',
     'ALTER TABLE users ADD COLUMN last_login_device TEXT',
+    // Migrations table modules — tests par module
+    'ALTER TABLE modules ADD COLUMN test_score REAL DEFAULT 0',
+    'ALTER TABLE modules ADD COLUMN test_passed INTEGER DEFAULT 0',
+    'ALTER TABLE modules ADD COLUMN test_attempts INTEGER DEFAULT 0',
+    'ALTER TABLE modules ADD COLUMN test_last_attempt_at TEXT',
+    // Permissions granulaires pour les modérateurs
+    'ALTER TABLE users ADD COLUMN moderator_permissions TEXT DEFAULT NULL',
   ];
   migrations.forEach(sql => {
     try { db.prepare(sql).run(); } catch(e) { /* colonne déjà existante */ }

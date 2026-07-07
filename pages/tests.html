@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tests Interactifs – ARCADINS Training Center</title>
   <meta name="description" content="Tests interactifs TEF Canada TCF Canada : test de niveau, grammaire, vocabulaire, compréhension. Résultats immédiats avec score NCLC." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.arcadins-training.com/pages/tests.html" />
+  <meta property="og:title" content="Tests Interactifs TEF & TCF Canada – ARCADINS" />
+  <meta property="og:description" content="Quiz de grammaire, vocabulaire, compréhension orale et écrite. Score NCLC estimé immédiatement. Entraînez-vous gratuitement." />
+  <meta property="og:image" content="https://www.arcadins-training.com/assets/img/logo.svg" />
+  <link rel="canonical" href="https://www.arcadins-training.com/pages/tests.html" />
   <link rel="stylesheet" href="../assets/css/style.css" />
   <style>
     /* ===== QUIZ ENGINE STYLES ===== */
@@ -262,6 +268,7 @@
       <button class="tab-btn" onclick="showTab('lecture',this)" data-i18n="tests.tab.lecture">📄 Compréhension écrite</button>
       <button class="tab-btn" onclick="showTab('expression',this)" data-i18n="tests.tab.expression">✍️ Expression écrite</button>
       <button class="tab-btn" onclick="showTab('oral',this)" data-i18n="tests.tab.oral">🎤 Expression orale</button>
+      <button class="tab-btn" onclick="showTab('conjugaison',this)">🔤 Conjugaison</button>
       <button class="tab-btn" onclick="showTab('strategies',this)" data-i18n="tests.tab.strategies">🎯 Stratégies</button>
       <button class="tab-btn" onclick="showTab('culture',this)" data-i18n="tests.tab.culture">🍁 Culture canadienne</button>
       <button class="tab-btn" onclick="showTab('semiofficiel',this)" data-i18n="tests.tab.semiofficiel" style="background:linear-gradient(135deg,var(--red-dark),var(--red));color:white;border-color:var(--red);">🏅 Test semi-officiel</button>
@@ -487,6 +494,34 @@
 
 
     <!-- ================================================ -->
+    <!-- TAB CONJUGAISON                                  -->
+    <!-- ================================================ -->
+    <div class="tab-content" id="tab-conjugaison">
+      <div class="quiz-wrap" id="quiz-conjugaison">
+        <div class="quiz-box">
+          <div class="quiz-header">
+            <h3>🔤 Quiz de Conjugaison</h3>
+            <div class="quiz-timer" id="timer-conjugaison">⏱️ <span id="time-conjugaison">00:00</span></div>
+          </div>
+          <p style="color:var(--gray-text);font-size:.88rem;margin-bottom:16px;">
+            10 questions · Temps verbaux, subjonctif, conditionnel, participes · Niveau B1–C1
+          </p>
+          <div class="quiz-progress-label">
+            <span id="prog-label-conjugaison">Question 1 / 10</span>
+            <span id="prog-score-conjugaison">Score : 0 / 0</span>
+          </div>
+          <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="prog-fill-conjugaison" style="width:0%"></div></div>
+          <div id="questions-conjugaison"></div>
+          <div class="quiz-nav">
+            <span id="feedback-conjugaison" style="font-size:.85rem;font-weight:600;"></span>
+            <button class="btn-next" id="next-conjugaison" onclick="nextQuestion('conjugaison')">Question suivante →</button>
+          </div>
+        </div>
+        <div class="result-panel" id="result-conjugaison"></div>
+      </div>
+    </div>
+
+    <!-- ================================================ -->
     <!-- TAB STRATÉGIES D'EXAMEN                          -->
     <!-- ================================================ -->
     <div class="tab-content" id="tab-strategies">
@@ -634,6 +669,11 @@
 
 // ===== QUESTION BANKS =====
 const quizData = {
+
+  conjugaison: {
+    title: "Conjugaison",
+    questions: []
+  },
 
   strategies: {
     title: "Stratégies d'examen",
@@ -1244,7 +1284,7 @@ function showTab(id, btn) {
   if (btn) btn.classList.add('active');
 
   // Init quiz on first open
-  if (['niveau', 'grammaire', 'vocabulaire', 'lecture', 'strategies', 'culture'].includes(id)) {
+  if (['niveau', 'grammaire', 'vocabulaire', 'lecture', 'conjugaison', 'strategies', 'culture'].includes(id)) {
     if (!state[id]) initQuiz(id);
   }
   if (id === 'expression' && !writingInitialized) initWriting();
@@ -1485,6 +1525,7 @@ function initAllQuizzesRandom() {
     quizData.grammaire.questions = buildQuizQuestions('grammaire');
     quizData.vocabulaire.questions = buildQuizQuestions('vocabulaire');
     quizData.lecture.questions = buildQuizQuestions('lecture');
+    quizData.conjugaison.questions = buildQuizQuestions('conjugaison');
     quizData.strategies.questions = buildQuizQuestions('strategies');
     quizData.culture.questions = buildQuizQuestions('culture');
     // Ajouter la config semi-officiel

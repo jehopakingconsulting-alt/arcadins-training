@@ -62,6 +62,20 @@
     .acc-card-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
     .acc-card-head h3 { margin:0; }
     .tutor-card-badge { display:inline-flex; align-items:center; gap:8px; border-radius:12px; padding:14px 16px; font-size:.85rem; margin-bottom:14px; }
+    /* NCLC Widget */
+    .nclc-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+    .nclc-skill { background:var(--gray-light); border-radius:12px; padding:14px; }
+    .nclc-skill-label { font-size:.72rem; font-weight:700; color:var(--gray-text); text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; }
+    .nclc-skill-bar-wrap { height:8px; background:#d0dae8; border-radius:4px; overflow:hidden; margin-bottom:6px; }
+    .nclc-skill-bar { height:100%; border-radius:4px; transition:.6s; }
+    .nclc-skill-val { display:flex; justify-content:space-between; font-size:.78rem; }
+    .nclc-skill-score { color:var(--gray-text); }
+    .nclc-skill-level { font-weight:800; color:var(--blue-dark); }
+    .nclc-overall { background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:white; border-radius:12px; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; }
+    .nclc-overall-label { font-size:.8rem; opacity:.85; }
+    .nclc-overall-value { font-size:2rem; font-weight:900; }
+    .nclc-overall-sub { font-size:.72rem; opacity:.7; margin-top:2px; }
+    .nclc-pending { font-size:.83rem; color:var(--gray-text); font-style:italic; }
   </style>
 </head>
 <body>
@@ -181,6 +195,14 @@
       </div>
       <div style="font-size:.85rem;color:var(--gray-text);margin-bottom:16px;" id="moduleStatus"></div>
       <a href="formation.html" class="btn-primary" style="font-size:.85rem;" data-i18n="member.go.formation">Continuer ma formation →</a>
+    </div>
+
+    <!-- NCLC Estimation -->
+    <div class="card" id="nclcCard" style="margin-bottom:24px;display:none;">
+      <h3>📈 Estimation NCLC par compétence</h3>
+      <div id="nclcContent">
+        <p class="nclc-pending">Chargement…</p>
+      </div>
     </div>
 
     <!-- Certificate (if passed) -->
@@ -332,6 +354,9 @@ async function init() {
     document.getElementById('editTelephone').value = u.telephone || '';
     document.getElementById('editPays').value = u.pays || '';
 
+    // NCLC Estimation (only after qualification)
+    if (u.qualification_done) loadNclcEstimate(lang);
+
     // Tutor space card
     renderTutorCard(u, lang);
 
@@ -346,6 +371,124 @@ async function init() {
 
   } catch(e) {
     document.getElementById('loadingState').innerHTML = `<p style="color:red;text-align:center;">${e.message}</p>`;
+  }
+}
+
+// ── NCLC Estimation ──────────────────────────────────────────
+// Groupes de compétences : CO, CE, EO, EE (modules principaux)
+const NCLC_SKILLS = {
+  CO: { label:'Compréhension Orale', en:'Listening', modules:[2,8],  color:'#1565c0' },
+  CE: { label:'Compréhension Écrite', en:'Reading',   modules:[4,10], color:'#0b5d3b' },
+  EO: { label:'Expression Orale',     en:'Speaking',  modules:[3,9],  color:'#b45309' },
+  EE: { label:'Expression Écrite',    en:'Writing',   modules:[5,11], color:'#7b3f9e' },
+};
+
+function scoreToNclc(avg) {
+  if (avg === null) return null;
+  if (avg >= 95) return 11;
+  if (avg >= 90) return 10;
+  if (avg >= 85) return 9;
+  if (avg >= 80) return 8;
+  if (avg >= 75) return 7;
+  if (avg >= 70) return 6;
+  return 5; // score < 70 signifie que le module n'est pas encore validé
+}
+
+function nclcColor(level) {
+  if (!level || level < 6) return '#9e9e9e';
+  if (level <= 7)  return '#1565c0';
+  if (level <= 9)  return '#2e7d32';
+  return '#b45309';
+}
+
+function nclcCecrl(level) {
+  if (!level || level < 6) return '< B2';
+  if (level <= 7)  return 'B2';
+  if (level <= 9)  return 'C1';
+  return 'C2';
+}
+
+async function loadNclcEstimate(lang) {
+  const card = document.getElementById('nclcCard');
+  const content = document.getElementById('nclcContent');
+  card.style.display = 'block';
+
+  try {
+    const res = await ModulesAPI.status();
+    const mods = (res.data || res).modules || [];
+
+    // Calculer score moyen par compétence (uniquement modules avec test réussi)
+    const skillScores = {};
+    for (const [key, skill] of Object.entries(NCLC_SKILLS)) {
+      const relevant = mods.filter(m => skill.modules.includes(m.module_number) && m.test_passed);
+      if (relevant.length === 0) { skillScores[key] = null; continue; }
+      skillScores[key] = relevant.reduce((s, m) => s + (m.test_score || 0), 0) / relevant.length;
+    }
+
+    // Niveaux NCLC par compétence
+    const nclcLevels = {};
+    for (const key of Object.keys(NCLC_SKILLS)) {
+      nclcLevels[key] = scoreToNclc(skillScores[key]);
+    }
+
+    // NCLC global = minimum des compétences évaluées (comme IRCC)
+    const evaluatedLevels = Object.values(nclcLevels).filter(v => v !== null);
+    const overallNclc = evaluatedLevels.length ? Math.min(...evaluatedLevels) : null;
+    const evaluatedCount = evaluatedLevels.length;
+    const totalSkills = Object.keys(NCLC_SKILLS).length;
+
+    // Nombre de modules complétés (pour info)
+    const completedCount = mods.filter(m => m.test_passed).length;
+
+    let html = `<div class="nclc-grid">`;
+
+    for (const [key, skill] of Object.entries(NCLC_SKILLS)) {
+      const avg   = skillScores[key];
+      const level = nclcLevels[key];
+      const barPct = avg !== null ? Math.min(100, Math.round((avg / 100) * 100)) : 0;
+      const skillLabel = lang === 'fr' ? skill.label : skill.en;
+      const levelText  = level !== null ? `NCLC ${level}` : (lang === 'fr' ? 'En cours…' : 'In progress…');
+      const scoreText  = avg !== null ? `${Math.round(avg)}%` : '—';
+
+      html += `<div class="nclc-skill">
+        <div class="nclc-skill-label">${skillLabel}</div>
+        <div class="nclc-skill-bar-wrap">
+          <div class="nclc-skill-bar" style="width:${barPct}%;background:${skill.color};"></div>
+        </div>
+        <div class="nclc-skill-val">
+          <span class="nclc-skill-score">${scoreText}</span>
+          <span class="nclc-skill-level" style="color:${level ? nclcColor(level) : '#9e9e9e'}">${levelText}</span>
+        </div>
+      </div>`;
+    }
+    html += `</div>`;
+
+    // Bloc NCLC global
+    if (overallNclc !== null) {
+      const cecrl = nclcCecrl(overallNclc);
+      html += `<div class="nclc-overall">
+        <div>
+          <div class="nclc-overall-label">${lang === 'fr' ? '🎯 Niveau NCLC estimé global' : '🎯 Estimated overall NCLC'}</div>
+          <div class="nclc-overall-sub">${lang === 'fr' ? `(minimum des ${evaluatedCount} compétence${evaluatedCount > 1 ? 's' : ''} évaluée${evaluatedCount > 1 ? 's' : ''} · méthode IRCC)` : `(min. of ${evaluatedCount} evaluated skill${evaluatedCount > 1 ? 's' : ''} · IRCC method)`}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="nclc-overall-value">NCLC ${overallNclc}</div>
+          <div class="nclc-overall-sub">≈ ${cecrl} CECRL</div>
+        </div>
+      </div>`;
+    } else {
+      html += `<p class="nclc-pending">${lang === 'fr'
+        ? `Complétez et réussissez les tests des modules clés (CO, CE, EO, EE) pour voir votre estimation NCLC. (${completedCount}/14 modules validés)`
+        : `Complete and pass the key module tests (CO, CE, EO, EE) to see your NCLC estimate. (${completedCount}/14 modules passed)`}</p>`;
+    }
+
+    html += `<p style="font-size:.72rem;color:#aaa;margin-top:10px;">${lang === 'fr'
+      ? '⚠️ Estimation indicative uniquement — basée sur vos scores aux tests de modules. Non officielle.'
+      : '⚠️ Indicative estimate only — based on your module test scores. Not official.'}</p>`;
+
+    content.innerHTML = html;
+  } catch(e) {
+    content.innerHTML = `<p class="nclc-pending" style="color:var(--red);">${e.message}</p>`;
   }
 }
 

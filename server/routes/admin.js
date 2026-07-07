@@ -7,6 +7,26 @@ const { getDb, normalizePhone, logAdminAction } = require('../database');
 const authMiddleware = require('../middleware/auth');
 const { sendUserEmail, testConnection, isConfigured } = require('../services/email');
 
+// ── Profils de permissions prédéfinis ───────────────────────────────────────
+const PERMISSION_PROFILES = {
+  support:      ['stats', 'users_view', 'emails'],
+  paiements:    ['stats', 'users_view', 'payments'],
+  statistiques: ['stats', 'modules', 'certificates'],
+  complet:      ['stats', 'users_view', 'emails', 'payments', 'modules', 'certificates', 'affiliates', 'broadcast', 'prospects'],
+};
+
+// Retourne le tableau de permissions d'un modérateur
+function getPerms(user) {
+  if (user.role === 'admin') return ['*']; // admin = tout
+  if (!user.moderator_permissions) return PERMISSION_PROFILES.complet;
+  try { return JSON.parse(user.moderator_permissions); } catch { return []; }
+}
+
+function hasPerm(user, perm) {
+  const perms = getPerms(user);
+  return perms.includes('*') || perms.includes(perm);
+}
+
 // ── Admin guard (admin + modérateur) ────────────────────────────────────────
 function adminOnly(req, res, next) {
   if (!req.user || !['admin', 'moderator'].includes(req.user.role)) {
@@ -23,12 +43,24 @@ function fullAdminOnly(req, res, next) {
   next();
 }
 
+// ── Permission guard pour modérateurs ───────────────────────────────────────
+function permGuard(perm) {
+  return function(req, res, next) {
+    if (!req.user) return res.status(401).json({ success: false, message: 'Non authentifié.' });
+    if (req.user.role === 'admin') return next(); // admin passe toujours
+    if (!hasPerm(req.user, perm)) {
+      return res.status(403).json({ success: false, message: `Permission insuffisante : ${perm} requis.` });
+    }
+    next();
+  };
+}
+
 router.use(authMiddleware, adminOnly);
 
 // ════════════════════════════════════════════════════════════════════
 //  STATS
 // ════════════════════════════════════════════════════════════════════
-router.get('/stats', (req, res) => {
+router.get('/stats', permGuard('stats'), (req, res) => {
   try {
     const db = getDb();
     const g = (sql) => db.prepare(sql).get().cnt;
@@ -61,9 +93,37 @@ router.get('/stats', (req, res) => {
 });
 
 // ════════════════════════════════════════════════════════════════════
+//  MODULE STATS (taux de complétion + scores moyens par module)
+// ════════════════════════════════════════════════════════════════════
+router.get('/module-stats', permGuard('modules'), (req, res) => {
+  try {
+    const db = getDb();
+    const rows = db.prepare(`
+      SELECT
+        module_number,
+        COUNT(*) AS total_enrollments,
+        SUM(CASE WHEN test_passed=1 THEN 1 ELSE 0 END) AS passed,
+        SUM(CASE WHEN status='completed' THEN 1 ELSE 0 END) AS completed,
+        ROUND(AVG(CASE WHEN test_passed=1 THEN test_score END), 1) AS avg_score,
+        ROUND(AVG(CASE WHEN test_attempts>0 THEN test_attempts END), 1) AS avg_attempts,
+        MAX(test_attempts) AS max_attempts
+      FROM modules
+      WHERE status != 'locked'
+      GROUP BY module_number
+      ORDER BY module_number
+    `).all();
+
+    return res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error('[Admin] Module stats:', err);
+    return res.status(500).json({ success: false, message: 'Erreur serveur.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
 //  USERS — LIST
 // ════════════════════════════════════════════════════════════════════
-router.get('/users', (req, res) => {
+router.get('/users', permGuard('users_view'), (req, res) => {
   try {
     const db = getDb();
     const { role, status, pays, search, page = 1, limit = 100 } = req.query;
@@ -97,7 +157,7 @@ router.get('/users', (req, res) => {
 // ════════════════════════════════════════════════════════════════════
 //  USERS — DETAIL
 // ════════════════════════════════════════════════════════════════════
-router.get('/users/:id', (req, res) => {
+router.get('/users/:id', permGuard('users_view'), (req, res) => {
   try {
     const db = getDb();
     const user = db.prepare(
@@ -224,7 +284,7 @@ router.put('/users/:id/profile', async (req, res) => {
 // ════════════════════════════════════════════════════════════════════
 //  USERS — CONFIRM PAYMENT (cash, Interac, virement…)
 // ════════════════════════════════════════════════════════════════════
-router.post('/users/:id/confirm-payment', fullAdminOnly, (req, res) => {
+router.post('/users/:id/confirm-payment', permGuard('payments'), (req, res) => {
   try {
     const db = getDb();
     const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
@@ -418,7 +478,7 @@ router.post('/users/:id/revoke-access', fullAdminOnly, (req, res) => {
 // ════════════════════════════════════════════════════════════════════
 //  PAYMENTS — LIST pending / all
 // ════════════════════════════════════════════════════════════════════
-router.get('/payments', (req, res) => {
+router.get('/payments', permGuard('payments'), (req, res) => {
   try {
     const db = getDb();
     const { status } = req.query; // 'pending' | 'confirmed' | all
@@ -442,7 +502,7 @@ router.get('/payments', (req, res) => {
 // ════════════════════════════════════════════════════════════════════
 //  PROSPECTS
 // ════════════════════════════════════════════════════════════════════
-router.get('/prospects', (req, res) => {
+router.get('/prospects', permGuard('prospects'), (req, res) => {
   try {
     const db = getDb();
     const prospects = db.prepare('SELECT * FROM prospects ORDER BY created_at DESC').all();
@@ -474,7 +534,7 @@ router.get('/tests', (req, res) => {
 // ════════════════════════════════════════════════════════════════════
 //  CERTIFICATES
 // ════════════════════════════════════════════════════════════════════
-router.get('/certificates', (req, res) => {
+router.get('/certificates', permGuard('certificates'), (req, res) => {
   try {
     const db = getDb();
     const certs = db.prepare(`
@@ -490,7 +550,7 @@ router.get('/certificates', (req, res) => {
 // ════════════════════════════════════════════════════════════════════
 //  SEND EMAIL TO USER
 // ════════════════════════════════════════════════════════════════════
-router.post('/users/:id/email', async (req, res) => {
+router.post('/users/:id/email', permGuard('emails'), async (req, res) => {
   try {
     const db = getDb();
     const user = db.prepare('SELECT * FROM users WHERE id=?').get(req.params.id);
@@ -610,7 +670,7 @@ router.post('/email/test-send', async (req, res) => {
 // ════════════════════════════════════════════════════════════════════
 
 // GET /api/admin/affiliates — liste de toutes les commissions
-router.get('/affiliates', (req, res) => {
+router.get('/affiliates', permGuard('affiliates'), (req, res) => {
   try {
     const db = getDb();
     const commissions = db.prepare(`
@@ -717,7 +777,7 @@ router.post('/tuteurs/:id/approve', fullAdminOnly, (req, res) => {
 });
 
 // POST /api/admin/broadcast — envoie un email à tous les utilisateurs (ou par rôle)
-router.post('/broadcast', fullAdminOnly, async (req, res) => {
+router.post('/broadcast', permGuard('broadcast'), async (req, res) => {
   try {
     const db = getDb();
     const { subject, message, target } = req.body;
@@ -755,8 +815,9 @@ router.post('/broadcast', fullAdminOnly, async (req, res) => {
 router.get('/me', (req, res) => {
   try {
     const db = getDb();
-    const me = db.prepare('SELECT id,nom,prenom,email,role FROM users WHERE id=?').get(req.user.id);
-    return res.json({ success: true, data: { user: me } });
+    const me = db.prepare('SELECT id,nom,prenom,email,role,moderator_permissions FROM users WHERE id=?').get(req.user.id);
+    const permissions = getPerms(me);
+    return res.json({ success: true, data: { user: me, permissions } });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
   }
@@ -771,9 +832,18 @@ router.get('/moderators', fullAdminOnly, (req, res) => {
   try {
     const db = getDb();
     const mods = db.prepare(
-      "SELECT id,nom,prenom,email,status,created_at,last_login_at FROM users WHERE role='moderator' ORDER BY created_at DESC"
+      "SELECT id,nom,prenom,email,status,moderator_permissions,created_at,last_login_at FROM users WHERE role='moderator' ORDER BY created_at DESC"
     ).all();
-    return res.json({ success: true, data: { moderators: mods, total: mods.length } });
+    // Résoudre le profil correspondant à chaque modérateur
+    const enriched = mods.map(m => {
+      let perms = [];
+      try { perms = m.moderator_permissions ? JSON.parse(m.moderator_permissions) : PERMISSION_PROFILES.complet; } catch {}
+      const profileMatch = Object.entries(PERMISSION_PROFILES).find(([, v]) =>
+        v.length === perms.length && v.every(p => perms.includes(p))
+      );
+      return { ...m, permissions: perms, profile: profileMatch ? profileMatch[0] : 'personnalisé' };
+    });
+    return res.json({ success: true, data: { moderators: enriched, total: enriched.length } });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
   }
@@ -783,7 +853,7 @@ router.get('/moderators', fullAdminOnly, (req, res) => {
 router.post('/moderators', fullAdminOnly, async (req, res) => {
   try {
     const db = getDb();
-    const { nom, prenom, email, password } = req.body;
+    const { nom, prenom, email, password, profile, permissions } = req.body;
     if (!nom || !prenom || !email || !password)
       return res.status(400).json({ success: false, message: 'Nom, prénom, email et mot de passe requis.' });
     if (password.length < 8)
@@ -792,14 +862,23 @@ router.post('/moderators', fullAdminOnly, async (req, res) => {
     const existing = db.prepare('SELECT id FROM users WHERE email=?').get(email.trim().toLowerCase());
     if (existing) return res.status(409).json({ success: false, message: 'Cet email est déjà utilisé.' });
 
+    // Résolution des permissions : profil prédéfini ou liste personnalisée
+    let permsJson = null;
+    if (profile && PERMISSION_PROFILES[profile]) {
+      permsJson = JSON.stringify(PERMISSION_PROFILES[profile]);
+    } else if (Array.isArray(permissions) && permissions.length) {
+      permsJson = JSON.stringify(permissions);
+    }
+
     const hash = await bcrypt.hash(password, 10);
     const info = db.prepare(`
-      INSERT INTO users (nom,prenom,email,password_hash,role,status,payment_confirmed,trial_done,qualification_done,all_modules_done,final_test_passed)
-      VALUES (?,?,?,?,'moderator','active',0,0,0,0,0)
-    `).run(nom.trim(), prenom.trim(), email.trim().toLowerCase(), hash);
+      INSERT INTO users (nom,prenom,email,password_hash,role,status,moderator_permissions,
+        payment_confirmed,trial_done,qualification_done,all_modules_done,final_test_passed)
+      VALUES (?,?,?,?,'moderator','active',?,0,0,0,0,0)
+    `).run(nom.trim(), prenom.trim(), email.trim().toLowerCase(), hash, permsJson);
 
-    logAdminAction(db, req.user.id, 'create_moderator', info.lastInsertRowid, { email });
-    const created = db.prepare('SELECT id,nom,prenom,email,role,status,created_at FROM users WHERE id=?').get(info.lastInsertRowid);
+    logAdminAction(db, req.user.id, 'create_moderator', info.lastInsertRowid, { email, profile });
+    const created = db.prepare('SELECT id,nom,prenom,email,role,status,moderator_permissions,created_at FROM users WHERE id=?').get(info.lastInsertRowid);
     return res.status(201).json({ success: true, data: { moderator: created }, message: 'Modérateur créé avec succès.' });
   } catch (err) {
     console.error('[Admin] Create moderator:', err);
@@ -807,14 +886,14 @@ router.post('/moderators', fullAdminOnly, async (req, res) => {
   }
 });
 
-// PUT /api/admin/moderators/:id — modifie un modérateur (nom, prénom, mot de passe)
+// PUT /api/admin/moderators/:id — modifie un modérateur (nom, prénom, mot de passe, permissions)
 router.put('/moderators/:id', fullAdminOnly, async (req, res) => {
   try {
     const db = getDb();
     const mod = db.prepare("SELECT * FROM users WHERE id=? AND role='moderator'").get(req.params.id);
     if (!mod) return res.status(404).json({ success: false, message: 'Modérateur introuvable.' });
 
-    const { nom, prenom, password } = req.body;
+    const { nom, prenom, password, profile, permissions } = req.body;
     const updates = []; const params = [];
     if (nom)    { updates.push('nom=?');    params.push(nom.trim()); }
     if (prenom) { updates.push('prenom=?'); params.push(prenom.trim()); }
@@ -822,11 +901,19 @@ router.put('/moderators/:id', fullAdminOnly, async (req, res) => {
       if (password.length < 8) return res.status(400).json({ success: false, message: 'Mot de passe trop court (8 caractères min).' });
       updates.push('password_hash=?'); params.push(await bcrypt.hash(password, 10));
     }
+    if (profile !== undefined) {
+      const perms = PERMISSION_PROFILES[profile] || (Array.isArray(permissions) ? permissions : null);
+      updates.push('moderator_permissions=?');
+      params.push(perms ? JSON.stringify(perms) : null);
+    } else if (Array.isArray(permissions)) {
+      updates.push('moderator_permissions=?');
+      params.push(JSON.stringify(permissions));
+    }
     if (!updates.length) return res.status(400).json({ success: false, message: 'Aucune modification.' });
 
     params.push(req.params.id);
     db.prepare(`UPDATE users SET ${updates.join(',')} WHERE id=?`).run(...params);
-    logAdminAction(db, req.user.id, 'edit_moderator', mod.id, { fields: Object.keys(req.body) });
+    logAdminAction(db, req.user.id, 'edit_moderator', mod.id, { fields: Object.keys(req.body), profile });
     return res.json({ success: true, message: 'Modérateur mis à jour.' });
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
@@ -865,6 +952,57 @@ router.get('/audit-log', (req, res) => {
   } catch (err) {
     return res.status(500).json({ success: false, message: 'Erreur serveur.' });
   }
+});
+
+// ════════════════════════════════════════════════════════════════════
+//  CERTIFICATES — visualisation et téléchargement côté admin
+// ════════════════════════════════════════════════════════════════════
+
+// GET /api/admin/certificates/:id/download — télécharger le PDF d'un certificat
+router.get('/certificates/:id/download', permGuard('certificates'), async (req, res) => {
+  try {
+    const db  = getDb();
+    const { generateCertificate } = require('../services/pdf');
+    const path = require('path');
+    const fs   = require('fs');
+
+    const cert = db.prepare('SELECT * FROM certificates WHERE id = ?').get(req.params.id);
+    if (!cert) return res.status(404).json({ success: false, message: 'Certificat introuvable.' });
+
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(cert.user_id);
+    if (!user) return res.status(404).json({ success: false, message: 'Utilisateur introuvable.' });
+
+    const certsDir = path.join(__dirname, '..', 'certificates');
+    const pdfPath  = path.join(certsDir, `${cert.certificate_number}.pdf`);
+
+    let pdfBuffer;
+    if (fs.existsSync(pdfPath)) {
+      pdfBuffer = fs.readFileSync(pdfPath);
+    } else {
+      pdfBuffer = await generateCertificate(user, cert);
+      if (!fs.existsSync(certsDir)) fs.mkdirSync(certsDir, { recursive: true });
+      fs.writeFileSync(pdfPath, pdfBuffer);
+      db.prepare('UPDATE certificates SET pdf_path = ? WHERE id = ?')
+        .run(`certificates/${cert.certificate_number}.pdf`, cert.id);
+    }
+
+    const fileName = `Certificat_ARCADINS_${user.prenom}_${user.nom}_${cert.certificate_number.slice(0,8)}.pdf`;
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+    res.setHeader('Content-Length', pdfBuffer.length);
+    logAdminAction(db, req.user.id, 'download_certificate', cert.user_id, { certificate_number: cert.certificate_number });
+    return res.send(pdfBuffer);
+  } catch (err) {
+    console.error('[Admin] Certificate download error:', err);
+    return res.status(500).json({ success: false, message: 'Erreur génération PDF.' });
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════
+//  PERMISSION PROFILES — catalogue des profils disponibles
+// ════════════════════════════════════════════════════════════════════
+router.get('/permission-profiles', fullAdminOnly, (req, res) => {
+  return res.json({ success: true, data: { profiles: PERMISSION_PROFILES } });
 });
 
 module.exports = router;

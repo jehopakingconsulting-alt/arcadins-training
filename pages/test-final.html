@@ -15,8 +15,11 @@
     .question-text { font-size:1.05rem; font-weight:600; color:var(--blue-dark); margin-bottom:20px; line-height:1.5; }
     .options-grid { display:flex; flex-direction:column; gap:9px; }
     .option-btn { border:2px solid #e0e6f0; border-radius:10px; padding:11px 16px; background:white; text-align:left; cursor:pointer; font-family:inherit; font-size:.9rem; color:var(--text); transition:.2s; display:flex; align-items:center; gap:10px; }
-    .option-btn:hover { border-color:#7b1fa2; background:#fce4ec; }
+    .option-btn:hover:not(:disabled) { border-color:#7b1fa2; background:#fce4ec; }
     .option-btn.selected { border-color:#7b1fa2; background:#f3e5f5; font-weight:600; }
+    .option-btn.correct-ans { border-color:#2e7d32 !important; background:#e8f5e9 !important; }
+    .option-btn.wrong-ans  { border-color:#c62828 !important; background:#ffebee !important; }
+    .option-btn:disabled { cursor:default; }
     .option-letter { width:26px; height:26px; border-radius:50%; background:var(--gray-light); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.75rem; flex-shrink:0; }
     .quiz-progress-bar { height:8px; background:#e0e6f0; border-radius:4px; margin-bottom:28px; overflow:hidden; }
     .quiz-progress-fill { height:100%; background:linear-gradient(90deg,#7b1fa2,var(--gold)); border-radius:4px; transition:.4s; }
@@ -30,6 +33,29 @@
     .alert-min { background:#fff8e1; border:1.5px solid #ffe082; border-radius:10px; padding:12px 18px; font-size:.85rem; color:#f57f17; margin-bottom:20px; }
     .modules-review { display:flex; flex-direction:column; gap:8px; text-align:left; margin:16px 0; }
     .review-item { background:var(--gray-light); border-radius:8px; padding:10px 14px; font-size:.85rem; display:flex; align-items:center; gap:10px; }
+    /* Skill breakdown */
+    .skill-breakdown { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:20px 0; text-align:left; }
+    .skill-row { background:#f9f9f9; border-radius:10px; padding:12px 14px; }
+    .skill-row-name { font-size:.78rem; font-weight:700; color:#555; margin-bottom:6px; }
+    .skill-bar-wrap { background:#e0e6f0; border-radius:4px; height:7px; overflow:hidden; }
+    .skill-bar-fill { height:100%; border-radius:4px; transition:.5s; }
+    .skill-bar-fill.good { background:#4caf50; }
+    .skill-bar-fill.mid  { background:#ffa000; }
+    .skill-bar-fill.bad  { background:#e53935; }
+    .skill-score-txt { font-size:.72rem; color:var(--gray-text); margin-top:4px; }
+    /* Explanations review */
+    .review-section { margin-top:32px; text-align:left; }
+    .review-section h3 { color:#7b1fa2; margin-bottom:12px; }
+    .rev-item { background:white; border-radius:12px; padding:18px; box-shadow:var(--shadow); margin-bottom:14px; }
+    .rev-item-q { font-size:.9rem; font-weight:600; color:var(--blue-dark); margin-bottom:10px; }
+    .rev-opt { display:flex; align-items:center; gap:8px; padding:7px 10px; border-radius:8px; font-size:.85rem; margin-bottom:5px; }
+    .rev-opt.correct { background:#e8f5e9; color:#2e7d32; font-weight:600; }
+    .rev-opt.wrong   { background:#ffebee; color:#c62828; }
+    .rev-expl { background:#fff8e1; border-left:4px solid #f9a825; border-radius:6px; padding:9px 12px; margin-top:8px; font-size:.82rem; color:#5d4037; line-height:1.5; }
+    /* Timer urgency */
+    #timerDisplay.urgent { color:#c62828; font-weight:700; animation:pulse .8s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+    @media(max-width:600px){.skill-breakdown{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
@@ -46,19 +72,21 @@
 <div class="final-hero">
   <span class="section-tag" style="background:rgba(255,255,255,.15);color:white;margin:0 auto 16px;display:inline-block;" data-i18n="final.tag">Test d'Évaluation Finale</span>
   <h1 data-i18n="final.h1">Test Final de Certification</h1>
-  <p data-i18n="final.p">30 questions · Score minimum requis : 80% · Certificat généré automatiquement en cas de réussite</p>
+  <p id="heroDesc" data-i18n="final.p">30 questions · Score minimum requis : 70% · Certificat généré automatiquement en cas de réussite</p>
 </div>
 
 <div class="quiz-container">
   <div id="loadingState" style="text-align:center;padding:60px 0;">⏳ <span data-i18n="trial.loading">Chargement...</span></div>
+
   <div id="notReady" style="display:none;text-align:center;padding:60px 0;">
     <div style="font-size:3rem;">🔒</div>
     <h2 data-i18n="final.locked.h">Test final non disponible</h2>
     <p data-i18n="final.locked.p">Complétez tous les modules de formation pour débloquer le test final.</p>
     <a href="formation.html" class="btn-primary" style="margin-top:20px;" data-i18n="final.locked.btn">Retour à ma formation →</a>
   </div>
+
   <div id="quizArea" style="display:none;">
-    <div class="alert-min" data-i18n="final.alert">⚠️ Score minimum requis : 80%. En cas d'échec, les modules concernés vous seront indiqués pour révision.</div>
+    <div class="alert-min" id="alertMin" data-i18n="final.alert">⚠️ Score minimum requis : 70%. En cas d'échec, les compétences à renforcer vous seront indiquées.</div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:.85rem;color:var(--gray-text);">
       <span id="questionCounter"></span>
       <span>⏱️ <span id="timerDisplay">45:00</span></span>
@@ -71,34 +99,54 @@
       <button id="submitBtn" class="btn-primary" onclick="submitFinal()" style="display:none;background:#7b1fa2;" data-i18n="final.submit">🏁 Terminer &amp; soumettre</button>
     </div>
   </div>
+
   <div id="resultArea" style="display:none;">
     <div class="result-card">
-      <h2 id="resultTitle" data-i18n="final.result.h">Résultat du test final</h2>
+      <h2 data-i18n="final.result.h">Résultat du test final</h2>
       <div class="score-circle" id="scoreCircle">
         <span class="score-pct" id="scorePct">—%</span>
         <span class="score-label" id="scoreLabel"></span>
       </div>
+      <div id="attemptsInfo" style="font-size:.8rem;color:var(--gray-text);margin-bottom:12px;"></div>
+
+      <!-- Réussite -->
       <div id="passMsg" style="display:none;">
-        <p style="color:#2e7d32;font-weight:600;font-size:1.05rem;" data-i18n="final.pass.msg">🎉 Félicitations ! Vous avez réussi votre test final.</p>
-        <p style="color:var(--gray-text);margin:12px 0 24px;" data-i18n="final.pass.sub">Votre certificat PDF a été généré et vous a été envoyé par email.</p>
-        <a href="mon-certificat.html" class="btn-primary" data-i18n="final.pass.btn">🏆 Accéder à mon certificat →</a>
+        <p style="color:#2e7d32;font-weight:600;font-size:1.05rem;" id="passMsgTxt"></p>
+        <p style="color:var(--gray-text);margin:12px 0 24px;" id="passSubTxt"></p>
+        <a href="mon-certificat.html" class="btn-primary" id="passBtnLink"></a>
       </div>
+
+      <!-- Échec -->
       <div id="failMsg" style="display:none;">
-        <p style="color:var(--red);font-weight:600;" data-i18n="final.fail.msg">Vous n'avez pas atteint le score minimum de 80%.</p>
-        <p style="color:var(--gray-text);margin:12px 0;" data-i18n="final.fail.sub">Révisez les modules suivants avant de repasser le test :</p>
+        <p style="color:var(--red);font-weight:600;" id="failScoreMsg"></p>
+        <p style="color:var(--gray-text);margin:12px 0 4px;" id="failSubTxt"></p>
+        <div class="skill-breakdown" id="skillBreakdown"></div>
+        <p style="color:var(--gray-text);margin:12px 0 4px;" id="failWeakTxt"></p>
         <div class="modules-review" id="reviewModules"></div>
-        <a href="formation.html" class="btn-primary" style="margin-top:16px;display:inline-flex;" data-i18n="final.fail.btn">↩ Retourner à la formation</a>
+        <a href="formation.html" class="btn-primary" style="margin-top:16px;display:inline-flex;" id="failBtnLink"></a>
       </div>
+    </div>
+
+    <!-- Correction détaillée -->
+    <div class="review-section" id="reviewSection" style="display:none;">
+      <h3 id="reviewTitle"></h3>
+      <div id="reviewItems"></div>
     </div>
   </div>
 </div>
 
-<script src="../assets/js/config.js?v=202606131336"></script>
-<script src="../assets/js/i18n.js?v=202606131336"></script>
-<script src="../assets/js/config.js?v=202606131336"></script>
-<script src="../assets/js/api.js?v=202606131336"></script>
+<script src="../assets/js/config.js?v=202607010000"></script>
+<script src="../assets/js/i18n.js?v=202607010000"></script>
+<script src="../assets/js/api.js?v=202607010000"></script>
 <script>
-let questions=[], currentQ=0, answers=[], timerInterval, secondsLeft=2700;
+let questions = [], currentQ = 0, answers = [], timerInterval, secondsLeft = 2700;
+let passingScore = 70;
+
+const SKILL_LABELS = {
+  fr: { CO:'Compréhension orale', CE:'Compréhension écrite', EO:'Expression orale', EE:'Expression écrite', Grammaire:'Grammaire', Vocabulaire:'Vocabulaire' },
+  en: { CO:'Listening', CE:'Reading', EO:'Speaking', EE:'Writing', Grammaire:'Grammar', Vocabulaire:'Vocabulary' },
+};
+const SKILL_COLORS = { CO:'#1565c0', CE:'#0b5d3b', EO:'#b45309', EE:'#7b3f9e', Grammaire:'#7b1fa2', Vocabulaire:'#5c6bc0' };
 
 async function init() {
   const token = getToken();
@@ -113,35 +161,53 @@ async function init() {
       return;
     }
     if (user.final_test_passed) { window.location.href = 'mon-certificat.html'; return; }
+
     const res = await FinalAPI.questions();
-    const fPayload = res.data || res;
-    questions = fPayload.questions || res.questions;
+    const d = res.data || res;
+    questions = d.questions || [];
     answers = new Array(questions.length).fill(null);
+
+    // Utilise le time_limit retourné par le serveur (et non une valeur codée en dur)
+    secondsLeft = d.time_limit || 2700;
+    passingScore = d.passing_score || 70;
+
+    // Injecte le vrai passingScore dans les textes traduits si différent de 70
+    if (passingScore !== 70) {
+      ['heroDesc','alertMin'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = el.innerHTML.replace(/70%/g, passingScore + '%');
+      });
+    }
+
+    const attEl = document.getElementById('attemptsInfo');
+    if (d.attempts_used !== undefined) {
+      attEl.textContent = `Tentative ${(d.attempts_used||0)+1} / ${d.max_attempts||3}`;
+    }
+
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('quizArea').style.display = 'block';
     renderQ();
     startTimer();
-  } catch(e) {
+  } catch (e) {
     document.getElementById('loadingState').innerHTML = `<p style="color:red">${e.message}</p>`;
   }
 }
 
-const SKILL_LABELS = { fr:{CO:'Compréhension orale',CE:'Compréhension écrite',EO:'Expression orale',EE:'Expression écrite',GR:'Grammaire',VOC:'Vocabulaire'}, en:{CO:'Listening',CE:'Reading',EO:'Speaking',EE:'Writing',GR:'Grammar',VOC:'Vocabulary'} };
-
 function renderQ() {
   const q = questions[currentQ];
-  const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+  const lang = (typeof currentLang !== 'undefined' ? currentLang : 'fr');
   const total = questions.length;
   document.getElementById('questionCounter').textContent = `Question ${currentQ+1} / ${total}`;
   document.getElementById('progressFill').style.width = ((currentQ+1)/total*100)+'%';
-  const opts = q.options[lang] || q.options.fr;
+  const opts = (q.options && (q.options[lang] || q.options.fr)) || [];
   const letters = ['A','B','C','D'];
-  const skillLabel = (SKILL_LABELS[lang]||SKILL_LABELS.fr)[q.skill] || q.skill;
+  const skillLabel = (SKILL_LABELS[lang] || SKILL_LABELS.fr)[q.skill] || q.skill;
+  const qText = (q.question && (q.question[lang] || q.question.fr)) || '';
   document.getElementById('questionWrap').innerHTML = `
     <div class="question-card">
       <div class="question-num">Question ${currentQ+1}</div>
       <div class="question-skill">${skillLabel}</div>
-      <div class="question-text">${q.question[lang] || q.question.fr}</div>
+      <div class="question-text">${qText}</div>
       <div class="options-grid">
         ${opts.map((o,i)=>`<button class="option-btn ${answers[currentQ]===i?'selected':''}" onclick="selectA(${i})"><span class="option-letter">${letters[i]}</span>${o}</button>`).join('')}
       </div>
@@ -153,49 +219,119 @@ function renderQ() {
 
 function selectA(idx) {
   answers[currentQ] = idx;
-  document.querySelectorAll('.option-btn').forEach((b,i)=>b.classList.toggle('selected',i===idx));
+  document.querySelectorAll('.option-btn').forEach((b,i) => b.classList.toggle('selected', i===idx));
 }
 function nextQ() { if (currentQ < questions.length-1) { currentQ++; renderQ(); } }
 function prevQ() { if (currentQ > 0) { currentQ--; renderQ(); } }
 
 function startTimer() {
+  updateTimerDisplay(secondsLeft);
   timerInterval = setInterval(() => {
     secondsLeft--;
-    const m=Math.floor(secondsLeft/60), s=secondsLeft%60;
-    document.getElementById('timerDisplay').textContent = `${m}:${s.toString().padStart(2,'0')}`;
-    if (secondsLeft <= 0) { clearInterval(timerInterval); submitFinal(); }
+    updateTimerDisplay(secondsLeft);
+    if (secondsLeft <= 0) { clearInterval(timerInterval); submitFinal(true); }
   }, 1000);
 }
 
-async function submitFinal() {
+function updateTimerDisplay(s) {
+  const m = Math.floor(s/60), sec = s%60;
+  const el = document.getElementById('timerDisplay');
+  el.textContent = `${m}:${sec.toString().padStart(2,'0')}`;
+  el.classList.toggle('urgent', s <= 60);
+}
+
+async function submitFinal(autoSubmit = false) {
   clearInterval(timerInterval);
   document.getElementById('quizArea').style.display = 'none';
   document.getElementById('resultArea').style.display = 'block';
+  const lang = (typeof currentLang !== 'undefined' ? currentLang : 'fr');
+  const skillL = SKILL_LABELS[lang] || SKILL_LABELS.fr;
+
   try {
     const res = await FinalAPI.submit(answers);
-    const rData = res.data || res;
-    const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
-    const pct = Math.round(rData.score ?? rData.score_percent ?? 0);
+    const d = res.data || res;
+    const pct = Math.round(d.score ?? 0);
     document.getElementById('scorePct').textContent = pct + '%';
     const circle = document.getElementById('scoreCircle');
-    if (rData.passed) {
+
+    if (d.passed) {
       circle.classList.add('pass');
-      document.getElementById('scoreLabel').textContent = lang==='fr'?'RÉUSSI':'PASSED';
+      document.getElementById('scoreLabel').textContent = lang==='fr' ? 'RÉUSSI' : 'PASSED';
       document.getElementById('passMsg').style.display = 'block';
+      document.getElementById('passMsgTxt').textContent  = t('final.pass.msg');
+      document.getElementById('passSubTxt').textContent  = t('final.pass.sub');
+      document.getElementById('passBtnLink').textContent = t('final.pass.btn');
     } else {
       circle.classList.add('fail');
-      document.getElementById('scoreLabel').textContent = lang==='fr'?'ÉCHEC':'FAILED';
+      document.getElementById('scoreLabel').textContent = lang==='fr' ? 'ÉCHEC' : 'FAILED';
       document.getElementById('failMsg').style.display = 'block';
-      const modNames = { fr:['Test de niveau','Compréhension orale','Compréhension écrite','Expression écrite','Expression orale','Grammaire','Vocabulaire','Stratégies NCLC','Simulations','Banque de questions','Corrections','Tableau de progression','Certificat','Coaching'], en:['Level test','Listening','Reading','Writing','Speaking','Grammar','Vocabulary','NCLC strategies','Simulations','Question bank','Corrections','Progress dashboard','Certificate','Coaching'] };
-      const names = modNames[lang];
-      const toReview = rData.modules_to_review || rData.weak_areas || [];
-      if (toReview.length) {
-        document.getElementById('reviewModules').innerHTML = toReview.map(n=>`<div class="review-item">📖 ${names[(n-1)]||n}</div>`).join('');
-      }
+
+      // Message d'échec avec tentatives restantes
+      const remain = d.remaining_attempts !== undefined ? d.remaining_attempts : '—';
+      const attemptsLabel = lang==='fr'
+        ? `Il vous reste ${remain} tentative(s).`
+        : `You have ${remain} attempt(s) remaining.`;
+      document.getElementById('failScoreMsg').textContent =
+        `Score : ${pct}% — ${lang==='fr'?'minimum requis':'minimum required'} : ${d.passing_score || passingScore}%. ${attemptsLabel}`;
+
+      document.getElementById('failSubTxt').textContent  = t('final.fail.sub');
+      document.getElementById('failWeakTxt').textContent = t('final.fail.weak');
+      document.getElementById('failBtnLink').textContent = t('final.fail.btn');
+
+      // Tableau de bord par compétence
+      const sb = d.skill_breakdown || {};
+      const sbEl = document.getElementById('skillBreakdown');
+      const skillOrder = ['CO','CE','EO','EE','Grammaire','Vocabulaire'];
+      sbEl.innerHTML = skillOrder.filter(sk=>sb[sk]).map(sk => {
+        const { correct, total } = sb[sk];
+        const pctSk = total ? Math.round(correct/total*100) : 0;
+        const cls = pctSk>=70 ? 'good' : pctSk>=50 ? 'mid' : 'bad';
+        return `<div class="skill-row">
+          <div class="skill-row-name">${skillL[sk]||sk}</div>
+          <div class="skill-bar-wrap"><div class="skill-bar-fill ${cls}" style="width:${pctSk}%;background:${SKILL_COLORS[sk]||'#7b1fa2'}"></div></div>
+          <div class="skill-score-txt">${correct}/${total} (${pctSk}%)</div>
+        </div>`;
+      }).join('');
+
+      // Compétences faibles
+      const weakAreas = d.weak_areas || [];
+      const rmEl = document.getElementById('reviewModules');
+      const noneLabel = lang==='fr' ? 'Aucune compétence en dessous de 60%.' : 'No skill below 60%.';
+      rmEl.innerHTML = weakAreas.length
+        ? weakAreas.map(sk => `<div class="review-item">📖 ${skillL[sk]||sk}</div>`).join('')
+        : `<div class="review-item" style="color:var(--gray-text)">${noneLabel}</div>`;
     }
-  } catch(e) {
-    const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
-    document.getElementById('resultArea').innerHTML = `<div class="result-card"><p style="color:red">${e.message}</p><a href="formation.html" class="btn-primary" style="margin-top:16px;">${lang==='fr'?'← Retour':'← Back'}</a></div>`;
+
+    // Correction détaillée (pour les deux cas)
+    if (d.results && d.results.length) {
+      document.getElementById('reviewSection').style.display = 'block';
+      document.getElementById('reviewTitle').textContent = t('final.review.title');
+      const letters = ['A','B','C','D'];
+      document.getElementById('reviewItems').innerHTML = d.results.map((r, idx) => {
+        const q = questions[idx] || {};
+        const opts = (q.options && (q.options[lang] || q.options.fr)) || [];
+        const qText = (q.question && (q.question[lang] || q.question.fr)) || `Question ${idx+1}`;
+        const skillLabel = skillL[r.skill] || r.skill;
+        const explObj = r.explanation;
+        const explTxt = explObj ? (explObj[lang] || explObj.fr || '') : '';
+        return `<div class="rev-item">
+          <div class="question-skill" style="margin-bottom:8px;">${skillLabel}</div>
+          <div class="rev-item-q">Q${idx+1}. ${qText}</div>
+          ${opts.map((o,i) => {
+            let cls = '';
+            if (i === r.correct) cls = 'correct';
+            else if (i === r.user_answer && !r.is_correct) cls = 'wrong';
+            const icon = i===r.correct ? '✅' : (i===r.user_answer && !r.is_correct ? '❌' : '');
+            return cls ? `<div class="rev-opt ${cls}">${icon} <span class="option-letter" style="background:transparent;width:auto">${letters[i]}.</span> ${o}</div>` : '';
+          }).filter(Boolean).join('')}
+          ${explTxt ? `<div class="rev-expl">💡 ${explTxt}</div>` : ''}
+        </div>`;
+      }).join('');
+    }
+
+  } catch (e) {
+    document.getElementById('resultArea').innerHTML =
+      `<div class="result-card"><p style="color:red">${e.message}</p><a href="formation.html" class="btn-primary" style="margin-top:16px;">← Retour</a></div>`;
   }
 }
 

@@ -120,9 +120,10 @@ document.getElementById('resetForm').addEventListener('submit', async function(e
     const d = await res.json();
     if (!res.ok || !d.success) throw new Error(d.message || 'Erreur');
 
-    successEl.textContent = d.message;
+    successEl.innerHTML = (d.message || 'Mot de passe réinitialisé avec succès.') + '<br><small style="opacity:.8;">Redirection vers la connexion dans 3 secondes…</small>';
     successEl.style.display = 'block';
     document.getElementById('resetForm').style.display = 'none';
+    setTimeout(() => { window.location.href = 'acces.html'; }, 3000);
   } catch(err) {
     errEl.textContent = err.message;
     errEl.style.display = 'block';

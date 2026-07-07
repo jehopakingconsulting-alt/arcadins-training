@@ -38,7 +38,9 @@
     .btn-plan:disabled { opacity:.5; cursor:not-allowed; }
     .payment-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center; }
     .payment-modal.open { display:flex; }
-    .payment-box { background:white; border-radius:20px; padding:36px; max-width:480px; width:90%; max-height:90vh; overflow-y:auto; }
+    .payment-box { background:white; border-radius:20px; padding:36px; max-width:480px; width:90%; max-height:90vh; overflow-y:auto; position:relative; }
+    .payment-close { position:absolute; top:14px; right:16px; background:none; border:none; font-size:1.5rem; color:#9aa5b8; cursor:pointer; line-height:1; padding:4px 8px; border-radius:6px; transition:background .15s,color .15s; }
+    .payment-close:hover { background:#f3f4f6; color:#374151; }
     .payment-box h2 { font-size:1.4rem; font-weight:800; color:var(--blue-dark); margin-bottom:8px; }
     .payment-box .price-recap { background:var(--gray-light); border-radius:10px; padding:16px; margin:16px 0; }
     .card-field { border:2px solid #e0e6f0; border-radius:8px; padding:12px; font-family:inherit; font-size:.9rem; width:100%; box-sizing:border-box; }
@@ -94,8 +96,9 @@
 
 <!-- Modal paiement -->
 <!-- Modal confirmation Stripe -->
-<div class="payment-modal" id="paymentModal">
+<div class="payment-modal" id="paymentModal" onclick="if(event.target===this)closePayment()">
   <div class="payment-box">
+    <button class="payment-close" onclick="closePayment()" aria-label="Fermer">✕</button>
     <div id="paymentForm">
       <h2 data-i18n="pay.h2">Finaliser votre inscription</h2>
       <p style="color:var(--gray-text);font-size:.88rem;" data-i18n="pay.sub">Paiement sécurisé · SSL · Garantie 7 jours</p>

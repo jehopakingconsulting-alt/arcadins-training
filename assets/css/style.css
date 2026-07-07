@@ -936,6 +936,42 @@ footer {
   section { padding: 48px 16px; }
 }
 
+/* ===== MOBILE — quiz & formation ===== */
+@media (max-width: 600px) {
+  /* Conteneurs de quiz */
+  .quiz-container { padding: 0 14px 40px; }
+  .question-card { padding: 20px 16px; }
+  .question-text { font-size: .95rem; }
+  .option-btn { font-size: .82rem; padding: 9px 12px; }
+
+  /* Test final — résultat */
+  .result-card { padding: 28px 16px; }
+  .score-circle { width: 110px; height: 110px; }
+  .score-pct { font-size: 1.7rem; }
+  .skill-breakdown { grid-template-columns: 1fr; }
+
+  /* Formation — timer */
+  .test-timer { float: none; display: inline-flex; margin-bottom: 8px; }
+
+  /* Espace membre — NCLC */
+  .nclc-grid { grid-template-columns: 1fr !important; }
+
+  /* Cards génériques */
+  .module-card { padding: 16px; }
+  .pricing-card { padding: 24px 18px; }
+
+  /* Nav overflow fix */
+  .nav-container { padding: 12px 16px; }
+  .logo img { height: 40px; }
+
+  /* Tables admin */
+  table { font-size: .78rem; }
+  table th, table td { padding: 7px 8px; }
+
+  /* Topbar — masquer sur très petits écrans */
+  .topbar { font-size: .72rem; padding: 5px 10px; }
+}
+
 /* ===== WHATSAPP FLOATING BUTTON ===== */
 .wa-float {
   position: fixed;
@@ -1296,3 +1332,33 @@ footer {
   .chat-widget { right: 10px; bottom: 140px; width: calc(100vw - 20px); }
   .notif-bar { padding: 10px 36px 10px 14px; font-size: .78rem; }
 }
+
+/* ===== PASSWORD VISIBILITY TOGGLE ===== */
+.pw-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.pw-wrap input[type="password"],
+.pw-wrap input[type="text"] {
+  width: 100%;
+  padding-right: 42px;
+  box-sizing: border-box;
+}
+.pw-eye {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9aa5b8;
+  padding: 4px;
+  line-height: 1;
+  font-size: 1.1rem;
+  transition: color .15s;
+  flex-shrink: 0;
+}
+.pw-eye:hover { color: #374151; }
+.pw-eye svg { display: block; width: 20px; height: 20px; pointer-events: none; }

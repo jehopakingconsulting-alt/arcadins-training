@@ -1,1541 +1,1148 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Backoffice Admin – ARCADINS Training Center</title>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#eef3f0;color:#1a2e28;}
-    :root{--blue:#0B5D3B;--blue-dark:#074A2E;--gold:#c9a84c;--red:#e53935;--green:#2e7d32;--purple:#7b1fa2;--gray:#eef3f0;--shadow:0 2px 12px rgba(0,0,0,.08);}
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin — ARCADINS Training Center</title>
+<meta name="robots" content="noindex,nofollow"/>
+<style>
+  :root {
+    --green:#0B5D3B; --green-dark:#074A2E; --green-light:#1C8C5A;
+    --gold:#c9a84c; --blue:#2563eb; --red:#dc2626; --orange:#d97706;
+    --gray:#6b7280; --gray-light:#f3f4f6; --gray-border:#e5e7eb;
+    --shadow:0 1px 3px rgba(0,0,0,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#1a1a1a;min-height:100vh;}
 
-    /* LAYOUT */
-    .layout{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
-    .sidebar{background:var(--blue-dark);color:white;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;}
-    .brand{padding:20px;border-bottom:1px solid rgba(255,255,255,.1);}
-    .brand h2{font-size:.95rem;font-weight:800;color:white;}
-    .brand p{font-size:.7rem;opacity:.5;margin-top:4px;}
-    .nav{padding:12px 0;flex:1;}
-    .nav-section{padding:10px 18px 4px;font-size:.62rem;text-transform:uppercase;letter-spacing:1.5px;opacity:.35;}
-    .nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;cursor:pointer;font-size:.84rem;border-left:3px solid transparent;transition:.15s;color:rgba(255,255,255,.75);}
-    .nav-item:hover{background:rgba(255,255,255,.07);color:white;}
-    .nav-item.active{background:rgba(255,255,255,.13);border-left-color:var(--gold);color:white;}
-    .sidebar-footer{padding:16px 18px;border-top:1px solid rgba(255,255,255,.1);font-size:.75rem;opacity:.5;}
+  /* Sidebar */
+  #sidebar{position:fixed;top:0;left:0;width:220px;height:100vh;background:var(--green-dark);color:white;display:flex;flex-direction:column;z-index:100;overflow-y:auto;}
+  .sidebar-logo{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.12);}
+  .sidebar-logo span{font-size:1.1rem;font-weight:900;letter-spacing:1px;}
+  .sidebar-logo small{display:block;font-size:.65rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+  .nav-section{padding:12px 0 4px;font-size:.65rem;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase;padding-left:18px;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:10px 18px;cursor:pointer;font-size:.88rem;color:rgba(255,255,255,.75);transition:all .15s;border-left:3px solid transparent;}
+  .nav-item:hover{background:rgba(255,255,255,.08);color:white;}
+  .nav-item.active{background:rgba(201,168,76,.15);color:var(--gold);border-left-color:var(--gold);}
+  .nav-item .icon{width:18px;text-align:center;font-size:.95rem;}
+  .sidebar-footer{margin-top:auto;padding:14px 18px;border-top:1px solid rgba(255,255,255,.1);font-size:.75rem;color:rgba(255,255,255,.4);}
+  #adminName{color:rgba(255,255,255,.7);font-weight:600;}
 
-    /* MAIN */
-    .main{padding:28px;overflow-x:hidden;}
-    .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
-    .page-header h1{font-size:1.4rem;font-weight:800;color:var(--blue-dark);}
+  /* Main */
+  #main{margin-left:220px;padding:24px;}
+  .page{display:none;}
+  .page.active{display:block;}
+  h1{font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+  .page-sub{color:var(--gray);font-size:.85rem;margin-bottom:22px;}
 
-    /* STATS GRID */
-    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px;}
-    .stat-card{background:white;border-radius:12px;padding:18px 20px;box-shadow:var(--shadow);border-left:4px solid #dde8e2;cursor:pointer;transition:.15s;}
-    .stat-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.1);}
-    .stat-card.c-blue{border-color:var(--blue);}
-    .stat-card.c-green{border-color:#4caf50;}
-    .stat-card.c-gold{border-color:var(--gold);}
-    .stat-card.c-red{border-color:var(--red);}
-    .stat-card.c-purple{border-color:var(--purple);}
-    .stat-num{font-size:1.9rem;font-weight:900;color:var(--blue-dark);}
-    .stat-lbl{font-size:.74rem;color:#5d7a6e;margin-top:4px;}
+  /* KPI */
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-bottom:24px;}
+  .kpi{background:white;border-radius:12px;padding:16px;box-shadow:var(--shadow);}
+  .kpi .val{font-size:1.9rem;font-weight:900;color:var(--green-dark);}
+  .kpi .lbl{font-size:.72rem;color:var(--gray);margin-top:3px;}
+  .kpi.warn .val{color:var(--orange);}
+  .kpi.ok .val{color:var(--green-light);}
+  .kpi.alert .val{color:var(--red);}
 
-    /* CARDS */
-    .card{background:white;border-radius:14px;padding:22px;box-shadow:var(--shadow);margin-bottom:22px;}
-    .card h3{font-size:.95rem;font-weight:800;color:var(--blue-dark);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  /* Cards */
+  .card{background:white;border-radius:12px;padding:20px;box-shadow:var(--shadow);margin-bottom:18px;}
+  .card h2{font-size:.95rem;font-weight:700;margin-bottom:14px;}
 
-    /* TABLE */
-    .tbl{width:100%;border-collapse:collapse;font-size:.82rem;}
-    .tbl th{padding:10px 14px;background:#f7f9fc;text-align:left;font-weight:700;color:#4a5568;border-bottom:2px solid #e8ecf4;}
-    .tbl td{padding:10px 14px;border-bottom:1px solid #eef3f0;vertical-align:middle;}
-    .tbl tr:hover td{background:#fafbfc;}
-    .tbl-scroll{overflow-x:auto;}
+  /* Tables */
+  table{width:100%;border-collapse:collapse;font-size:.82rem;}
+  thead th{background:var(--gray-light);padding:9px 12px;text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);font-weight:700;}
+  tbody tr{border-bottom:1px solid var(--gray-border);}
+  tbody tr:hover{background:#fafafa;}
+  td{padding:9px 12px;vertical-align:middle;}
+  .tbl-wrap{overflow-x:auto;}
 
-    /* BADGES */
-    .badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:.7rem;font-weight:700;}
-    .b-green{background:#e8f5e9;color:#2e7d32;}
-    .b-blue{background:#e3f2fd;color:#1565c0;}
-    .b-gold{background:#fff8e1;color:#b8860b;}
-    .b-red{background:#fce4ec;color:#c62828;}
-    .b-gray{background:#eef3f0;color:#5d7a6e;}
-    .b-purple{background:#f3e5f5;color:#7b1fa2;}
-    .b-orange{background:#fff3e0;color:#e65100;}
+  /* Badges */
+  .badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.7rem;font-weight:700;}
+  .badge-green{background:#d1fae5;color:#065f46;}
+  .badge-orange{background:#fef3c7;color:#92400e;}
+  .badge-red{background:#fee2e2;color:#991b1b;}
+  .badge-blue{background:#dbeafe;color:#1e40af;}
+  .badge-gray{background:#f3f4f6;color:#374151;}
 
-    /* BUTTONS */
-    .btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:8px;padding:8px 16px;font-size:.83rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;text-decoration:none;}
-    .btn:hover{opacity:.88;transform:translateY(-1px);}
-    .btn-primary{background:var(--blue);color:white;}
-    .btn-success{background:#4caf50;color:white;}
-    .btn-danger{background:var(--red);color:white;}
-    .btn-warning{background:#f57c00;color:white;}
-    .btn-secondary{background:#dde8e2;color:var(--blue-dark);}
-    .btn-sm{padding:4px 10px;font-size:.74rem;border-radius:6px;}
+  /* Buttons */
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:.8rem;font-weight:700;cursor:pointer;border:none;transition:all .15s;text-decoration:none;}
+  .btn-green{background:var(--green);color:white;} .btn-green:hover{background:var(--green-dark);}
+  .btn-blue{background:var(--blue);color:white;} .btn-blue:hover{opacity:.9;}
+  .btn-red{background:var(--red);color:white;} .btn-red:hover{opacity:.9;}
+  .btn-ghost{background:white;color:var(--green);border:1.5px solid var(--green);} .btn-ghost:hover{background:var(--gray-light);}
+  .btn-sm{padding:4px 10px;font-size:.73rem;}
 
-    /* FILTER BAR */
-    .filter-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
-    .filter-bar input,.filter-bar select{border:2px solid #dde8e2;border-radius:8px;padding:7px 12px;font-size:.82rem;font-family:inherit;outline:none;}
-    .filter-bar input:focus,.filter-bar select:focus{border-color:var(--blue);}
+  /* Toolbar */
+  .toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+  input[type=text],input[type=email],input[type=password],select,textarea{
+    padding:8px 12px;border:1.5px solid var(--gray-border);border-radius:8px;font-size:.83rem;font-family:inherit;outline:none;background:white;}
+  input:focus,select:focus,textarea:focus{border-color:var(--green);}
+  .search-box{flex:1;min-width:200px;}
 
-    /* TABS */
-    .tabs{display:flex;border-bottom:2px solid #dde8e2;margin-bottom:18px;overflow-x:auto;gap:0;}
-    .tab{padding:9px 18px;border:none;background:none;cursor:pointer;font-family:inherit;font-size:.84rem;font-weight:600;color:#5d7a6e;border-bottom:3px solid transparent;margin-bottom:-2px;transition:.15s;white-space:nowrap;}
-    .tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+  /* Modal */
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center;}
+  .modal-bg.open{display:flex;}
+  .modal{background:white;border-radius:16px;padding:28px;max-width:520px;width:90%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+  .modal h3{font-size:1.05rem;font-weight:800;margin-bottom:16px;}
+  .form-row{margin-bottom:12px;}
+  .form-row label{display:block;font-size:.78rem;font-weight:700;color:var(--gray);margin-bottom:5px;}
+  .form-row input,.form-row select,.form-row textarea{width:100%;}
+  .form-row textarea{min-height:80px;resize:vertical;}
+  .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 
-    /* MODAL */
-    .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;align-items:center;justify-content:center;padding:20px;}
-    .modal-bg.open{display:flex;}
-    .modal{background:white;border-radius:16px;padding:28px;max-width:580px;width:100%;max-height:90vh;overflow-y:auto;position:relative;}
-    .modal h3{font-size:1.1rem;font-weight:800;color:var(--blue-dark);margin-bottom:18px;}
-    .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#5d7a6e;line-height:1;}
+  /* Toast */
+  #toast{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;}
+  .toast-item{padding:12px 18px;border-radius:10px;font-size:.85rem;font-weight:600;color:white;box-shadow:0 4px 16px rgba(0,0,0,.2);animation:slideIn .25s ease;}
+  .toast-ok{background:#16a34a;} .toast-err{background:#dc2626;} .toast-info{background:#2563eb;}
+  @keyframes slideIn{from{transform:translateX(120%);opacity:0;}to{transform:translateX(0);opacity:1;}}
 
-    /* FORM */
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-    .form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
-    .form-group.full{grid-column:1/-1;}
-    .form-group label{font-size:.77rem;font-weight:700;color:var(--blue-dark);}
-    .form-group input,.form-group select,.form-group textarea{border:2px solid #dde8e2;border-radius:8px;padding:8px 12px;font-size:.87rem;font-family:inherit;outline:none;transition:.15s;}
-    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--blue);}
-    .form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;padding-top:14px;border-top:1px solid #eef3f0;}
-
-    /* ALERT */
-    .alert{border-radius:10px;padding:12px 16px;font-size:.85rem;margin-bottom:16px;}
-    .alert-success{background:#e8f5e9;color:#2e7d32;border:1px solid #c8e6c9;}
-    .alert-error{background:#fce4ec;color:#c62828;border:1px solid #f8bbd0;}
-    .alert-info{background:#e3f2fd;color:#1565c0;border:1px solid #bbdefb;}
-    .alert-warning{background:#fff8e1;color:#b8860b;border:1px solid #ffe082;}
-
-    /* PROGRESS BAR */
-    .progress-track{background:#dde8e2;border-radius:4px;height:7px;width:100px;display:inline-block;vertical-align:middle;}
-    .progress-fill{background:var(--blue);height:100%;border-radius:4px;}
-
-    /* USER INFO GRID */
-    .info-grid{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:.84rem;}
-    .info-grid dt{font-weight:700;color:#4a5568;}
-    .info-grid dd{color:var(--blue-dark);}
-
-    /* PASSWORD EYE */
-    .pwd-wrap{position:relative;display:flex;}
-    .pwd-wrap input{flex:1;padding-right:40px;}
-    .pwd-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1rem;padding:4px 6px;color:#5d7a6e;line-height:1;}
-    .pwd-eye:hover{color:var(--blue-dark);}
-
-    /* LOADING */
-    .loading{text-align:center;padding:40px;color:#5d7a6e;}
-
-    /* RESPONSIVE */
-    @media(max-width:800px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}.form-grid{grid-template-columns:1fr;}}
-  </style>
+  /* Progress bar */
+  .pbar-wrap{background:#e5e7eb;border-radius:99px;height:7px;width:60px;display:inline-block;}
+  .pbar{border-radius:99px;height:7px;}
+</style>
 </head>
 <body>
-<div class="layout">
 
-<!-- ═══════════ SIDEBAR ═══════════ -->
-<aside class="sidebar">
-  <div class="brand">
-    <h2>🍁 ARCADINS Admin</h2>
-    <p id="adminWelcome">Backoffice</p>
-    <span id="roleBadge" style="display:inline-block;margin-top:5px;padding:2px 8px;border-radius:12px;font-size:.65rem;font-weight:700;background:rgba(201,168,76,.25);color:#c9a84c;"></span>
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <span>🍁 ARCADINS</span>
+    <small>Backoffice Admin</small>
   </div>
-  <nav class="nav">
-    <div class="nav-section">Vue d'ensemble</div>
-    <div class="nav-item active" onclick="go('dashboard')">📊 Tableau de bord</div>
+  <div class="nav-section">Tableau de bord</div>
+  <div class="nav-item active" onclick="nav('dashboard')"><span class="icon">📊</span> Statistiques</div>
+  <div class="nav-section">Utilisateurs</div>
+  <div class="nav-item" onclick="nav('users')" data-perm="users_view"><span class="icon">👥</span> Tous les comptes</div>
+  <div class="nav-item" onclick="nav('payments')" data-perm="payments"><span class="icon">💳</span> Paiements</div>
+  <div class="nav-item" onclick="nav('prospects')" data-perm="prospects"><span class="icon">🎯</span> Prospects</div>
+  <div class="nav-section">Plateforme</div>
+  <div class="nav-item" onclick="nav('modules')" data-perm="modules"><span class="icon">📚</span> Stats modules</div>
+  <div class="nav-item" onclick="nav('certificates')" data-perm="certificates"><span class="icon">🏆</span> Certificats</div>
+  <div class="nav-item" onclick="nav('affiliates')" data-perm="affiliates"><span class="icon">🔗</span> Affiliation</div>
+  <div class="nav-section">Administration</div>
+  <div class="nav-item" onclick="nav('broadcast')" data-perm="broadcast"><span class="icon">📨</span> Broadcast email</div>
+  <div class="nav-item admin-only" onclick="nav('moderators')"><span class="icon">🛡</span> Modérateurs</div>
+  <div class="nav-item admin-only" onclick="nav('settings')"><span class="icon">⚙️</span> Paramètres</div>
+  <div class="nav-item admin-only" onclick="nav('audit')"><span class="icon">🔍</span> Audit log</div>
+  <div class="sidebar-footer">
+    <span id="adminName">…</span><br>
+    <span onclick="logout()" style="cursor:pointer;color:rgba(255,100,100,.7);font-size:.72rem;">Se déconnecter →</span>
+  </div>
+</nav>
 
-    <div class="nav-section">Utilisateurs</div>
-    <div class="nav-item" onclick="go('users')">👥 Tous les comptes</div>
-    <div class="nav-item" onclick="go('prospects')">📥 Prospects</div>
+<div id="main">
 
-    <div class="nav-section">Paiements</div>
-    <div class="nav-item" onclick="go('payments')">💳 Gestion paiements</div>
-    <div class="nav-item admin-only-nav" onclick="go('affiliates')">🤝 Parrainage</div>
-
-    <div class="nav-section">Formation</div>
-    <div class="nav-item" onclick="go('modules')">📚 Progression modules</div>
-    <div class="nav-item" onclick="go('tests')">📝 Tests &amp; Scores</div>
-    <div class="nav-item" onclick="go('tuteurs')">🎓 Tuteurs en devenir</div>
-
-    <div class="nav-section">Certifications</div>
-    <div class="nav-item" onclick="go('certificates')">🏆 Certificats</div>
-
-    <div class="nav-section admin-only-nav">Communication</div>
-    <div class="nav-item admin-only-nav" onclick="go('broadcast')">📢 Email groupé</div>
-
-    <div class="nav-section">Admin</div>
-    <div class="nav-item" onclick="go('audit')">🔍 Journal d'audit</div>
-    <div class="nav-item admin-only-nav" onclick="go('moderators')">👮 Modérateurs</div>
-    <div class="nav-item admin-only-nav" onclick="go('settings')">⚙️ Paramètres</div>
-    <div class="nav-item admin-only-nav" onclick="exportCsv()">📤 Export CSV</div>
-    <div class="nav-item" onclick="doLogout()">🚪 Déconnexion</div>
-  </nav>
-  <div class="sidebar-footer" id="sidebarTime"></div>
-</aside>
-
-<!-- ═══════════ MAIN ═══════════ -->
-<main class="main" id="main">
-
-  <!-- ── DASHBOARD ── -->
-  <div id="p-dashboard">
-    <div class="page-header">
-      <h1>📊 Tableau de bord</h1>
-      <button class="btn btn-secondary" onclick="loadDashboard()">🔄 Actualiser</button>
+  <!-- DASHBOARD -->
+  <div id="page-dashboard" class="page active">
+    <h1>Tableau de bord</h1><p class="page-sub">Vue d'ensemble en temps réel</p>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="val" id="k-users">—</div><div class="lbl">Comptes totaux</div></div>
+      <div class="kpi ok"><div class="val" id="k-apprenants">—</div><div class="lbl">Apprenants actifs</div></div>
+      <div class="kpi warn"><div class="val" id="k-pending">—</div><div class="lbl">Paiements en attente</div></div>
+      <div class="kpi ok"><div class="val" id="k-confirmed">—</div><div class="lbl">Paiements confirmés</div></div>
+      <div class="kpi"><div class="val" id="k-trial">—</div><div class="lbl">Tests essai complétés</div></div>
+      <div class="kpi"><div class="val" id="k-quali">—</div><div class="lbl">Qualifications faites</div></div>
+      <div class="kpi ok"><div class="val" id="k-modDone">—</div><div class="lbl">Modules terminés</div></div>
+      <div class="kpi ok"><div class="val" id="k-certs">—</div><div class="lbl">Certificats délivrés</div></div>
+      <div class="kpi alert"><div class="val" id="k-blocked">—</div><div class="lbl">Comptes bloqués</div></div>
     </div>
-    <div class="stats-grid" id="statsGrid"><div class="loading">⏳ Chargement…</div></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;flex-wrap:wrap;">
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
       <div class="card">
-        <h3>📥 Derniers inscrits</h3>
-        <div id="recentProspects"><div class="loading">⏳</div></div>
+        <h2>📥 Derniers prospects</h2>
+        <div class="tbl-wrap"><table id="recentProspectsTable">
+          <thead><tr><th>Nom</th><th>Email</th><th>Pays</th><th>Date</th></tr></thead>
+          <tbody></tbody>
+        </table></div>
       </div>
       <div class="card">
-        <h3>🏆 Derniers certificats</h3>
-        <div id="recentCerts"><div class="loading">⏳</div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── USERS ── -->
-  <div id="p-users" style="display:none;">
-    <div class="page-header">
-      <h1>👥 Gestion des comptes</h1>
-      <div style="display:flex;gap:10px;">
-        <button class="btn btn-success admin-only" onclick="openModal('createUserModal')">➕ Créer un compte</button>
-        <button class="btn btn-secondary admin-only" onclick="exportCsv()">📤 CSV</button>
-      </div>
-    </div>
-    <div class="card">
-      <div class="filter-bar">
-        <input type="text" id="uSearch" placeholder="🔍 Nom, email, téléphone…" oninput="renderUsers()"/>
-        <select id="uRole" onchange="renderUsers()">
-          <option value="">Tous les rôles</option>
-          <option value="prospect">Prospect</option>
-          <option value="apprenant">Apprenant</option>
-        </select>
-        <select id="uStatus" onchange="renderUsers()">
-          <option value="">Tous les statuts</option>
-          <option value="active">Actif</option>
-          <option value="trial">Essai</option>
-          <option value="blocked">Bloqué</option>
-          <option value="suspended">Suspendu</option>
-        </select>
-        <select id="uPlan" onchange="renderUsers()">
-          <option value="">Tous les plans</option>
-          <option value="Découverte">Découverte</option>
-          <option value="Standard">Standard</option>
-          <option value="Premium">Premium</option>
-          <option value="VIP">VIP</option>
-        </select>
-      </div>
-      <div class="tbl-scroll" id="usersTable"><div class="loading">⏳</div></div>
-    </div>
-  </div>
-
-  <!-- ── PROSPECTS ── -->
-  <div id="p-prospects" style="display:none;">
-    <div class="page-header"><h1>📥 Prospects</h1></div>
-    <div class="card">
-      <div class="filter-bar">
-        <input type="text" id="pSearch" placeholder="🔍 Rechercher…" oninput="renderProspects()"/>
-      </div>
-      <div class="tbl-scroll" id="prospectsTable"><div class="loading">⏳</div></div>
-    </div>
-  </div>
-
-  <!-- ── PAYMENTS ── -->
-  <div id="p-payments" style="display:none;">
-    <div class="page-header">
-      <h1>💳 Gestion des paiements</h1>
-    </div>
-    <div id="payAlert"></div>
-    <div class="card">
-      <div class="tabs">
-        <button class="tab active" onclick="switchPayTab('all',this)">Tous</button>
-        <button class="tab" onclick="switchPayTab('confirmed',this)">✅ Confirmés</button>
-        <button class="tab" onclick="switchPayTab('pending',this)">⏳ En attente</button>
-      </div>
-      <div class="tbl-scroll" id="paymentsTable"><div class="loading">⏳</div></div>
-    </div>
-  </div>
-
-  <!-- ── AFFILIATES ── -->
-  <div id="p-affiliates" style="display:none;">
-    <div class="page-header"><h1>🤝 Programme de Parrainage</h1></div>
-    <div class="stats-grid" id="affStatsGrid"></div>
-    <div class="card">
-      <div class="tbl-scroll" id="affiliatesTable"><div class="loading">⏳</div></div>
-    </div>
-  </div>
-
-  <!-- ── MODULES ── -->
-  <div id="p-modules" style="display:none;">
-    <div class="page-header"><h1>📚 Progression des modules</h1></div>
-    <div class="card">
-      <div class="tbl-scroll" id="modulesTable"><div class="loading">⏳</div></div>
-    </div>
-  </div>
-
-  <!-- ── TESTS ── -->
-  <div id="p-tests" style="display:none;">
-    <div class="page-header"><h1>📝 Tests &amp; Scores</h1></div>
-    <div class="card">
-      <div class="tabs">
-        <button class="tab active" onclick="switchTestTab('trial',this)">Test d'Essai</button>
-        <button class="tab" onclick="switchTestTab('qualification',this)">Qualification</button>
-        <button class="tab" onclick="switchTestTab('final',this)">Test final</button>
-      </div>
-      <div class="tbl-scroll" id="testsTable"><div class="loading">⏳</div></div>
-    </div>
-  </div>
-
-  <!-- ── CERTIFICATES ── -->
-  <div id="p-certificates" style="display:none;">
-    <div class="page-header"><h1>🏆 Certificats générés</h1></div>
-    <div class="card">
-      <div class="tbl-scroll" id="certsTable"><div class="loading">⏳</div></div>
-    </div>
-  </div>
-
-  <!-- ── SETTINGS ── -->
-  <div id="p-settings" style="display:none;">
-    <div class="page-header"><h1>⚙️ Paramètres</h1></div>
-    <div class="card" style="max-width:520px;">
-      <h3>Plateforme</h3>
-      <form onsubmit="saveSettings(event)">
-        <div class="form-group">
-          <label>Tentatives max. au test final</label>
-          <input type="number" id="cfgAttempts" min="1" max="10" value="3"/>
+        <h2>⚡ Actions rapides</h2>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button class="btn btn-green btn-sm" onclick="nav('payments')">💳 Confirmer paiements PayPal</button>
+          <button class="btn btn-ghost btn-sm" onclick="nav('users')">👥 Gérer utilisateurs</button>
+          <button class="btn btn-ghost btn-sm" onclick="nav('broadcast')">📨 Broadcast email</button>
+          <button class="btn btn-blue btn-sm" onclick="testSmtp()">🔌 Tester SMTP</button>
+          <a href="../../index.html" class="btn btn-ghost btn-sm" target="_blank">🌐 Voir le site →</a>
         </div>
-        <div class="form-group">
-          <label>Score minimum test final (%)</label>
-          <input type="number" id="cfgScore" min="50" max="100" value="80"/>
-        </div>
-        <div class="form-group">
-          <label>Email administrateur (notifications)</label>
-          <input type="email" id="cfgEmail" placeholder="admin@arcadins-training.com"/>
-        </div>
-        <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
-      </form>
-    </div>
-    <div class="card" style="max-width:520px;">
-      <h3>📧 Connexion Gmail SMTP</h3>
-      <div id="smtpStatus" style="margin-bottom:16px;">
-        <div class="alert alert-info">⏳ Vérification de la connexion Gmail…</div>
+        <div id="smtpResult" style="margin-top:12px;font-size:.8rem;"></div>
       </div>
-      <div style="background:#f7f9fc;border-radius:8px;padding:14px 18px;margin-bottom:16px;font-size:.84rem;">
-        <p style="margin:0 0 6px;color:#4a5568;"><strong>Email configuré :</strong> <span style="color:#0B5D3B;">arcadinstrainingcenter@gmail.com</span></p>
-        <p style="margin:0;color:#5d7a6e;font-size:.78rem;">Tous les emails de la plateforme sont envoyés depuis ce compte.</p>
-      </div>
-      <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:14px 18px;margin-bottom:16px;font-size:.83rem;color:#b8860b;">
-        <strong>⚠️ Si le statut est "Non configuré" :</strong><br>
-        1. Activez la <strong>validation en 2 étapes</strong> sur votre compte Google<br>
-        2. Allez dans <strong>Sécurité → Mots de passe des applications</strong><br>
-        3. Créez un mot de passe pour "ARCADINS"<br>
-        4. Copiez les 16 caractères dans le fichier <code>server/.env</code> → <code>SMTP_PASS=xxxx xxxx xxxx xxxx</code>
-      </div>
-      <div style="display:flex;gap:10px;">
-        <button class="btn btn-secondary" onclick="checkSmtp()">🔄 Vérifier la connexion</button>
-        <button class="btn btn-primary" onclick="sendTestEmail()">📧 Envoyer un email de test</button>
-      </div>
-    </div>
-    <div class="card" style="max-width:520px;">
-      <h3>Accès admin</h3>
-      <p style="color:#5d7a6e;font-size:.85rem;line-height:1.6;">
-        Connecté en tant qu'administrateur.<br>
-        Pour changer le mot de passe admin, utilisez la section <em>Modifier profil</em> depuis la fiche utilisateur admin.
-      </p>
     </div>
   </div>
 
-
-  <!-- ── TUTEURS ── -->
-  <div id="p-tuteurs" style="display:none;">
-    <div class="page-header">
-      <h1>🎓 Tuteurs en devenir</h1>
-      <button class="btn btn-secondary" onclick="loadTuteurs()">🔄 Actualiser</button>
+  <!-- USERS -->
+  <div id="page-users" class="page">
+    <h1>Gestion des comptes</h1><p class="page-sub">Recherche, édition, blocage et suppression</p>
+    <div class="toolbar">
+      <input type="text" class="search-box" id="userSearch" placeholder="🔍  Nom, prénom, email ou téléphone…" oninput="filterUsers()"/>
+      <select id="userRoleFilter" onchange="filterUsers()">
+        <option value="">Tous rôles</option><option value="apprenant">Apprenant</option>
+        <option value="prospect">Prospect</option><option value="moderator">Modérateur</option>
+      </select>
+      <select id="userStatusFilter" onchange="filterUsers()">
+        <option value="">Tous statuts</option><option value="active">Actif</option>
+        <option value="trial">Essai</option><option value="blocked">Bloqué</option>
+      </select>
+      <button class="btn btn-green btn-sm" onclick="openCreateUserModal()">+ Créer compte</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportCsv()">📥 CSV</button>
     </div>
-    <div id="tuteurAlert"></div>
-    <div class="card">
-      <div class="tbl-scroll" id="tuteursTable"><div class="loading">⏳</div></div>
-    </div>
+    <div class="card" style="padding:0;"><div class="tbl-wrap">
+      <table><thead><tr>
+        <th>#</th><th>Nom</th><th>Email</th><th>Pays</th><th>Rôle</th>
+        <th>Paiement</th><th>Plan</th><th>Prog.</th><th>Inscrit le</th><th>Actions</th>
+      </tr></thead><tbody id="usersTbody"></tbody></table>
+    </div></div>
   </div>
 
-  <!-- ── BROADCAST ── -->
-  <div id="p-broadcast" style="display:none;">
-    <div class="page-header"><h1>📢 Email groupé</h1></div>
+  <!-- PAYMENTS -->
+  <div id="page-payments" class="page">
+    <h1>Paiements</h1><p class="page-sub">Confirmez les paiements PayPal déclarés manuellement</p>
+    <div class="toolbar">
+      <select id="payFilter" onchange="loadPayments()">
+        <option value="pending">⏳ En attente de confirmation</option>
+        <option value="confirmed">✅ Confirmés</option>
+        <option value="">Tous</option>
+      </select>
+    </div>
+    <div class="card" style="padding:0;"><div class="tbl-wrap">
+      <table><thead><tr>
+        <th>#</th><th>Client</th><th>Email</th><th>Plan</th><th>Méthode</th>
+        <th>Référence / Notes</th><th>Statut</th><th>Date</th><th>Action</th>
+      </tr></thead><tbody id="paymentsTbody"></tbody></table>
+    </div></div>
+  </div>
+
+  <!-- PROSPECTS -->
+  <div id="page-prospects" class="page">
+    <h1>Prospects</h1><p class="page-sub">Inscrits ayant démarré le test de niveau</p>
+    <div class="card" style="padding:0;"><div class="tbl-wrap">
+      <table><thead><tr><th>#</th><th>Nom</th><th>Email</th><th>Téléphone</th><th>Pays</th><th>Date</th></tr></thead>
+      <tbody id="prospectsTbody"></tbody></table>
+    </div></div>
+  </div>
+
+  <!-- MODULES -->
+  <div id="page-modules" class="page">
+    <h1>Statistiques des modules</h1><p class="page-sub">Taux de réussite et scores par module</p>
+    <div class="card" style="padding:0;"><div class="tbl-wrap">
+      <table><thead><tr>
+        <th>Module</th><th>Inscrits</th><th>Réussis</th><th>% Réussite</th>
+        <th>Score moyen</th><th>Tent. moy.</th><th>Max tent.</th>
+      </tr></thead><tbody id="modulesTbody"></tbody></table>
+    </div></div>
+  </div>
+
+  <!-- CERTIFICATES -->
+  <div id="page-certificates" class="page">
+    <h1>Certificats délivrés</h1><p class="page-sub">Visualisez et téléchargez les certificats de vos étudiants</p>
+    <div class="card" style="padding:0;"><div class="tbl-wrap">
+      <table><thead><tr>
+        <th>#</th><th>Étudiant</th><th>Email</th><th>Pays</th>
+        <th>Score</th><th>N° Certificat</th><th>Délivré le</th><th>Actions</th>
+      </tr></thead><tbody id="certsTbody"></tbody></table>
+    </div></div>
+  </div>
+
+  <!-- AFFILIATES -->
+  <div id="page-affiliates" class="page">
+    <h1>Programme d'affiliation</h1><p class="page-sub">Commissions de parrainage (10% du premier achat)</p>
+    <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="kpi"><div class="val" id="aff-total">—</div><div class="lbl">Total commissions</div></div>
+      <div class="kpi warn"><div class="val" id="aff-pending">—</div><div class="lbl">En attente</div></div>
+      <div class="kpi ok"><div class="val" id="aff-paid">—</div><div class="lbl">Payées</div></div>
+    </div>
+    <div class="card" style="padding:0;"><div class="tbl-wrap">
+      <table><thead><tr>
+        <th>#</th><th>Parrain</th><th>Email parrain</th><th>Parrainé</th>
+        <th>Plan</th><th>Commission</th><th>Statut</th><th>Date</th><th>Action</th>
+      </tr></thead><tbody id="affiliatesTbody"></tbody></table>
+    </div></div>
+  </div>
+
+  <!-- MODERATEURS -->
+  <div id="page-moderators" class="page">
+    <h1>Modérateurs</h1><p class="page-sub">Gérer les accès délégués avec des profils de permissions</p>
+
+    <div class="card" style="background:linear-gradient(135deg,#074A2E,#0B5D3B);color:white;margin-bottom:18px;">
+      <h2 style="color:white;margin-bottom:12px;">🛡 4 profils disponibles</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;">
+        <div style="background:rgba(255,255,255,.1);border-radius:10px;padding:14px;">
+          <div style="font-weight:800;margin-bottom:6px;">🎧 Support</div>
+          <div style="font-size:.78rem;opacity:.85;line-height:1.7;">Voir utilisateurs · Envoyer emails<br><em style="opacity:.6;">Ne peut pas confirmer paiements</em></div>
+        </div>
+        <div style="background:rgba(255,255,255,.1);border-radius:10px;padding:14px;">
+          <div style="font-weight:800;margin-bottom:6px;">💳 Paiements</div>
+          <div style="font-size:.78rem;opacity:.85;line-height:1.7;">Voir utilisateurs · Confirmer paiements PayPal<br><em style="opacity:.6;">Pas d'emails ni suppressions</em></div>
+        </div>
+        <div style="background:rgba(255,255,255,.1);border-radius:10px;padding:14px;">
+          <div style="font-weight:800;margin-bottom:6px;">📊 Statistiques</div>
+          <div style="font-size:.78rem;opacity:.85;line-height:1.7;">Stats · Modules · Certificats<br><em style="opacity:.6;">Lecture seule, aucune action</em></div>
+        </div>
+        <div style="background:rgba(201,168,76,.2);border-radius:10px;padding:14px;border:1px solid rgba(201,168,76,.4);">
+          <div style="font-weight:800;margin-bottom:6px;color:var(--gold);">⭐ Complet</div>
+          <div style="font-size:.78rem;opacity:.85;line-height:1.7;">Tout sauf : créer/supprimer modérateurs · Paramètres · Audit<br><em style="opacity:.6;">Accès opérationnel complet</em></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+      <button class="btn btn-green" onclick="openCreateModModal()">+ Ajouter un modérateur</button>
+    </div>
+
+    <div class="card" style="padding:0;"><div class="tbl-wrap">
+      <table><thead><tr>
+        <th>#</th><th>Nom</th><th>Email</th><th>Profil d'accès</th><th>Permissions</th>
+        <th>Statut</th><th>Dernière connexion</th><th>Actions</th>
+      </tr></thead><tbody id="modsTbody"></tbody></table>
+    </div></div>
+  </div>
+
+  <!-- BROADCAST -->
+  <div id="page-broadcast" class="page">
+    <h1>Broadcast Email</h1><p class="page-sub">Envoyer un message groupé</p>
     <div class="card" style="max-width:600px;">
-      <h3>Envoyer un email à un groupe d'utilisateurs</h3>
-      <div id="broadcastAlert"></div>
-      <form onsubmit="doBroadcast(event)">
-        <div class="form-group">
-          <label>Destinataires</label>
-          <select id="bc_target">
-            <option value="all">Tous les utilisateurs actifs</option>
-            <option value="apprenants">Apprenants uniquement</option>
-            <option value="prospects">Prospects uniquement</option>
-            <option value="payants">Payants (accès confirmé)</option>
-          </select>
+      <div class="form-row"><label>Destinataires</label>
+        <select id="bcTarget">
+          <option value="">Tous les utilisateurs</option>
+          <option value="apprenants">Apprenants uniquement</option>
+          <option value="prospects">Prospects uniquement</option>
+          <option value="payants">Ayant payé</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Sujet</label><input type="text" id="bcSubject" placeholder="Sujet de l'email…"/></div>
+      <div class="form-row"><label>Message</label><textarea id="bcMessage" style="min-height:160px;" placeholder="Votre message…"></textarea></div>
+      <button class="btn btn-green" onclick="sendBroadcast()">📨 Envoyer le broadcast</button>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="page-settings" class="page">
+    <h1>Paramètres</h1><p class="page-sub">Seuils et configuration globale</p>
+    <div class="card" style="max-width:480px;">
+      <h2>🎯 Scores de passage</h2>
+      <div class="form-row"><label>Score minimum — Tests de module (%)</label><input type="text" id="set-module-pass"/></div>
+      <div class="form-row"><label>Score minimum — Test final (%)</label><input type="text" id="set-final-pass"/></div>
+      <div class="form-row"><label>Tentatives max — Test final</label><input type="text" id="set-final-attempts"/></div>
+      <button class="btn btn-green" onclick="saveSettings()">💾 Enregistrer</button>
+    </div>
+    <div class="card" style="max-width:480px;margin-top:14px;">
+      <h2>📧 Email SMTP</h2>
+      <p style="font-size:.83rem;color:var(--gray);margin-bottom:14px;">Tester la connexion Hostinger et envoyer un email de test à l'admin.</p>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-ghost" onclick="testSmtp()">🔌 Tester la connexion</button>
+        <button class="btn btn-blue" onclick="sendTestEmail()">📧 Envoyer email test</button>
+      </div>
+      <div id="smtpDetail" style="margin-top:12px;font-size:.82rem;"></div>
+    </div>
+  </div>
+
+  <!-- AUDIT -->
+  <div id="page-audit" class="page">
+    <h1>Journal d'audit</h1><p class="page-sub">200 dernières actions sensibles</p>
+    <div class="card" style="padding:0;"><div class="tbl-wrap">
+      <table><thead><tr><th>Date</th><th>Admin</th><th>Action</th><th>Cible</th><th>Détails</th></tr></thead>
+      <tbody id="auditTbody"></tbody></table>
+    </div></div>
+  </div>
+
+</div><!-- /main -->
+
+<div id="toast"></div>
+
+<!-- Modal: Aperçu Certificat -->
+<div class="modal-bg" id="certModal">
+  <div class="modal" style="max-width:680px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <h3>🏆 Certificat étudiant</h3>
+      <span onclick="closeModal('certModal')" style="cursor:pointer;font-size:1.5rem;color:var(--gray);">×</span>
+    </div>
+    <!-- Aperçu visuel du certificat -->
+    <div id="certPreviewBox" style="background:linear-gradient(135deg,#0a0e2a,#1a2060);border-radius:16px;padding:36px 32px;text-align:center;position:relative;border:2px solid #c9a84c;margin-bottom:20px;">
+      <div style="position:absolute;inset:10px;border:1px solid rgba(201,168,76,.4);border-radius:10px;pointer-events:none;"></div>
+      <div style="font-size:.65rem;letter-spacing:4px;text-transform:uppercase;color:#c9a84c;margin-bottom:4px;">🍁 ARCADINS Training Center</div>
+      <div style="font-size:.6rem;letter-spacing:3px;color:rgba(255,255,255,.5);text-transform:uppercase;margin-bottom:20px;">Certificat de Réussite</div>
+      <div style="color:rgba(255,255,255,.7);font-size:.78rem;margin-bottom:8px;">Ce certificat atteste que</div>
+      <div id="cv-name" style="font-size:1.6rem;font-weight:900;color:white;letter-spacing:1px;margin-bottom:8px;">—</div>
+      <div style="color:rgba(255,255,255,.6);font-size:.75rem;margin-bottom:6px;">a complété avec succès le programme</div>
+      <div style="color:#c9a84c;font-size:.85rem;font-weight:700;margin-bottom:16px;">TEF &amp; TCF Canada — Préparation Complète</div>
+      <div style="display:inline-block;background:linear-gradient(135deg,#c9a84c,#d4a017);border-radius:10px;padding:10px 28px;margin-bottom:16px;">
+        <div id="cv-score" style="font-size:1.8rem;font-weight:900;color:white;">—%</div>
+        <div style="font-size:.62rem;color:rgba(255,255,255,.8);letter-spacing:1px;">SCORE FINAL</div>
+      </div>
+      <div id="cv-date" style="color:rgba(255,255,255,.5);font-size:.72rem;margin-bottom:12px;">—</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1);">
+        <div style="text-align:left;">
+          <div style="font-style:italic;color:rgba(255,255,255,.8);font-size:.8rem;font-weight:600;">Direction ARCADINS</div>
+          <div style="font-size:.62rem;color:rgba(255,255,255,.4);">ARCADINS Training Center</div>
         </div>
-        <div class="form-group"><label>Objet de l'email *</label><input id="bc_subject" required placeholder="Ex : Nouveau module disponible !"/></div>
-        <div class="form-group"><label>Message *</label><textarea id="bc_message" rows="8" required placeholder="Contenu du message…"></textarea></div>
-        <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:.83rem;color:#b8860b;">
-          ⚠️ <strong>Action irréversible.</strong> Cet email sera envoyé immédiatement à tous les destinataires du groupe sélectionné.
+        <div style="text-align:right;">
+          <div style="font-size:.58rem;color:rgba(255,255,255,.4);">N° de certificat</div>
+          <div id="cv-number" style="font-family:monospace;font-size:.65rem;color:#c9a84c;">—</div>
         </div>
-        <button type="submit" class="btn btn-primary" id="bcBtn">📤 Envoyer l'email groupé</button>
-      </form>
+      </div>
+    </div>
+    <!-- Infos + actions -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:.83rem;margin-bottom:18px;">
+      <div style="background:var(--gray-light);padding:10px 14px;border-radius:8px;">
+        <div style="font-size:.7rem;color:var(--gray);font-weight:700;margin-bottom:3px;">ÉTUDIANT</div>
+        <div id="cv-fullname" style="font-weight:700;">—</div>
+        <div id="cv-email" style="font-size:.78rem;color:var(--blue);">—</div>
+      </div>
+      <div style="background:var(--gray-light);padding:10px 14px;border-radius:8px;">
+        <div style="font-size:.7rem;color:var(--gray);font-weight:700;margin-bottom:3px;">LIEN DE VÉRIFICATION</div>
+        <div id="cv-verify" style="font-size:.72rem;font-family:monospace;color:var(--green);word-break:break-all;">—</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button id="certDownloadBtn" class="btn btn-green" onclick="adminDownloadCert()">📥 Télécharger le PDF</button>
+      <button class="btn btn-ghost" onclick="adminCopyCertLink()">🔗 Copier lien vérification</button>
     </div>
   </div>
-
-  <!-- ── AUDIT LOG ── -->
-  <div id="p-audit" style="display:none;">
-    <div class="page-header">
-      <h1>🔍 Journal d'audit</h1>
-      <button class="btn btn-secondary" onclick="loadAuditLog()">🔄 Actualiser</button>
-    </div>
-    <div class="card">
-      <div class="tbl-scroll" id="auditTable"><div class="loading">⏳</div></div>
-    </div>
-  </div>
-
-  <!-- ── MODÉRATEURS ── -->
-  <div id="p-moderators" style="display:none;">
-    <div class="page-header">
-      <h1>👮 Gestion des modérateurs</h1>
-      <button class="btn btn-success" onclick="openModal('createModModal')">➕ Nouveau modérateur</button>
-    </div>
-    <div class="alert alert-info" style="margin-bottom:18px;">
-      <strong>ℹ️ Rôle modérateur :</strong> Peut consulter les données, modifier les profils et envoyer des emails individuels. Ne peut <strong>pas</strong> confirmer des paiements, bloquer/supprimer des comptes, broadcaster des emails ou modifier les paramètres.
-    </div>
-    <div class="card">
-      <div class="tbl-scroll" id="moderatorsTable"><div class="loading">⏳</div></div>
-    </div>
-  </div>
-
-</main>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     MODALS
-══════════════════════════════════════════════ -->
+<!-- Modal: Créer / Éditer Modérateur -->
+<div class="modal-bg" id="modModal">
+  <div class="modal">
+    <h3 id="modModalTitle">🛡 Nouveau modérateur</h3>
+    <input type="hidden" id="mod-id"/>
+    <div class="grid2">
+      <div class="form-row"><label>Prénom *</label><input type="text" id="mod-prenom"/></div>
+      <div class="form-row"><label>Nom *</label><input type="text" id="mod-nom"/></div>
+    </div>
+    <div class="form-row"><label>Email *</label><input type="email" id="mod-email"/></div>
+    <div class="form-row"><label id="mod-pw-label">Mot de passe * (min. 8 car.)</label><input type="password" id="mod-pw" placeholder="Laisser vide pour ne pas modifier"/></div>
 
-<!-- Create User -->
+    <div class="form-row">
+      <label>Profil d'accès</label>
+      <select id="mod-profile" onchange="onProfileChange()">
+        <option value="support">🎧 Support — Voir users + emails</option>
+        <option value="paiements">💳 Paiements — Confirmer PayPal</option>
+        <option value="statistiques">📊 Statistiques — Lecture seule</option>
+        <option value="complet" selected>⭐ Complet — Accès opérationnel</option>
+        <option value="personnalise">✏️ Personnalisé…</option>
+      </select>
+    </div>
+
+    <div id="customPermsBlock" style="display:none;background:var(--gray-light);border-radius:10px;padding:14px;margin-bottom:12px;">
+      <label style="font-size:.78rem;font-weight:700;color:var(--gray);display:block;margin-bottom:10px;">Permissions personnalisées</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer;"><input type="checkbox" value="stats" class="perm-cb"> Statistiques dashboard</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer;"><input type="checkbox" value="users_view" class="perm-cb"> Voir utilisateurs</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer;"><input type="checkbox" value="payments" class="perm-cb"> Confirmer paiements</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer;"><input type="checkbox" value="emails" class="perm-cb"> Envoyer emails</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer;"><input type="checkbox" value="modules" class="perm-cb"> Stats modules</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer;"><input type="checkbox" value="certificates" class="perm-cb"> Certificats</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer;"><input type="checkbox" value="affiliates" class="perm-cb"> Affiliation</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer;"><input type="checkbox" value="broadcast" class="perm-cb"> Broadcast email</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer;"><input type="checkbox" value="prospects" class="perm-cb"> Prospects</label>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modModal')">Annuler</button>
+      <button class="btn btn-green" onclick="doSaveMod()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: User Detail -->
+<div class="modal-bg" id="userModal">
+  <div class="modal" style="max-width:640px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 id="uModalTitle">Détails utilisateur</h3>
+      <span onclick="closeModal('userModal')" style="cursor:pointer;font-size:1.5rem;color:var(--gray);">×</span>
+    </div>
+    <div id="uModalContent"></div>
+  </div>
+</div>
+
+<!-- Modal: Confirm Payment -->
+<div class="modal-bg" id="confirmPayModal">
+  <div class="modal">
+    <h3>✅ Confirmer le paiement</h3>
+    <div id="confirmPayInfo" style="background:var(--gray-light);padding:12px;border-radius:8px;font-size:.85rem;margin-bottom:16px;"></div>
+    <div class="form-row"><label>Plan</label>
+      <select id="cp-plan">
+        <option value="starter">Starter ($97)</option>
+        <option value="essential" selected>Essential ($147)</option>
+        <option value="premium">Premium ($247)</option>
+        <option value="vip">VIP ($347)</option>
+      </select>
+    </div>
+    <div class="form-row"><label>Méthode</label><input type="text" id="cp-method" value="PayPal"/></div>
+    <div class="form-row"><label>Notes internes</label><textarea id="cp-notes" placeholder="Référence PayPal, transaction ID…"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('confirmPayModal')">Annuler</button>
+      <button class="btn btn-green" onclick="doConfirmPayment()">✅ Activer l'accès</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Create User -->
 <div class="modal-bg" id="createUserModal">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('createUserModal')">✕</button>
     <h3>➕ Créer un compte manuellement</h3>
-    <div id="createAlert"></div>
-    <div class="form-grid">
-      <div class="form-group"><label>Prénom *</label><input id="cu_prenom" placeholder="Prénom"/></div>
-      <div class="form-group"><label>Nom *</label><input id="cu_nom" placeholder="Nom"/></div>
-      <div class="form-group"><label>Email *</label><input id="cu_email" type="email" placeholder="email@exemple.com"/></div>
-      <div class="form-group"><label>Téléphone</label><input id="cu_tel" placeholder="+1 514 000 0000"/></div>
-      <div class="form-group"><label>Pays</label><input id="cu_pays" placeholder="Canada"/></div>
-      <div class="form-group"><label>Mot de passe *</label><div class="pwd-wrap"><input id="cu_pwd" type="password" placeholder="Min. 8 caractères"/><button type="button" class="pwd-eye" onclick="togglePwd('cu_pwd',this)">👁️</button></div></div>
-      <div class="form-group"><label>Plan</label>
-        <select id="cu_plan"><option value="">— Sélectionner —</option><option>Découverte</option><option>Standard</option><option>Premium</option><option>VIP</option></select>
-      </div>
-      <div class="form-group"><label>Méthode de paiement</label>
-        <select id="cu_method"><option value="">— Sélectionner —</option><option value="Stripe">Carte (Stripe)</option><option value="PayPal">PayPal</option><option value="Interac">Virement Interac / e-Transfer</option><option value="MonCash">MonCash</option><option value="NatCash">NatCash</option><option value="Virement">Virement bancaire</option><option value="Cash">Cash / Espèces</option><option value="Autre">Autre</option></select>
-      </div>
-      <div class="form-group full">
-        <label><input type="checkbox" id="cu_paid" onchange="togglePayConfirm()"/> &nbsp;Paiement déjà confirmé — donner accès immédiat à la formation</label>
-      </div>
-      <div class="form-group full"><label>Notes internes</label><textarea id="cu_notes" rows="2" placeholder="Ex : paiement reçu par Interac le 8 juin 2026…"></textarea></div>
+    <div class="grid2">
+      <div class="form-row"><label>Prénom *</label><input type="text" id="cu-prenom"/></div>
+      <div class="form-row"><label>Nom *</label><input type="text" id="cu-nom"/></div>
     </div>
-    <div class="form-actions">
-      <button class="btn btn-secondary" onclick="closeModal('createUserModal')">Annuler</button>
-      <button class="btn btn-success" onclick="createUser()">✅ Créer le compte</button>
+    <div class="form-row"><label>Email *</label><input type="email" id="cu-email"/></div>
+    <div class="form-row"><label>Mot de passe *</label><input type="password" id="cu-pw" placeholder="Min. 8 caractères"/></div>
+    <div class="grid2">
+      <div class="form-row"><label>Téléphone</label><input type="text" id="cu-tel"/></div>
+      <div class="form-row"><label>Pays</label><input type="text" id="cu-pays"/></div>
     </div>
-  </div>
-</div>
-
-<!-- User Detail / Actions -->
-<div class="modal-bg" id="userDetailModal">
-  <div class="modal" style="max-width:640px;">
-    <button class="modal-close" onclick="closeModal('userDetailModal')">✕</button>
-    <h3 id="udTitle">Fiche utilisateur</h3>
-    <div id="udAlert"></div>
-    <div id="udContent"><div class="loading">⏳</div></div>
-  </div>
-</div>
-
-<!-- Edit User -->
-<div class="modal-bg" id="editUserModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('editUserModal')">✕</button>
-    <h3>✏️ Modifier le profil</h3>
-    <div id="editAlert"></div>
-    <input type="hidden" id="eu_id"/>
-    <div class="form-grid">
-      <div class="form-group"><label>Prénom</label><input id="eu_prenom"/></div>
-      <div class="form-group"><label>Nom</label><input id="eu_nom"/></div>
-      <div class="form-group"><label>Email</label><input id="eu_email" type="email"/></div>
-      <div class="form-group"><label>Téléphone</label><input id="eu_tel"/></div>
-      <div class="form-group"><label>Pays</label><input id="eu_pays"/></div>
-      <div class="form-group"><label>Plan</label>
-        <select id="eu_plan"><option value="">— Aucun —</option><option>Découverte</option><option>Standard</option><option>Premium</option><option>VIP</option></select>
-      </div>
-      <div class="form-group full"><label>Nouveau mot de passe (laisser vide = inchangé)</label><div class="pwd-wrap"><input id="eu_pwd" type="password" placeholder="Laisser vide pour ne pas changer"/><button type="button" class="pwd-eye" onclick="togglePwd('eu_pwd',this)">👁️</button></div></div>
-      <div class="form-group full"><label>Notes internes</label><textarea id="eu_notes" rows="2"></textarea></div>
+    <div class="form-row"><label>Plan (laisser vide = prospect sans accès)</label>
+      <select id="cu-plan">
+        <option value="">— Aucun (prospect) —</option>
+        <option value="starter">Starter</option>
+        <option value="essential">Essential</option>
+        <option value="premium">Premium</option>
+        <option value="vip">VIP</option>
+      </select>
     </div>
-    <div class="form-actions">
-      <button class="btn btn-secondary" onclick="closeModal('editUserModal')">Annuler</button>
-      <button class="btn btn-primary" onclick="saveEditUser()">💾 Enregistrer</button>
+    <div class="form-row"><label>Notes internes</label><textarea id="cu-notes"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('createUserModal')">Annuler</button>
+      <button class="btn btn-green" onclick="doCreateUser()">Créer</button>
     </div>
   </div>
 </div>
 
-<!-- Confirm Payment Modal -->
-<div class="modal-bg" id="confirmPayModal">
-  <div class="modal" style="max-width:460px;">
-    <button class="modal-close" onclick="closeModal('confirmPayModal')">✕</button>
-    <h3>💳 Confirmer le paiement</h3>
-    <div id="cpAlert"></div>
-    <input type="hidden" id="cp_id"/>
-    <p id="cp_name" style="color:#5d7a6e;font-size:.88rem;margin-bottom:16px;"></p>
-    <div class="form-group"><label>Plan souscrit</label>
-      <select id="cp_plan"><option value="">— Sélectionner —</option><option>Découverte</option><option>Standard</option><option>Premium</option><option>VIP</option></select>
-    </div>
-    <div class="form-group"><label>Méthode de paiement</label>
-      <select id="cp_method"><option value="MonCash">MonCash</option><option value="NatCash">NatCash</option><option value="Interac">Virement Interac / e-Transfer</option><option value="Virement">Virement bancaire</option><option value="PayPal">PayPal</option><option value="Stripe">Carte (Stripe)</option><option value="Cash">Cash / Espèces</option><option value="Autre">Autre</option></select>
-    </div>
-    <div class="form-group"><label>N° de transaction / référence</label><input id="cp_ref" placeholder="Ex : REF-20260613-001, N° confirmation MonCash…"/></div>
-    <div class="form-group"><label>Montant reçu ($)</label><input id="cp_amount" type="number" step="0.01" placeholder="Ex : 199.00"/></div>
-    <div class="form-group"><label>Notes internes</label><textarea id="cp_notes" rows="2" placeholder="Ex : MonCash reçu 199$ le 8 juin 2026 – confirmé par SMS"></textarea></div>
-    <div class="form-actions">
-      <button class="btn btn-secondary" onclick="closeModal('confirmPayModal')">Annuler</button>
-      <button class="btn btn-success" onclick="doConfirmPayment()">✅ Confirmer &amp; Débloquer l'accès</button>
-    </div>
-  </div>
-</div>
-
-<!-- Grant Access Modal -->
-<div class="modal-bg" id="grantModal">
-  <div class="modal" style="max-width:440px;">
-    <button class="modal-close" onclick="closeModal('grantModal')">✕</button>
-    <h3>🎓 Accorder l'accès à la formation</h3>
-    <input type="hidden" id="gr_id"/>
-    <p id="gr_name" style="color:#5d7a6e;font-size:.88rem;margin-bottom:16px;"></p>
-    <div class="alert alert-warning">⚠️ L'accès sera donné sans paiement confirmé (promo, test, etc.).</div>
-    <div class="form-group"><label>Raison / Note interne</label><textarea id="gr_reason" rows="2" placeholder="Ex : accès promotionnel, testeur bêta…"></textarea></div>
-    <div class="form-actions">
-      <button class="btn btn-secondary" onclick="closeModal('grantModal')">Annuler</button>
-      <button class="btn btn-primary" onclick="doGrantAccess()">✅ Accorder l'accès</button>
-    </div>
-  </div>
-</div>
-
-<!-- Email Modal -->
+<!-- Modal: Email User -->
 <div class="modal-bg" id="emailModal">
-  <div class="modal" style="max-width:480px;">
-    <button class="modal-close" onclick="closeModal('emailModal')">✕</button>
+  <div class="modal">
     <h3>📧 Envoyer un email</h3>
-    <input type="hidden" id="em_id"/>
-    <div class="form-group"><label>Objet</label><input id="em_subject" placeholder="Objet de l'email"/></div>
-    <div class="form-group"><label>Message</label><textarea id="em_body" rows="6" placeholder="Contenu du message…"></textarea></div>
-    <div class="form-actions">
-      <button class="btn btn-secondary" onclick="closeModal('emailModal')">Annuler</button>
-      <button class="btn btn-primary" onclick="doSendEmail()">📤 Envoyer</button>
+    <div id="emailModalTo" style="font-size:.83rem;color:var(--gray);margin-bottom:12px;"></div>
+    <div class="form-row"><label>Sujet</label><input type="text" id="em-subject"/></div>
+    <div class="form-row"><label>Message</label><textarea id="em-message" style="min-height:130px;"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('emailModal')">Annuler</button>
+      <button class="btn btn-blue" onclick="doSendEmail()">Envoyer →</button>
     </div>
   </div>
 </div>
 
-<!-- Tuteur Payment Modal -->
-<div class="modal-bg" id="tuteurPayModal">
-  <div class="modal" style="max-width:440px;">
-    <button class="modal-close" onclick="closeModal('tuteurPayModal')">✕</button>
-    <h3>💳 Confirmer paiement tuteur</h3>
-    <input type="hidden" id="tp_id"/>
-    <p id="tp_name" style="color:#5d7a6e;font-size:.88rem;margin-bottom:16px;"></p>
-    <div class="form-group"><label>Notes / référence de paiement</label><textarea id="tp_notes" rows="2" placeholder="Ex : MonCash reçu 49$ le 8 juin 2026…"></textarea></div>
-    <div id="tpAlert"></div>
-    <div class="form-actions">
-      <button class="btn btn-secondary" onclick="closeModal('tuteurPayModal')">Annuler</button>
-      <button class="btn btn-success" onclick="doTuteurConfirmPay()">✅ Confirmer le paiement</button>
-    </div>
-  </div>
-</div>
-
-<!-- Block Modal -->
-<div class="modal-bg" id="blockModal">
-  <div class="modal" style="max-width:420px;">
-    <button class="modal-close" onclick="closeModal('blockModal')">✕</button>
-    <h3>🚫 Bloquer le compte</h3>
-    <input type="hidden" id="blk_id"/>
-    <p id="blk_name" style="color:#5d7a6e;font-size:.88rem;margin-bottom:12px;"></p>
-    <div class="form-group"><label>Raison du blocage</label><textarea id="blk_reason" rows="2" placeholder="Ex : non-paiement, comportement abusif…"></textarea></div>
-    <div class="form-actions">
-      <button class="btn btn-secondary" onclick="closeModal('blockModal')">Annuler</button>
-      <button class="btn btn-danger" onclick="doBlock()">🚫 Bloquer</button>
-    </div>
-  </div>
-</div>
-
-<!-- Create Moderator Modal -->
-<div class="modal-bg" id="createModModal">
-  <div class="modal" style="max-width:480px;">
-    <button class="modal-close" onclick="closeModal('createModModal')">✕</button>
-    <h3>👮 Nouveau modérateur</h3>
-    <div id="createModAlert"></div>
-    <div class="form-grid">
-      <div class="form-group"><label>Prénom *</label><input id="mod_prenom" placeholder="Prénom"/></div>
-      <div class="form-group"><label>Nom *</label><input id="mod_nom" placeholder="Nom"/></div>
-      <div class="form-group full"><label>Email *</label><input id="mod_email" type="email" placeholder="moderateur@exemple.com"/></div>
-      <div class="form-group full"><label>Mot de passe * (min. 8 caractères)</label><div class="pwd-wrap"><input id="mod_pwd" type="password" placeholder="Mot de passe sécurisé"/><button type="button" class="pwd-eye" onclick="togglePwd('mod_pwd',this)">👁️</button></div></div>
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-secondary" onclick="closeModal('createModModal')">Annuler</button>
-      <button class="btn btn-primary" onclick="doCreateMod()">✅ Créer le modérateur</button>
-    </div>
-  </div>
-</div>
-
-<!-- Edit Moderator Modal -->
-<div class="modal-bg" id="editModModal">
-  <div class="modal" style="max-width:480px;">
-    <button class="modal-close" onclick="closeModal('editModModal')">✕</button>
-    <h3>✏️ Modifier le modérateur</h3>
-    <input type="hidden" id="emod_id"/>
-    <div id="editModAlert"></div>
-    <div class="form-grid">
-      <div class="form-group"><label>Prénom</label><input id="emod_prenom" placeholder="Prénom"/></div>
-      <div class="form-group"><label>Nom</label><input id="emod_nom" placeholder="Nom"/></div>
-      <div class="form-group full"><label>Nouveau mot de passe (laisser vide = inchangé)</label><div class="pwd-wrap"><input id="emod_pwd" type="password" placeholder="Nouveau mot de passe…"/><button type="button" class="pwd-eye" onclick="togglePwd('emod_pwd',this)">👁️</button></div></div>
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-secondary" onclick="closeModal('editModModal')">Annuler</button>
-      <button class="btn btn-primary" onclick="doUpdateMod()">💾 Enregistrer</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════
-     SCRIPTS
-══════════════════════════════════════════════ -->
 <script>
-const API = window.location.origin + '/api';
-const getToken = () => localStorage.getItem('arc_token');
+'use strict';
+const API = (location.hostname==='localhost'||location.hostname==='127.0.0.1') ? 'http://localhost:3000/api' : '/api';
+let TOKEN = localStorage.getItem('arcadins_token') || sessionStorage.getItem('arcadins_token') || '';
+let CUR_ID = null;
 
-async function api(path, opts = {}) {
-  const h = { 'Content-Type': 'application/json' };
-  const t = getToken();
-  if (t) h['Authorization'] = 'Bearer ' + t;
-  const r = await fetch(API + path, { ...opts, headers: { ...h, ...(opts.headers||{}) } });
-  const j = await r.json();
-  if (!r.ok) throw new Error(j.message || 'HTTP ' + r.status);
-  return j.data || j;
+// ── Auth ─────────────────────────────────────────────────────────────────────
+async function checkAuth() {
+  if (!TOKEN) return goLogin();
+  try {
+    const d = await api('GET','/admin/me');
+    if (!d.success) return goLogin();
+    const u = d.data.user;
+    if (!['admin','moderator'].includes(u.role)) return goLogin();
+    MY_ROLE = u.role;
+    MY_PERMS = d.data.permissions || [];
+    document.getElementById('adminName').textContent = u.prenom+' '+u.nom;
+    applySidebarPerms();
+    // Charger la première page accessible
+    if (MY_ROLE === 'admin' || MY_PERMS.includes('stats')) {
+      loadDashboard();
+    } else {
+      // Aller à la première section accessible
+      const firstPerm = MY_PERMS[0];
+      const pageMap = { users_view:'users', payments:'payments', emails:'users',
+        modules:'modules', certificates:'certificates', affiliates:'affiliates',
+        broadcast:'broadcast', prospects:'prospects' };
+      nav(pageMap[firstPerm] || 'users');
+    }
+    if (MY_ROLE === 'admin') loadSettings();
+  } catch { goLogin(); }
 }
+function goLogin() { location.href='../acces.html'; }
+function logout() { localStorage.removeItem('arcadins_token'); sessionStorage.removeItem('arcadins_token'); goLogin(); }
 
-// ── ROLE STATE ──────────────────────────────────────────────────────
-let currentRole = null;
-
-function applyRoleUI(role) {
-  currentRole = role;
-  // Badge sidebar
-  const badge = document.getElementById('roleBadge');
-  if (role === 'admin') { badge.textContent = 'Administrateur'; badge.style.background = 'rgba(201,168,76,.25)'; badge.style.color = '#c9a84c'; }
-  else { badge.textContent = 'Modérateur'; badge.style.background = 'rgba(100,180,255,.2)'; badge.style.color = '#90caf9'; }
-  // Masquer les éléments admin-only pour les modérateurs
-  document.querySelectorAll('.admin-only, .admin-only-nav').forEach(el => {
-    el.style.display = role === 'admin' ? '' : 'none';
+// ── HTTP ─────────────────────────────────────────────────────────────────────
+async function api(method, path, body) {
+  const r = await fetch(API+path, {
+    method,
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},
+    body: body ? JSON.stringify(body) : undefined,
   });
+  return r.json();
 }
 
-// ── AUTH CHECK ──────────────────────────────────────────────────────
-(async () => {
-  if (!getToken()) { location.href = '../acces.html'; return; }
-  try {
-    const r = await api('/access/me');
-    const u = r.user || r;
-    if (!['admin','moderator'].includes(u.role)) { location.href = '../espace-membre.html'; return; }
-    document.getElementById('adminWelcome').textContent = u.prenom + ' ' + u.nom;
-    applyRoleUI(u.role);
-    loadDashboard();
-    setInterval(() => {
-      document.getElementById('sidebarTime').textContent = new Date().toLocaleTimeString('fr-CA');
-    }, 1000);
-  } catch { location.href = '../acces.html'; }
-})();
-
-function doLogout() { localStorage.removeItem('arc_token'); localStorage.removeItem('arc_user'); location.href = '../acces.html'; }
-
-// ── NAVIGATION ──────────────────────────────────────────────────────
-const loaders = {
-  dashboard: loadDashboard,
-  users: loadUsers,
-  prospects: loadProspects,
-  payments: () => loadPayments('all'),
-  affiliates: loadAffiliates,
-  modules: loadModules,
-  tests: () => loadTests('trial'),
-  certificates: loadCertificates,
-  tuteurs: loadTuteurs,
-  broadcast: () => setAlert('broadcastAlert',''),
-  audit: loadAuditLog,
-  moderators: loadModerators,
-  settings: () => { loadSettings(); checkSmtp(); },
-};
-
-let currentPayFilter = 'all';
-
-function go(page) {
-  document.querySelectorAll('[id^="p-"]').forEach(el => el.style.display = 'none');
-  document.getElementById('p-' + page).style.display = 'block';
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  event.currentTarget && event.currentTarget.classList.add('active');
-  loaders[page] && loaders[page]();
-}
-
-// ── HELPERS ─────────────────────────────────────────────────────────
-function fmt(dt) { return dt ? new Date(dt).toLocaleDateString('fr-CA') : '—'; }
-function fmtDt(dt) { return dt ? new Date(dt).toLocaleString('fr-CA', {dateStyle:'short',timeStyle:'short'}) : '—'; }
-function roleBadge(role) {
-  const m = {admin:'b-purple',apprenant:'b-blue',prospect:'b-orange'};
-  return `<span class="badge ${m[role]||'b-gray'}">${role}</span>`;
-}
-function statusBadge(s) {
-  const m = {active:'b-green',trial:'b-gold',blocked:'b-red',suspended:'b-red'};
-  const l = {active:'Actif',trial:'Essai',blocked:'Bloqué',suspended:'Suspendu'};
-  return `<span class="badge ${m[s]||'b-gray'}">${l[s]||s}</span>`;
-}
-function yn(v) { return v ? '<span class="badge b-green">✓ Oui</span>' : '<span class="badge b-red">✗ Non</span>'; }
-function toast(msg, type='success') {
-  const d = document.createElement('div');
-  d.className = 'alert alert-' + type;
-  d.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;min-width:280px;max-width:400px;animation:fadein .3s;';
-  d.textContent = msg;
-  document.body.appendChild(d);
-  setTimeout(() => d.remove(), 4000);
-}
-function setAlert(id, msg, type='success') {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.innerHTML = msg ? `<div class="alert alert-${type}">${msg}</div>` : '';
-}
-
-// ── DASHBOARD ───────────────────────────────────────────────────────
-async function loadDashboard() {
-  document.getElementById('statsGrid').innerHTML = '<div class="loading">⏳</div>';
-  try {
-    const d = await api('/admin/stats');
-    const s = d;
-    document.getElementById('statsGrid').innerHTML = `
-      <div class="stat-card c-blue"  onclick="go('users')"><div class="stat-num">${s.total_users||0}</div><div class="stat-lbl">👥 Comptes total</div></div>
-      <div class="stat-card c-orange"onclick="go('prospects')"><div class="stat-num">${s.total_prospects||0}</div><div class="stat-lbl">📥 Prospects</div></div>
-      <div class="stat-card c-blue"  onclick="go('users')"><div class="stat-num">${s.total_apprenants||0}</div><div class="stat-lbl">🎓 Apprenants</div></div>
-      <div class="stat-card c-green" onclick="go('payments')"><div class="stat-num">${s.payment_confirmed||0}</div><div class="stat-lbl">💳 Paiements confirmés</div></div>
-      <div class="stat-card c-gold"  onclick="go('payments')"><div class="stat-num">${s.payment_pending||0}</div><div class="stat-lbl">⏳ Paiements en attente</div></div>
-      <div class="stat-card c-purple"onclick="go('modules')"><div class="stat-num">${s.modules_all_done||0}</div><div class="stat-lbl">📚 Formations complétées</div></div>
-      <div class="stat-card c-green" onclick="go('certificates')"><div class="stat-num">${s.final_passed||0}</div><div class="stat-lbl">🏆 Tests finaux réussis</div></div>
-      <div class="stat-card c-gold"  onclick="go('certificates')"><div class="stat-num">${s.certificates_generated||0}</div><div class="stat-lbl">📜 Certificats générés</div></div>
-      <div class="stat-card c-red"   onclick="go('users')"><div class="stat-num">${s.blocked_users||0}</div><div class="stat-lbl">🚫 Comptes bloqués</div></div>`;
-
-    // Recent prospects
-    const rp = (s.recent_prospects||[]).slice(0,5);
-    document.getElementById('recentProspects').innerHTML = rp.length ? `
-      <table class="tbl"><thead><tr><th>Nom</th><th>Email</th><th>Pays</th><th>Date</th></tr></thead>
-      <tbody>${rp.map(p=>`<tr><td><strong>${p.prenom} ${p.nom}</strong></td><td>${p.email}</td><td>${p.pays||'—'}</td><td>${fmt(p.created_at)}</td></tr>`).join('')}</tbody></table>
-    ` : '<p style="color:#5d7a6e;font-size:.85rem;">Aucun prospect récent.</p>';
-
-    // Recent certs
-    const rc = await api('/admin/certificates');
-    const certs = (rc.certificates||[]).slice(0,5);
-    document.getElementById('recentCerts').innerHTML = certs.length ? `
-      <table class="tbl"><thead><tr><th>Apprenant</th><th>Score</th><th>Date</th></tr></thead>
-      <tbody>${certs.map(c=>`<tr><td><strong>${c.prenom} ${c.nom}</strong></td><td><strong>${Math.round(c.score)}%</strong></td><td>${fmt(c.issued_at)}</td></tr>`).join('')}</tbody></table>
-    ` : '<p style="color:#5d7a6e;font-size:.85rem;">Aucun certificat encore généré.</p>';
-
-  } catch(e) { toast(e.message,'error'); }
-}
-
-// ── USERS ────────────────────────────────────────────────────────────
-let allUsers = [];
-async function loadUsers() {
-  document.getElementById('usersTable').innerHTML = '<div class="loading">⏳</div>';
-  try {
-    const d = await api('/admin/users');
-    allUsers = (d.users||[]).filter(u=>u.role!=='admin');
-    renderUsers();
-  } catch(e) { document.getElementById('usersTable').innerHTML = `<p style="color:var(--red)">${e.message}</p>`; }
-}
-
-function renderUsers() {
-  const s = document.getElementById('uSearch').value.toLowerCase();
-  const role = document.getElementById('uRole').value;
-  const status = document.getElementById('uStatus').value;
-  const plan = document.getElementById('uPlan').value;
-
-  const data = allUsers.filter(u => {
-    if (s && !(u.nom+' '+u.prenom+' '+u.email+' '+(u.telephone||'')).toLowerCase().includes(s)) return false;
-    if (role   && u.role !== role) return false;
-    if (status && u.status !== status) return false;
-    if (plan   && !(u.payment_plan||'').includes(plan)) return false;
-    return true;
+// ── Nav ──────────────────────────────────────────────────────────────────────
+function nav(page) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    if ((n.getAttribute('onclick')||'').includes("'"+page+"'")) n.classList.add('active');
   });
-
-  if (!data.length) { document.getElementById('usersTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucun utilisateur trouvé.</p>'; return; }
-
-  document.getElementById('usersTable').innerHTML = `
-    <table class="tbl">
-      <thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Statut</th><th>Plan</th><th>Payé</th><th>Formation</th><th>Cert.</th><th>Inscrit</th><th>Actions</th></tr></thead>
-      <tbody>${data.map(u => `<tr>
-        <td><strong>${u.prenom||''} ${u.nom||''}</strong></td>
-        <td style="font-size:.78rem;">${u.email}</td>
-        <td>${roleBadge(u.role)}</td>
-        <td>${statusBadge(u.status||'trial')}</td>
-        <td>${u.payment_plan ? `<span class="badge b-blue">${u.payment_plan}</span>` : '—'}</td>
-        <td>${u.payment_confirmed ? '<span class="badge b-green">✓</span>' : '<span class="badge b-red">✗</span>'}</td>
-        <td>
-          ${u.all_modules_done ? '<span class="badge b-green">✓ Terminé</span>' :
-            u.qualification_done ? `<div class="progress-track"><div class="progress-fill" style="width:${Math.round((u.current_module||1)/14*100)}%"></div></div> <span style="font-size:.72rem;color:#5d7a6e;">${u.current_module||1}/14</span>` : '—'}
-        </td>
-        <td>${u.final_test_passed ? '<span class="badge b-green">✓</span>' : '—'}</td>
-        <td style="font-size:.75rem;">${fmt(u.created_at)}</td>
-        <td>
-          <div style="display:flex;gap:4px;flex-wrap:wrap;">
-            <button class="btn btn-sm btn-secondary" onclick="viewUser(${u.id})">👁</button>
-            <button class="btn btn-sm" style="background:#e3f2fd;color:#1565c0;" onclick="openEdit(${u.id})">✏️</button>
-            <button class="btn btn-sm" style="background:#e8f5e9;color:#2e7d32;" onclick="openEmail(${u.id})">📧</button>
-            ${currentRole==='admin' && !u.payment_confirmed ? `<button class="btn btn-sm btn-success" onclick="openConfirmPay(${u.id},'${(u.prenom||'')} ${(u.nom||'')}')">💳</button>` : ''}
-            ${currentRole==='admin' ? (u.status==='blocked' ?
-              `<button class="btn btn-sm" style="background:#e8f5e9;color:#2e7d32;" onclick="doUnblock(${u.id})">✅</button>` :
-              `<button class="btn btn-sm btn-danger" onclick="openBlock(${u.id},'${(u.prenom||'')} ${(u.nom||'')}')">🚫</button>`) : ''}
-            ${currentRole==='admin' ? `<button class="btn btn-sm btn-danger" onclick="confirmDelete(${u.id},'${(u.prenom||'')} ${(u.nom||'')}')">🗑</button>` : ''}
-          </div>
-        </td>
-      </tr>`).join('')}</tbody>
-    </table>
-    <div style="padding:10px 14px;font-size:.78rem;color:#5d7a6e;">${data.length} utilisateur(s) affiché(s)</div>`;
+  ({users:loadUsers,payments:loadPayments,prospects:loadProspects,
+    modules:loadModules,certificates:loadCerts,affiliates:loadAffiliates,
+    audit:loadAudit,moderators:loadModerators})[page]?.();
 }
 
-// ── USER DETAIL ──────────────────────────────────────────────────────
-async function viewUser(id) {
-  setAlert('udAlert','');
-  document.getElementById('udContent').innerHTML = '<div class="loading">⏳</div>';
-  openModal('userDetailModal');
-  try {
-    const d = await api('/admin/users/' + id);
-    const u = d.user;
-    const mods = d.modules || [];
-    const done = mods.filter(m=>m.status==='completed').length;
-    document.getElementById('udTitle').textContent = u.prenom + ' ' + u.nom;
-    document.getElementById('udContent').innerHTML = `
-      <dl class="info-grid">
-        <dt>Email</dt><dd>${u.email}</dd>
-        <dt>Téléphone</dt><dd>${u.telephone||'—'}</dd>
-        <dt>Pays</dt><dd>${u.pays||'—'}</dd>
-        <dt>Rôle</dt><dd>${roleBadge(u.role)}</dd>
-        <dt>Statut</dt><dd>${statusBadge(u.status||'trial')}</dd>
-        <dt>Plan</dt><dd>${u.payment_plan||'—'}</dd>
-        <dt>Paiement confirmé</dt><dd>${yn(u.payment_confirmed)} ${u.payment_date?'<span style="font-size:.75rem;color:#5d7a6e;">le '+fmt(u.payment_date)+'</span>':''}</dd>
-        <dt>Méthode de paiement</dt><dd>${u.payment_method||'—'}</dd>
-        <dt>Notes internes</dt><dd style="font-size:.8rem;color:#5d7a6e;">${u.payment_notes||'—'}</dd>
-        <dt>Test d'Essai</dt><dd>${yn(u.trial_done)} ${u.trial_score?'Score : '+u.trial_score:''}</dd>
-        <dt>Qualification</dt><dd>${yn(u.qualification_done)} ${u.qualification_level?'Niveau : <strong>'+u.qualification_level+'</strong>':''}</dd>
-        <dt>Modules</dt><dd>${done}/14 complétés ${u.all_modules_done?'<span class="badge b-green">✓ Terminé</span>':''}</dd>
-        <dt>Test final</dt><dd>${yn(u.final_test_passed)} ${u.final_test_score?Math.round(u.final_test_score)+'%':''} — <span style="font-size:.78rem;">Tentatives : ${d.final_attempts||0}/3</span></dd>
-        <dt>Certificat</dt><dd>${u.certificate_id?'<span class="badge b-green">✓ Généré</span>':'—'}</dd>
-        <dt>Inscrit le</dt><dd>${fmtDt(u.created_at)}</dd>
-      </dl>
-      <div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;padding-top:14px;border-top:1px solid #eef3f0;">
-        <button class="btn btn-sm btn-secondary" onclick="openEdit(${u.id});closeModal('userDetailModal')">✏️ Modifier</button>
-        <button class="btn btn-sm" style="background:#e8f5e9;color:#2e7d32;" onclick="openEmail(${u.id})">📧 Email</button>
-        ${currentRole==='admin' && !u.payment_confirmed?`<button class="btn btn-sm btn-success" onclick="openConfirmPay(${u.id},'${u.prenom} ${u.nom}');closeModal('userDetailModal')">💳 Confirmer paiement</button>`:''}
-        ${currentRole==='admin'?`<button class="btn btn-sm" style="background:#e3f2fd;color:#1565c0;" onclick="openGrantModal(${u.id},'${u.prenom} ${u.nom}')">🎓 Accorder accès</button>`:''}
-        ${currentRole==='admin' && d.final_attempts>0?`<button class="btn btn-sm btn-warning" onclick="doResetTest(${u.id})">🔄 Reset test final</button>`:''}
-        ${currentRole==='admin'?`<button class="btn btn-sm btn-warning" onclick="doResetModules(${u.id})">🔄 Reset modules</button>`:''}
-        ${currentRole==='admin'?(u.status==='blocked'?
-          `<button class="btn btn-sm btn-success" onclick="doUnblock(${u.id})">✅ Débloquer</button>`:
-          `<button class="btn btn-sm btn-danger" onclick="openBlock(${u.id},'${u.prenom} ${u.nom}')">🚫 Bloquer</button>`):''}
-        ${currentRole==='admin' && u.payment_confirmed?`<button class="btn btn-sm btn-danger" onclick="doRevokeAccess(${u.id})">❌ Révoquer accès</button>`:''}
-        ${currentRole==='admin'?`<button class="btn btn-sm btn-danger" onclick="confirmDelete(${u.id},'${u.prenom} ${u.nom}')">🗑 Supprimer</button>`:''}
-      </div>`;
-  } catch(e) { setAlert('udAlert', e.message, 'error'); }
+// ── Toast ────────────────────────────────────────────────────────────────────
+function toast(msg, type='ok') {
+  const t=document.createElement('div');
+  t.className='toast-item toast-'+type; t.textContent=msg;
+  document.getElementById('toast').appendChild(t);
+  setTimeout(()=>t.remove(),3800);
 }
 
-// ── CREATE USER ──────────────────────────────────────────────────────
-async function createUser() {
-  setAlert('createAlert','');
-  const body = {
-    prenom: document.getElementById('cu_prenom').value.trim(),
-    nom: document.getElementById('cu_nom').value.trim(),
-    email: document.getElementById('cu_email').value.trim(),
-    telephone: document.getElementById('cu_tel').value.trim(),
-    pays: document.getElementById('cu_pays').value.trim(),
-    password: document.getElementById('cu_pwd').value,
-    plan: document.getElementById('cu_plan').value,
-    payment_method: document.getElementById('cu_method').value,
-    payment_confirmed: document.getElementById('cu_paid').checked,
-    notes: document.getElementById('cu_notes').value.trim(),
+// ── Modals ───────────────────────────────────────────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-bg').forEach(bg=>bg.addEventListener('click',e=>{if(e.target===bg)bg.classList.remove('open');}));
+
+// ── Format ───────────────────────────────────────────────────────────────────
+const fmtDate=s=>s?new Date(s).toLocaleDateString('fr-CA',{year:'numeric',month:'short',day:'numeric'}):'—';
+const badge=(txt,cls)=>`<span class="badge badge-${cls}">${txt}</span>`;
+const roleBadge=r=>r==='admin'?badge('Admin','blue'):r==='moderator'?badge('Modérateur','blue'):r==='apprenant'?badge('Apprenant','green'):badge('Prospect','gray');
+const statusBadge=(s,c)=>s==='blocked'?badge('Bloqué','red'):c?badge('Actif','green'):badge('Essai','orange');
+
+// ══ DASHBOARD ════════════════════════════════════════════════════════════════
+async function loadDashboard(){
+  const d=await api('GET','/admin/stats'); if(!d.success)return;
+  const s=d.data;
+  ['users','apprenants','pending','confirmed','trial','quali','modDone','certs','blocked']
+    .map((k,i)=>['k-'+k,[s.total_users,s.total_apprenants,s.payment_pending,s.payment_confirmed,
+      s.trial_done,s.qualification_done,s.modules_all_done,s.certificates_generated,s.blocked_users][i]])
+    .forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=v??'0';});
+  const tb=document.querySelector('#recentProspectsTable tbody');
+  tb.innerHTML=(s.recent_prospects||[]).map(p=>`<tr>
+    <td>${p.prenom} ${p.nom}</td>
+    <td><a href="mailto:${p.email}" style="color:var(--blue)">${p.email}</a></td>
+    <td>${p.pays||'—'}</td><td>${fmtDate(p.created_at)}</td>
+  </tr>`).join('')||`<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--gray)">Aucun prospect</td></tr>`;
+}
+
+async function testSmtp(){
+  const d=await api('GET','/admin/email/test');
+  const msg=d.configured?(d.success?`✅ SMTP OK — ${d.message}`:`❌ ${d.message}`):'⚠️ SMTP non configuré';
+  toast(msg,d.success?'ok':'err');
+  ['smtpResult','smtpDetail'].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=msg;el.style.color=d.success?'green':'red';}});
+}
+async function sendTestEmail(){
+  const d=await api('POST','/admin/email/test-send');
+  toast(d.message||'OK',d.success?'ok':'err');
+  const el=document.getElementById('smtpDetail');if(el){el.textContent=d.message;el.style.color=d.success?'green':'red';}
+}
+
+// ══ USERS ═════════════════════════════════════════════════════════════════════
+let ALL_USERS=[];
+async function loadUsers(){
+  const d=await api('GET','/admin/users?limit=500');if(!d.success)return;
+  ALL_USERS=d.data.users; renderUsers(ALL_USERS);
+}
+function filterUsers(){
+  const q=document.getElementById('userSearch').value.toLowerCase();
+  const role=document.getElementById('userRoleFilter').value;
+  const status=document.getElementById('userStatusFilter').value;
+  renderUsers(ALL_USERS.filter(u=>{
+    const mQ=!q||[u.nom,u.prenom,u.email,u.telephone].some(v=>v&&v.toLowerCase().includes(q));
+    return mQ&&(!role||u.role===role)&&(!status||u.status===status);
+  }));
+}
+function renderUsers(users){
+  const tb=document.getElementById('usersTbody');
+  if(!users.length){tb.innerHTML='<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--gray)">Aucun résultat</td></tr>';return;}
+  tb.innerHTML=users.map(u=>{
+    const prog=u.all_modules_done?'14/14 ✅':u.current_module>1?`${u.current_module-1}/14`:u.qualification_done?'0/14':'—';
+    return `<tr>
+      <td style="color:var(--gray);font-size:.72rem">${u.id}</td>
+      <td><strong>${u.prenom} ${u.nom}</strong></td>
+      <td><a href="mailto:${u.email}" style="color:var(--blue);font-size:.79rem">${u.email}</a></td>
+      <td style="font-size:.8rem">${u.pays||'—'}</td>
+      <td>${roleBadge(u.role)}</td>
+      <td>${statusBadge(u.status,u.payment_confirmed)}</td>
+      <td style="font-size:.78rem">${u.payment_plan||'—'}</td>
+      <td style="font-size:.78rem">${prog}</td>
+      <td style="font-size:.72rem;color:var(--gray)">${fmtDate(u.created_at)}</td>
+      <td><div style="display:flex;gap:4px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="openUserDetail(${u.id})">👁</button>
+        ${u.payment_confirmed?'':` <button class="btn btn-green btn-sm" onclick="openConfirmPay(${u.id},'${esc(u.prenom+' '+u.nom)}','${u.email}')">✅</button>`}
+        <button class="btn btn-blue btn-sm" onclick="openEmailModal(${u.id},'${u.email}','${esc(u.prenom+' '+u.nom)}')">📧</button>
+        ${u.status==='blocked'
+          ?`<button class="btn btn-ghost btn-sm" onclick="blockUser(${u.id},'unblock','${esc(u.prenom+' '+u.nom)}')">🔓</button>`
+          :`<button class="btn btn-red btn-sm" onclick="blockUser(${u.id},'block','${esc(u.prenom+' '+u.nom)}')">🚫</button>`}
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+const esc=s=>(s||'').replace(/'/g,"\\'");
+
+async function openUserDetail(id){
+  const d=await api('GET','/admin/users/'+id);if(!d.success){toast('Erreur','err');return;}
+  const {user:u,modules:mods,certificate:cert,final_attempts:fa}=d.data;
+  const mDone=mods.filter(m=>m.status==='completed').length;
+  document.getElementById('uModalTitle').textContent=u.prenom+' '+u.nom;
+  document.getElementById('uModalContent').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:.83rem;margin-bottom:14px">
+      <div><b>Email :</b> ${u.email}</div><div><b>Pays :</b> ${u.pays||'—'}</div>
+      <div><b>Rôle :</b> ${u.role}</div><div><b>Statut :</b> ${u.status}</div>
+      <div><b>Inscription :</b> ${fmtDate(u.created_at)}</div><div><b>Plan :</b> ${u.payment_plan||'—'}</div>
+      <div><b>Paiement :</b> ${u.payment_confirmed?'✅ Confirmé':'⏳ En attente'}</div>
+      <div><b>Méthode :</b> ${u.payment_method||'—'}</div>
+    </div>
+    <div style="background:var(--gray-light);padding:12px;border-radius:8px;font-size:.82rem;margin-bottom:12px">
+      Essai ${u.trial_done?'✅':'❌'} (${u.trial_score||0}%) · Qualification ${u.qualification_done?'✅':'❌'} ·
+      Modules ${mDone}/14 · Test final ${u.final_test_passed?'✅':u.final_test_done?'❌':'—'}
+      (${u.final_test_score||0}%, ${fa} tent.)
+    </div>
+    ${u.payment_notes?`<div style="font-size:.8rem;color:var(--orange);margin-bottom:10px">📝 ${u.payment_notes}</div>`:''}
+    ${cert?`<div style="background:#d1fae5;padding:10px;border-radius:8px;font-size:.82rem;margin-bottom:10px">🏆 Certificat n° ${cert.certificate_number} — Score ${Math.round(cert.score)}% — ${fmtDate(cert.issued_at)}</div>`:''}
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      ${u.payment_confirmed?'':` <button class="btn btn-green btn-sm" onclick="closeModal('userModal');openConfirmPay(${u.id},'${esc(u.prenom+' '+u.nom)}','${u.email}')">✅ Confirmer paiement</button>`}
+      <button class="btn btn-blue btn-sm" onclick="closeModal('userModal');openEmailModal(${u.id},'${u.email}','${esc(u.prenom+' '+u.nom)}')">📧 Email</button>
+      <button class="btn btn-ghost btn-sm" onclick="resetFinalTest(${u.id},'${esc(u.prenom+' '+u.nom)}')">🔄 Reset test final</button>
+      ${u.role!=='admin'?`<button class="btn btn-red btn-sm" onclick="deleteUser(${u.id},'${esc(u.prenom+' '+u.nom)}')">🗑 Supprimer</button>`:''}
+    </div>`;
+  openModal('userModal');
+}
+
+async function blockUser(id,action,name){
+  if(!confirm(`${action==='block'?'Bloquer':'Débloquer'} ${name} ?`))return;
+  const d=await api('POST',`/admin/users/${id}/${action}`,{});
+  toast(d.message||'OK',d.success?'ok':'err');if(d.success)loadUsers();
+}
+async function resetFinalTest(id,name){
+  if(!confirm(`Réinitialiser le test final de ${name} ?`))return;
+  const d=await api('POST',`/admin/users/${id}/reset-final-test`);
+  toast(d.message||'OK',d.success?'ok':'err');
+}
+async function deleteUser(id,name){
+  if(!confirm(`⚠️ SUPPRIMER définitivement ${name} ?\nCette action est irréversible.`))return;
+  const d=await api('DELETE',`/admin/users/${id}`);
+  toast(d.message||'OK',d.success?'ok':'err');
+  if(d.success){closeModal('userModal');loadUsers();}
+}
+async function exportCsv(){
+  const r=await fetch(API+'/admin/export/csv',{headers:{Authorization:'Bearer '+TOKEN}});
+  if(!r.ok){toast('Erreur export','err');return;}
+  const blob=await r.blob(); const url=URL.createObjectURL(blob);
+  Object.assign(document.createElement('a'),{href:url,download:`arcadins_users_${Date.now()}.csv`}).click();
+  URL.revokeObjectURL(url);
+}
+
+// Create User
+function openCreateUserModal(){
+  ['cu-prenom','cu-nom','cu-email','cu-pw','cu-tel','cu-pays','cu-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('cu-plan').value=''; openModal('createUserModal');
+}
+async function doCreateUser(){
+  const plan=document.getElementById('cu-plan').value;
+  const body={
+    prenom:document.getElementById('cu-prenom').value.trim(),
+    nom:document.getElementById('cu-nom').value.trim(),
+    email:document.getElementById('cu-email').value.trim(),
+    password:document.getElementById('cu-pw').value,
+    telephone:document.getElementById('cu-tel').value.trim()||undefined,
+    pays:document.getElementById('cu-pays').value.trim()||undefined,
+    plan:plan||undefined, payment_confirmed:!!plan,
+    payment_method:plan?'Manuel':undefined,
+    notes:document.getElementById('cu-notes').value.trim()||undefined,
   };
-  if (!body.prenom || !body.nom || !body.email || !body.password)
-    return setAlert('createAlert','Prénom, nom, email et mot de passe sont obligatoires.','error');
+  if(!body.prenom||!body.nom||!body.email||!body.password){toast('Champs obligatoires manquants','err');return;}
+  const d=await api('POST','/admin/users',body);
+  toast(d.message||'Créé',d.success?'ok':'err');
+  if(d.success){closeModal('createUserModal');loadUsers();}
+}
+
+// ══ CONFIRM PAYMENT ═══════════════════════════════════════════════════════════
+function openConfirmPay(id,name,email){
+  CUR_ID=id;
+  document.getElementById('confirmPayInfo').innerHTML=`<strong>${name}</strong> — ${email}`;
+  document.getElementById('cp-notes').value=''; openModal('confirmPayModal');
+}
+async function doConfirmPayment(){
+  const d=await api('POST',`/admin/users/${CUR_ID}/confirm-payment`,{
+    plan:document.getElementById('cp-plan').value,
+    payment_method:document.getElementById('cp-method').value,
+    notes:document.getElementById('cp-notes').value.trim()||undefined,
+  });
+  toast(d.message||'OK',d.success?'ok':'err');
+  if(d.success){closeModal('confirmPayModal');loadUsers();loadPayments();loadDashboard();}
+}
+
+// ══ PAYMENTS ══════════════════════════════════════════════════════════════════
+async function loadPayments(){
+  const filter=document.getElementById('payFilter')?.value||'pending';
+  const d=await api('GET','/admin/payments?status='+filter);if(!d.success)return;
+  const tb=document.getElementById('paymentsTbody'), rows=d.data.payments;
+  if(!rows.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--gray)">Aucun paiement</td></tr>';return;}
+  tb.innerHTML=rows.map(p=>`<tr>
+    <td style="font-size:.72rem;color:var(--gray)">${p.id}</td>
+    <td><strong>${p.prenom} ${p.nom}</strong></td>
+    <td><a href="mailto:${p.email}" style="color:var(--blue);font-size:.79rem">${p.email}</a></td>
+    <td style="font-size:.8rem">${p.payment_plan||'—'}</td>
+    <td style="font-size:.8rem">${p.payment_method||'—'}</td>
+    <td style="font-size:.78rem;max-width:180px;word-break:break-word">${p.payment_notes||'—'}</td>
+    <td>${p.payment_confirmed?badge('Confirmé','green'):badge('En attente','orange')}</td>
+    <td style="font-size:.75rem">${fmtDate(p.payment_date||p.created_at)}</td>
+    <td>${p.payment_confirmed?'':` <button class="btn btn-green btn-sm" onclick="openConfirmPay(${p.id},'${esc(p.prenom+' '+p.nom)}','${p.email}')">✅ Confirmer</button>`}</td>
+  </tr>`).join('');
+}
+
+// ══ PROSPECTS ══════════════════════════════════════════════════════════════════
+async function loadProspects(){
+  const d=await api('GET','/admin/prospects');if(!d.success)return;
+  const tb=document.getElementById('prospectsTbody'),rows=d.data.prospects;
+  if(!rows.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--gray)">Aucun prospect</td></tr>';return;}
+  tb.innerHTML=rows.map((p,i)=>`<tr>
+    <td style="font-size:.72rem;color:var(--gray)">${i+1}</td>
+    <td><strong>${p.prenom} ${p.nom}</strong></td>
+    <td><a href="mailto:${p.email}" style="color:var(--blue);font-size:.79rem">${p.email}</a></td>
+    <td style="font-size:.8rem">${p.telephone||'—'}</td>
+    <td style="font-size:.8rem">${p.pays||'—'}</td>
+    <td style="font-size:.75rem;color:var(--gray)">${fmtDate(p.created_at)}</td>
+  </tr>`).join('');
+}
+
+// ══ MODULES ═══════════════════════════════════════════════════════════════════
+const MOD_NAMES={1:'Intro TEF/TCF',2:'CO — Journaux francophones',3:'EO — Présentation orale',
+  4:'CE — Articles de presse',5:'EE — Emails professionnels',6:'Grammaire avancée',
+  7:'Vocabulaire quotidien',8:'CO — Podcasts Canada',9:'EO — Débats & opinions',
+  10:'CE — Textes académiques',11:'EE — Lettres formelles',12:'Phonétique & accents',
+  13:'Culture québécoise',14:'Simulation examen complet'};
+async function loadModules(){
+  const d=await api('GET','/admin/module-stats');if(!d.success)return;
+  const tb=document.getElementById('modulesTbody');
+  if(!d.data.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--gray)">Aucune donnée</td></tr>';return;}
+  tb.innerHTML=d.data.map(m=>{
+    const pct=m.total_enrollments>0?Math.round((m.passed/m.total_enrollments)*100):0;
+    const col=pct>=70?'var(--green-light)':pct>=50?'var(--orange)':'var(--red)';
+    return `<tr>
+      <td><strong>M${m.module_number}</strong> <span style="font-size:.77rem;color:var(--gray)">${MOD_NAMES[m.module_number]||''}</span></td>
+      <td>${m.total_enrollments}</td><td>${m.passed}</td>
+      <td><div style="display:flex;align-items:center;gap:8px">
+        <div class="pbar-wrap"><div class="pbar" style="width:${pct}%;background:${col}"></div></div>
+        <strong>${pct}%</strong></div></td>
+      <td>${m.avg_score!=null?m.avg_score+'%':'—'}</td>
+      <td>${m.avg_attempts!=null?m.avg_attempts:'—'}</td>
+      <td>${m.max_attempts||'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ══ CERTIFICATES ══════════════════════════════════════════════════════════════
+let CERT_CURRENT = null;
+
+async function loadCerts(){
+  const d=await api('GET','/admin/certificates');if(!d.success)return;
+  const tb=document.getElementById('certsTbody'),rows=d.data.certificates;
+  if(!rows.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--gray)">Aucun certificat délivré pour l\'instant</td></tr>';return;}
+  tb.innerHTML=rows.map((c,i)=>`<tr>
+    <td style="font-size:.72rem;color:var(--gray)">${i+1}</td>
+    <td><strong>${c.prenom} ${c.nom}</strong></td>
+    <td style="font-size:.79rem"><a href="mailto:${c.email}" style="color:var(--blue)">${c.email}</a></td>
+    <td style="font-size:.8rem">${c.pays||'—'}</td>
+    <td><strong style="color:var(--green-dark);font-size:1rem">${Math.round(c.score)}%</strong></td>
+    <td style="font-family:monospace;font-size:.74rem;color:var(--gray)">${c.certificate_number}</td>
+    <td style="font-size:.75rem;color:var(--gray)">${fmtDate(c.issued_at)}</td>
+    <td><div style="display:flex;gap:4px">
+      <button class="btn btn-ghost btn-sm" onclick='openCertPreview(${JSON.stringify(c).replace(/'/g,"&#39;")})'>👁 Voir</button>
+      <button class="btn btn-green btn-sm" onclick="adminDownloadCertById(${c.id},'${esc(c.prenom+'_'+c.nom)}','${c.certificate_number}')">📥 PDF</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+function openCertPreview(c) {
+  CERT_CURRENT = c;
+  document.getElementById('cv-name').textContent = c.prenom.toUpperCase() + ' ' + c.nom.toUpperCase();
+  document.getElementById('cv-score').textContent = Math.round(c.score) + '%';
+  document.getElementById('cv-number').textContent = c.certificate_number;
+  document.getElementById('cv-fullname').textContent = c.prenom + ' ' + c.nom;
+  document.getElementById('cv-email').textContent = c.email || '—';
+  const d = new Date(c.issued_at);
+  document.getElementById('cv-date').textContent = 'Délivré le ' + d.toLocaleDateString('fr-CA', {year:'numeric',month:'long',day:'numeric'});
+  const verifyUrl = `${location.origin.replace(':3002','').replace('localhost:3002','arcadins-training.com')}/pages/verifier-certificat.html?id=${c.certificate_number}`;
+  document.getElementById('cv-verify').textContent = verifyUrl;
+  document.getElementById('cv-verify').dataset.url = verifyUrl;
+  openModal('certModal');
+}
+
+async function adminDownloadCert() {
+  if (!CERT_CURRENT) return;
+  await adminDownloadCertById(CERT_CURRENT.id, CERT_CURRENT.prenom+'_'+CERT_CURRENT.nom, CERT_CURRENT.certificate_number);
+}
+
+async function adminDownloadCertById(id, name, certNum) {
   try {
-    const r = await api('/admin/users', { method:'POST', body: JSON.stringify(body) });
-    toast('✅ Compte créé : ' + body.prenom + ' ' + body.nom);
-    closeModal('createUserModal');
-    loadUsers();
-  } catch(e) { setAlert('createAlert', e.message, 'error'); }
+    const r = await fetch(`${API}/admin/certificates/${id}/download`, {
+      headers: { Authorization: 'Bearer ' + TOKEN },
+    });
+    if (!r.ok) { toast('Erreur téléchargement PDF', 'err'); return; }
+    const blob = await r.blob();
+    const url = URL.createObjectURL(blob);
+    const shortNum = certNum ? certNum.slice(0,8) : id;
+    Object.assign(document.createElement('a'), {
+      href: url,
+      download: `Certificat_ARCADINS_${name}_${shortNum}.pdf`,
+    }).click();
+    URL.revokeObjectURL(url);
+    toast('PDF téléchargé', 'ok');
+  } catch { toast('Erreur téléchargement', 'err'); }
 }
 
-// ── EDIT USER ────────────────────────────────────────────────────────
-async function openEdit(id) {
-  setAlert('editAlert','');
-  try {
-    const d = await api('/admin/users/' + id);
-    const u = d.user;
-    document.getElementById('eu_id').value = id;
-    document.getElementById('eu_prenom').value = u.prenom||'';
-    document.getElementById('eu_nom').value = u.nom||'';
-    document.getElementById('eu_email').value = u.email||'';
-    document.getElementById('eu_tel').value = u.telephone||'';
-    document.getElementById('eu_pays').value = u.pays||'';
-    document.getElementById('eu_plan').value = u.payment_plan||'';
-    document.getElementById('eu_notes').value = u.payment_notes||'';
-    document.getElementById('eu_pwd').value = '';
-    openModal('editUserModal');
-  } catch(e) { toast(e.message,'error'); }
+function adminCopyCertLink() {
+  const url = document.getElementById('cv-verify').dataset.url || document.getElementById('cv-verify').textContent;
+  navigator.clipboard.writeText(url).then(() => toast('Lien copié !', 'ok'));
 }
 
-async function saveEditUser() {
-  setAlert('editAlert','');
-  const id = document.getElementById('eu_id').value;
-  const body = {
-    prenom: document.getElementById('eu_prenom').value.trim(),
-    nom: document.getElementById('eu_nom').value.trim(),
-    email: document.getElementById('eu_email').value.trim(),
-    telephone: document.getElementById('eu_tel').value.trim(),
-    pays: document.getElementById('eu_pays').value.trim(),
-    plan: document.getElementById('eu_plan').value,
-    notes: document.getElementById('eu_notes').value.trim(),
-    password: document.getElementById('eu_pwd').value || undefined,
-  };
-  try {
-    await api('/admin/users/' + id + '/profile', { method:'PUT', body: JSON.stringify(body) });
-    toast('✅ Profil mis à jour.');
-    closeModal('editUserModal');
-    loadUsers();
-  } catch(e) { setAlert('editAlert', e.message, 'error'); }
+// ══ AFFILIATES ═════════════════════════════════════════════════════════════════
+async function loadAffiliates(){
+  const d=await api('GET','/admin/affiliates');if(!d.success)return;
+  const {commissions,totals}=d.data;
+  document.getElementById('aff-total').textContent='$'+totals.total.toFixed(2);
+  document.getElementById('aff-pending').textContent='$'+totals.pending.toFixed(2);
+  document.getElementById('aff-paid').textContent='$'+totals.paid.toFixed(2);
+  const tb=document.getElementById('affiliatesTbody');
+  if(!commissions.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--gray)">Aucune commission</td></tr>';return;}
+  tb.innerHTML=commissions.map((c,i)=>`<tr>
+    <td style="font-size:.72rem;color:var(--gray)">${i+1}</td>
+    <td><strong>${c.referrer_prenom} ${c.referrer_nom}</strong></td>
+    <td style="font-size:.79rem">${c.referrer_email}</td>
+    <td style="font-size:.8rem">${c.referred_prenom} ${c.referred_nom}</td>
+    <td style="font-size:.8rem">${c.plan}</td>
+    <td><strong>$${c.amount.toFixed(2)}</strong></td>
+    <td>${c.status==='paid'?badge('Payée','green'):badge('En attente','orange')}</td>
+    <td style="font-size:.75rem;color:var(--gray)">${fmtDate(c.created_at)}</td>
+    <td>${c.status==='pending'
+      ?`<button class="btn btn-green btn-sm" onclick="markCommission(${c.id},'paid')">Marquer payée</button>`
+      :`<button class="btn btn-ghost btn-sm" onclick="markCommission(${c.id},'pending')">Remettre en attente</button>`}
+    </td>
+  </tr>`).join('');
+}
+async function markCommission(id,status){
+  const d=await api('PUT',`/admin/affiliates/${id}`,{status});
+  toast(d.message||'OK',d.success?'ok':'err');if(d.success)loadAffiliates();
 }
 
-// ── CONFIRM PAYMENT ──────────────────────────────────────────────────
-function openConfirmPay(id, name) {
-  setAlert('cpAlert','');
-  document.getElementById('cp_id').value = id;
-  document.getElementById('cp_name').textContent = 'Client : ' + name;
-  document.getElementById('cp_plan').value = '';
-  document.getElementById('cp_ref').value = '';
-  document.getElementById('cp_amount').value = '';
-  document.getElementById('cp_notes').value = '';
-  openModal('confirmPayModal');
+// ══ BROADCAST ══════════════════════════════════════════════════════════════════
+async function sendBroadcast(){
+  const subject=document.getElementById('bcSubject').value.trim();
+  const message=document.getElementById('bcMessage').value.trim();
+  const target=document.getElementById('bcTarget').value;
+  if(!subject||!message){toast('Sujet et message requis','err');return;}
+  if(!confirm(`Envoyer cet email à ${target||'tous les utilisateurs'} ?`))return;
+  const d=await api('POST','/admin/broadcast',{subject,message,target});
+  toast(d.message||'OK',d.success?'ok':'err');
 }
 
-async function doConfirmPayment() {
-  setAlert('cpAlert','');
-  const id = document.getElementById('cp_id').value;
-  const ref    = document.getElementById('cp_ref').value.trim();
-  const amount = document.getElementById('cp_amount').value;
-  const rawNotes = document.getElementById('cp_notes').value.trim();
-  const notesWithRef = [ref ? `Réf: ${ref}` : '', amount ? `Montant: $${amount}` : '', rawNotes].filter(Boolean).join(' — ');
-  const body = {
-    plan: document.getElementById('cp_plan').value,
-    payment_method: document.getElementById('cp_method').value,
-    notes: notesWithRef || null,
-  };
-  if (!body.plan) return setAlert('cpAlert', 'Veuillez sélectionner un plan.', 'error');
-  try {
-    await api('/admin/users/' + id + '/confirm-payment', { method:'POST', body: JSON.stringify(body) });
-    toast('✅ Paiement confirmé — accès formation accordé.');
-    closeModal('confirmPayModal');
-    loadPayments(currentPayFilter || 'all');
-  } catch(e) { setAlert('cpAlert', e.message, 'error'); }
+// ══ SETTINGS ═══════════════════════════════════════════════════════════════════
+async function loadSettings(){
+  const d=await api('GET','/admin/settings');if(!d.success)return;
+  const s=d.data.settings;
+  if(document.getElementById('set-module-pass')) document.getElementById('set-module-pass').value=s.passing_score_module||70;
+  if(document.getElementById('set-final-pass')) document.getElementById('set-final-pass').value=s.passing_score_final||70;
+  if(document.getElementById('set-final-attempts')) document.getElementById('set-final-attempts').value=s.max_final_attempts||3;
+}
+async function saveSettings(){
+  const d=await api('PUT','/admin/settings',{settings:{
+    passing_score_module:document.getElementById('set-module-pass').value,
+    passing_score_final:document.getElementById('set-final-pass').value,
+    max_final_attempts:document.getElementById('set-final-attempts').value,
+  }});
+  toast(d.message||'Enregistré',d.success?'ok':'err');
 }
 
-// ── GRANT ACCESS ─────────────────────────────────────────────────────
-function openGrantModal(id, name) {
-  document.getElementById('gr_id').value = id;
-  document.getElementById('gr_name').textContent = 'Client : ' + name;
-  document.getElementById('gr_reason').value = '';
-  openModal('grantModal');
-}
-
-async function doGrantAccess() {
-  const id = document.getElementById('gr_id').value;
-  const reason = document.getElementById('gr_reason').value.trim();
-  try {
-    await api('/admin/users/' + id + '/grant-access', { method:'POST', body: JSON.stringify({ reason }) });
-    toast('✅ Accès formation accordé.');
-    closeModal('grantModal');
-    closeModal('userDetailModal');
-    loadUsers();
-  } catch(e) { toast(e.message,'error'); }
-}
-
-// ── BLOCK / UNBLOCK ──────────────────────────────────────────────────
-function openBlock(id, name) {
-  document.getElementById('blk_id').value = id;
-  document.getElementById('blk_name').textContent = 'Compte : ' + name;
-  document.getElementById('blk_reason').value = '';
-  openModal('blockModal');
-}
-
-async function doBlock() {
-  const id = document.getElementById('blk_id').value;
-  const reason = document.getElementById('blk_reason').value.trim();
-  try {
-    await api('/admin/users/' + id + '/block', { method:'POST', body: JSON.stringify({ reason }) });
-    toast('🚫 Compte bloqué.');
-    closeModal('blockModal');
-    closeModal('userDetailModal');
-    loadUsers();
-  } catch(e) { toast(e.message,'error'); }
-}
-
-async function doUnblock(id) {
-  if (!confirm('Débloquer ce compte ?')) return;
-  try {
-    await api('/admin/users/' + id + '/unblock', { method:'POST' });
-    toast('✅ Compte débloqué.');
-    loadUsers();
-  } catch(e) { toast(e.message,'error'); }
-}
-
-// ── REVOKE ACCESS ────────────────────────────────────────────────────
-async function doRevokeAccess(id) {
-  if (!confirm('Révoquer l\'accès à la formation pour cet utilisateur ?')) return;
-  try {
-    await api('/admin/users/' + id + '/revoke-access', { method:'POST' });
-    toast('❌ Accès révoqué.');
-    closeModal('userDetailModal');
-    loadUsers();
-  } catch(e) { toast(e.message,'error'); }
-}
-
-// ── DELETE ───────────────────────────────────────────────────────────
-async function confirmDelete(id, name) {
-  if (!confirm(`⚠️ Supprimer définitivement le compte de ${name} ?\n\nToutes ses données (modules, tests, certificats) seront effacées. Cette action est IRRÉVERSIBLE.`)) return;
-  try {
-    await api('/admin/users/' + id, { method:'DELETE' });
-    toast('🗑 Compte supprimé.');
-    closeModal('userDetailModal');
-    loadUsers();
-  } catch(e) { toast(e.message,'error'); }
-}
-
-// ── RESET TEST / MODULES ─────────────────────────────────────────────
-async function doResetTest(id) {
-  if (!confirm('Réinitialiser les tentatives du test final pour cet utilisateur ?')) return;
-  try {
-    await api('/admin/users/' + id + '/reset-final-test', { method:'POST' });
-    toast('🔄 Tentatives test final réinitialisées.');
-    viewUser(id);
-  } catch(e) { toast(e.message,'error'); }
-}
-
-async function doResetModules(id) {
-  if (!confirm('⚠️ Réinitialiser TOUTE la progression des modules ? (test final inclus)')) return;
-  try {
-    await api('/admin/users/' + id + '/reset-modules', { method:'POST' });
-    toast('🔄 Progression modules réinitialisée.');
-    viewUser(id);
-  } catch(e) { toast(e.message,'error'); }
-}
-
-// ── EMAIL ────────────────────────────────────────────────────────────
-function openEmail(id) {
-  document.getElementById('em_id').value = id;
-  document.getElementById('em_subject').value = '';
-  document.getElementById('em_body').value = '';
+// ══ EMAIL USER ══════════════════════════════════════════════════════════════════
+function openEmailModal(id,email,name){
+  CUR_ID=id;
+  document.getElementById('emailModalTo').textContent='Destinataire : '+name+' <'+email+'>';
+  document.getElementById('em-subject').value=''; document.getElementById('em-message').value='';
   openModal('emailModal');
 }
-
-async function doSendEmail() {
-  const id = document.getElementById('em_id').value;
-  const subject = document.getElementById('em_subject').value.trim();
-  const message = document.getElementById('em_body').value.trim();
-  if (!subject || !message) return toast('Objet et message requis.','error');
-  try {
-    await api('/admin/users/' + id + '/email', { method:'POST', body: JSON.stringify({ subject, message }) });
-    toast('📧 Email envoyé.');
-    closeModal('emailModal');
-  } catch(e) { toast(e.message,'error'); }
+async function doSendEmail(){
+  const d=await api('POST',`/admin/users/${CUR_ID}/email`,{
+    subject:document.getElementById('em-subject').value.trim(),
+    message:document.getElementById('em-message').value.trim(),
+  });
+  toast(d.message||'OK',d.success?'ok':'err');if(d.success)closeModal('emailModal');
 }
 
-// ── PROSPECTS ────────────────────────────────────────────────────────
-let allProspects = [];
-async function loadProspects() {
-  document.getElementById('prospectsTable').innerHTML = '<div class="loading">⏳</div>';
-  try {
-    const d = await api('/admin/prospects');
-    allProspects = d.prospects || [];
-    renderProspects();
-  } catch(e) { document.getElementById('prospectsTable').innerHTML = `<p style="color:var(--red)">${e.message}</p>`; }
+// ══ AUDIT ════════════════════════════════════════════════════════════════════════
+async function loadAudit(){
+  const d=await api('GET','/admin/audit-log');if(!d.success)return;
+  const tb=document.getElementById('auditTbody');
+  if(!d.data.logs.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--gray)">Aucune entrée</td></tr>';return;}
+  tb.innerHTML=d.data.logs.map(l=>`<tr>
+    <td style="font-size:.75rem;color:var(--gray);white-space:nowrap">${fmtDate(l.created_at)}</td>
+    <td style="font-size:.8rem">${l.admin_email||'—'}</td>
+    <td>${badge(l.action,'blue')}</td>
+    <td style="font-size:.8rem">${l.target_nom?`${l.target_prenom} ${l.target_nom}`:l.target_email||'—'}</td>
+    <td style="font-size:.76rem;color:var(--gray);max-width:200px;word-break:break-all">${l.details||''}</td>
+  </tr>`).join('');
 }
 
-function renderProspects() {
-  const s = document.getElementById('pSearch').value.toLowerCase();
-  const data = allProspects.filter(p => (p.nom+' '+p.prenom+' '+p.email).toLowerCase().includes(s));
-  if (!data.length) { document.getElementById('prospectsTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucun prospect.</p>'; return; }
-  document.getElementById('prospectsTable').innerHTML = `
-    <table class="tbl">
-      <thead><tr><th>Nom</th><th>Email</th><th>Téléphone</th><th>Pays</th><th>Source</th><th>Date</th></tr></thead>
-      <tbody>${data.map(p=>`<tr>
-        <td><strong>${p.prenom} ${p.nom}</strong></td>
-        <td>${p.email}</td>
-        <td>${p.telephone||'—'}</td>
-        <td>${p.pays||'—'}</td>
-        <td><span class="badge b-gray">${p.source||'website'}</span></td>
-        <td>${fmt(p.created_at)}</td>
-      </tr>`).join('')}</tbody>
-    </table>
-    <div style="padding:10px 14px;font-size:.78rem;color:#5d7a6e;">${data.length} prospect(s)</div>`;
+// ══ SIDEBAR DYNAMIQUE ════════════════════════════════════════════════════════
+let MY_ROLE = 'moderator';
+let MY_PERMS = [];
+
+function applySidebarPerms() {
+  const isAdmin = MY_ROLE === 'admin';
+  // Cacher les items admin-only si modérateur
+  document.querySelectorAll('.admin-only').forEach(el => {
+    el.style.display = isAdmin ? '' : 'none';
+  });
+  // Cacher les items selon la permission data-perm
+  document.querySelectorAll('[data-perm]').forEach(el => {
+    const perm = el.getAttribute('data-perm');
+    const allowed = isAdmin || MY_PERMS.includes(perm);
+    el.style.display = allowed ? '' : 'none';
+  });
+  // Si la page dashboard n'est pas accessible pour ce modérateur, aller à la première visible
+  if (!isAdmin) {
+    const firstVisible = document.querySelector('.nav-item:not([style*="none"])');
+    // On laisse le dashboard toujours visible — les stats nécessitent la perm 'stats'
+  }
 }
 
-// ── PAYMENTS ─────────────────────────────────────────────────────────
-let allPayments = [];
-async function loadPayments(filter) {
-  document.getElementById('paymentsTable').innerHTML = '<div class="loading">⏳</div>';
-  setAlert('payAlert','');
-  try {
-    const d = await api('/admin/payments?status=' + (filter === 'all' ? '' : filter));
-    allPayments = d.payments || [];
-
-    const pending = allPayments.filter(p => !p.payment_confirmed && p.role === 'apprenant').length;
-    if (pending > 0 && filter !== 'confirmed')
-      setAlert('payAlert', `⚠️ ${pending} paiement(s) en attente de confirmation manuelle.`, 'warning');
-
-    if (!allPayments.length) { document.getElementById('paymentsTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucun paiement.</p>'; return; }
-
-    document.getElementById('paymentsTable').innerHTML = `
-      <table class="tbl">
-        <thead><tr><th>Nom</th><th>Email</th><th>Plan</th><th>Méthode</th><th>Statut</th><th>Date</th><th>Notes</th><th>Actions</th></tr></thead>
-        <tbody>${allPayments.map(u=>`<tr>
-          <td><strong>${u.prenom} ${u.nom}</strong><br><span style="font-size:.73rem;color:#5d7a6e;">${u.pays||''}</span></td>
-          <td style="font-size:.78rem;">${u.email}</td>
-          <td>${u.payment_plan?`<span class="badge b-blue">${u.payment_plan}</span>`:'—'}</td>
-          <td>${u.payment_method||'—'}</td>
-          <td>${u.payment_confirmed?'<span class="badge b-green">✅ Confirmé</span>':'<span class="badge b-gold">⏳ En attente</span>'}</td>
-          <td style="font-size:.78rem;">${u.payment_date?fmt(u.payment_date):'—'}</td>
-          <td style="font-size:.75rem;color:#5d7a6e;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.payment_notes||'—'}</td>
-          <td>
-            ${currentRole==='admin'?(!u.payment_confirmed?`<button class="btn btn-sm btn-success" onclick="openConfirmPay(${u.id},'${u.prenom} ${u.nom}')">💳 Confirmer</button>`:
-              `<button class="btn btn-sm btn-danger" onclick="doRevokeAccess(${u.id})">❌ Révoquer</button>`):''}
-            <button class="btn btn-sm btn-secondary" onclick="viewUser(${u.id})">👁</button>
-          </td>
-        </tr>`).join('')}</tbody>
-      </table>
-      <div style="padding:10px 14px;font-size:.78rem;color:#5d7a6e;">${allPayments.length} entrée(s)</div>`;
-  } catch(e) { document.getElementById('paymentsTable').innerHTML = `<p style="color:var(--red)">${e.message}</p>`; }
-}
-
-function switchPayTab(filter, btn) {
-  currentPayFilter = filter;
-  document.querySelectorAll('#p-payments .tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  loadPayments(filter);
-}
-
-// ── MODULES ──────────────────────────────────────────────────────────
-async function loadModules() {
-  document.getElementById('modulesTable').innerHTML = '<div class="loading">⏳</div>';
-  try {
-    const d = await api('/admin/users');
-    const users = (d.users||[]).filter(u=>u.role!=='admin'&&u.qualification_done);
-    if (!users.length) { document.getElementById('modulesTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucun apprenant en formation.</p>'; return; }
-    document.getElementById('modulesTable').innerHTML = `
-      <table class="tbl">
-        <thead><tr><th>Apprenant</th><th>Email</th><th>Niveau</th><th>Progression</th><th>Formation</th><th>Test final</th><th>Actions</th></tr></thead>
-        <tbody>${users.map(u=>`<tr>
-          <td><strong>${u.prenom} ${u.nom}</strong></td>
-          <td style="font-size:.78rem;">${u.email}</td>
-          <td>${u.qualification_level?`<span class="badge b-purple">${u.qualification_level}</span>`:'—'}</td>
-          <td>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <div class="progress-track" style="width:120px;"><div class="progress-fill" style="width:${Math.round((u.current_module||1)/14*100)}%;"></div></div>
-              <span style="font-size:.75rem;color:#5d7a6e;">${u.current_module||1}/14 (${Math.round((u.current_module||1)/14*100)}%)</span>
-            </div>
-          </td>
-          <td>${u.all_modules_done?'<span class="badge b-green">✅ Terminé</span>':'<span class="badge b-gold">En cours</span>'}</td>
-          <td>${u.final_test_passed?`<span class="badge b-green">✅ Réussi ${Math.round(u.final_test_score||0)}%</span>`:u.final_test_done?`<span class="badge b-red">Échoué</span>`:'—'}</td>
-          <td>
-            <button class="btn btn-sm btn-secondary" onclick="viewUser(${u.id})">👁 Voir</button>
-            <button class="btn btn-sm btn-warning" onclick="doResetTest(${u.id})">🔄 Test</button>
-          </td>
-        </tr>`).join('')}</tbody>
-      </table>`;
-  } catch(e) { document.getElementById('modulesTable').innerHTML = `<p style="color:var(--red)">${e.message}</p>`; }
-}
-
-// ── TESTS ────────────────────────────────────────────────────────────
-let currentTestTab = 'trial';
-async function loadTests(tab) {
-  currentTestTab = tab || currentTestTab;
-  document.getElementById('testsTable').innerHTML = '<div class="loading">⏳</div>';
-  try {
-    const d = await api('/admin/tests?type=' + currentTestTab);
-    const tests = d.tests || [];
-    if (!tests.length) { document.getElementById('testsTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucun résultat.</p>'; return; }
-    document.getElementById('testsTable').innerHTML = `
-      <table class="tbl">
-        <thead><tr><th>Utilisateur</th><th>Score</th><th>Résultat</th><th>Tentative</th><th>Date</th></tr></thead>
-        <tbody>${tests.map(t=>`<tr>
-          <td><strong>${t.prenom||''} ${t.nom||''}</strong><br><span style="font-size:.75rem;color:#5d7a6e;">${t.email}</span></td>
-          <td><strong>${Math.round(t.score||0)}${currentTestTab==='trial'?'/10':'%'}</strong></td>
-          <td>${t.passed?'<span class="badge b-green">✅ Réussi</span>':'<span class="badge b-red">❌ Échoué</span>'}</td>
-          <td>${t.attempt_number}</td>
-          <td>${fmtDt(t.created_at)}</td>
-        </tr>`).join('')}</tbody>
-      </table>
-      <div style="padding:10px 14px;font-size:.78rem;color:#5d7a6e;">${tests.length} résultat(s)</div>`;
-  } catch(e) { document.getElementById('testsTable').innerHTML = `<p style="color:var(--red)">${e.message}</p>`; }
-}
-
-function switchTestTab(tab, btn) {
-  document.querySelectorAll('#p-tests .tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  loadTests(tab);
-}
-
-// ── CERTIFICATES ─────────────────────────────────────────────────────
-async function loadCertificates() {
-  document.getElementById('certsTable').innerHTML = '<div class="loading">⏳</div>';
-  try {
-    const d = await api('/admin/certificates');
-    const certs = d.certificates || [];
-    if (!certs.length) { document.getElementById('certsTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucun certificat.</p>'; return; }
-    document.getElementById('certsTable').innerHTML = `
-      <table class="tbl">
-        <thead><tr><th>Apprenant</th><th>Programme</th><th>Score</th><th>N° Certificat</th><th>Date</th><th>Actions</th></tr></thead>
-        <tbody>${certs.map(c=>`<tr>
-          <td><strong>${c.prenom} ${c.nom}</strong><br><span style="font-size:.75rem;color:#5d7a6e;">${c.email}</span></td>
-          <td style="font-size:.8rem;">${c.programme}</td>
-          <td><strong>${Math.round(c.score)}%</strong></td>
-          <td style="font-family:monospace;font-size:.72rem;">${c.certificate_number}</td>
-          <td>${fmt(c.issued_at)}</td>
-          <td>
-            <a class="btn btn-sm btn-secondary" href="${window.location.origin}/api/certificate/verify/${c.certificate_number}" target="_blank">🔍 Vérifier</a>
-            <a class="btn btn-sm btn-primary" href="${window.location.origin}/api/certificate/download?token=${getToken()}" target="_blank">📥 PDF</a>
-          </td>
-        </tr>`).join('')}</tbody>
-      </table>
-      <div style="padding:10px 14px;font-size:.78rem;color:#5d7a6e;">${certs.length} certificat(s)</div>`;
-  } catch(e) { document.getElementById('certsTable').innerHTML = `<p style="color:var(--red)">${e.message}</p>`; }
-}
-
-// ── AFFILIATES ───────────────────────────────────────────────────────
-async function loadAffiliates() {
-  document.getElementById('affiliatesTable').innerHTML = '<div class="loading">⏳</div>';
-  document.getElementById('affStatsGrid').innerHTML = '';
-  try {
-    const d = await api('/admin/affiliates');
-    const commissions = d.commissions || [];
-    const t = d.totals || { total:0, pending:0, paid:0 };
-
-    document.getElementById('affStatsGrid').innerHTML = `
-      <div class="stat-card c-blue"><div class="stat-num">${commissions.length}</div><div class="stat-lbl">🤝 Commissions générées</div></div>
-      <div class="stat-card c-gold"><div class="stat-num">$${t.pending.toFixed(2)}</div><div class="stat-lbl">⏳ En attente de paiement</div></div>
-      <div class="stat-card c-green"><div class="stat-num">$${t.paid.toFixed(2)}</div><div class="stat-lbl">✅ Déjà versées</div></div>
-      <div class="stat-card c-purple"><div class="stat-num">$${t.total.toFixed(2)}</div><div class="stat-lbl">💰 Total commissions</div></div>`;
-
-    if (!commissions.length) {
-      document.getElementById('affiliatesTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucune commission de parrainage pour le moment.</p>';
-      return;
-    }
-
-    document.getElementById('affiliatesTable').innerHTML = `
-      <table class="tbl">
-        <thead><tr><th>Affilié (parrain)</th><th>Filleul</th><th>Forfait</th><th>Commission</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead>
-        <tbody>${commissions.map(c=>`<tr>
-          <td><strong>${c.referrer_prenom} ${c.referrer_nom}</strong><br><span style="font-size:.75rem;color:#5d7a6e;">${c.referrer_email} · ${c.referral_code}</span></td>
-          <td>${c.referred_prenom} ${c.referred_nom}<br><span style="font-size:.75rem;color:#5d7a6e;">${c.referred_email}</span></td>
-          <td style="font-size:.8rem;">${(c.plan||'').toUpperCase()}</td>
-          <td><strong>$${c.amount.toFixed(2)}</strong></td>
-          <td>${c.status==='paid' ? '<span class="badge b-green">✅ Versée</span>' : '<span class="badge b-orange">⏳ En attente</span>'}</td>
-          <td>${fmt(c.created_at)}</td>
-          <td>${c.status==='paid'
-            ? `<button class="btn btn-sm btn-secondary" onclick="setAffiliateStatus(${c.id},'pending')">Marquer en attente</button>`
-            : `<button class="btn btn-sm btn-success" onclick="setAffiliateStatus(${c.id},'paid')">Marquer payée</button>`}</td>
-        </tr>`).join('')}</tbody>
-      </table>
-      <div style="padding:10px 14px;font-size:.78rem;color:#5d7a6e;">${commissions.length} commission(s)</div>`;
-  } catch(e) { document.getElementById('affiliatesTable').innerHTML = `<p style="color:var(--red)">${e.message}</p>`; }
-}
-
-async function setAffiliateStatus(id, status) {
-  try {
-    await api(`/admin/affiliates/${id}`, { method:'PUT', body: JSON.stringify({ status }) });
-    toast('✅ Statut mis à jour', 'success');
-    loadAffiliates();
-  } catch(e) { toast(e.message, 'error'); }
-}
-
-// ── SETTINGS ─────────────────────────────────────────────────────────
-async function checkSmtp() {
-  document.getElementById('smtpStatus').innerHTML = '<div class="alert alert-info">⏳ Test en cours…</div>';
-  try {
-    const r = await api('/admin/email/test');
-    document.getElementById('smtpStatus').innerHTML = r.success
-      ? `<div class="alert alert-success">✅ ${r.message}</div>`
-      : `<div class="alert alert-error">❌ ${r.message}</div>`;
-  } catch(e) { document.getElementById('smtpStatus').innerHTML = `<div class="alert alert-error">❌ ${e.message}</div>`; }
-}
-
-async function sendTestEmail() {
-  try {
-    const r = await api('/admin/email/test-send', { method:'POST' });
-    toast(r.success ? '📧 Email de test envoyé ! Vérifiez arcadinstrainingcenter@gmail.com' : r.message, r.success ? 'success' : 'error');
-  } catch(e) { toast(e.message, 'error'); }
-}
-
-async function loadSettings() {
-  try {
-    const d = await api('/admin/settings');
-    const s = d.settings || {};
-    if (s.max_final_attempts) document.getElementById('cfgAttempts').value = s.max_final_attempts;
-    if (s.min_final_score)    document.getElementById('cfgScore').value    = s.min_final_score;
-    if (s.admin_email)        document.getElementById('cfgEmail').value    = s.admin_email;
-  } catch {}
-}
-
-async function saveSettings(e) {
-  e.preventDefault();
-  try {
-    await api('/admin/settings', { method:'PUT', body: JSON.stringify({ settings: {
-      max_final_attempts: document.getElementById('cfgAttempts').value,
-      min_final_score:    document.getElementById('cfgScore').value,
-      admin_email:        document.getElementById('cfgEmail').value,
-    }})});
-    toast('✅ Paramètres enregistrés.');
-  } catch(e) { toast(e.message,'error'); }
-}
-
-// ── CSV EXPORT ───────────────────────────────────────────────────────
-function exportCsv() {
-  window.open(API + '/admin/export/csv?token=' + getToken(), '_blank');
-}
-
-// ── TUTEURS ──────────────────────────────────────────────────────────
-async function loadTuteurs() {
-  document.getElementById('tuteursTable').innerHTML = '<div class="loading">⏳</div>';
-  setAlert('tuteurAlert','');
-  try {
-    const d = await api('/admin/tuteurs');
-    const tuteurs = d.tuteurs || [];
-    const pending = tuteurs.filter(t => !t.tuteur_payment_confirmed).length;
-    if (pending > 0) setAlert('tuteurAlert', `⚠️ ${pending} candidat(s) en attente de confirmation de paiement.`, 'warning');
-    if (!tuteurs.length) { document.getElementById('tuteursTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucun candidat tuteur pour le moment.</p>'; return; }
-    document.getElementById('tuteursTable').innerHTML = `
-      <table class="tbl">
-        <thead><tr><th>Candidat</th><th>Pays</th><th>Paiement</th><th>Modules tuteur</th><th>Test tuteur</th><th>Date candidature</th><th>Actions</th></tr></thead>
-        <tbody>${tuteurs.map(t=>`<tr>
-          <td><strong>${t.prenom} ${t.nom}</strong><br><span style="font-size:.75rem;color:#5d7a6e;">${t.email}</span></td>
-          <td style="font-size:.8rem;">${t.pays||'—'}</td>
-          <td>${t.tuteur_payment_confirmed
-            ? `<span class="badge b-green">✅ Payé</span><br><span style="font-size:.72rem;color:#5d7a6e;">${fmt(t.tuteur_payment_date)}</span>`
-            : `<span class="badge b-orange">⏳ En attente</span>`}</td>
-          <td>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <div class="progress-track" style="width:90px;"><div class="progress-fill" style="width:${Math.round((t.tuteur_current_module||0)/5*100)}%;"></div></div>
-              <span style="font-size:.73rem;color:#5d7a6e;">${t.tuteur_current_module||0}/5</span>
-            </div>
-            ${t.tuteur_all_modules_done ? '<span class="badge b-green" style="margin-top:4px;">✅ Terminé</span>' : ''}
-          </td>
-          <td>${t.tuteur_test_passed
-            ? `<span class="badge b-green">✅ Réussi ${Math.round(t.tuteur_test_score||0)}%</span>`
-            : t.tuteur_test_done
-              ? `<span class="badge b-red">❌ Échoué ${Math.round(t.tuteur_test_score||0)}%</span>`
-              : '<span class="badge b-gray">—</span>'}</td>
-          <td style="font-size:.78rem;">${fmt(t.created_at)}</td>
-          <td style="display:flex;flex-wrap:wrap;gap:4px;">
-            ${currentRole==='admin' && !t.tuteur_payment_confirmed ? `<button class="btn btn-sm btn-success" onclick="openTuteurPay(${t.id},'${t.prenom} ${t.nom}')">💳 Confirmer paiement</button>` : ''}
-            ${currentRole==='admin' && t.tuteur_payment_confirmed && !t.tuteur_test_passed ? `<button class="btn btn-sm btn-primary" onclick="doTuteurApprove(${t.id})">🎓 Approuver test</button>` : ''}
-            <button class="btn btn-sm btn-secondary" onclick="viewUser(${t.id})">👁</button>
-          </td>
-        </tr>`).join('')}</tbody>
-      </table>
-      <div style="padding:10px 14px;font-size:.78rem;color:#5d7a6e;">${tuteurs.length} candidat(s)</div>`;
-  } catch(e) { document.getElementById('tuteursTable').innerHTML = `<p style="color:var(--red)">${e.message}</p>`; }
-}
-
-function openTuteurPay(id, name) {
-  document.getElementById('tp_id').value = id;
-  document.getElementById('tp_name').textContent = 'Candidat : ' + name;
-  document.getElementById('tp_notes').value = '';
-  setAlert('tpAlert','');
-  openModal('tuteurPayModal');
-}
-
-async function doTuteurConfirmPay() {
-  const id = document.getElementById('tp_id').value;
-  const notes = document.getElementById('tp_notes').value.trim();
-  try {
-    const r = await api(`/admin/tuteurs/${id}/confirm-payment`, { method:'POST', body: JSON.stringify({ notes }) });
-    toast('✅ ' + r.message);
-    closeModal('tuteurPayModal');
-    loadTuteurs();
-  } catch(e) { setAlert('tpAlert', e.message, 'error'); }
-}
-
-async function doTuteurApprove(id) {
-  if (!confirm('Approuver manuellement le test tuteur de cet utilisateur ?')) return;
-  try {
-    const r = await api(`/admin/tuteurs/${id}/approve`, { method:'POST' });
-    toast('✅ ' + r.message);
-    loadTuteurs();
-  } catch(e) { toast(e.message, 'error'); }
-}
-
-// ── BROADCAST EMAIL ───────────────────────────────────────────────────
-async function doBroadcast(e) {
-  e.preventDefault();
-  const btn = document.getElementById('bcBtn');
-  const subject = document.getElementById('bc_subject').value.trim();
-  const message = document.getElementById('bc_message').value.trim();
-  const target  = document.getElementById('bc_target').value;
-  if (!confirm(`Envoyer cet email au groupe "${document.getElementById('bc_target').options[document.getElementById('bc_target').selectedIndex].text}" ? Cette action est irréversible.`)) return;
-  btn.disabled = true; btn.textContent = '⏳ Envoi en cours…';
-  setAlert('broadcastAlert','');
-  try {
-    const r = await api('/admin/broadcast', { method:'POST', body: JSON.stringify({ subject, message, target }) });
-    setAlert('broadcastAlert', '✅ ' + r.message, 'success');
-    document.getElementById('bc_subject').value = '';
-    document.getElementById('bc_message').value = '';
-  } catch(e) { setAlert('broadcastAlert', e.message, 'error'); }
-  finally { btn.disabled = false; btn.textContent = '📤 Envoyer l\'email groupé'; }
-}
-
-// ── AUDIT LOG ─────────────────────────────────────────────────────────
-const ACTION_LABELS = {
-  edit_profile:'✏️ Modif. profil', confirm_payment:'💳 Confirm. paiement', grant_access:'🎓 Accès accordé',
-  block_user:'🚫 Blocage', unblock_user:'✅ Déblocage', delete_user:'🗑️ Suppression',
-  reset_final_test:'🔄 Reset test final', reset_modules:'🔄 Reset modules', revoke_access:'❌ Révocation',
-  update_affiliate_commission:'🤝 Commission affilié', tuteur_confirm_payment:'💳 Paiement tuteur',
-  tuteur_approve:'🎓 Approbation tuteur', broadcast_email:'📢 Email groupé',
+// ══ MODERATEURS ══════════════════════════════════════════════════════════════
+const PROFILE_LABELS = {
+  support:'🎧 Support', paiements:'💳 Paiements',
+  statistiques:'📊 Statistiques', complet:'⭐ Complet', personnalisé:'✏️ Personnalisé',
+};
+const PROFILE_BADGE_CLS = {
+  support:'blue', paiements:'orange', statistiques:'gray', complet:'green', personnalisé:'red',
+};
+const PERM_LABELS = {
+  stats:'Stats', users_view:'Users', payments:'Paiements', emails:'Emails',
+  modules:'Modules', certificates:'Certificats', affiliates:'Affiliation',
+  broadcast:'Broadcast', prospects:'Prospects',
 };
 
-async function loadAuditLog() {
-  document.getElementById('auditTable').innerHTML = '<div class="loading">⏳</div>';
-  try {
-    const d = await api('/admin/audit-log');
-    const logs = d.logs || [];
-    if (!logs.length) { document.getElementById('auditTable').innerHTML = '<p style="color:#5d7a6e;padding:20px;">Aucune action enregistrée pour l\'instant.</p>'; return; }
-    document.getElementById('auditTable').innerHTML = `
-      <table class="tbl">
-        <thead><tr><th>Date/Heure</th><th>Admin</th><th>Action</th><th>Cible</th><th>Détails</th></tr></thead>
-        <tbody>${logs.map(l=>`<tr>
-          <td style="font-size:.78rem;white-space:nowrap;">${fmtDt(l.created_at)}</td>
-          <td style="font-size:.8rem;">${l.admin_email||'—'}</td>
-          <td><span class="badge b-blue">${ACTION_LABELS[l.action]||l.action}</span></td>
-          <td style="font-size:.8rem;">${l.target_email ? `${l.target_prenom||''} ${l.target_nom||''}<br><span style="color:#5d7a6e;font-size:.72rem;">${l.target_email}</span>` : '—'}</td>
-          <td style="font-size:.75rem;color:#5d7a6e;max-width:200px;">${l.details ? JSON.stringify(JSON.parse(l.details), null, 0).replace(/[{}"]/g,'').replace(/,/g,' · ').substring(0,120) : '—'}</td>
-        </tr>`).join('')}</tbody>
-      </table>
-      <div style="padding:10px 14px;font-size:.78rem;color:#5d7a6e;">${logs.length} entrée(s) — 200 dernières actions</div>`;
-  } catch(e) { document.getElementById('auditTable').innerHTML = `<p style="color:var(--red)">${e.message}</p>`; }
-}
-
-// ── MISC HELPERS ─────────────────────────────────────────────────────
-function togglePayConfirm() {
-  const paid = document.getElementById('cu_paid').checked;
-  document.getElementById('cu_method').required = paid;
-}
-
-function togglePwd(inputId, btn) {
-  const input = document.getElementById(inputId);
-  if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
-  else { input.type = 'password'; btn.textContent = '👁️'; }
-}
-
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-// Close modal on background click
-document.querySelectorAll('.modal-bg').forEach(m => {
-  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
-});
-
-// ── MODÉRATEURS ──────────────────────────────────────────────────────
-let moderatorsList = [];
-
 async function loadModerators() {
-  document.getElementById('moderatorsTable').innerHTML = '<div class="loading">⏳ Chargement…</div>';
-  try {
-    const d = await api('/admin/moderators');
-    moderatorsList = d.moderators || [];
-    if (!moderatorsList.length) {
-      document.getElementById('moderatorsTable').innerHTML = '<p style="padding:20px;color:#5d7a6e;">Aucun modérateur créé. Cliquez sur « Nouveau modérateur » pour commencer.</p>';
-      return;
-    }
-    document.getElementById('moderatorsTable').innerHTML = `
-      <table class="tbl">
-        <thead><tr><th>Nom</th><th>Email</th><th>Statut</th><th>Créé le</th><th>Dernière connexion</th><th>Actions</th></tr></thead>
-        <tbody>${moderatorsList.map(m => `
-          <tr>
-            <td><strong>${m.prenom} ${m.nom}</strong></td>
-            <td>${m.email}</td>
-            <td><span class="badge b-blue">Modérateur</span></td>
-            <td>${fmt(m.created_at)}</td>
-            <td>${m.last_login_at ? fmtDt(m.last_login_at) : '<span style="color:#aaa;">Jamais</span>'}</td>
-            <td>
-              <button class="btn btn-sm btn-secondary" onclick="openEditMod(${m.id},'${m.prenom}','${m.nom}')">✏️ Modifier</button>
-              <button class="btn btn-sm btn-danger" onclick="deleteMod(${m.id},'${m.prenom} ${m.nom}')">🗑 Supprimer</button>
-            </td>
-          </tr>`).join('')}
-        </tbody>
-      </table>`;
-  } catch(e) { document.getElementById('moderatorsTable').innerHTML = `<div class="alert alert-error">${e.message}</div>`; }
+  const d = await api('GET','/admin/moderators');
+  if (!d.success) return;
+  const tb = document.getElementById('modsTbody');
+  const mods = d.data.moderators;
+  if (!mods.length) {
+    tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--gray)">Aucun modérateur — cliquez sur "+ Ajouter" pour en créer un.</td></tr>';
+    return;
+  }
+  tb.innerHTML = mods.map((m,i) => {
+    const profBadge = badge(PROFILE_LABELS[m.profile]||m.profile, PROFILE_BADGE_CLS[m.profile]||'gray');
+    const permTags = (m.permissions||[]).map(p=>`<span class="badge badge-gray" style="margin:1px;">${PERM_LABELS[p]||p}</span>`).join('');
+    return `<tr>
+      <td style="font-size:.72rem;color:var(--gray)">${i+1}</td>
+      <td><strong>${m.prenom} ${m.nom}</strong></td>
+      <td><a href="mailto:${m.email}" style="color:var(--blue);font-size:.79rem">${m.email}</a></td>
+      <td>${profBadge}</td>
+      <td style="max-width:220px;line-height:1.8">${permTags}</td>
+      <td>${m.status==='active'?badge('Actif','green'):badge('Inactif','gray')}</td>
+      <td style="font-size:.75rem;color:var(--gray)">${m.last_login_at?fmtDate(m.last_login_at):'Jamais'}</td>
+      <td><div style="display:flex;gap:4px">
+        <button class="btn btn-ghost btn-sm" onclick="openEditModModal(${JSON.stringify(m).replace(/"/g,'&quot;')})">✏️ Modifier</button>
+        <button class="btn btn-red btn-sm" onclick="deleteMod(${m.id},'${esc(m.prenom+' '+m.nom)}')">🗑</button>
+      </div></td>
+    </tr>`;
+  }).join('');
 }
 
-async function doCreateMod() {
-  setAlert('createModAlert','');
+function openCreateModModal() {
+  document.getElementById('modModalTitle').textContent = '🛡 Nouveau modérateur';
+  document.getElementById('mod-id').value = '';
+  document.getElementById('mod-prenom').value = '';
+  document.getElementById('mod-nom').value = '';
+  document.getElementById('mod-email').value = '';
+  document.getElementById('mod-pw').value = '';
+  document.getElementById('mod-pw-label').textContent = 'Mot de passe * (min. 8 car.)';
+  document.getElementById('mod-profile').value = 'complet';
+  document.getElementById('mod-email').disabled = false;
+  document.querySelectorAll('.perm-cb').forEach(cb => cb.checked = false);
+  document.getElementById('customPermsBlock').style.display = 'none';
+  openModal('modModal');
+}
+
+function openEditModModal(m) {
+  document.getElementById('modModalTitle').textContent = `✏️ Modifier — ${m.prenom} ${m.nom}`;
+  document.getElementById('mod-id').value = m.id;
+  document.getElementById('mod-prenom').value = m.prenom;
+  document.getElementById('mod-nom').value = m.nom;
+  document.getElementById('mod-email').value = m.email;
+  document.getElementById('mod-email').disabled = true;
+  document.getElementById('mod-pw').value = '';
+  document.getElementById('mod-pw-label').textContent = 'Nouveau mot de passe (laisser vide pour ne pas changer)';
+  // Profil
+  const profileVal = ['support','paiements','statistiques','complet'].includes(m.profile) ? m.profile : 'personnalise';
+  document.getElementById('mod-profile').value = profileVal;
+  if (profileVal === 'personnalise') {
+    document.getElementById('customPermsBlock').style.display = 'block';
+    document.querySelectorAll('.perm-cb').forEach(cb => { cb.checked = (m.permissions||[]).includes(cb.value); });
+  } else {
+    document.getElementById('customPermsBlock').style.display = 'none';
+  }
+  openModal('modModal');
+}
+
+function onProfileChange() {
+  const val = document.getElementById('mod-profile').value;
+  document.getElementById('customPermsBlock').style.display = val === 'personnalise' ? 'block' : 'none';
+}
+
+async function doSaveMod() {
+  const id = document.getElementById('mod-id').value;
+  const profile = document.getElementById('mod-profile').value;
+  const pw = document.getElementById('mod-pw').value;
   const body = {
-    prenom: document.getElementById('mod_prenom').value.trim(),
-    nom:    document.getElementById('mod_nom').value.trim(),
-    email:  document.getElementById('mod_email').value.trim(),
-    password: document.getElementById('mod_pwd').value,
+    prenom: document.getElementById('mod-prenom').value.trim(),
+    nom: document.getElementById('mod-nom').value.trim(),
+    profile: profile !== 'personnalise' ? profile : undefined,
+    permissions: profile === 'personnalise'
+      ? [...document.querySelectorAll('.perm-cb:checked')].map(cb => cb.value)
+      : undefined,
   };
-  if (!body.prenom || !body.nom || !body.email || !body.password)
-    return setAlert('createModAlert','Tous les champs sont requis.','error');
-  try {
-    await api('/admin/moderators', { method:'POST', body: JSON.stringify(body) });
-    toast('✅ Modérateur créé avec succès.');
-    closeModal('createModModal');
-    ['mod_prenom','mod_nom','mod_email','mod_pwd'].forEach(id => document.getElementById(id).value = '');
-    loadModerators();
-  } catch(e) { setAlert('createModAlert', e.message, 'error'); }
-}
-
-function openEditMod(id, prenom, nom) {
-  document.getElementById('emod_id').value = id;
-  document.getElementById('emod_prenom').value = prenom;
-  document.getElementById('emod_nom').value = nom;
-  document.getElementById('emod_pwd').value = '';
-  setAlert('editModAlert','');
-  openModal('editModModal');
-}
-
-async function doUpdateMod() {
-  setAlert('editModAlert','');
-  const id = document.getElementById('emod_id').value;
-  const body = {};
-  const prenom = document.getElementById('emod_prenom').value.trim();
-  const nom    = document.getElementById('emod_nom').value.trim();
-  const pwd    = document.getElementById('emod_pwd').value;
-  if (prenom) body.prenom = prenom;
-  if (nom)    body.nom = nom;
-  if (pwd)    body.password = pwd;
-  if (!Object.keys(body).length) return setAlert('editModAlert','Aucune modification.','error');
-  try {
-    await api('/admin/moderators/' + id, { method:'PUT', body: JSON.stringify(body) });
-    toast('✅ Modérateur mis à jour.');
-    closeModal('editModModal');
-    loadModerators();
-  } catch(e) { setAlert('editModAlert', e.message, 'error'); }
+  if (pw) body.password = pw;
+  if (!id) {
+    // Création
+    body.email = document.getElementById('mod-email').value.trim();
+    if (!body.prenom || !body.nom || !body.email || !pw) { toast('Champs obligatoires manquants','err'); return; }
+    const d = await api('POST','/admin/moderators', body);
+    toast(d.message||'OK', d.success?'ok':'err');
+    if (d.success) { closeModal('modModal'); loadModerators(); }
+  } else {
+    // Édition
+    if (!body.prenom && !body.nom && !body.profile && !body.permissions && !pw) { toast('Aucune modification','err'); return; }
+    const d = await api('PUT',`/admin/moderators/${id}`, body);
+    toast(d.message||'OK', d.success?'ok':'err');
+    if (d.success) { closeModal('modModal'); loadModerators(); }
+  }
 }
 
 async function deleteMod(id, name) {
-  if (!confirm(`Supprimer le modérateur ${name} ? Cette action est irréversible.`)) return;
-  try {
-    await api('/admin/moderators/' + id, { method:'DELETE' });
-    toast('🗑 Modérateur supprimé.');
-    loadModerators();
-  } catch(e) { toast(e.message, 'error'); }
+  if (!confirm(`Supprimer le modérateur ${name} ?\n\nIl ne pourra plus se connecter au backoffice.`)) return;
+  const d = await api('DELETE',`/admin/moderators/${id}`);
+  toast(d.message||'OK', d.success?'ok':'err');
+  if (d.success) loadModerators();
 }
+
+checkAuth();
+
+// ---- Password visibility toggle ----
+(function initPwToggles() {
+  const EO = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+  const EC = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+  function wrap() {
+    document.querySelectorAll('input[type="password"]').forEach(input => {
+      if (input.closest('.pw-wrap')) return;
+      const w = document.createElement('div');
+      w.className = 'pw-wrap';
+      w.style.cssText = 'position:relative;display:flex;align-items:center;';
+      input.parentNode.insertBefore(w, input);
+      w.appendChild(input);
+      input.style.paddingRight = '42px';
+      input.style.boxSizing = 'border-box';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('aria-label', 'Afficher/masquer');
+      btn.style.cssText = 'position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#9aa5b8;padding:4px;line-height:1;';
+      btn.innerHTML = EO;
+      btn.onclick = () => { const s = input.type==='password'; input.type = s?'text':'password'; btn.innerHTML = s?EC:EO; };
+      w.appendChild(btn);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', wrap);
+  document.addEventListener('click', () => setTimeout(wrap, 150));
+})();
 </script>
 </body>
 </html>

@@ -1099,28 +1099,29 @@ const translations = {
   "form.locked.p":     { fr: "Complétez le module précédent pour débloquer celui-ci.", en: "Complete the previous module to unlock this one." },
 
   // ===== TEST FINAL (test-final.html) =====
-  "final.tag":         { fr: "Test d'Évaluation Finale", en: "Final Evaluation" },
-  "final.h1":          { fr: "Test Final de Certification", en: "Final Certification Test" },
-  "final.p":           { fr: "30 questions · Score minimum requis : 80% · Certificat généré automatiquement en cas de réussite", en: "30 questions · Minimum required score: 80% · Certificate automatically generated on success" },
-  "final.locked.h":    { fr: "Test final non disponible", en: "Final Test Not Available" },
-  "final.locked.p":    { fr: "Complétez tous les modules de formation pour débloquer le test final.", en: "Complete all training modules to unlock the final test." },
-  "final.locked.btn":  { fr: "Retour à ma formation →", en: "Back to My Training →" },
-  "final.alert":       { fr: "⚠️ Score minimum requis : 80%. En cas d'échec, les modules concernés vous seront indiqués pour révision.", en: "⚠️ Minimum required score: 80%. If you fail, the relevant modules will be highlighted for review." },
-  "final.submit":      { fr: "🏁 Terminer & soumettre", en: "🏁 Finish & Submit" },
-  "final.result.h":    { fr: "Résultat du test final", en: "Final Test Result" },
-  "final.pass.msg":    { fr: "🎉 Félicitations ! Vous avez réussi votre test final.", en: "🎉 Congratulations! You passed your final test." },
-  "final.pass.sub":    { fr: "Votre certificat PDF a été généré et vous a été envoyé par email.", en: "Your PDF certificate has been generated and emailed to you." },
-  "final.pass.btn":    { fr: "🏆 Accéder à mon certificat →", en: "🏆 Access My Certificate →" },
-  "final.fail.msg":    { fr: "Vous n'avez pas atteint le score minimum de 80%.", en: "You did not reach the minimum score of 80%." },
-  "final.fail.sub":    { fr: "Révisez les modules suivants avant de repasser le test :", en: "Review the following modules before retaking the test:" },
-  "final.fail.btn":    { fr: "↩ Retourner à la formation", en: "↩ Return to Training" },
+  "final.tag":            { fr: "Test d'Évaluation Finale", en: "Final Evaluation" },
+  "final.h1":             { fr: "Test Final de Certification", en: "Final Certification Test" },
+  "final.p":              { fr: "30 questions · Score minimum requis : 70% · Certificat généré automatiquement en cas de réussite", en: "30 questions · Minimum required score: 70% · Certificate automatically generated on success" },
+  "final.locked.h":       { fr: "Test final non disponible", en: "Final Test Not Available" },
+  "final.locked.p":       { fr: "Complétez tous les modules de formation pour débloquer le test final.", en: "Complete all training modules to unlock the final test." },
+  "final.locked.btn":     { fr: "Retour à ma formation →", en: "Back to My Training →" },
+  "final.alert":          { fr: "⚠️ Score minimum requis : 70%. En cas d'échec, les compétences à renforcer vous seront indiquées.", en: "⚠️ Minimum required score: 70%. If you fail, the skills to improve will be highlighted." },
+  "final.submit":         { fr: "🏁 Terminer & soumettre", en: "🏁 Finish & Submit" },
+  "final.result.h":       { fr: "Résultat du test final", en: "Final Test Result" },
+  "final.pass.msg":       { fr: "🎉 Félicitations ! Vous avez réussi votre test final.", en: "🎉 Congratulations! You passed your final test." },
+  "final.pass.sub":       { fr: "Votre certificat PDF a été généré et vous a été envoyé par email.", en: "Your PDF certificate has been generated and emailed to you." },
+  "final.pass.btn":       { fr: "🏆 Accéder à mon certificat →", en: "🏆 Access My Certificate →" },
+  "final.fail.sub":       { fr: "Résultats par compétence :", en: "Results by skill:" },
+  "final.fail.weak":      { fr: "Compétences à renforcer :", en: "Skills to improve:" },
+  "final.fail.btn":       { fr: "↩ Retourner à la formation", en: "↩ Return to Training" },
+  "final.review.title":   { fr: "📝 Correction détaillée", en: "📝 Detailed Review" },
 
   // ===== CERTIFICAT (mon-certificat.html) =====
   "cert.tag":          { fr: "Certificat de réussite", en: "Certificate of Achievement" },
   "cert.h1":           { fr: "Mon Certificat ARCADINS", en: "My ARCADINS Certificate" },
   "cert.p":            { fr: "Téléchargez, partagez et vérifiez votre certificat officiel ARCADINS Training Center", en: "Download, share and verify your official ARCADINS Training Center certificate" },
   "cert.locked.h":     { fr: "Certificat non disponible", en: "Certificate Not Available" },
-  "cert.locked.p":     { fr: "Réussissez le test final avec un score de 80% ou plus pour obtenir votre certificat.", en: "Pass the final test with a score of 80% or more to receive your certificate." },
+  "cert.locked.p":     { fr: "Réussissez le test final avec un score de 70% ou plus pour obtenir votre certificat.", en: "Pass the final test with a score of 70% or more to receive your certificate." },
   "cert.locked.btn":   { fr: "Passer le test final →", en: "Take the Final Test →" },
   "cert.subtitle":     { fr: "Plateforme spécialisée TEF & TCF Canada · Immigration", en: "Specialized Platform TEF & TCF Canada · Immigration" },
   "cert.title.doc":    { fr: "Certificat de Réussite", en: "Certificate of Achievement" },
@@ -1384,7 +1385,7 @@ const translations = {
   "guide.s7.li2":  { fr: "Essential : 2 tentatives", en: "Essential: 2 attempts" },
   "guide.s7.li3":  { fr: "Premium : 3 tentatives", en: "Premium: 3 attempts" },
   "guide.s7.li4":  { fr: "VIP : 6 tentatives", en: "VIP: 6 attempts" },
-  "guide.s7.tip":  { fr: "💡 Conseil : ne passez le test final qu'après avoir terminé au moins 80% des modules.", en: "💡 Tip: only take the final test after completing at least 80% of the modules." },
+  "guide.s7.tip":  { fr: "💡 Conseil : ne passez le test final qu'après avoir terminé tous les modules.", en: "💡 Tip: only take the final test after completing all modules." },
 
   "guide.s8.h":    { fr: "🎓 Recevez votre certificat ARCADINS", en: "🎓 Receive your ARCADINS certificate" },
   "guide.s8.p1":   { fr: "Après avoir réussi le test final, votre <strong>certificat officiel ARCADINS Training Center</strong> est généré automatiquement en PDF. Il mentionne :", en: "After passing the final test, your <strong>official ARCADINS Training Center certificate</strong> is automatically generated as a PDF. It includes:" },
@@ -1593,6 +1594,51 @@ const translations = {
   "tesp.test.failed.h": { fr: "📚 Score insuffisant", en: "📚 Score not sufficient" },
   "tesp.test.failed.p": { fr: "Note insuffisante — note requise : 22/30. Vous pouvez retenter le test après une nouvelle préparation.", en: "Insufficient score — required score: 22/30. You can retake the test after further preparation." },
   "tesp.test.retry": { fr: "↺ Retenter le test", en: "↺ Retake the test" },
+
+  // ===== PAGE ACCES (acces.html) =====
+  "acc.badge.title":  { fr: "🎯 Accès à votre test de niveau",               en: "🎯 Access your level test" },
+  "acc.badge.sub":    { fr: "TEF & TCF Canada · Immigration Canada / Québec", en: "TEF & TCF Canada · Immigration Canada / Quebec" },
+  "acc.sub":          { fr: "Remplissez le formulaire ci-dessous pour accéder à votre Test de niveau", en: "Fill out the form below to access your Level Test" },
+  "acc.pays.opt0":    { fr: "Sélectionnez votre pays",                        en: "Select your country" },
+  "acc.perk1":        { fr: "Test de niveau — ",                              en: "Level test — " },
+  "acc.perk2":        { fr: "Score NCLC estimé en quelques minutes",          en: "Estimated NCLC score in minutes" },
+  "acc.perk3":        { fr: "Accès à la plateforme complète après inscription", en: "Full platform access after registration" },
+  "acc.btn":          { fr: "🚀 Accéder à mon test d'essai",                  en: "🚀 Access my trial test" },
+  "acc.already":      { fr: "Déjà inscrit ?",                                 en: "Already registered?" },
+  "acc.signin":       { fr: "Se connecter",                                   en: "Log in" },
+  "acc.note":         { fr: "🔒 Vos données sont protégées et ne seront jamais revendues. Conformité LCAP / CASL.", en: "🔒 Your data is protected and will never be sold. CASL compliant." },
+  "acc.login.h1":     { fr: "Connexion",                                      en: "Login" },
+  "acc.login.sub":    { fr: "Accédez à votre espace ARCADINS",                en: "Access your ARCADINS space" },
+  "acc.back":         { fr: "← Retour à l'inscription",                       en: "← Back to registration" },
+  "acc.err.required": { fr: "Champ requis",                                   en: "Required field" },
+  "acc.err.email":    { fr: "Email invalide",                                 en: "Invalid email" },
+  "acc.err.tel":      { fr: "Téléphone invalide",                             en: "Invalid phone number" },
+
+  // ===== PAGE FORMATION (formation.html) =====
+  "form.progress.h":  { fr: "Ma progression",                                 en: "My progress" },
+  "form.stat.done":   { fr: "modules terminés",                               en: "modules completed" },
+  "form.stat.pct":    { fr: "complété",                                       en: "completed" },
+  "form.all.done":    { fr: "Tous les modules terminés !",                     en: "All modules completed!" },
+
+  // ===== PAGE PAIEMENT (forfaits.html) =====
+  "pay.h2":           { fr: "Finaliser votre inscription",                     en: "Complete your registration" },
+  "pay.sub":          { fr: "Paiement sécurisé · SSL · Garantie 7 jours",     en: "Secure payment · SSL · 7-day guarantee" },
+
+  // ===== ÉTAPES / STEPPER =====
+  "step.trial":       { fr: "Test d'essai",                                   en: "Trial test" },
+  "step.form":        { fr: "Formulaire",                                     en: "Form" },
+  "step.plan":        { fr: "Forfait",                                        en: "Plan" },
+  "step.qual":        { fr: "Qualification",                                  en: "Qualification" },
+  "step.modules":     { fr: "Formation",                                      en: "Training" },
+  "step.cert":        { fr: "Certificat",                                     en: "Certificate" },
+
+  // ===== TEST D'ESSAI (essai-gratuit.html) =====
+  "trial.meta1":         { fr: "10 minutes max",                              en: "10 minutes max" },
+  "trial.meta2":         { fr: "10 questions",                                en: "10 questions" },
+  "trial.meta3":         { fr: "Score NCLC estimé",                           en: "Estimated NCLC score" },
+  "trial.result.btn":    { fr: "Choisir mon forfait →",                       en: "Choose my plan →" },
+  "trial.result.next.h": { fr: "🚀 Prochaine étape",                          en: "🚀 Next step" },
+  "trial.result.next.p": { fr: "Votre Test d'Essai est terminé. Pour accéder à la formation complète, choisissez votre forfait.", en: "Your Trial Test is complete. To access the full training, choose your plan." },
 };
 
 // ===== PARRAINAGE — pages/parrainage.html =====

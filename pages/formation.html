@@ -48,7 +48,59 @@
     .locked-overlay { text-align:center; padding:80px 40px; }
     .locked-overlay .lock-icon { font-size:4rem; margin-bottom:20px; }
     .completed-badge { display:inline-flex; align-items:center; gap:8px; background:#e8f5e9; color:#2e7d32; border-radius:20px; padding:8px 20px; font-size:.88rem; font-weight:700; margin-bottom:20px; }
-    @media(max-width:768px) { .formation-layout{grid-template-columns:1fr;} .sidebar{display:none;} .main-content{padding:20px;} }
+    /* Test de module */
+    .test-panel { background:white; border-radius:16px; box-shadow:var(--shadow); overflow:hidden; margin-top:24px; }
+    .test-header { background:linear-gradient(135deg,var(--blue-dark),var(--blue)); color:white; padding:24px 32px; }
+    .test-header h3 { margin:0 0 4px; font-size:1.2rem; }
+    .test-header p { margin:0; opacity:.8; font-size:.85rem; }
+    .test-body { padding:32px; }
+    .test-question { margin-bottom:28px; }
+    .test-question p.q-text { font-weight:700; color:var(--blue-dark); margin-bottom:12px; font-size:.95rem; }
+    .test-options { display:flex; flex-direction:column; gap:8px; }
+    .test-opt { background:var(--gray-light); border:2px solid transparent; border-radius:10px; padding:11px 16px; cursor:pointer; font-size:.88rem; transition:.2s; text-align:left; font-family:inherit; color:var(--text); width:100%; }
+    .test-opt:hover:not(:disabled) { border-color:var(--blue); background:#eef3ff; }
+    .test-opt.selected { border-color:var(--blue); background:#eef3ff; font-weight:600; }
+    .test-opt.correct { border-color:#4caf50; background:#e8f5e9; color:#2e7d32; font-weight:700; }
+    .test-opt.wrong { border-color:#f44336; background:#ffebee; color:#c62828; }
+    .test-result-bar { border-radius:14px; padding:20px 24px; text-align:center; font-weight:700; font-size:1.05rem; }
+    .test-result-bar.pass { background:#e8f5e9; color:#2e7d32; }
+    .test-result-bar.fail { background:#ffebee; color:#c62828; }
+    .test-explanation { background:#fff8e1; border-left:4px solid #f9a825; border-radius:6px; padding:10px 14px; margin-top:10px; font-size:.83rem; color:#5d4037; line-height:1.5; }
+    /* Zone de pratique EO/EE */
+    .practice-zone { background:white; border-radius:16px; box-shadow:var(--shadow); overflow:hidden; margin-bottom:20px; }
+    .practice-zone-header { background:linear-gradient(135deg,#0b5d3b,#157a50); color:white; padding:20px 28px; }
+    .practice-zone-header h3 { margin:0 0 4px; font-size:1.05rem; }
+    .practice-zone-header p { margin:0; opacity:.8; font-size:.82rem; }
+    .practice-zone-body { padding:24px 28px; }
+    .practice-prompt { background:#f0f7f4; border-left:4px solid #0b5d3b; border-radius:8px; padding:14px 18px; margin-bottom:16px; font-size:.88rem; color:#1a3a2a; line-height:1.6; }
+    .practice-textarea { width:100%; min-height:160px; border:2px solid #d0dae8; border-radius:10px; padding:14px; font-family:inherit; font-size:.88rem; line-height:1.6; resize:vertical; outline:none; transition:.25s; }
+    .practice-textarea:focus { border-color:#0b5d3b; }
+    .practice-rubric { margin-top:16px; }
+    .practice-rubric h4 { font-size:.85rem; font-weight:700; color:#0b5d3b; margin-bottom:10px; }
+    .rubric-item { display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-bottom:1px solid #f0f0f0; font-size:.83rem; }
+    .rubric-item:last-child { border-bottom:none; }
+    .rubric-check { width:20px; height:20px; border:2px solid #0b5d3b; border-radius:4px; cursor:pointer; flex-shrink:0; margin-top:1px; accent-color:#0b5d3b; }
+    .rubric-label { color:var(--gray-text); line-height:1.4; }
+    .practice-wordcount { font-size:.75rem; color:#aaa; text-align:right; margin-top:6px; }
+    .oral-checklist { display:flex; flex-direction:column; gap:8px; }
+    .test-timer { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.15); border-radius:10px; padding:6px 14px; font-size:.88rem; font-weight:700; float:right; }
+    .test-timer.urgent { background:#c62828; animation:pulse .8s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+    /* Notes personnelles */
+    .notes-zone { background:#fffdf0; border:1.5px solid #e8d87a; border-radius:12px; padding:16px 20px; margin-top:20px; }
+    .notes-zone summary { font-size:.85rem; font-weight:700; color:#7a6a00; cursor:pointer; user-select:none; list-style:none; display:flex; align-items:center; gap:8px; }
+    .notes-zone summary::before { content:'📝'; }
+    .notes-zone summary::-webkit-details-marker { display:none; }
+    .notes-textarea { width:100%; min-height:100px; border:1.5px solid #e0d070; border-radius:8px; padding:10px 12px; font-family:inherit; font-size:.84rem; line-height:1.6; resize:vertical; outline:none; background:#fffff8; margin-top:10px; transition:.2s; }
+    .notes-textarea:focus { border-color:#b8a000; }
+    .notes-saved { font-size:.73rem; color:#9a8800; margin-top:4px; height:16px; transition:.3s; }
+    /* Audio placeholder CO */
+    .audio-placeholder { background:linear-gradient(135deg,#e3f2fd,#e8eaf6); border:2px dashed #90caf9; border-radius:12px; padding:20px 24px; margin-bottom:16px; }
+    .audio-placeholder h4 { color:#1565c0; margin:0 0 6px; font-size:.92rem; }
+    .audio-placeholder p { color:#5472a3; font-size:.83rem; margin:0 0 12px; line-height:1.5; }
+    .audio-script { background:white; border-radius:8px; padding:14px 16px; font-size:.83rem; color:#2a3a5a; line-height:1.7; border-left:3px solid #90caf9; }
+    .audio-script strong { color:#1565c0; }
+    @media(max-width:768px) { .formation-layout{grid-template-columns:1fr;} .sidebar{display:none;} .main-content{padding:20px;} .test-body{padding:20px;} }
   </style>
 </head>
 <body>
@@ -141,37 +193,655 @@ const MODULE_NAMES = {
 const MODULE_ICONS = ['📊','🎧','📖','✍️','🎤','📝','🗣️','🎯','⏱️','📋','✅','📈','🏆','👨‍🏫'];
 const MODULE_CONTENT = {
   fr: [
-    { desc:'Évaluez votre niveau de départ avec un test complet.', blocks:[{h:'📊 Votre niveau de départ',p:'Ce premier module établit votre niveau de base en français selon les 4 compétences évaluées au TEF & TCF Canada : compréhension orale, compréhension écrite, expression orale et expression écrite.'},{h:'🎯 Objectif',p:'Obtenir un profil NCLC précis pour adapter votre parcours de formation et maximiser votre progression.'}] },
-    { desc:'Maîtrisez les stratégies d\'écoute pour le TEF et TCF Canada.', blocks:[{h:'🎧 Techniques d\'écoute active',p:'Apprenez à identifier les informations clés dans les documents audio. Exercices avec dialogues, monologues et annonces de niveau A2 à C1.'},{h:'📝 Repérage et prise de notes',p:'Techniques de repérage des mots-clés, anticipation des réponses et gestion du temps pendant l\'épreuve.'}] },
-    { desc:'Développez vos compétences de lecture en contexte québécois.', blocks:[{h:'📖 Lecture rapide et efficace',p:'Techniques de survol, lecture en diagonale et identification des idées principales dans des textes variés : articles, publicités, formulaires IRCC.'},{h:'🇨🇦 Vocabulaire canadien',p:'Expressions et termes spécifiques aux documents officiels canadiens, aux formulaires d\'immigration et aux textes institutionnels.'}] },
-    { desc:'Maîtrisez la rédaction formelle pour le TEF & TCF Canada.', blocks:[{h:'✍️ Structure de rédaction',p:'Apprenez à rédiger une lettre formelle (Tâche 1) et un texte argumentatif (Tâche 2). Connecteurs logiques, vocabulaire de position, formules d\'ouverture et de clôture.'},{h:'📋 Grille d\'évaluation',p:'Comprendre les 4 critères d\'évaluation : adéquation, cohérence, lexique, morphosyntaxe. Exemples de productions notées 8/10 et 10/10.'}] },
-    { desc:'Préparez-vous à l\'épreuve orale du TEF et TCF Canada.', blocks:[{h:'🎤 Structure du discours',p:'Techniques d\'introduction, développement et conclusion pour l\'interaction, le monologue et l\'argumentation. Gestion du stress et de la fluidité.'},{h:'🗣️ Prononciation et rythme',p:'Améliorer votre accentuation, votre prosodie et votre débit pour atteindre les niveaux NCLC 7 et au-delà.'}] },
-    { desc:'Consolidez vos bases grammaticales pour maximiser votre score.', blocks:[{h:'📝 Points essentiels',p:'Conjugaison aux temps principaux, accord des participes, subjonctif, conditionnel, voix passive. Exercices contextualisés TEF/TCF.'},{h:'⚠️ Erreurs fréquentes',p:'Les 20 erreurs grammaticales les plus pénalisantes au TEF & TCF Canada et comment les éviter systématiquement.'}] },
-    { desc:'Maîtrisez le vocabulaire de l\'immigration canadienne.', blocks:[{h:'🗺️ Lexique IRCC',p:'Terminologie officielle : Express Entry, NCLC, CLB, résidence permanente, PEQ, PTQE, LMIA, CAQ, parrainage.'},{h:'🏛️ Institutions et programmes',p:'IRCC, MIFI, MIDI, CLÉO, OFII — comprendre les acronymes et les rôles de chaque organisme dans votre démarche d\'immigration.'}] },
-    { desc:'Apprenez à cibler précisément votre score NCLC.', blocks:[{h:'🎯 Barème et stratégie',p:'Comprendre la conversion de vos scores TEF/TCF en NCLC. Comment 5 points supplémentaires au TEF peuvent vous faire passer de NCLC 7 à NCLC 8.'},{h:'📈 Plan de progression',p:'Créez votre plan de travail personnalisé pour atteindre NCLC 7, 8 ou 9 selon votre niveau de départ et votre date d\'examen.'}] },
-    { desc:'Reproduisez les conditions exactes de l\'examen.', blocks:[{h:'⏱️ Simulations complètes',p:'Accédez à 3 simulations complètes reproduisant fidèlement le format et la durée du TEF & TCF Canada. Chronométré, noté, corrigé.'},{h:'📊 Analyse des résultats',p:'Après chaque simulation, consultez votre analyse détaillée par compétence et identifiez vos axes d\'amélioration prioritaires.'}] },
-    { desc:'Accédez à notre banque de 200+ questions d\'entraînement.', blocks:[{h:'📋 Questions par compétence',p:'50+ questions par compétence (CO, CE, EO, EE). Difficulté croissante de A2 à C1. Corrections immédiate avec explication pédagogique.'},{h:'🎯 Mode entraînement ciblé',p:'Choisissez de travailler uniquement les questions correspondant à votre point faible identifié lors du test de qualification.'}] },
-    { desc:'Comprenez vos erreurs et progressez plus vite.', blocks:[{h:'✅ Corrections détaillées',p:'Chaque exercice est accompagné d\'une correction complète, d\'une explication de la règle grammaticale et d\'exemples supplémentaires.'},{h:'📚 Fiches de révision',p:'Téléchargez vos fiches de révision personnalisées en PDF : règles grammaticales, vocabulaire ciblé, structures de rédaction.'}] },
-    { desc:'Visualisez votre évolution et restez motivé.', blocks:[{h:'📈 Votre tableau de bord',p:'Consultez votre progression graphique module par module, vos scores par compétence, et votre évolution du score NCLC estimé semaine après semaine.'},{h:'🏅 Badges de progression',p:'Débloquez des badges de réussite à chaque étape franchie. Un système de motivation gamifié pour maintenir votre engagement.'}] },
-    { desc:'Votre certificat ARCADINS vous attend à l\'issue du test final.', blocks:[{h:'🏆 Certificat de réussite',p:'Après réussite du test final, votre certificat PDF est généré automatiquement avec votre nom, votre score NCLC estimé, la date et un numéro unique de vérification.'},{h:'📧 Envoi automatique',p:'Le certificat vous est envoyé par email et archivé dans votre espace membre. Il peut être partagé avec les employeurs ou utilisé comme preuve de formation.'}] },
-    { desc:'(Option VIP) Séances individuelles avec un formateur expert.', blocks:[{h:'👨‍🏫 Coaching personnalisé',p:'Pour les titulaires du plan VIP : 4 heures de coaching individuel par visioconférence avec un formateur certifié FLE spécialisé TEF & TCF Canada.'},{h:'📝 Correction productions',p:'Vos productions écrites et orales sont corrigées et annotées par le formateur. Retours précis sur la prononciation, le lexique et la structure.'}] }
+    // Module 1 — Introduction au TEF & TCF Canada
+    { desc:'Comprenez le fonctionnement des examens et évaluez votre niveau de départ.', blocks:[
+      {h:'📊 Objectifs pédagogiques',p:'Ce module fondateur vous permet de comprendre le fonctionnement du TEF Canada et du TCF Canada, d\'établir votre profil NCLC de départ et de planifier votre parcours de formation selon votre objectif d\'immigration.'},
+      {h:'🎯 Les 4 compétences évaluées',p:'Le TEF & TCF Canada évalue 4 compétences : <strong>Compréhension Orale (CO)</strong>, <strong>Compréhension Écrite (CE)</strong>, <strong>Expression Orale (EO)</strong> et <strong>Expression Écrite (EE)</strong>. Chaque compétence donne un score NCLC de 1 à 12.'},
+      {h:'📋 NCLC vs CECRL — Correspondances clés',p:'NCLC 4 ≈ A2 · NCLC 5-6 ≈ B1 · NCLC 7 ≈ B2 · NCLC 8 ≈ B2+ · NCLC 9 ≈ C1 · NCLC 10-12 ≈ C2. Pour Express Entry, le bonus de langue commence à NCLC 7 et est maximal à NCLC 9+.'},
+      {h:'🏛️ TEF Canada vs TCF Canada — Quelle différence ?',p:'Le <strong>TEF Canada</strong> est administré par la CCIP (Chambre de Commerce de Paris). Le <strong>TCF Canada</strong> est géré par le CIEP/France Éducation International. Les deux sont reconnus par IRCC. Le TEF donne des scores en points (0-450) ; le TCF donne des niveaux de A1 à C2.'},
+      {h:'⚠️ Pièges à éviter dès le départ',p:'Ne sous-estimez pas l\'expression orale — c\'est souvent la compétence la plus chronophage à améliorer. Ne visez pas uniquement NCLC 7 : passer de 7 à 9 peut ajouter plus de 50 points CRS. Prévoyez au minimum 8 à 12 semaines de préparation sérieuse.'},
+      {h:'🗓️ Conseils d\'organisation',p:'Planifiez votre formation sur 8 à 14 semaines. Allouez 45 à 60 minutes par jour, 5 jours par semaine. Commencez par identifier vos 2 compétences les plus faibles et y consacrez 60 % de votre temps d\'entraînement.'}
+    ]},
+    // Module 2 — Compréhension Orale Niveau 1
+    { desc:'Développez vos stratégies d\'écoute et maîtrisez les types de documents sonores.', blocks:[
+      {h:'🎧 Compétences visées',p:'Ce module cible les niveaux NCLC 5 à 7 (B1-B2) en compréhension orale. Vous apprendrez à identifier les informations essentielles dans des conversations courantes, des annonces publiques et des bulletins d\'information.'},
+      {h:'📻 Types de documents au TEF & TCF Canada',p:'<strong>Dialogues</strong> (collègues, voisins, client/vendeur) · <strong>Annonces</strong> (transports, lieux publics) · <strong>Bulletins météo</strong> · <strong>Messages téléphoniques</strong> · <strong>Émissions de radio courtes</strong>. Niveau : A2 à B2 pour ce module.'},
+      {h:'🔑 Stratégie : les 3 écoutes mentales',p:'<strong>1ère écoute</strong> : identifiez le contexte (qui parle ? où ? de quoi ?). <strong>2ème écoute</strong> : repérez les informations demandées par les questions. <strong>Pendant l\'écoute</strong> : ne transcrivez pas tout — notez seulement les mots-clés, chiffres et noms propres.'},
+      {h:'⚙️ Gestion du temps — Technique essentielle',p:'Lisez les questions AVANT l\'écoute (pendant le temps accordé). Répondez EN écoutant, pas après. Si vous ratez une réponse, passez à la suivante — ne bloquez jamais. Utilisez les 8-10 secondes entre chaque question pour relire la suivante.'},
+      {h:'🇨🇦 Accent québécois — Spécificités',p:'Le TCF Canada peut inclure des locuteurs avec un accent québécois. Caractéristiques : diphtongues (moi → "moé"), affrication (ti, di), vocabulaire spécifique (char = voiture, dépanneur = épicerie, courriel = email). Exposez-vous régulièrement à Radio-Canada et à l\'émission Tout le monde en parle.'},
+      {h:'📝 Mémo — 5 points à retenir',p:'① Lisez toujours les questions avant d\'écouter ② Ciblez les mots-clés, pas les détails ③ Ne bloquez pas sur une question manquée ④ Les pièges sont souvent dans les détails numériques (dates, heures, prix) ⑤ L\'accent québécois n\'est pas une erreur — c\'est du français authentique.'}
+    ]},
+    // Module 3 — Expression Orale Niveau 1
+    { desc:'Structurez vos interventions orales et développez votre aisance à l\'expression.', blocks:[
+      {h:'🎤 Compétences visées',p:'Ce module prépare aux épreuves orales de niveau NCLC 5 à 7 (B1-B2) : interaction guidée (jeu de rôle), monologue préparé et questions-réponses courtes sur des sujets du quotidien.'},
+      {h:'🗺️ Structure d\'une réponse orale efficace',p:'Toute réponse orale doit suivre la structure <strong>IMC</strong> : <strong>Introduction</strong> (annoncez votre point de vue en 1-2 phrases), <strong>Message</strong> (développez avec 2 arguments + exemples), <strong>Conclusion</strong> (résumez en 1 phrase). Même pour une réponse de 2 minutes.'},
+      {h:'🔗 Connecteurs oraux indispensables (niveau B1-B2)',p:'<strong>Introduction</strong> : « Je vais vous parler de… », « Ce sujet me tient à cœur car… » · <strong>Addition</strong> : « De plus », « Par ailleurs », « En outre » · <strong>Opposition</strong> : « Cependant », « Néanmoins » · <strong>Conclusion</strong> : « En résumé », « Pour conclure », « En définitive ».'},
+      {h:'🎙️ Les pièges classiques de l\'épreuve orale',p:'① Ne pas répondre à la question posée (hors sujet) ② Parler trop vite par stress → erreurs de prononciation ③ Répéter les mêmes mots (utiliser des synonymes) ④ S\'arrêter et dire « Euh... je sais pas » — mieux vaut reformuler ⑤ Ignorer la structure intro/développement/conclusion.'},
+      {h:'💬 Situations de communication fréquentes',p:'<strong>Vie quotidienne</strong> : logement, transports, achats, rendez-vous médicaux. <strong>Travail</strong> : entretien d\'embauche, réunion, demande de congé. <strong>Immigration</strong> : expliquer son projet, décrire son parcours. Entraînez-vous sur ces scénarios régulièrement.'},
+      {h:'📝 Mémo — Formules utiles à mémoriser',p:'« À mon avis… » · « Il me semble que… » · « Je suis convaincu(e) que… » · « Certes… mais… » · « Il convient de préciser que… » · « En ce qui me concerne… » · « Pour étayer mon propos… » · « En guise de conclusion… »'}
+    ]},
+    // Module 4 — Compréhension Écrite Niveau 1
+    { desc:'Maîtrisez la lecture de textes courants et développez votre vocabulaire fonctionnel.', blocks:[
+      {h:'📖 Compétences visées',p:'Ce module cible NCLC 5 à 7 (B1-B2) en compréhension écrite. Vous apprendrez à lire et comprendre des textes courants : publicités, messages, modes d\'emploi, articles de presse courts, formulaires administratifs.'},
+      {h:'📄 Types de textes — Niveau 1',p:'<strong>Textes fonctionnels</strong> : petites annonces, menus, horaires, affiches · <strong>Textes informatifs courts</strong> : articles de blog, FAQ, brochures · <strong>Messages et courriels</strong> informels · <strong>Formulaires simples</strong> : demande de logement, inscription. Chaque type a sa propre stratégie de lecture.'},
+      {h:'⚡ Techniques de lecture rapide',p:'<strong>Skimming</strong> (survol) : parcourez le texte en 30 secondes pour en saisir le thème général. <strong>Scanning</strong> (balayage) : recherchez un mot, une date, un chiffre précis. <strong>Lecture sélective</strong> : ne lisez en détail que les paragraphes liés aux questions. Ne lisez JAMAIS tout mot à mot au TEF/TCF.'},
+      {h:'🇨🇦 Vocabulaire canadien — Termes essentiels',p:'<strong>Administration</strong> : NAS (numéro d\'assurance sociale), T4 (relevé d\'emploi), CPE (centre de la petite enfance), CLSC (centre de santé communautaire). <strong>Vie quotidienne</strong> : dépanneur, autobus (pas "bus"), courriel (pas "email"), stationnement (pas "parking"), magasinage (pas "shopping").'},
+      {h:'⚠️ Pièges fréquents en CE',p:'① Choisir la réponse qui contient des mots du texte sans avoir vraiment compris ② Confondre une information affirmée et une information niée ③ Ignorer les nuances (« parfois », « rarement », « il arrive que ») ④ Répondre d\'après ses propres connaissances et non d\'après le texte.'},
+      {h:'📝 Mémo — Stratégie en 4 étapes',p:'<strong>Étape 1</strong> : lisez les questions (30 sec) · <strong>Étape 2</strong> : identifiez le type de texte · <strong>Étape 3</strong> : lisez le texte en ciblant les réponses · <strong>Étape 4</strong> : relisez les questions et vérifiez. Budget temps : 1,5 minute par question maximum.'}
+    ]},
+    // Module 5 — Expression Écrite Niveau 1
+    { desc:'Rédigez des textes formels structurés adaptés aux exigences du TEF & TCF Canada.', blocks:[
+      {h:'✍️ Compétences visées',p:'Ce module prépare à la Tâche 1 de l\'expression écrite (lettre/courriel formel, 120-150 mots) et introduit les bases de la Tâche 2. Niveau cible : NCLC 5 à 7 (B1-B2).'},
+      {h:'📧 Structure d\'un courriel formel — Guide complet',p:'<strong>1. Objet</strong> : résumer en 5-8 mots (« Demande de renseignements — Inscription au programme ») <strong>2. Salutation</strong> : « Madame, » ou « Monsieur, » (avec virgule) <strong>3. Corps</strong> : introduction → développement → demande ou conclusion <strong>4. Formule de politesse</strong> : « Veuillez agréer, Madame, l\'expression de mes salutations distinguées. » <strong>5. Signature</strong>.'},
+      {h:'🔑 Vocabulaire de la politesse épistolaire',p:'<strong>Ouverture</strong> : « J\'ai l\'honneur de vous soumettre… », « Suite à notre entretien téléphonique… », « Je me permets de… » · <strong>Corps</strong> : « Je souhaiterais obtenir des informations concernant… », « Pourriez-vous me faire parvenir… » · <strong>Clôture</strong> : « Dans l\'attente de votre réponse, je demeure à votre disposition. »'},
+      {h:'⚠️ Les 10 erreurs les plus pénalisantes',p:'① Utiliser « tu » au lieu de « vous » ② Oublier la formule de politesse finale ③ Dépasser ou ne pas atteindre le nombre de mots ④ Anglicismes (« canceller » → annuler, « meeting » → réunion) ⑤ Répétition du mot « je » en début de phrases consécutives ⑥ Absence de connecteurs logiques ⑦ Confusion sur/sous (sur rendez-vous ≠ sous rendez-vous) ⑧ « Suite à » ≠ « Faites suite à » ⑨ Pas d\'objet précis ⑩ Formule de salutation déséquilibrée.'},
+      {h:'📊 Grille d\'évaluation officielle',p:'L\'expression écrite est notée selon 4 critères : <strong>Adéquation à la tâche</strong> (réponse aux consignes) · <strong>Cohérence et cohésion</strong> (logique et connecteurs) · <strong>Compétence lexicale</strong> (vocabulaire varié, précis) · <strong>Compétence grammaticale</strong> (exactitude morphosyntaxique). Chaque critère pèse ~25 % de la note.'},
+      {h:'📝 Mémo — Checklist avant de rendre votre copie',p:'✓ J\'ai respecté le nombre de mots (120-150) ✓ J\'ai utilisé le « vous » formel ✓ Ma formule de politesse est complète ✓ J\'ai utilisé au moins 4 connecteurs différents ✓ J\'ai répondu à toutes les consignes ✓ J\'ai relu pour les accords et conjugaisons'}
+    ]},
+    // Module 6 — Grammaire Essentielle
+    { desc:'Maîtrisez les structures grammaticales fondamentales du français pour le TEF & TCF Canada.', blocks:[
+      {h:'📚 Prérequis et objectifs',p:'Ce module consolide les bases grammaticales indispensables pour atteindre NCLC 6 à 8. Nous traitons en priorité les structures les plus fréquemment testées et les plus souvent mal maîtrisées par les candidats.'},
+      {h:'⚙️ Les temps essentiels — Révision ciblée',p:'<strong>Passé composé</strong> : être ou avoir ? + accords · <strong>Imparfait</strong> : habitudes, descriptions, circonstances · <strong>Futur simple</strong> : radical irrégulier (ir-, aur-, saur-, ferr-, viendr-) · <strong>Conditionnel</strong> : politesse + hypothèse (si + imparfait → conditionnel) · <strong>Subjonctif</strong> : après il faut que, bien que, pour que, douter que.'},
+      {h:'🔴 Les 15 erreurs les plus pénalisées au TEF & TCF',p:'① Accord du participe passé avec avoir (COD antéposé) ② « Malgré que » (fautif → « bien que ») ③ Subjonctif après « espérer que » (non — indicatif) ④ « Si » + conditionnel (jamais !) ⑤ Confusion « ce » / « se » ⑥ Confusion « a » / « à » ⑦ « Leur » invariable comme pronom (leur dire ≠ leurs) ⑧ Participe présent vs gérondif ⑨ Négation mal placée au passé composé ⑩ Accord de l\'adjectif avec le nom le plus proche (faux).'},
+      {h:'💡 Méthode de mémorisation des irrégularités',p:'Regroupez les verbes irréguliers par familles : <strong>Famille -dre</strong> (prendre, apprendre, comprendre) → même conjugaison. <strong>Famille -ir type 2</strong> (partir, sortir, mentir) → je pars, tu pars, il part. <strong>Auxiliaires</strong> être/avoir à tous les temps : mémorisez-les absolument en priorité.'},
+      {h:'📋 Le subjonctif — Tableau des déclencheurs',p:'<strong>Obligation</strong> : il faut que, il est nécessaire que, il est essentiel que · <strong>Émotion</strong> : je suis content que, je regrette que, il est dommage que · <strong>Doute/Possibilité</strong> : il est possible que, je doute que, je ne crois pas que · <strong>Concession</strong> : bien que, quoique, encore que · <strong>But</strong> : pour que, afin que · <strong>Condition</strong> : à condition que, pourvu que.'},
+      {h:'📝 Mémo — 5 règles d\'or de la grammaire française',p:'① Le COD antéposé avec avoir → accord obligatoire ② Si + imparfait → conditionnel présent (JAMAIS si + conditionnel) ③ Bien que, quoique, pour que → TOUJOURS subjonctif ④ Après espérer, croire, penser (affirmatif) → indicatif ⑤ Le gérondif (en + participe présent) = même sujet que le verbe principal'}
+    ]},
+    // Module 7 — Vocabulaire Thématique
+    { desc:'Enrichissez votre vocabulaire dans les domaines de l\'immigration, du travail et de la vie canadienne.', blocks:[
+      {h:'🗺️ Vocabulaire de l\'immigration — Niveau avancé',p:'<strong>Procédures</strong> : déposer/constituer un dossier · soumettre une demande · obtenir une invitation (ITD) · se conformer aux exigences · rencontrer les critères d\'admissibilité · faire valoir ses droits · interjeter appel. <strong>Documents</strong> : acte de naissance apostillé · extrait de casier judiciaire · évaluation des diplômes étrangers (EDE).'},
+      {h:'💼 Vocabulaire professionnel — Contexte canadien',p:'<strong>CV canadien</strong> : compétences transférables, accomplissements quantifiés, références professionnelles · <strong>Entretien</strong> : mettre en valeur son expérience, démontrer sa valeur ajoutée, négocier sa rémunération · <strong>Milieu de travail</strong> : faire du bénévolat (volunteering), effectuer du télétravail (remote work), bénéficier d\'avantages sociaux.'},
+      {h:'🏥 Vocabulaire — Santé et services sociaux',p:'Carte d\'assurance maladie (RAMQ au Québec) · médecin de famille / omnipraticien · CLSC (centre de santé communautaire) · liste d\'attente · soins d\'urgence (urgence vs salle d\'urgence) · prescription / ordonnance · médicaments génériques · assurance médicaments complémentaire.'},
+      {h:'🏠 Vocabulaire — Logement au Canada',p:'Appartement / logement / loyer · bail (contrat de location, généralement 12 mois) · Régie du logement (Tribunal administratif du logement au Québec) · dépôt de garantie (caution) · charges incluses / non comprises · condo vs coopérative d\'habitation · inspection pré-achat · hypothèque / mise de fonds.'},
+      {h:'🎓 Vocabulaire — Éducation et formation',p:'Cégep (collège d\'enseignement général et professionnel — uniquement au Québec) · AEC (Attestation d\'Études Collégiales) · DEC (Diplôme d\'Études Collégiales) · DEP (Diplôme d\'Études Professionnelles) · équivalence de diplôme · reconnaissance des acquis (RAC) · formation continue · bourse d\'études.'},
+      {h:'📝 Mémo — 30 verbes utiles pour le TEF & TCF',p:'Solliciter · octroyer · soumettre · valider · attester · justifier · accréditer · mandater · renouveler · prolonger · résilier · annuler · reporter · confirmer · notifier · aviser · informer · renseigner · consulter · se conformer · bénéficier · s\'acquitter · acquiescer · contester · interjeter · revendiquer · exercer ses droits · faire valoir · prendre acte · donner suite.'}
+    ]},
+    // Module 8 — Compréhension Orale Niveau 2
+    { desc:'Maîtrisez l\'écoute de documents complexes et atteignez les niveaux NCLC 8 à 10.', blocks:[
+      {h:'🎧 Compétences visées',p:'Ce module cible les niveaux NCLC 8 à 10 (B2+ à C1). Vous apprendrez à comprendre des documents sonores complexes : débats, conférences, émissions thématiques, entretiens d\'experts et reportages journalistiques.'},
+      {h:'📡 Types de documents — Niveau avancé',p:'<strong>Interviews et entretiens</strong> (experts, chercheurs, personnalités publiques) · <strong>Débats et tables rondes</strong> (plusieurs voix, opinions contradictoires) · <strong>Reportages journalistiques</strong> (Radio-Canada, Le Devoir en ligne) · <strong>Conférences et exposés</strong> (registre académique). Durée : 1 min 30 à 3 minutes.'},
+      {h:'🔬 Stratégies d\'écoute avancées',p:'① Identifiez le registre (formel, familier, soutenu) dès les premières secondes ② Distinguez faits, opinions et hypothèses ③ Repérez l\'implicite et les sous-entendus ④ Prêtez attention aux marqueurs d\'atténuation (« il semblerait que », « selon certains ») ⑤ Notez les chiffres, dates et données statistiques mentionnés.'},
+      {h:'🇨🇦 Contexte québécois — Expressions avancées',p:'<strong>Médias québécois à écouter</strong> : Radio-Canada (ICI Première), CIBL 101.5 FM, Cogeco Nouvelles · <strong>Expressions courantes</strong> : « C\'est le boutte » (c\'est super), « pogner » (attraper/devenir populaire), « pantoute » (pas du tout), « maganer » (abîmer) · Ces expressions apparaissent rarement à l\'examen mais enrichissent votre compréhension culturelle.'},
+      {h:'⚠️ Pièges des documents longs',p:'① Les premières informations ne sont pas toujours les plus importantes — restez attentif jusqu\'à la fin ② Un locuteur peut citer un point de vue qu\'il ne partage pas lui-même ③ Les comparaisons (plus/moins que) sont souvent testées ④ La conclusion d\'un débat est différente des opinions des participants ⑤ Les chiffres sont souvent modifiés légèrement dans les distracteurs.'},
+      {h:'📝 Plan de progression — Niveau 2',p:'Semaine 1-2 : écoutes quotidiennes de 15 min (Radio-Canada) sans sous-titres · Semaine 3-4 : exercices avec transcription — comparez votre compréhension à la transcription · Semaine 5-6 : simulations chronométrées sur des documents de 2-3 min · Objectif : 85 % de bonnes réponses sur des documents B2+ avant de passer au module suivant.'}
+    ]},
+    // Module 9 — Expression Orale Niveau 2
+    { desc:'Atteignez l\'excellence orale avec des arguments structurés de niveau C1.', blocks:[
+      {h:'🎤 Compétences visées',p:'Ce module prépare aux épreuves orales de niveau NCLC 8 à 10 (B2+-C1) : argumentation développée, débat contradictoire, prise de position nuancée et interaction avec un examinateur.'},
+      {h:'🏛️ Structure d\'une argumentation de niveau C1',p:'<strong>Introduction</strong> (30 sec) : reformulez le sujet + annoncez votre plan · <strong>Thèse</strong> (1 min) : argument principal + exemple concret · <strong>Antithèse</strong> (1 min) : argument adverse + réfutation · <strong>Synthèse</strong> (30 sec) : position nuancée + ouverture · <strong>Conclusion</strong> (15 sec) : phrase d\'impact mémorable.'},
+      {h:'💎 Vocabulaire de haut registre — NCLC 9-10',p:'<strong>Pour affirmer</strong> : « Force est de constater que... » · « Il est indéniable que... » · « Il convient de souligner que... » · <strong>Pour nuancer</strong> : « Certes... mais il n\'en demeure pas moins que... » · « Il serait réducteur de prétendre que... » · <strong>Pour conclure</strong> : « En définitive... » · « Au final, il appert que... »'},
+      {h:'🔄 La concession — Technique avancée',p:'La concession est le marqueur de maturité intellectuelle le plus valorisé à l\'oral. Structure : <strong>« Certes + [argument adverse reconnu], mais/cependant + [réfutation ou nuance] »</strong>. Exemple : « Certes, l\'immigration crée des défis d\'intégration, mais force est de constater que sa contribution économique dépasse largement ces difficultés. »'},
+      {h:'🎙️ Gestion des imprévus à l\'oral',p:'Si vous ne comprenez pas la question : « Pourriez-vous reformuler votre question ? » / « Si j\'ai bien compris, vous me demandez de... » · Si vous cherchez vos mots : « Comment dire... » / « Le terme qui me vient est... » / « Pour m\'exprimer autrement... » · Évitez absolument : « Je ne sais pas », les silences longs, les répétitions en boucle.'},
+      {h:'📝 Mémo — Sujets fréquents à l\'oral TEF/TCF',p:'Immigration et intégration · Bilinguisme et langues officielles · Travail à distance et nouvelles technologies · Environnement et développement durable · Système éducatif québécois/canadien · Santé publique · Réseaux sociaux · Égalité des chances · Vieillissement de la population · Mondialisation et identité culturelle.'}
+    ]},
+    // Module 10 — Compréhension Écrite Niveau 2
+    { desc:'Analysez des textes complexes et développez votre compréhension en profondeur.', blocks:[
+      {h:'📖 Compétences visées',p:'Ce module cible NCLC 8 à 10 (B2+ à C1) en compréhension écrite. Vous apprendrez à analyser des textes complexes : articles de fond, éditoriaux, textes académiques, documents légaux et administratifs.'},
+      {h:'📰 Types de textes — Niveau avancé',p:'<strong>Articles d\'opinion et éditoriaux</strong> · <strong>Textes académiques et scientifiques</strong> · <strong>Documents juridiques simplifiés</strong> (contrats, baux) · <strong>Textes argumentatifs complexes</strong> · <strong>Documents officiels IRCC</strong> (guides, politiques). Ces textes exigent une lecture analytique et non linéaire.'},
+      {h:'🔬 Lecture analytique — 5 étapes',p:'① <strong>Identification</strong> : type de texte, auteur, source, date · ② <strong>Thèse</strong> : quelle est la position défendue ? · ③ <strong>Arguments</strong> : quels sont les 2-3 arguments principaux ? · ④ <strong>Implicite</strong> : ce qui est suggéré sans être dit explicitement · ⑤ <strong>Ton</strong> : formel/informel, neutre/engagé, objectif/subjectif.'},
+      {h:'🧩 Vocabulaire des textes complexes',p:'<strong>Marqueurs d\'implicite</strong> : « il est à noter que », « il convient de rappeler que », « force est de constater que » · <strong>Atténuation</strong> : « il semblerait que », « selon certains », « il est permis de supposer » · <strong>Emphase</strong> : « c\'est précisément », « il ne fait aucun doute que », « il est indéniable que ».'},
+      {h:'⚠️ Pièges des textes de niveau C1',p:'① Les questions testent souvent la compréhension de l\'implicite et des nuances, pas des informations explicites ② Méfiez-vous des distracteurs partiellement vrais ③ La source du texte indique souvent le registre attendu ④ Un texte argumentatif peut présenter des points de vue adverses sans les cautionner ⑤ « Selon l\'auteur » ≠ « selon des études » ≠ « selon le narrateur ».'},
+      {h:'📝 Mémo — Vocabulaire des connecteurs de haut niveau',p:'<strong>Cause</strong> : attendu que, vu que, en raison de, du fait de · <strong>Conséquence</strong> : d\'où, c\'est pourquoi, il s\'ensuit que, il en résulte que · <strong>Concession</strong> : si tant est que, quand bien même, nonobstant, en dépit de · <strong>Addition</strong> : qui plus est, de surcroît, voire, a fortiori.'}
+    ]},
+    // Module 11 — Expression Écrite Niveau 2
+    { desc:'Rédigez des textes argumentatifs de niveau C1 avec maîtrise et précision stylistique.', blocks:[
+      {h:'✍️ Compétences visées',p:'Ce module prépare à la Tâche 2 de l\'expression écrite (200-250 mots, texte argumentatif) au niveau NCLC 8 à 10 (B2+-C1). Il vise la maîtrise stylistique, la richesse lexicale et la rigueur argumentative.'},
+      {h:'📐 Structure avancée d\'un texte argumentatif',p:'<strong>Introduction</strong> : accroche (fait, question, citation) → contextualisation → thèse annoncée · <strong>Développement</strong> : ¶1 (argument 1 + exemple + mini-conclusion) · ¶2 (argument 2 + exemple + mini-conclusion) · ¶3 (concession + réfutation) · <strong>Conclusion</strong> : synthèse + ouverture.'},
+      {h:'💎 Lexique soutenu — À intégrer dans vos productions',p:'<strong>Verbes académiques</strong> : démontrer, attester, corroborer, étayer, infirmer, nuancer, appréhender, préconiser · <strong>Substantifs</strong> : l\'enjeu, la problématique, la dichotomie, la dialectique, l\'approche holistique · <strong>Locutions</strong> : force est de constater, il appert que, à cet égard, dans cette optique, en l\'occurrence.'},
+      {h:'🔴 Erreurs qui font chuter de NCLC 8 à NCLC 6',p:'① Répéter le même mot 3+ fois dans un paragraphe (utiliser des synonymes) ② Commencer plusieurs phrases consécutives par « Je » ③ Anglicismes non corrigés ④ Paragraphes déséquilibrés (1 phrase vs 10 phrases) ⑤ Absence de transition entre les paragraphes ⑥ Introduction trop longue et conclusion expédiée ⑦ Oublier de prendre une position claire.'},
+      {h:'✅ Guide de révision en 3 passes',p:'<strong>Passe 1 — Fond</strong> : ai-je répondu à la consigne ? ma thèse est-elle claire ? ai-je 2-3 arguments étayés ? · <strong>Passe 2 — Forme</strong> : ai-je utilisé au moins 6 connecteurs différents ? ai-je varié le vocabulaire ? · <strong>Passe 3 — Langue</strong> : accords (participes, adjectifs), conjugaisons, ponctuation. Budget : 5 minutes de révision sur 60.'},
+      {h:'📝 Mémo — Sujets fréquents à l\'écrit TEF/TCF',p:'Technologies et vie privée · Immigration et intégration · Écologie et modes de vie durables · L\'éducation à distance · Réseaux sociaux et jeunesse · Travail et épanouissement personnel · Mondialisation économique · Bilinguisme et identité · Santé publique et responsabilité individuelle · Les aînés dans la société contemporaine.'}
+    ]},
+    // Module 12 — Techniques d\'Examen
+    { desc:'Maîtrisez les techniques de gestion du temps et des stratégies pour chaque épreuve.', blocks:[
+      {h:'⏱️ Gestion du temps — Les 4 épreuves',p:'<strong>CO (~40 min)</strong> : 1-1,5 min/question → lisez avant, répondez pendant · <strong>CE (~60 min)</strong> : 90 sec/question → survol puis lecture ciblée · <strong>EE (~60 min)</strong> : 5 min planification + 45 min rédaction + 10 min révision · <strong>EO (~15 min)</strong> : 30-60 sec préparation + 2-4 min réponse.'},
+      {h:'🧠 Psychologie de l\'examen — Rester performant',p:'① La veille : pas de révision intensive — activité légère, sommeil suffisant ② Le matin : petit-déjeuner protéiné, arriver 30 minutes à l\'avance ③ En salle : si vous bloquez sur une question, marquez-la et continuez ④ Ne revenez jamais sur une réponse sauf si vous avez une raison précise ⑤ Votre premier instinct est souvent le bon.'},
+      {h:'🎯 Technique des 4 éliminations (QCM)',p:'Face à une question difficile : ① Éliminez les réponses clairement fausses (il en reste souvent 2) ② Repérez les réponses « presque vraies » (avec un mot faux) ③ Méfiez-vous des réponses qui paraissent trop évidentes ④ La réponse la plus précise et nuancée est souvent la bonne ⑤ Ne laissez JAMAIS une case vide — il n\'y a pas de pénalité pour une mauvaise réponse.'},
+      {h:'📋 Checklist J-7 avant l\'examen',p:'✓ Pratiquer une simulation complète chronométrée ✓ Réviser les connecteurs logiques et formules épistolaires ✓ Revoir les erreurs récurrentes de grammaire ✓ Préparer 3-4 exemples concrets sur des sujets d\'opinion fréquents ✓ Confirmer l\'heure et le lieu de l\'examen ✓ Préparer les documents requis (pièce d\'identité, convocation).'},
+      {h:'🔁 Plan de révision — Dernière semaine',p:'<strong>J-7 à J-5</strong> : simulation complète + correction approfondie · <strong>J-4 à J-3</strong> : révision ciblée des faiblesses identifiées · <strong>J-2</strong> : révision légère, connecteurs, formules · <strong>J-1</strong> : activité de détente, lecture plaisir, pas de stress · <strong>Jour J</strong> : confiance, technique, calme.'},
+      {h:'📝 Mémo — 10 réflexes à automatiser',p:'① Toujours lire les questions avant le texte/l\'audio ② Jamais de conditionnel après "si" ③ Accord du participe passé avec avoir = COD avant ④ "Bien que" = subjonctif ⑤ Formule de politesse = obligatoire en EE ⑥ Structure IMC à l\'oral ⑦ Synonymes pour éviter les répétitions ⑧ Pas de réponse vide ⑨ Révision 3 passes à l\'écrit ⑩ Reformuler si on ne comprend pas la question orale.'}
+    ]},
+    // Module 13 — Simulations et Examens Blancs
+    { desc:'Reproduisez les conditions exactes du TEF & TCF Canada et analysez vos performances.', blocks:[
+      {h:'🎯 Objectif du module',p:'Ce module vous place en conditions réelles d\'examen : simulations chronométrées, notation automatique et analyse détaillée de vos performances par compétence. L\'entraînement en conditions réelles est la méthode la plus efficace pour progresser dans les dernières semaines.'},
+      {h:'📊 Format des simulations ARCADINS',p:'Chaque simulation reproduit le format du TEF & TCF Canada : <strong>CO</strong> : 30-40 questions sur documents audio simulés · <strong>CE</strong> : 40-50 questions sur textes variés · <strong>EE</strong> : 2 tâches (lettre formelle + argumentatif) · <strong>EO</strong> : prompts de préparation + grille d\'auto-évaluation. Score global converti en NCLC estimé.'},
+      {h:'📈 Analyse des résultats — Comment lire vos scores',p:'Après chaque simulation : <strong>Score ≥ 85 %</strong> → compétence solide, maintenez · <strong>Score 70-84 %</strong> → compétence suffisante, améliorez les points faibles identifiés · <strong>Score 50-69 %</strong> → compétence fragile, révision approfondie nécessaire · <strong>Score < 50 %</strong> → retournez aux modules théoriques correspondants.'},
+      {h:'🔄 Stratégie de simulation progressive',p:'<strong>Semaine 1</strong> : simulation partielle (CO seulement, 20 min) · <strong>Semaine 2</strong> : simulation partielle (CE seulement, 30 min) · <strong>Semaine 3</strong> : simulation complète EE (60 min) · <strong>Semaine 4</strong> : simulation complète 4 compétences (3h30) · Répétez la simulation complète jusqu\'à 3 fois, en notant vos progrès.'},
+      {h:'💡 Tirer le maximum des corrections',p:'Après chaque simulation : ① Notez chaque erreur dans un carnet ② Identifiez si l\'erreur est de grammaire, vocabulaire, compréhension ou stratégie ③ Trouvez la règle correspondante ④ Créez 3 exemples personnels utilisant la règle ⑤ Revoyez vos erreurs après 48 heures puis après 7 jours (révision espacée).'},
+      {h:'📝 Mémo — 5 indicateurs de préparation optimale',p:'① Vos scores en CO dépassent régulièrement 80 % ② Vos textes EE dépassent le nombre de mots requis avec qualité ③ Vous ne bloquez plus sur les questions de grammaire courante ④ Votre temps de réponse à l\'oral est de 2-3 minutes sans interruption ⑤ Votre score NCLC estimé dépasse d\'au moins 1 niveau votre objectif (marge de sécurité).'}
+    ]},
+    // Module 14 — Révision Générale et Stratégies Finales
+    { desc:'Consolidez l\'ensemble de votre préparation et préparez-vous à exceller le jour J.', blocks:[
+      {h:'🏆 Objectif final',p:'Ce dernier module est votre phase de consolidation et de finalisation. Vous avez parcouru 13 modules de contenu théorique et pratique. Il s\'agit maintenant de synthétiser vos acquis, d\'identifier vos dernières lacunes et d\'optimiser votre stratégie pour le jour de l\'examen.'},
+      {h:'📋 Bilan de compétences personnalisé',p:'Avant ce module, consultez vos scores à tous les quiz précédents. Identifiez vos 2 compétences les plus faibles et consacrez 70 % de votre temps de révision à ces compétences. Maintenez vos compétences fortes avec 15-20 minutes de pratique quotidienne.'},
+      {h:'🔑 Révision des incontournables',p:'<strong>Grammaire</strong> : subjonctif (déclencheurs), conditionnel (hypothèse), accord participe passé · <strong>Vocabulaire</strong> : immigration (30 termes IRCC), connecteurs logiques (20 minimum), formules épistolaires · <strong>Stratégies</strong> : lecture des questions avant le texte/audio, structure IMC à l\'oral, plan thèse/antithèse/synthèse à l\'écrit.'},
+      {h:'🧘 Préparation mentale — Les 7 jours avant l\'examen',p:'<strong>J-7 à J-4</strong> : révision active et simulations · <strong>J-3</strong> : révision légère des fiches synthèse · <strong>J-2</strong> : activité plaisir (film en français, lecture) · <strong>J-1</strong> : repos, pas de révision intense, préparez vos affaires · <strong>Jour J</strong> : arrivez en avance, respirez profondément, faites confiance à votre préparation.'},
+      {h:'🎖️ Votre certificat ARCADINS',p:'Après réussite du test final de cette plateforme, votre certificat ARCADINS de parcours d\'entraînement est généré automatiquement. Il atteste de votre engagement dans ce parcours pédagogique complet de préparation selon les standards généralement attendus au TEF & TCF Canada. Il peut compléter votre dossier de candidature.'},
+      {h:'📝 Message final',p:'Votre préparation sur cette plateforme représente un investissement réel dans votre projet d\'immigration. Le TEF & TCF Canada est un défi linguistique sérieux, mais avec une méthodologie rigoureuse, une pratique régulière et une gestion efficace du stress, l\'objectif NCLC 7+ est tout à fait accessible. Vous avez les outils. Faites confiance à votre parcours.'}
+    ]}
   ],
   en: [
-    { desc:'Assess your starting level with a comprehensive test.', blocks:[{h:'📊 Your starting level',p:'This first module establishes your baseline French level according to the 4 skills assessed in TEF & TCF Canada.'},{h:'🎯 Goal',p:'Obtain a precise NCLC profile to adapt your learning path.'}] },
-    { desc:'Master listening strategies for TEF and TCF Canada.', blocks:[{h:'🎧 Active listening techniques',p:'Learn to identify key information in audio documents. Exercises with dialogues, monologues and announcements from A2 to C1 level.'},{h:'📝 Note-taking and spotting',p:'Key word spotting techniques, anticipating answers and time management during the test.'}] },
-    { desc:'Develop your reading skills in a Quebec context.', blocks:[{h:'📖 Fast and effective reading',p:'Scanning and skimming techniques, identifying main ideas in varied texts: articles, ads, IRCC forms.'},{h:'🇨🇦 Canadian vocabulary',p:'Expressions and terms specific to Canadian official documents and immigration forms.'}] },
-    { desc:'Master formal writing for TEF & TCF Canada.', blocks:[{h:'✍️ Writing structure',p:'Learn to write a formal letter (Task 1) and an argumentative text (Task 2).'},{h:'📋 Evaluation criteria',p:'Understand the 4 evaluation criteria: adequacy, coherence, lexicon, morphosyntax.'}] },
-    { desc:'Prepare for the oral component of TEF and TCF Canada.', blocks:[{h:'🎤 Speech structure',p:'Introduction, development and conclusion techniques for interaction, monologue and argumentation.'},{h:'🗣️ Pronunciation and rhythm',p:'Improve your accentuation, prosody and delivery to reach NCLC 7 and beyond.'}] },
-    { desc:'Consolidate your grammar foundations to maximize your score.', blocks:[{h:'📝 Essential points',p:'Conjugation, participle agreement, subjunctive, conditional, passive voice.'},{h:'⚠️ Common errors',p:'The 20 most penalized grammar errors in TEF & TCF Canada and how to avoid them.'}] },
-    { desc:'Master Canadian immigration vocabulary.', blocks:[{h:'🗺️ IRCC lexicon',p:'Official terminology: Express Entry, NCLC, CLB, permanent residence, PEQ.'},{h:'🏛️ Institutions and programs',p:'IRCC, MIFI — understanding each organization\'s role in your immigration process.'}] },
-    { desc:'Learn to precisely target your NCLC score.', blocks:[{h:'🎯 Scale and strategy',p:'Understanding score conversion from TEF/TCF to NCLC.'},{h:'📈 Progress plan',p:'Create your personalized study plan to reach NCLC 7, 8 or 9.'}] },
-    { desc:'Reproduce the exact exam conditions.', blocks:[{h:'⏱️ Full simulations',p:'Access 3 complete simulations faithfully reproducing TEF Canada or TCF Canada format. Timed, scored, corrected.'},{h:'📊 Results analysis',p:'After each simulation, view your detailed analysis by skill.'}] },
-    { desc:'Access our bank of 200+ practice questions.', blocks:[{h:'📋 Questions by skill',p:'50+ questions per skill (CO, CE, EO, EE). Increasing difficulty from A2 to C1.'},{h:'🎯 Targeted practice mode',p:'Choose to work only the questions corresponding to your weak point.'}] },
-    { desc:'Understand your errors and progress faster.', blocks:[{h:'✅ Detailed corrections',p:'Each exercise includes a complete correction and grammatical rule explanation.'},{h:'📚 Study sheets',p:'Download your personalized PDF study sheets.'}] },
-    { desc:'Visualize your progress and stay motivated.', blocks:[{h:'📈 Your dashboard',p:'View your module-by-module progress and your estimated NCLC score evolution.'},{h:'🏅 Progress badges',p:'Unlock achievement badges at each milestone.'}] },
-    { desc:'Your ARCADINS certificate awaits after the final test.', blocks:[{h:'🏆 Certificate of achievement',p:'After passing the final test, your PDF certificate is automatically generated.'},{h:'📧 Automatic delivery',p:'The certificate is sent by email and archived in your member space.'}] },
-    { desc:'(VIP option) Individual sessions with an expert trainer.', blocks:[{h:'👨‍🏫 Personalized coaching',p:'For VIP plan holders: 4 hours of individual coaching by video conference.'},{h:'📝 Production corrections',p:'Your written and oral productions are corrected by the trainer.'}] }
+    { desc:'Understand how the exams work and assess your starting level.', blocks:[
+      {h:'📊 Learning Objectives',p:'This foundational module helps you understand how TEF Canada and TCF Canada work, establish your starting NCLC profile, and plan your training path according to your immigration goal.'},
+      {h:'🎯 The 4 Assessed Skills',p:'TEF & TCF Canada evaluates 4 skills: Listening Comprehension (LC), Reading Comprehension (RC), Oral Expression (OE) and Written Expression (WE). Each skill yields an NCLC score from 1 to 12.'},
+      {h:'📋 NCLC vs CEFR — Key Correspondences',p:'NCLC 4 ≈ A2 · NCLC 5-6 ≈ B1 · NCLC 7 ≈ B2 · NCLC 9 ≈ C1. For Express Entry, the language bonus starts at NCLC 7 and is maximized at NCLC 9+.'},
+      {h:'🏛️ TEF Canada vs TCF Canada',p:'TEF Canada is managed by CCIP (Paris Chamber of Commerce). TCF Canada is managed by France Éducation International. Both are recognized by IRCC.'},
+      {h:'⚠️ Common Mistakes to Avoid',p:'Do not underestimate oral expression — it takes the longest to improve. Do not target only NCLC 7: reaching NCLC 9 can add 50+ CRS points. Plan at least 8-12 weeks of serious preparation.'},
+      {h:'🗓️ Organization Tips',p:'Plan your training over 8-14 weeks. Allocate 45-60 minutes per day, 5 days per week. Start by identifying your 2 weakest skills and dedicate 60% of your time to them.'}
+    ]},
+    { desc:'Develop your listening strategies and master audio document types.', blocks:[
+      {h:'🎧 Target Skills',p:'This module targets NCLC 5 to 7 (B1-B2) in listening comprehension. You will learn to identify essential information in everyday conversations, public announcements, and news bulletins.'},
+      {h:'📻 Document Types in TEF & TCF Canada',p:'Dialogues (colleagues, neighbors, customer/seller) · Announcements (transport, public places) · Weather forecasts · Phone messages · Short radio broadcasts. Level: A2 to B2 for this module.'},
+      {h:'🔑 Strategy: The 3 Mental Listenings',p:'1st: identify the context (who speaks? where? about what?). 2nd: spot the information required by the questions. During: do not transcribe everything — only note keywords, numbers and proper nouns.'},
+      {h:'⚙️ Time Management',p:'Read questions BEFORE listening. Answer WHILE listening, not after. If you miss an answer, move on — never get stuck. Use the 8-10 seconds between questions to read the next one.'},
+      {h:'🇨🇦 Quebec Accent — Key Features',p:'TCF Canada may include Quebec-accented speakers. Features: diphthongs (moi → "moé"), affrication (ti, di), specific vocabulary (char = car, dépanneur = convenience store, courriel = email). Listen to Radio-Canada regularly.'},
+      {h:'📝 Key Takeaways — 5 Points',p:'① Always read questions before listening ② Target keywords, not details ③ Never get stuck on a missed question ④ Traps often involve numbers (dates, times, prices) ⑤ Quebec accent is authentic French, not an error.'}
+    ]},
+    { desc:'Structure your oral responses and build fluency.', blocks:[
+      {h:'🎤 Target Skills',p:'This module prepares you for oral tasks at NCLC 5 to 7 (B1-B2): guided interaction (role play), prepared monologue, and short Q&A on everyday topics.'},
+      {h:'🗺️ Structure of an Effective Oral Response',p:'Every oral response should follow the IMC structure: Introduction (state your point of view in 1-2 sentences), Message (develop with 2 arguments + examples), Conclusion (summarize in 1 sentence).'},
+      {h:'🔗 Essential Oral Connectors (B1-B2)',p:'Introduction: "Je vais vous parler de…" · Addition: "De plus", "Par ailleurs" · Opposition: "Cependant", "Néanmoins" · Conclusion: "En résumé", "Pour conclure".'},
+      {h:'🎙️ Common Exam Traps',p:'① Not answering the question asked (off-topic) ② Speaking too fast due to stress ③ Repeating the same words ④ Stopping and saying "I don\'t know" ⑤ Ignoring the intro/development/conclusion structure.'},
+      {h:'💬 Frequent Communication Situations',p:'Daily life: housing, transport, shopping, medical appointments. Work: job interview, meeting, leave request. Immigration: explaining your project, describing your background.'},
+      {h:'📝 Key Phrases to Memorize',p:'"À mon avis…" · "Il me semble que…" · "Je suis convaincu(e) que…" · "Certes… mais…" · "En ce qui me concerne…" · "En guise de conclusion…"'}
+    ]},
+    { desc:'Master reading of everyday texts and build your functional vocabulary.', blocks:[
+      {h:'📖 Target Skills',p:'This module targets NCLC 5 to 7 (B1-B2) in reading comprehension. You will learn to read and understand everyday texts: ads, messages, instructions, short news articles, administrative forms.'},
+      {h:'📄 Text Types — Level 1',p:'Functional texts: classified ads, menus, schedules, posters · Short informational texts: blog articles, FAQs, brochures · Informal messages and emails · Simple forms: housing application, registration.'},
+      {h:'⚡ Speed Reading Techniques',p:'Skimming: scan the text in 30 seconds to grasp the general theme. Scanning: search for a specific word, date, or number. Selective reading: only read in detail paragraphs linked to questions.'},
+      {h:'🇨🇦 Canadian Vocabulary — Essential Terms',p:'Administration: SIN (Social Insurance Number), T4 (employment record), CPE (childcare center), CLSC (community health center). Daily life: dépanneur, courriel, stationnement, magasinage.'},
+      {h:'⚠️ Common Traps in RC',p:'① Choosing an answer containing text words without understanding ② Confusing affirmed and negated information ③ Ignoring nuances ("sometimes", "rarely") ④ Answering from prior knowledge rather than the text.'},
+      {h:'📝 4-Step Strategy',p:'Step 1: read the questions (30 sec) · Step 2: identify the text type · Step 3: read the text targeting answers · Step 4: re-read questions and verify. Time budget: max 1.5 minutes per question.'}
+    ]},
+    { desc:'Write structured formal texts meeting TEF & TCF Canada requirements.', blocks:[
+      {h:'✍️ Target Skills',p:'This module prepares for Task 1 of written expression (formal letter/email, 120-150 words) and introduces the basics of Task 2. Target level: NCLC 5 to 7 (B1-B2).'},
+      {h:'📧 Formal Email Structure — Complete Guide',p:'1. Subject: summarize in 5-8 words · 2. Salutation: "Madame," or "Monsieur," (with comma) · 3. Body: introduction → development → request or conclusion · 4. Closing: "Veuillez agréer, Madame, l\'expression de mes salutations distinguées." · 5. Signature.'},
+      {h:'🔑 Epistolary Politeness Vocabulary',p:'Opening: "J\'ai l\'honneur de vous soumettre…" · Body: "Je souhaiterais obtenir des informations concernant…" · Closing: "Dans l\'attente de votre réponse, je demeure à votre disposition."'},
+      {h:'⚠️ The 10 Most Penalized Errors',p:'① Using "tu" instead of "vous" ② Forgetting the closing formula ③ Exceeding or not reaching the word count ④ Anglicisms ⑤ Repeating "je" at the start of consecutive sentences ⑥ No logical connectors ⑦ No specific subject line ⑧ Unbalanced salutation formula.'},
+      {h:'📊 Official Evaluation Grid',p:'Written expression is graded on 4 criteria: Task adequacy · Coherence and cohesion · Lexical competence · Grammatical competence. Each criterion weighs ~25% of the grade.'},
+      {h:'📝 Pre-submission Checklist',p:'✓ Word count respected (120-150) ✓ Formal "vous" used ✓ Closing formula complete ✓ At least 4 different connectors ✓ All instructions addressed ✓ Proofread for agreement and conjugation'}
+    ]},
+    { desc:'Master the fundamental grammatical structures of French for TEF & TCF Canada.', blocks:[
+      {h:'📚 Prerequisites and Objectives',p:'This module consolidates the grammatical foundations needed to reach NCLC 6 to 8. We prioritize the structures most frequently tested and most often misused by candidates.'},
+      {h:'⚙️ Essential Tenses — Targeted Review',p:'Passé composé: être or avoir? + agreements · Imparfait: habits, descriptions · Futur simple: irregular stems · Conditionnel: politeness + hypothesis · Subjonctif: after il faut que, bien que, pour que, douter que.'},
+      {h:'🔴 The 15 Most Penalized Errors',p:'① Participe passé agreement with avoir (preceding COD) ② "Malgré que" (incorrect → "Bien que") ③ Conditional after "si" (never!) ④ Confusion ce/se, a/à ⑤ Misplaced negation in passé composé ⑥ False agreement with nearest noun.'},
+      {h:'💡 Method for Memorizing Irregularities',p:'Group irregular verbs by families: -dre verbs (prendre, apprendre) → same conjugation. Type-2 -ir verbs (partir, sortir) → je pars, tu pars. Master auxiliaries être/avoir at all tenses first.'},
+      {h:'📋 Subjonctif — Trigger Table',p:'Obligation: il faut que, il est essentiel que · Emotion: je suis content que, il est dommage que · Doubt: il est possible que, je doute que · Concession: bien que, quoique · Purpose: pour que, afin que · Condition: à condition que.'},
+      {h:'📝 5 Golden Rules of French Grammar',p:'① Preceding COD with avoir → mandatory agreement ② Si + imparfait → conditionnel présent (NEVER si + conditionnel) ③ Bien que, quoique, pour que → ALWAYS subjonctif ④ After espérer, croire, penser (affirmative) → indicatif ⑤ Gérondif (en + participe présent) = same subject as main verb.'}
+    ]},
+    { desc:'Enrich your vocabulary in immigration, work, and Canadian life domains.', blocks:[
+      {h:'🗺️ Advanced Immigration Vocabulary',p:'Procedures: file/constitute a dossier · submit a request · obtain an invitation (ITA) · meet admissibility criteria · appeal a decision. Documents: apostilled birth certificate · criminal record check · foreign credential evaluation (FCE).'},
+      {h:'💼 Professional Vocabulary — Canadian Context',p:'Resume: transferable skills, quantified accomplishments, references · Interview: highlight experience, demonstrate added value, negotiate compensation · Workplace: volunteering, remote work, benefits package.'},
+      {h:'🏥 Health and Social Services Vocabulary',p:'Health insurance card (RAMQ in Quebec) · family doctor / GP · CLSC (community health center) · waiting list · emergency care · prescription · generic medication · supplemental drug insurance.'},
+      {h:'🏠 Housing Vocabulary in Canada',p:'Apartment / unit / rent · lease (12-month standard) · Rental Board (TAL in Quebec) · security deposit · utilities included/excluded · condo vs housing cooperative · pre-purchase inspection · mortgage / down payment.'},
+      {h:'🎓 Education and Training Vocabulary',p:'CEGEP (pre-university college — Quebec only) · AEC · DEC · DEP · diploma equivalency · recognition of prior learning (RPL) · continuing education · scholarship.'},
+      {h:'📝 30 Useful Verbs for TEF & TCF',p:'Solliciter · octroyer · soumettre · valider · attester · justifier · accréditer · mandater · renouveler · prolonger · résilier · annuler · confirmer · notifier · aviser · renseigner · consulter · se conformer · bénéficier · s\'acquitter · contester · revendiquer · exercer ses droits · prendre acte · donner suite.'}
+    ]},
+    { desc:'Master complex audio documents and reach NCLC 8 to 10.', blocks:[
+      {h:'🎧 Target Skills',p:'This module targets NCLC 8 to 10 (B2+ to C1) in listening comprehension. You will learn to understand complex audio documents: debates, conferences, expert interviews and news reports.'},
+      {h:'📡 Document Types — Advanced Level',p:'Interviews and discussions (experts, researchers) · Debates and roundtables (multiple voices, contradictory opinions) · Journalistic reports (Radio-Canada, Le Devoir) · Conferences and presentations (academic register). Duration: 1m30s to 3 minutes.'},
+      {h:'🔬 Advanced Listening Strategies',p:'① Identify the register from the first seconds ② Distinguish facts, opinions, and hypotheses ③ Notice implicit meaning and innuendo ④ Watch for hedging markers ("il semblerait que", "selon certains") ⑤ Note numbers, dates, and statistics.'},
+      {h:'🇨🇦 Quebec Context — Advanced Expressions',p:'Media to listen to: Radio-Canada (ICI Première), CIBL 101.5 FM · Common expressions: "C\'est le boutte" (it\'s great), "pogner" (to catch/become popular), "pantoute" (not at all), "maganer" (to damage).'},
+      {h:'⚠️ Traps in Long Documents',p:'① First information is not always most important — stay attentive until the end ② A speaker may cite a viewpoint they do not share ③ Comparisons are frequently tested ④ A debate\'s conclusion differs from participants\' individual opinions.'},
+      {h:'📝 Level 2 Progress Plan',p:'Weeks 1-2: daily 15-min Radio-Canada listens without subtitles · Weeks 3-4: exercises with transcripts — compare understanding to transcript · Weeks 5-6: timed simulations on 2-3 min documents · Goal: 85% correct on B2+ documents.'}
+    ]},
+    { desc:'Achieve oral excellence with structured C1-level arguments.', blocks:[
+      {h:'🎤 Target Skills',p:'This module prepares for oral tasks at NCLC 8 to 10 (B2+-C1): developed argumentation, contradictory debate, nuanced position-taking, and interaction with an examiner.'},
+      {h:'🏛️ C1-Level Argumentation Structure',p:'Introduction (30s): rephrase topic + announce plan · Thesis (1 min): main argument + concrete example · Antithesis (1 min): opposing argument + rebuttal · Synthesis (30s): nuanced position + opening · Conclusion (15s): memorable closing statement.'},
+      {h:'💎 High-Register Vocabulary — NCLC 9-10',p:'To affirm: "Force est de constater que…" · "Il est indéniable que…" · To qualify: "Certes… mais il n\'en demeure pas moins que…" · "Il serait réducteur de prétendre que…" · To conclude: "En définitive…" · "Au final, il appert que…"'},
+      {h:'🔄 Concession — Advanced Technique',p:'Concession is the most valued marker of intellectual maturity in oral production. Structure: "Certes + [acknowledged opposing argument], but/however + [rebuttal or nuance]".'},
+      {h:'🎙️ Handling Unexpected Situations',p:'If you don\'t understand the question: "Pourriez-vous reformuler votre question?" · If you\'re searching for words: "Comment dire…" / "Pour m\'exprimer autrement…" · Absolutely avoid: "Je ne sais pas", long silences, repetitive loops.'},
+      {h:'📝 Frequent Oral Topics in TEF/TCF',p:'Immigration and integration · Bilingualism and official languages · Remote work and new technologies · Environment and sustainable development · Quebec/Canadian education system · Public health · Social media · Globalization and cultural identity.'}
+    ]},
+    { desc:'Analyze complex texts and develop in-depth reading comprehension.', blocks:[
+      {h:'📖 Target Skills',p:'This module targets NCLC 8 to 10 (B2+ to C1) in reading comprehension. You will learn to analyze complex texts: in-depth articles, editorials, academic texts, legal documents, and official IRCC materials.'},
+      {h:'📰 Text Types — Advanced Level',p:'Opinion articles and editorials · Academic and scientific texts · Simplified legal documents (contracts, leases) · Complex argumentative texts · Official IRCC documents (guides, policies). These texts require analytical, non-linear reading.'},
+      {h:'🔬 Analytical Reading — 5 Steps',p:'① Identification: text type, author, source, date · ② Thesis: what position is being defended? · ③ Arguments: what are the 2-3 main arguments? · ④ Implicit: what is suggested without being stated? · ⑤ Tone: formal/informal, neutral/engaged, objective/subjective.'},
+      {h:'🧩 Complex Text Vocabulary',p:'Implicit markers: "il est à noter que", "il convient de rappeler que" · Hedging: "il semblerait que", "selon certains" · Emphasis: "c\'est précisément", "il ne fait aucun doute que".'},
+      {h:'⚠️ C1-Level Text Traps',p:'① Questions often test implicit understanding and nuances ② Watch for partially true distractors ③ Text source indicates expected register ④ Argumentative text may present opposing views without endorsing them ⑤ "According to the author" ≠ "according to studies" ≠ "according to the narrator".'},
+      {h:'📝 High-Level Connector Vocabulary',p:'Cause: attendu que, en raison de, du fait de · Consequence: d\'où, il s\'ensuit que, il en résulte que · Concession: nonobstant, en dépit de, quand bien même · Addition: qui plus est, de surcroît, voire, a fortiori.'}
+    ]},
+    { desc:'Write C1-level argumentative texts with mastery and stylistic precision.', blocks:[
+      {h:'✍️ Target Skills',p:'This module prepares for Task 2 of written expression (200-250 words, argumentative text) at NCLC 8 to 10 (B2+-C1). It targets stylistic mastery, lexical richness, and argumentative rigor.'},
+      {h:'📐 Advanced Argumentative Text Structure',p:'Introduction: hook (fact, question, quote) → context → stated thesis · Development: ¶1 (argument 1 + example + mini-conclusion) · ¶2 (argument 2 + example + mini-conclusion) · ¶3 (concession + rebuttal) · Conclusion: synthesis + opening.'},
+      {h:'💎 Elevated Vocabulary — Integrate into Your Writing',p:'Academic verbs: démontrer, attester, corroborer, étayer, nuancer, appréhender · Nouns: l\'enjeu, la problématique, la dichotomie · Phrases: force est de constater, à cet égard, dans cette optique, en l\'occurrence.'},
+      {h:'🔴 Errors That Drop You from NCLC 8 to 6',p:'① Repeating the same word 3+ times in a paragraph ② Starting consecutive sentences with "Je" ③ Uncorrected anglicisms ④ Unbalanced paragraphs ⑤ No transition between paragraphs ⑥ Introduction too long, conclusion rushed ⑦ Failing to take a clear position.'},
+      {h:'✅ 3-Pass Revision Guide',p:'Pass 1 — Content: does it answer the prompt? is the thesis clear? are arguments supported? · Pass 2 — Form: 6+ different connectors? varied vocabulary? · Pass 3 — Language: agreements, conjugations, punctuation. Budget: 5 minutes revision time.'},
+      {h:'📝 Frequent Written Topics in TEF/TCF',p:'Technology and privacy · Immigration and integration · Ecology and sustainable lifestyles · Distance learning · Social media and youth · Work and personal fulfillment · Economic globalization · Bilingualism and identity · Public health.'}
+    ]},
+    { desc:'Master time management techniques and strategies for each exam task.', blocks:[
+      {h:'⏱️ Time Management — The 4 Tasks',p:'LC (~40 min): 1-1.5 min/question → read before, answer during · RC (~60 min): 90 sec/question → skim then targeted reading · WE (~60 min): 5 min planning + 45 min writing + 10 min revision · OE (~15 min): 30-60 sec prep + 2-4 min response.'},
+      {h:'🧠 Exam Psychology — Staying Sharp',p:'① Evening before: no intensive study — light activity, adequate sleep ② Morning: protein breakfast, arrive 30 minutes early ③ In the room: if stuck, mark and move on ④ Never change an answer without a specific reason ⑤ Your first instinct is often correct.'},
+      {h:'🎯 4-Elimination Technique (MCQ)',p:'① Eliminate clearly wrong answers (usually 2 remain) ② Spot "almost right" answers (with one wrong word) ③ Beware of answers that seem too obvious ④ The most precise and nuanced answer is usually correct ⑤ NEVER leave a blank — no penalty for wrong answers.'},
+      {h:'📋 D-7 Checklist Before the Exam',p:'✓ Complete timed simulation ✓ Review logical connectors and epistolary formulas ✓ Review recurring grammar errors ✓ Prepare 3-4 concrete examples on frequent opinion topics ✓ Confirm time and location ✓ Prepare required documents (ID, registration).'},
+      {h:'🔁 Last Week Study Plan',p:'D-7 to D-5: full simulation + thorough correction · D-4 to D-3: targeted review of identified weaknesses · D-2: light review, connectors, formulas · D-1: relaxing activity, pleasure reading, no stress · Day D: confidence, technique, calm.'},
+      {h:'📝 10 Reflexes to Automate',p:'① Always read questions before text/audio ② Never conditional after "si" ③ Participe passé with avoir = preceding COD ④ "Bien que" = subjonctif ⑤ Closing formula mandatory in WE ⑥ IMC structure for OE ⑦ Synonyms to avoid repetition ⑧ No blank answers ⑨ 3-pass revision for WE ⑩ Rephrase if oral question is unclear.'}
+    ]},
+    { desc:'Reproduce exact TEF & TCF Canada conditions and analyze your performance.', blocks:[
+      {h:'🎯 Module Goal',p:'This module places you in real exam conditions: timed simulations, automatic scoring, and detailed performance analysis by skill. Training in real conditions is the most effective method for progressing in the final weeks.'},
+      {h:'📊 ARCADINS Simulation Format',p:'Each simulation reproduces the TEF & TCF Canada format: LC: 30-40 questions on simulated audio documents · RC: 40-50 questions on varied texts · WE: 2 tasks (formal letter + argumentative text) · OE: preparation prompts + self-evaluation grid.'},
+      {h:'📈 Results Analysis — Reading Your Scores',p:'≥85%: solid skill, maintain · 70-84%: sufficient, improve identified weak points · 50-69%: fragile, in-depth review needed · <50%: return to corresponding theory modules.'},
+      {h:'🔄 Progressive Simulation Strategy',p:'Week 1: partial simulation (LC only, 20 min) · Week 2: partial simulation (RC only, 30 min) · Week 3: full WE simulation (60 min) · Week 4: complete 4-skill simulation (3h30) · Repeat complete simulation up to 3 times, tracking progress.'},
+      {h:'💡 Maximizing Corrections',p:'After each simulation: ① note each error in a notebook ② identify if grammar, vocabulary, comprehension, or strategy error ③ find the corresponding rule ④ create 3 personal examples ⑤ review errors after 48 hours then 7 days (spaced repetition).'},
+      {h:'📝 5 Signs of Optimal Preparation',p:'① Your LC scores regularly exceed 80% ② Your WE texts exceed required word count with quality ③ You no longer get stuck on standard grammar questions ④ Your oral response time is 2-3 minutes without interruption ⑤ Your estimated NCLC score exceeds your target by at least 1 level.'}
+    ]},
+    { desc:'Consolidate your entire preparation and prepare to excel on exam day.', blocks:[
+      {h:'🏆 Final Goal',p:'This final module is your consolidation and finalization phase. You have completed 13 modules of theoretical and practical content. Now it is time to synthesize your knowledge, identify remaining gaps, and optimize your strategy for exam day.'},
+      {h:'📋 Personalized Skills Assessment',p:'Before this module, review all your previous quiz scores. Identify your 2 weakest skills and dedicate 70% of your revision time to them. Maintain strong skills with 15-20 minutes of daily practice.'},
+      {h:'🔑 Review of Must-Know Items',p:'Grammar: subjonctif (triggers), conditionnel (hypothesis), participe passé agreement · Vocabulary: immigration (30 IRCC terms), logical connectors (20 minimum), epistolary formulas · Strategies: read questions before text/audio, IMC structure for oral, thesis/antithesis/synthesis plan for written.'},
+      {h:'🧘 Mental Preparation — 7 Days Before Exam',p:'D-7 to D-4: active review and simulations · D-3: light review of summary sheets · D-2: pleasure activity (French film, reading) · D-1: rest, no intensive study, prepare your materials · Day D: arrive early, breathe deeply, trust your preparation.'},
+      {h:'🎖️ Your ARCADINS Certificate',p:'After passing the final test on this platform, your ARCADINS training path certificate is automatically generated. It attests to your commitment to this comprehensive training program aligned with the standards generally expected at TEF & TCF Canada.'},
+      {h:'📝 Final Message',p:'Your preparation on this platform represents a real investment in your immigration project. TEF & TCF Canada is a serious linguistic challenge, but with rigorous methodology, regular practice, and effective stress management, the NCLC 7+ goal is fully achievable. You have the tools. Trust your journey.'}
+    ]}
   ]
+};
+
+// ── Audio CO — scripts de transcription (placeholder jusqu'aux vrais .mp3) ────
+const AUDIO_DATA = {
+  2: [
+    {
+      label: 'Document 1 — Dialogue au bureau',
+      duration: '~1 min 20 s',
+      script: `<strong>Narrateur :</strong> Vous allez entendre une conversation entre deux collègues dans un bureau à Montréal.<br><br>
+<strong>Sophie :</strong> Bonjour Marc, tu as reçu le courriel de la direction concernant la réunion de vendredi ?<br>
+<strong>Marc :</strong> Non, pas encore. C'est à quelle heure ?<br>
+<strong>Sophie :</strong> À dix heures trente, en salle de conférence B. Il paraît qu'on va discuter du nouveau projet d'expansion.<br>
+<strong>Marc :</strong> Ah bon ? Et tu sais si tous les chefs d'équipe doivent être présents ?<br>
+<strong>Sophie :</strong> D'après ce que j'ai compris, oui. La direction veut recueillir l'avis de tout le monde avant de prendre une décision.<br>
+<strong>Marc :</strong> D'accord, je vais m'assurer d'être disponible. Merci pour l'information.<br><br>
+<strong>Question 1 :</strong> De quoi parle principalement ce dialogue ?<br>
+<strong>Question 2 :</strong> Quelle est la réaction de Marc en apprenant la nouvelle ?`,
+    },
+    {
+      label: 'Document 2 — Annonce dans les transports',
+      duration: '~45 s',
+      script: `<strong>Narrateur :</strong> Vous allez entendre une annonce dans le métro de Montréal.<br><br>
+<em>« Mesdames et messieurs, en raison de travaux sur la ligne verte entre les stations Berri-UQAM et Joliette, le service est interrompu jusqu'à dimanche dix-neuf heures. Des autobus de remplacement sont disponibles à la sortie Berri. Nous vous remercions de votre compréhension. »</em><br><br>
+<strong>Question :</strong> Pourquoi le service de métro est-il interrompu ? Jusqu'à quand ? Quelle solution est proposée ?`,
+    },
+    {
+      label: 'Document 3 — Bulletin météo',
+      duration: '~50 s',
+      script: `<strong>Narrateur :</strong> Vous allez entendre un bulletin météo pour la région de Québec.<br><br>
+<em>« Pour ce mercredi, le ciel sera partiellement nuageux en matinée avec des températures avoisinant les moins deux degrés. En après-midi, des averses de neige sont attendues, avec des accumulations possibles de cinq à dix centimètres. Les automobilistes sont invités à la prudence sur les routes. La situation devrait s'améliorer jeudi avec le retour du soleil. »</em><br><br>
+<strong>Question :</strong> Quelles conditions météo sont prévues pour l'après-midi ? Que conseille-t-on aux automobilistes ?`,
+    },
+  ],
+  8: [
+    {
+      label: 'Document 1 — Entretien radio (sujet : immigration)',
+      duration: '~2 min',
+      script: `<strong>Animatrice :</strong> Bonsoir, nous recevons ce soir Monsieur Traoré, consultant en immigration. Monsieur Traoré, les délais de traitement des dossiers ont-ils changé récemment ?<br><br>
+<strong>M. Traoré :</strong> Effectivement, depuis la refonte du système en ligne, on constate une accélération notable pour les candidats Express Entry. En moyenne, les dossiers complets sont traités en moins de six mois, ce qui représente une amélioration significative par rapport aux deux années qu'il fallait auparavant.<br><br>
+<strong>Animatrice :</strong> Et pour les candidats qui ne passent pas par Express Entry ?<br><br>
+<strong>M. Traoré :</strong> La situation est plus variable. Tout dépend du programme provincial, du pays d'origine et de la catégorie de demande. Je conseille toujours aux candidats de bien se renseigner sur les voies disponibles avant de constituer leur dossier, car une mauvaise orientation peut coûter des mois, voire des années.<br><br>
+<strong>Question 1 :</strong> Quelle amélioration M. Traoré mentionne-t-il pour Express Entry ?<br>
+<strong>Question 2 :</strong> Quel conseil donne-t-il aux candidats hors Express Entry ?`,
+    },
+    {
+      label: 'Document 2 — Conférence : le marché du travail québécois',
+      duration: '~1 min 45 s',
+      script: `<strong>Conférencière :</strong> Force est de constater que le Québec fait face à une pénurie de main-d'œuvre dans plusieurs secteurs clés : la santé, le génie civil, les technologies de l'information et l'éducation. Cette réalité crée des opportunités réelles pour les travailleurs qualifiés qui souhaitent s'établir au Québec.<br><br>
+Cela dit, il convient de nuancer ce constat. La reconnaissance des diplômes étrangers reste un obstacle majeur pour bon nombre de candidats, en particulier dans les professions réglementées. Il appartient à chaque candidat de se renseigner auprès des ordres professionnels concernés bien en amont de son arrivée.<br><br>
+<strong>Question 1 :</strong> Quels secteurs sont mentionnés comme étant en pénurie de main-d'œuvre ?<br>
+<strong>Question 2 :</strong> Quel obstacle majeur la conférencière souligne-t-elle ?`,
+    },
+  ],
+};
+
+// ── Notes personnelles (localStorage) ────────────────────────────────────────
+function getNoteKey(num) { return `arc_module_note_${num}`; }
+
+function renderNotesZone(num) {
+  const saved = localStorage.getItem(getNoteKey(num)) || '';
+  return `<details class="notes-zone" ${saved ? 'open' : ''}>
+    <summary>Mes notes personnelles — Module ${num} <span style="font-size:.72rem;font-weight:400;opacity:.6;">(sauvegardées localement)</span></summary>
+    <textarea class="notes-textarea" id="noteArea_${num}"
+      placeholder="Prenez vos notes ici : vocabulaire retenu, points à revoir, questions à poser…"
+      oninput="scheduleNoteSave(${num})">${saved}</textarea>
+    <div class="notes-saved" id="noteSaved_${num}"></div>
+  </details>`;
+}
+
+let _noteSaveTimer = null;
+function scheduleNoteSave(num) {
+  clearTimeout(_noteSaveTimer);
+  _noteSaveTimer = setTimeout(() => {
+    const ta = document.getElementById(`noteArea_${num}`);
+    if (!ta) return;
+    localStorage.setItem(getNoteKey(num), ta.value);
+    const el = document.getElementById(`noteSaved_${num}`);
+    if (el) { el.textContent = '✓ Sauvegardé'; setTimeout(() => { if(el) el.textContent = ''; }, 2000); }
+  }, 800);
+}
+
+// ── Documents de compréhension orale (lecture des transcriptions) ─────────────
+function renderAudioPlaceholder(num) {
+  const clips = AUDIO_DATA[num];
+  if (!clips) return '';
+  return `<div class="audio-placeholder">
+    <h4>📄 Documents de compréhension — ${clips.length} extrait${clips.length > 1 ? 's' : ''}</h4>
+    <p style="font-size:.83rem;margin-bottom:14px;">Lisez chaque document attentivement, identifiez les informations clés, puis répondez aux questions de compréhension avant de relire.</p>
+    ${clips.map((c) => `
+      <details style="margin-bottom:14px;background:#f0f7ff;border-radius:10px;padding:12px 16px;border-left:4px solid #1565c0;">
+        <summary style="font-size:.85rem;font-weight:700;color:#1565c0;cursor:pointer;user-select:none;list-style:none;display:flex;align-items:center;gap:10px;">
+          <span>📖 ${c.label}</span>
+          <span style="font-size:.72rem;font-weight:400;color:#5472a3;background:#ddeeff;border-radius:5px;padding:2px 8px;margin-left:auto;">${c.duration}</span>
+        </summary>
+        <div class="audio-script" style="margin-top:10px;">${c.script}</div>
+      </details>`).join('')}
+  </div>`;
+}
+
+// ── Contenu pratique EO (Expression Orale) & EE (Expression Écrite) ──────────
+const PRACTICE_DATA = {
+  // Module 1 — Réflexion : auto-évaluation initiale
+  1: {
+    type: 'EE',
+    title: '📊 Auto-évaluation de départ — Module 1',
+    subtitle: 'Réflexion écrite · 80–100 mots · Registre semi-formel',
+    prompt: `Exercice de départ :
+Rédigez un court paragraphe (80-100 mots) en répondant aux 3 questions suivantes :
+• Quel est votre niveau actuel en français, selon vous ?
+• Quelle compétence (oral, écrit, lecture, écoute) vous semble la plus difficile ?
+• Quel est votre objectif NCLC et dans combien de semaines voulez-vous passer l'examen ?
+
+Conseil : Soyez honnête — cette réflexion vous aidera à personnaliser votre parcours.`,
+    rubric: [
+      'J\'ai répondu aux 3 questions demandées',
+      'Mon texte fait entre 80 et 100 mots',
+      'J\'ai utilisé des phrases complètes (pas des listes)',
+      'J\'ai identifié ma compétence la plus faible',
+      'J\'ai précisé mon objectif NCLC et ma date cible',
+      'Mon orthographe et ma ponctuation sont correctes',
+    ],
+  },
+  // Module 2 — CO Niveau 1 : prise de notes
+  2: {
+    type: 'EO',
+    title: '🎧 Prise de notes — Compréhension Orale Niveau 1',
+    subtitle: 'Exercice de repérage · Lisez le script puis répondez',
+    prompt: `Après avoir lu attentivement le Document 1 (dialogue au bureau) ci-dessus :
+
+1. Notez les informations clés : QUI parle ? DE QUOI ? QUAND ? OÙ ?
+2. Répondez oralement (ou par écrit) aux 2 questions posées à la fin du dialogue.
+3. Résumez le dialogue en 2-3 phrases à l'oral, sans relire le script.
+
+Conseil : Entraînez-vous à répondre sans regarder le texte — comme en conditions d'examen.`,
+    rubric: [
+      'J\'ai identifié les 4 éléments : qui, quoi, quand, où',
+      'J\'ai répondu aux 2 questions de compréhension',
+      'Mon résumé de 2-3 phrases est fidèle au contenu',
+      'Je n\'ai pas utilisé de mots inventés ou hors contexte',
+      'J\'ai utilisé des connecteurs dans mon résumé (d\'abord, ensuite, finalement)',
+      'Ma réponse orale était fluide et naturelle',
+    ],
+  },
+  // Module 3 — EO Niveau 1
+  3: {
+    type: 'EO',
+    title: '🎤 Entraînement Expression Orale – Niveau 1',
+    subtitle: 'Monologue de 2–3 minutes · Enregistrez-vous si possible',
+    prompt: `Sujet : « Expliquez pourquoi vous avez choisi d'apprendre le français et quels sont vos objectifs pour les deux prochaines années. »
+
+Conseils :
+• Durée cible : 2 à 3 minutes
+• Structure obligatoire : introduction (10 sec) → 2 arguments développés (1 min chacun) → conclusion (20 sec)
+• Utilisez des connecteurs : d'abord, ensuite, de plus, par conséquent, en conclusion
+• Évitez les répétitions — variez votre vocabulaire
+• Si possible, enregistrez-vous et réécoutez votre production`,
+    rubric: [
+      'J\'ai structuré mon discours (intro / développement / conclusion)',
+      'J\'ai parlé pendant au moins 2 minutes sans m\'arrêter longuement',
+      'J\'ai utilisé au moins 4 connecteurs logiques différents',
+      'J\'ai évité les mots familiers et les anglicismes',
+      'Mon débit était régulier et compréhensible',
+      'Je n\'ai pas lu de notes — j\'ai parlé de façon spontanée',
+    ],
+  },
+  // Module 4 — CE Niveau 1 : repérage dans un texte
+  4: {
+    type: 'EE',
+    title: '📖 Compréhension Écrite – Entraînement Niveau 1',
+    subtitle: 'Exercice de repérage · Lisez et répondez aux questions',
+    prompt: `Lisez attentivement le document de compréhension ci-dessus, puis répondez par écrit aux questions suivantes :
+
+1. Quel est le sujet principal du document ?
+2. Identifiez 3 informations clés (faits, chiffres, noms propres).
+3. Quel est le ton du document : informatif, publicitaire, injonctif ou argumentatif ?
+4. Y a-t-il des mots ou expressions que vous ne connaissez pas ? Listez-les.
+
+Conseil : Répondez sans relire le document — testez votre mémoire de lecture.`,
+    rubric: [
+      'J\'ai identifié correctement le sujet principal',
+      'J\'ai relevé 3 informations clés pertinentes',
+      'J\'ai correctement identifié le type et le ton du document',
+      'J\'ai listé les mots inconnus pour les rechercher',
+      'Mes réponses sont rédigées en phrases complètes',
+      'Je n\'ai pas utilisé d\'informations extérieures au document',
+    ],
+  },
+  // Module 5 — EE Niveau 1
+  5: {
+    type: 'EE',
+    title: '✍️ Entraînement Expression Écrite – Niveau 1',
+    subtitle: 'Tâche 1 — Courriel formel (120–150 mots)',
+    prompt: `Contexte : Vous êtes candidat(e) à un poste au Canada. Vous venez de passer un entretien avec une agence de recrutement spécialisée dans l'immigration professionnelle.
+
+Rédigez un courriel de remerciement à Madame Tremblay, la responsable rencontrée, en :
+• la remerciant chaleureusement pour le temps accordé et l'entretien,
+• confirmant votre intérêt pour le poste et votre motivation à vous établir au Québec,
+• demandant poliment les prochaines étapes du processus de sélection.
+
+📌 Consignes : 120 à 150 mots · Registre formel · Formule de politesse complète obligatoire`,
+    rubric: [
+      'J\'ai utilisé une formule d\'appel formelle (Madame,)',
+      'Mon texte fait entre 120 et 150 mots',
+      'J\'ai répondu aux 3 consignes (remerciement + intérêt + étapes)',
+      'J\'ai utilisé au moins 3 connecteurs logiques différents',
+      'J\'ai employé le conditionnel de politesse (je souhaiterais…)',
+      'La formule de politesse finale est complète (Veuillez agréer…)',
+    ],
+  },
+  // Module 6 — Grammaire : exercice de correction
+  6: {
+    type: 'EE',
+    title: '📝 Exercice de Grammaire — Correction de texte',
+    subtitle: 'Trouvez et corrigez les 8 erreurs grammaticales',
+    prompt: `Texte à corriger (8 erreurs à trouver et corriger) :
+
+« Depuis que je suis arrivé au Canada, j'ai apprendu beaucoup de choses sur la vie canadienne. Bien qu'il fait froid en hiver, les habitants sont très chaleureux. Je me souviens à mon premier hiver à Montréal — il faisait moins trente degrés ! Si j'aurais su, j'aurais amené des vêtements plus chauds. Malgré que la transition a été difficile, je suis maintenant bien intégré. La langue française, que j'ai étudié pendant deux ans, m'a beaucoup aidé. Je crois que tout le monde devrait apprend une nouvelle langue. »
+
+📌 Notez chaque erreur et sa correction, puis expliquez la règle en 1 phrase.`,
+    rubric: [
+      'J\'ai trouvé et corrigé l\'erreur 1 : apprendu → appris',
+      'J\'ai trouvé et corrigé l\'erreur 2 : bien qu\'il fait → bien qu\'il fasse (subjonctif)',
+      'J\'ai trouvé et corrigé l\'erreur 3 : je me souviens à → je me souviens de',
+      'J\'ai trouvé et corrigé l\'erreur 4 : si j\'aurais su → si j\'avais su',
+      'J\'ai trouvé et corrigé l\'erreur 5 : malgré que → bien que / quoique',
+      'J\'ai trouvé et corrigé l\'erreur 6 : que j\'ai étudié → que j\'ai étudiée (accord COD)',
+    ],
+  },
+  // Module 7 — Vocabulaire : mise en contexte
+  7: {
+    type: 'EE',
+    title: '🗺️ Vocabulaire en contexte — Lexique de l\'immigration',
+    subtitle: 'Exercice de production écrite contextuelle · 100–120 mots',
+    prompt: `Utilisez 8 des termes suivants dans un court paragraphe cohérent (100-120 mots) sur le thème de l'immigration au Canada :
+
+résidence permanente · Express Entry · NCLC · CSQ · EIMT · parrainage · francisation · permis de travail · IRCC · accréditation · CAQ · délai de traitement · dossier de police · biométrie · regroupement familial
+
+📌 Les termes doivent être utilisés correctement dans leur contexte. Ne faites pas de liste — rédigez un vrai paragraphe narratif ou explicatif.`,
+    rubric: [
+      'J\'ai utilisé au moins 8 termes de la liste',
+      'Chaque terme est utilisé correctement dans son contexte',
+      'Mon texte est cohérent et forme un vrai paragraphe (pas une liste)',
+      'Mon texte fait entre 100 et 120 mots',
+      'J\'ai utilisé des connecteurs pour lier les idées',
+      'Mon orthographe et ma ponctuation sont correctes',
+    ],
+  },
+  // Module 8 — CO Niveau 2 : analyse de discours
+  8: {
+    type: 'EO',
+    title: '🎧 Analyse de document oral — Niveau Avancé',
+    subtitle: 'Compréhension approfondie · Lisez le script et analysez',
+    prompt: `Après avoir lu l'Entretien radio (Document 1 : immigration) ci-dessus :
+
+1. Résumez le point de vue de M. Traoré en 3-4 phrases à l'oral (sans regarder le script).
+2. Identifiez : s'agit-il d'un fait ou d'une opinion dans chacune de ses affirmations ?
+3. Répondez oralement à cette question : « Que pensez-vous des délais de traitement des dossiers d'immigration ? » (1-2 minutes, niveau C1)
+
+Conseil : Utilisez le vocabulaire du document pour enrichir votre réponse.`,
+    rubric: [
+      'Mon résumé de 3-4 phrases est fidèle et ne trahit pas le sens',
+      'J\'ai correctement distingué les faits et les opinions',
+      'Ma réponse à la question dure au moins 1 minute',
+      'J\'ai utilisé du vocabulaire de registre soutenu',
+      'J\'ai structuré ma réponse (position + 2 arguments + conclusion)',
+      'J\'ai utilisé au moins une concession (certes... mais...)',
+    ],
+  },
+  // Module 9 — EO Niveau 2
+  9: {
+    type: 'EO',
+    title: '🎤 Entraînement Expression Orale – Niveau 2',
+    subtitle: 'Argumentation formelle · 3–4 minutes · Niveau C1 visé',
+    prompt: `Sujet : « Certains affirment que l'immigration est une chance pour les pays d'accueil. D'autres estiment qu'elle représente un défi majeur. »
+
+Présentez les deux points de vue et donnez votre opinion nuancée et argumentée.
+
+Exigences niveau avancé :
+• Durée : 3 à 4 minutes
+• Structure : introduction → thèse (POUR) → antithèse (CONTRE) → synthèse personnelle → conclusion
+• Vocabulaire de haut registre : néanmoins, à cet égard, force est de constater, il appert que…
+• Concession obligatoire : « Certes… mais il n'en demeure pas moins que… »
+• Exemple concret du contexte canadien/québécois`,
+    rubric: [
+      'J\'ai présenté clairement les deux points de vue (POUR et CONTRE)',
+      'J\'ai exprimé et justifié mon opinion personnelle avec nuance',
+      'J\'ai utilisé au moins 3 expressions de haut registre',
+      'J\'ai utilisé au moins une concession formelle',
+      'J\'ai parlé pendant plus de 3 minutes sans décrochage',
+      'Mon intonation était expressive et mon débit régulier',
+    ],
+  },
+  // Module 10 — CE Niveau 2 : lecture analytique
+  10: {
+    type: 'EE',
+    title: '📖 Lecture analytique — Compréhension Écrite Niveau 2',
+    subtitle: 'Analyse d\'un texte complexe · Réponses argumentées',
+    prompt: `Lisez le document de compréhension ci-dessus (entretien radio ou conférence), puis répondez par écrit :
+
+1. Quelle est la thèse principale du document ? (1-2 phrases)
+2. Identifiez 2 arguments explicites et 1 argument implicite.
+3. Quel est le ton de l'auteur : neutre, engagé, nuancé ? Justifiez avec 1 citation.
+4. Rédigez une courte réaction personnelle (50 mots) en utilisant le vocabulaire du document.
+
+📌 Critère clé : distinguez ce qui est dit explicitement et ce qui est sous-entendu.`,
+    rubric: [
+      'J\'ai correctement identifié la thèse principale',
+      'J\'ai identifié 2 arguments explicites (citables dans le texte)',
+      'J\'ai identifié 1 argument implicite (non dit mais suggéré)',
+      'J\'ai correctement caractérisé le ton avec une justification',
+      'Ma réaction personnelle utilise le vocabulaire du document',
+      'J\'ai distingué les faits des opinions de l\'auteur',
+    ],
+  },
+  // Module 11 — EE Niveau 2
+  11: {
+    type: 'EE',
+    title: '✍️ Entraînement Expression Écrite – Niveau 2',
+    subtitle: 'Tâche 2 — Texte argumentatif (200–250 mots)',
+    prompt: `Sujet : « Les nouvelles technologies facilitent considérablement l'apprentissage des langues. Cependant, elles ne pourront jamais remplacer un enseignant humain qualifié. »
+
+Rédigez un texte argumentatif de 200 à 250 mots dans lequel vous :
+• développez un argument soutenant cette affirmation (avec exemple),
+• développez un argument s'y opposant (avec exemple),
+• rédigez une conclusion nuancée exprimant votre position personnelle.
+
+📌 Registre soutenu · Plan thèse/antithèse/synthèse · 5+ connecteurs différents`,
+    rubric: [
+      'Mon texte fait entre 200 et 250 mots',
+      'J\'ai organisé mon texte en 3 parties distinctes',
+      'J\'ai utilisé au moins 5 connecteurs différents',
+      'Mon vocabulaire est précis et varié (0 répétition injustifiée)',
+      'Les accords et conjugaisons sont corrects',
+      'Ma conclusion exprime une position personnelle nuancée',
+    ],
+  },
+  // Module 12 — Techniques : simulation de gestion du temps
+  12: {
+    type: 'EE',
+    title: '⏱️ Simulation de Gestion du Temps — Module 12',
+    subtitle: 'Exercice chronométré · Respectez strictement le temps imparti',
+    prompt: `Exercice minuté (15 minutes maximum) :
+
+Rédigez une lettre formelle de 120-150 mots adressée à IRCC (Immigration, Réfugiés et Citoyenneté Canada) pour :
+• Signaler un changement d'adresse depuis votre soumission de dossier
+• Demander la confirmation de la prise en compte de ce changement
+• Indiquer vos nouvelles coordonnées complètes
+
+⏱️ Minutez-vous : 2 min de planification + 10 min de rédaction + 3 min de révision.
+📌 Objectif : entraîner la gestion du stress et du temps en conditions réelles.`,
+    rubric: [
+      'J\'ai respecté le temps alloué (15 minutes maximum)',
+      'Mon texte fait entre 120 et 150 mots',
+      'J\'ai répondu aux 3 consignes dans cet ordre',
+      'Ma lettre contient une formule de politesse complète',
+      'J\'ai utilisé le vocabulaire administratif approprié',
+      'Mon texte est lisible et sans ratures conceptuelles',
+    ],
+  },
+  // Module 13 — Simulation : production orale sur sujet imposé
+  13: {
+    type: 'EO',
+    title: '🎯 Simulation d\'Examen — Production Orale Complète',
+    subtitle: 'Conditions réelles · 30 sec préparation + 3 min production',
+    prompt: `Simulation en conditions réelles d'examen :
+
+⏱️ Vous avez 30 secondes pour lire le sujet et vous préparer. Puis 3 minutes pour répondre.
+
+Sujet : « Le bilinguisme (français-anglais) est-il un avantage ou une contrainte pour les immigrants qui s'établissent au Canada ? Présentez les deux points de vue et donnez votre opinion. »
+
+📌 Règles de simulation :
+• Pas de notes écrites pendant la production
+• Chronométrez-vous strictement (30 sec prep + 3 min prod)
+• Si possible, enregistrez-vous pour auto-évaluation
+• Évaluez-vous honnêtement sur la grille ci-dessous`,
+    rubric: [
+      'J\'ai respecté les temps (30 sec prep + 3 min production)',
+      'J\'ai présenté clairement les deux points de vue',
+      'J\'ai donné et argumenté mon opinion personnelle',
+      'J\'ai utilisé un vocabulaire de niveau B2/C1',
+      'Je n\'ai pas utilisé de notes pendant la production',
+      'Mon discours était structuré et cohérent du début à la fin',
+    ],
+  },
+  // Module 14 — Révision finale
+  14: {
+    type: 'EE',
+    title: '🏆 Bilan Final — Lettre de Motivation Complète',
+    subtitle: 'Production intégrative · 180–200 mots · Registre très soutenu',
+    prompt: `Exercice intégratif final :
+
+Rédigez une lettre de motivation formelle de 180-200 mots adressée au Ministère de l'Immigration, de la Francisation et de l'Intégration (MIFI) du Québec pour expliquer :
+• Votre parcours linguistique (apprentissage du français, niveau actuel)
+• Votre motivation à vous établir au Québec
+• Votre capacité à vous intégrer rapidement à la société québécoise
+
+📌 Cet exercice mobilise toutes les compétences de l'expression écrite :
+vocabulaire de l'immigration · registre formel · connecteurs · grammaire ·
+structure épistolaire · argumentation.`,
+    rubric: [
+      'Mon texte fait entre 180 et 200 mots',
+      'J\'ai utilisé la structure épistolaire complète (salutation, corps, formule finale)',
+      'J\'ai répondu aux 3 consignes dans l\'ordre demandé',
+      'J\'ai utilisé au moins 8 connecteurs différents',
+      'Mon vocabulaire est de niveau C1 (varié, précis, sans anglicismes)',
+      'Mon texte est grammaticalement irréprochable (accords, conjugaisons)',
+    ],
+  },
 };
 
 let modules = [], currentModuleNum = 1;
@@ -260,21 +930,41 @@ async function showModule(num) {
       <p>${b.p}</p>
     </div>`).join('') + `</div>`;
 
+  // Audio placeholder pour modules Compréhension Orale (2 & 8)
+  if (AUDIO_DATA[num] && mod.status === 'in_progress') {
+    html += renderAudioPlaceholder(num);
+  }
+
   if (!isCompleted && mod.status !== 'locked') {
     if (mod.status === 'not_started') {
-      html += `<button class="btn-primary" onclick="startModule(${num})" data-i18n="form.start">▶ Commencer ce module</button>`;
+      html += `<button class="btn-primary" onclick="startModule(${num})">▶ Commencer ce module</button>`;
     } else {
-      html += `<div style="background:var(--gray-light);border-radius:12px;padding:20px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-        <p style="margin:0;color:var(--gray-text);" data-i18n="form.complete.msg">Vous avez parcouru ce module. Marquez-le comme terminé pour débloquer la suite.</p>
-        <button class="btn-primary" onclick="completeModule(${num})" data-i18n="form.complete">✓ Marquer comme terminé</button>
+      // Zone de pratique EO/EE (modules 3, 5, 9, 11)
+      if (PRACTICE_DATA[num]) {
+        html += renderPracticeZone(num);
+      }
+      // Module en cours → proposer le test
+      const testInfo = mod.test_passed
+        ? `<span style="color:#2e7d32;font-weight:700;">✅ Test réussi (${mod.test_score}%)</span>`
+        : (mod.test_attempts ? `<span style="color:#e65100;">Tentative(s) : ${mod.test_attempts} — Meilleur score : ${mod.test_score}%</span>` : '');
+      html += `<div style="background:linear-gradient(135deg,#f0f4ff,#e8f5ff);border:2px solid var(--blue);border-radius:14px;padding:24px;margin-top:16px;">
+        <h3 style="color:var(--blue-dark);margin:0 0 8px;">🎯 Test de validation du module</h3>
+        <p style="color:var(--gray-text);margin:0 0 16px;font-size:.9rem;">Répondez aux 10 questions pour valider ce module et débloquer le suivant. Score minimum requis : <strong>70%</strong>.</p>
+        ${testInfo ? `<p style="margin:0 0 16px;">${testInfo}</p>` : ''}
+        <button class="btn-primary" onclick="openModuleTest(${num})">📝 Passer le test du module</button>
       </div>`;
     }
   } else if (isCompleted) {
     const next = modules.find(m=>m.module_number===num+1);
     if (next && next.status !== 'locked') {
-      html += `<button class="btn-primary" onclick="showModule(${num+1})" style="margin-top:8px;" data-i18n="form.next.mod">Module suivant →</button>`;
+      html += `<button class="btn-primary" onclick="showModule(${num+1})" style="margin-top:8px;">Module suivant →</button>`;
+    } else if (num === 14) {
+      html += `<div style="text-align:center;margin-top:20px;"><a href="test-final.html" class="btn-primary">🏆 Passer le test final →</a></div>`;
     }
   }
+
+  // Notes personnelles — disponibles sur tous les modules non verrouillés
+  html += renderNotesZone(num);
 
   document.getElementById('moduleContent').innerHTML = html;
   if (typeof applyTranslations === 'function') applyTranslations();
@@ -291,21 +981,278 @@ async function startModule(num) {
 }
 
 async function completeModule(num) {
+  // Désactivé — la validation se fait maintenant via le test
+  alert('Veuillez passer le test du module pour valider votre progression.');
+}
+
+// ── Zone de pratique EO/EE ──────────────────────────────────────────────────
+
+function renderPracticeZone(num) {
+  const data = PRACTICE_DATA[num];
+  if (!data) return '';
+
+  const isEE = data.type === 'EE';
+
+  const rubricItems = data.rubric.map((item, i) => `
+    <div class="rubric-item">
+      <input type="checkbox" class="rubric-check" id="rub_${num}_${i}">
+      <label class="rubric-label" for="rub_${num}_${i}">${item}</label>
+    </div>`).join('');
+
+  const practiceArea = isEE ? `
+    <textarea class="practice-textarea" id="practiceText_${num}"
+      placeholder="Rédigez votre texte ici…"
+      oninput="updateWordCount(${num})"></textarea>
+    <div class="practice-wordcount" id="wordCount_${num}">0 mot(s)</div>` : `
+    <div style="background:#f0f7f4;border-radius:10px;padding:14px 18px;font-size:.85rem;color:#2a5a3a;line-height:1.7;">
+      💡 <strong>Astuce :</strong> Enregistrez-vous avec votre téléphone ou répétez à voix haute plusieurs fois. Réécouter votre production est la méthode la plus efficace pour progresser.
+    </div>`;
+
+  return `<div class="practice-zone">
+    <div class="practice-zone-header">
+      <h3>${data.title}</h3>
+      <p>${data.subtitle}</p>
+    </div>
+    <div class="practice-zone-body">
+      <div class="practice-prompt">${data.prompt.replace(/\n/g,'<br>')}</div>
+      ${practiceArea}
+      <div class="practice-rubric">
+        <h4>✅ Grille d'auto-évaluation — cochez chaque critère atteint :</h4>
+        <div class="${isEE ? '' : 'oral-checklist'}">${rubricItems}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function updateWordCount(num) {
+  const ta = document.getElementById(`practiceText_${num}`);
+  const wc = document.getElementById(`wordCount_${num}`);
+  if (!ta || !wc) return;
+  const count = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
+  wc.textContent = `${count} mot(s)`;
+  wc.style.color = count >= 120 && count <= 250 ? '#2e7d32' : count > 250 ? '#c62828' : '#aaa';
+}
+
+// ── TEST DE MODULE ──────────────────────────────────────────────────────────
+
+let testAnswers  = {};   // { originalQuestionId: selectedOptionIndex }
+let testQuestions = [];  // questions dans l'ordre reçu du serveur (déjà mélangées)
+let testNum      = 0;
+let testSubmitted = false;
+let testTimerInterval = null;
+const TEST_DURATION_SECONDS = 15 * 60; // 15 minutes
+
+async function openModuleTest(num) {
+  testNum = num;
+  testAnswers = {};
+  testSubmitted = false;
+  clearTestTimer();
+  const container = document.getElementById('moduleContent');
+  container.innerHTML = `<div style="text-align:center;padding:40px;">⏳ Chargement du test...</div>`;
   try {
-    const res = await ModulesAPI.complete(num);
-    const cData = res.data || res;
-    modules = cData.modules || res.modules || modules;
+    const res = await ModulesAPI.getTest(num);
+    const d = res.data || res;
+    testQuestions = d.questions || [];
+    renderTestPanel(d);
+    startTestTimer();
+  } catch(e) {
+    container.innerHTML = `<p style="color:red;padding:20px;">${e.message}</p>`;
+  }
+}
+
+function renderTestPanel(d) {
+  const lang = typeof currentLang !== 'undefined' ? currentLang : 'fr';
+  const names = MODULE_NAMES[lang];
+  const idx = testNum - 1;
+
+  let html = `<div class="test-panel">
+    <div class="test-header">
+      <h3>🎯 Test de validation — Module ${testNum}
+        <span class="test-timer" id="testTimerDisplay">⏱ 15:00</span>
+      </h3>
+      <p>${names[idx]||''} · 10 questions · Score minimum : 70%</p>
+    </div>
+    <div class="test-body" id="testBody">`;
+
+  // Les questions arrivent avec leur q.id (index original) — on l'utilise partout
+  testQuestions.forEach((q, displayIdx) => {
+    const qid = q.id; // index original côté serveur
+    html += `<div class="test-question" id="tq_${qid}">
+      <p class="q-text">${displayIdx + 1}. ${q.question}</p>
+      <div class="test-options">
+        ${q.options.map((opt, j) => `
+          <button class="test-opt" id="opt_${qid}_${j}" onclick="selectOpt(${qid},${j})">${opt}</button>
+        `).join('')}
+      </div>
+      <div class="test-explanation" id="expl_${qid}" style="display:none;"></div>
+    </div>`;
+  });
+
+  html += `<div id="testResultBar" style="display:none;margin-top:20px;"></div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;align-items:center;">
+      <button class="btn-primary" id="submitTestBtn" onclick="submitModuleTest()" style="min-width:180px;">✅ Soumettre le test</button>
+      <button onclick="cancelTest()" style="background:none;border:none;color:var(--blue);cursor:pointer;font-size:.88rem;text-decoration:underline;">← Retour au module</button>
+    </div>
+    </div></div>`;
+
+  document.getElementById('moduleContent').innerHTML = html;
+}
+
+function cancelTest() {
+  clearTestTimer();
+  showModule(testNum);
+}
+
+function selectOpt(qid, optIdx) {
+  if (testSubmitted) return;
+  testAnswers[qid] = optIdx;
+  for (let j = 0; j < 4; j++) {
+    const btn = document.getElementById(`opt_${qid}_${j}`);
+    if (btn) btn.classList.toggle('selected', j === optIdx);
+  }
+}
+
+// ── Minuterie 15 min ─────────────────────────────────────────
+function startTestTimer() {
+  let remaining = TEST_DURATION_SECONDS;
+  updateTimerDisplay(remaining);
+  testTimerInterval = setInterval(() => {
+    remaining--;
+    updateTimerDisplay(remaining);
+    if (remaining <= 0) {
+      clearTestTimer();
+      submitModuleTest(true); // auto-submit
+    }
+  }, 1000);
+}
+
+function clearTestTimer() {
+  if (testTimerInterval) { clearInterval(testTimerInterval); testTimerInterval = null; }
+}
+
+function updateTimerDisplay(seconds) {
+  const el = document.getElementById('testTimerDisplay');
+  if (!el) return;
+  const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+  const s = String(seconds % 60).padStart(2, '0');
+  el.textContent = `⏱ ${m}:${s}`;
+  if (seconds <= 60) el.classList.add('urgent');
+  else el.classList.remove('urgent');
+}
+
+// ── Soumission ────────────────────────────────────────────────
+async function submitModuleTest(autoSubmit = false) {
+  if (testSubmitted) return;
+  clearTestTimer();
+
+  const answered = Object.keys(testAnswers).length;
+  if (!autoSubmit && answered < testQuestions.length) {
+    const missing = testQuestions.length - answered;
+    if (!confirm(`Il vous reste ${missing} question(s) sans réponse. Soumettre quand même ?`)) {
+      startTestTimer(); // reprendre le chrono si l'étudiant annule
+      return;
+    }
+  }
+
+  const btn = document.getElementById('submitTestBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Correction...'; }
+
+  try {
+    const res = await ModulesAPI.submitTest(testNum, testAnswers);
+    const d = res.data || res;
+    testSubmitted = true;
+
+    // Afficher les corrections + explications
+    (d.feedback || []).forEach(f => {
+      // Marquer bonne/mauvaise réponse
+      const correctBtn = document.getElementById(`opt_${f.id}_${f.correct_answer}`);
+      if (correctBtn) correctBtn.classList.add('correct');
+      if (!f.correct && f.given_answer !== null && f.given_answer !== undefined) {
+        const givenBtn = document.getElementById(`opt_${f.id}_${f.given_answer}`);
+        if (givenBtn) givenBtn.classList.add('wrong');
+      }
+      // Désactiver tous les boutons de cette question
+      for (let j = 0; j < 4; j++) {
+        const b = document.getElementById(`opt_${f.id}_${j}`);
+        if (b) b.disabled = true;
+      }
+      // Afficher explication si mauvaise réponse
+      if (!f.correct && f.explanation) {
+        const expl = document.getElementById(`expl_${f.id}`);
+        if (expl) {
+          expl.textContent = `💡 ${f.explanation}`;
+          expl.style.display = 'block';
+        }
+      }
+    });
+
+    // Barre de résultat
+    const bar = document.getElementById('testResultBar');
+    if (bar) {
+      bar.style.display = 'block';
+      bar.className = 'test-result-bar ' + (d.passed ? 'pass' : 'fail');
+      bar.innerHTML = d.passed
+        ? `🎉 Félicitations ! Score : <strong>${d.score}%</strong> (${d.correct}/${d.total}) — Module validé !`
+        : `❌ Score : <strong>${d.score}%</strong> (${d.correct}/${d.total}) — Minimum requis : 70%. Réessayez dans 10 minutes.`;
+      bar.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Bouton d'action après résultat
+    if (btn) {
+      btn.disabled = false;
+      if (d.passed) {
+        if (d.all_done) {
+          btn.textContent = '🏆 Passer le test final';
+          btn.onclick = () => { window.location.href = 'test-final.html'; };
+        } else {
+          btn.textContent = `Module ${testNum + 1} →`;
+          btn.onclick = () => afterTestPass(testNum);
+        }
+      } else {
+        btn.textContent = '🔄 Recommencer le test (dans 10 min)';
+        btn.onclick = () => openModuleTest(testNum);
+      }
+    }
+
+    // Mettre à jour les données locales
+    const mod = modules.find(m => m.module_number === testNum);
+    if (mod) {
+      mod.test_score    = d.score;
+      mod.test_attempts = d.attempts;
+      if (d.passed) {
+        mod.test_passed = 1;
+        mod.status = 'completed';
+        const next = modules.find(m => m.module_number === testNum + 1);
+        if (next && next.status === 'locked') next.status = 'not_started';
+      }
+    }
     renderSidebar();
     updateProgress();
-    if (cData.all_done || res.all_done) {
-      document.getElementById('moduleContent').style.display = 'none';
-      document.getElementById('allDonePanel').style.display = 'block';
-      document.getElementById('completedBadge').style.display = 'inline-flex';
-    } else {
-      const next = modules.find(m=>m.module_number===num+1);
-      if (next) showModule(next.module_number);
+
+    if (d.all_done) {
+      setTimeout(() => {
+        document.getElementById('moduleContent').style.display = 'none';
+        document.getElementById('allDonePanel').style.display = 'block';
+        document.getElementById('completedBadge').style.display = 'inline-flex';
+      }, 3000);
     }
-  } catch(e) { alert(e.message); }
+  } catch(e) {
+    // Gérer le cooldown (429)
+    if (btn) { btn.disabled = false; btn.textContent = '✅ Soumettre le test'; }
+    const bar = document.getElementById('testResultBar');
+    if (bar) {
+      bar.style.display = 'block';
+      bar.className = 'test-result-bar fail';
+      bar.innerHTML = `⏳ ${e.message}`;
+    } else {
+      alert(e.message);
+    }
+  }
+}
+
+function afterTestPass(num) {
+  const next = modules.find(m => m.module_number === num + 1);
+  if (next) showModule(next.module_number);
 }
 
 document.addEventListener('DOMContentLoaded', init);
