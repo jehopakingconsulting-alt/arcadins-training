@@ -37,6 +37,15 @@
     .content-block { background:var(--gray-light); border-radius:12px; padding:20px 24px; }
     .content-block h4 { color:var(--blue-dark); margin-bottom:10px; }
     .content-block p { color:var(--gray-text); font-size:.9rem; line-height:1.6; margin:0; }
+    .cmp-wrap { overflow-x:auto; margin-top:14px; -webkit-overflow-scrolling:touch; }
+    .cmp-table { width:100%; border-collapse:collapse; font-size:.86rem; min-width:520px; background:white; border-radius:10px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.06); }
+    .cmp-table th, .cmp-table td { padding:11px 14px; text-align:left; border-bottom:1px solid #eef1f6; vertical-align:top; }
+    .cmp-table thead th { background:var(--blue-dark); color:white; font-weight:700; font-size:.82rem; }
+    .cmp-table thead th:first-child { background:var(--blue-dark); }
+    .cmp-table tbody td:first-child { font-weight:700; color:var(--blue-dark); background:#f7f9fc; white-space:nowrap; }
+    .cmp-table tbody tr:last-child td { border-bottom:none; }
+    .cmp-table .cmp-tef { color:#1565c0; }
+    .cmp-table .cmp-tcf { color:#2e7d32; }
     .quiz-mini { background:linear-gradient(135deg,var(--blue),var(--blue-dark)); border-radius:14px; padding:24px; color:white; }
     .quiz-mini h4 { margin-bottom:16px; }
     .mini-q { margin-bottom:16px; }
@@ -198,7 +207,21 @@ const MODULE_CONTENT = {
       {h:'📊 Objectifs pédagogiques',p:'Ce module fondateur vous permet de comprendre le fonctionnement du TEF Canada et du TCF Canada, d\'établir votre profil NCLC de départ et de planifier votre parcours de formation selon votre objectif d\'immigration.'},
       {h:'🎯 Les 4 compétences évaluées',p:'Le TEF & TCF Canada évalue 4 compétences : <strong>Compréhension Orale (CO)</strong>, <strong>Compréhension Écrite (CE)</strong>, <strong>Expression Orale (EO)</strong> et <strong>Expression Écrite (EE)</strong>. Chaque compétence donne un score NCLC de 1 à 12.'},
       {h:'📋 NCLC vs CECRL — Correspondances clés',p:'NCLC 4 ≈ A2 · NCLC 5-6 ≈ B1 · NCLC 7 ≈ B2 · NCLC 8 ≈ B2+ · NCLC 9 ≈ C1 · NCLC 10-12 ≈ C2. Pour Express Entry, le bonus de langue commence à NCLC 7 et est maximal à NCLC 9+.'},
-      {h:'🏛️ TEF Canada vs TCF Canada — Quelle différence ?',p:'Le <strong>TEF Canada</strong> est administré par la CCIP (Chambre de Commerce de Paris). Le <strong>TCF Canada</strong> est géré par le CIEP/France Éducation International. Les deux sont reconnus par IRCC. Le TEF donne des scores en points (0-450) ; le TCF donne des niveaux de A1 à C2.'},
+      {h:'🏛️ TEF Canada vs TCF Canada — Fiche comparative',p:'Les deux examens sont <strong>reconnus par IRCC</strong> et évaluent les <strong>mêmes 4 compétences</strong> aux <strong>mêmes niveaux NCLC</strong>. Vous passez <strong>l\'un OU l\'autre</strong>, jamais les deux. Seuls le format et le barème diffèrent :',
+        table:`<div class="cmp-wrap"><table class="cmp-table">
+          <thead><tr><th>Critère</th><th class="cmp-tef">🔵 TEF Canada</th><th class="cmp-tcf">🟢 TCF Canada</th></tr></thead>
+          <tbody>
+            <tr><td>Organisme</td><td>CCIP (Chambre de Commerce de Paris)</td><td>France Éducation International</td></tr>
+            <tr><td>Notation</td><td>Score en points (ex. 0–450 par épreuve)</td><td>Niveaux A1 → C2</td></tr>
+            <tr><td>Compétences</td><td>CO · CE · EO · EE</td><td>CO · CE · EO · EE</td></tr>
+            <tr><td>Compréhension orale</td><td>~40 questions · ~40 min</td><td>~29 questions · ~35 min</td></tr>
+            <tr><td>Compréhension écrite</td><td>~50 questions · ~60 min</td><td>~29 questions · ~60 min</td></tr>
+            <tr><td>Expression écrite</td><td>2 tâches · ~60 min</td><td>3 tâches · ~60 min</td></tr>
+            <tr><td>Expression orale</td><td>2 sections · ~15 min</td><td>2 tâches · ~12 min</td></tr>
+            <tr><td>Validité résultats</td><td>2 ans</td><td>2 ans</td></tr>
+            <tr><td>Reconnaissance IRCC</td><td>✅ Oui (Express Entry, PSTQ…)</td><td>✅ Oui (Express Entry, PSTQ…)</td></tr>
+          </tbody></table></div>
+          <p style="margin-top:12px;font-size:.85rem;color:var(--gray-text);">💡 <strong>Lequel choisir ?</strong> Les deux mènent au même résultat NCLC. Choisissez selon les <strong>centres d\'examen disponibles près de chez vous</strong> et les <strong>dates</strong>. Les chiffres ci-dessus sont indicatifs — vérifiez toujours le format à jour sur les sites officiels avant votre inscription.</p>`},
       {h:'⚠️ Pièges à éviter dès le départ',p:'Ne sous-estimez pas l\'expression orale — c\'est souvent la compétence la plus chronophage à améliorer. Ne visez pas uniquement NCLC 7 : passer de 7 à 9 peut ajouter plus de 50 points CRS. Prévoyez au minimum 8 à 12 semaines de préparation sérieuse.'},
       {h:'🗓️ Conseils d\'organisation',p:'Planifiez votre formation sur 8 à 14 semaines. Allouez 45 à 60 minutes par jour, 5 jours par semaine. Commencez par identifier vos 2 compétences les plus faibles et y consacrez 60 % de votre temps d\'entraînement.'}
     ]},
@@ -325,7 +348,21 @@ const MODULE_CONTENT = {
       {h:'📊 Learning Objectives',p:'This foundational module helps you understand how TEF Canada and TCF Canada work, establish your starting NCLC profile, and plan your training path according to your immigration goal.'},
       {h:'🎯 The 4 Assessed Skills',p:'TEF & TCF Canada evaluates 4 skills: Listening Comprehension (LC), Reading Comprehension (RC), Oral Expression (OE) and Written Expression (WE). Each skill yields an NCLC score from 1 to 12.'},
       {h:'📋 NCLC vs CEFR — Key Correspondences',p:'NCLC 4 ≈ A2 · NCLC 5-6 ≈ B1 · NCLC 7 ≈ B2 · NCLC 9 ≈ C1. For Express Entry, the language bonus starts at NCLC 7 and is maximized at NCLC 9+.'},
-      {h:'🏛️ TEF Canada vs TCF Canada',p:'TEF Canada is managed by CCIP (Paris Chamber of Commerce). TCF Canada is managed by France Éducation International. Both are recognized by IRCC.'},
+      {h:'🏛️ TEF Canada vs TCF Canada — Comparison Sheet',p:'Both exams are <strong>recognized by IRCC</strong> and assess the <strong>same 4 skills</strong> at the <strong>same NCLC levels</strong>. You take <strong>one OR the other</strong>, never both. Only the format and scoring differ:',
+        table:`<div class="cmp-wrap"><table class="cmp-table">
+          <thead><tr><th>Criterion</th><th class="cmp-tef">🔵 TEF Canada</th><th class="cmp-tcf">🟢 TCF Canada</th></tr></thead>
+          <tbody>
+            <tr><td>Administered by</td><td>CCIP (Paris Chamber of Commerce)</td><td>France Éducation International</td></tr>
+            <tr><td>Scoring</td><td>Points (e.g. 0–450 per section)</td><td>Levels A1 → C2</td></tr>
+            <tr><td>Skills</td><td>LC · RC · OE · WE</td><td>LC · RC · OE · WE</td></tr>
+            <tr><td>Listening</td><td>~40 questions · ~40 min</td><td>~29 questions · ~35 min</td></tr>
+            <tr><td>Reading</td><td>~50 questions · ~60 min</td><td>~29 questions · ~60 min</td></tr>
+            <tr><td>Writing</td><td>2 tasks · ~60 min</td><td>3 tasks · ~60 min</td></tr>
+            <tr><td>Speaking</td><td>2 sections · ~15 min</td><td>2 tasks · ~12 min</td></tr>
+            <tr><td>Result validity</td><td>2 years</td><td>2 years</td></tr>
+            <tr><td>IRCC recognition</td><td>✅ Yes (Express Entry, PSTQ…)</td><td>✅ Yes (Express Entry, PSTQ…)</td></tr>
+          </tbody></table></div>
+          <p style="margin-top:12px;font-size:.85rem;color:var(--gray-text);">💡 <strong>Which one to choose?</strong> Both lead to the same NCLC result. Choose based on <strong>test centres available near you</strong> and <strong>dates</strong>. Figures above are indicative — always verify the current format on the official websites before registering.</p>`},
       {h:'⚠️ Common Mistakes to Avoid',p:'Do not underestimate oral expression — it takes the longest to improve. Do not target only NCLC 7: reaching NCLC 9 can add 50+ CRS points. Plan at least 8-12 weeks of serious preparation.'},
       {h:'🗓️ Organization Tips',p:'Plan your training over 8-14 weeks. Allocate 45-60 minutes per day, 5 days per week. Start by identifying your 2 weakest skills and dedicate 60% of your time to them.'}
     ]},
@@ -931,7 +968,8 @@ async function showModule(num) {
   html += `<div class="content-blocks">` + blocks.map(b=>`
     <div class="content-block">
       <h4>${b.h}</h4>
-      <p>${b.p}</p>
+      ${b.p ? `<p>${b.p}</p>` : ''}
+      ${b.table || ''}
     </div>`).join('') + `</div>`;
 
   // Audio placeholder pour modules Compréhension Orale (2 & 8)
