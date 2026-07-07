@@ -1825,6 +1825,11 @@ function switchLang() {
   currentLang = currentLang === 'fr' ? 'en' : 'fr';
   localStorage.setItem('arc_lang', currentLang);
   applyTranslations();
+  // Permet aux pages avec contenu généré en JS (modules, quiz…) de se re-render
+  // dans la nouvelle langue — le texte statique seul ne suffit pas.
+  if (typeof window.onLangChange === 'function') {
+    try { window.onLangChange(currentLang); } catch (e) { /* no-op */ }
+  }
 }
 
 // Lancement au chargement

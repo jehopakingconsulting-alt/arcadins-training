@@ -1297,6 +1297,14 @@ function afterTestPass(num) {
   if (next) showModule(next.module_number);
 }
 
+// Re-render le contenu dynamique (sidebar + module courant) au changement de langue,
+// car applyTranslations() ne touche que le texte statique data-i18n.
+window.onLangChange = function() {
+  if (!modules || !modules.length) return;
+  renderSidebar();
+  if (currentModuleNum) showModule(currentModuleNum);
+};
+
 document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
