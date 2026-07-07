@@ -55,7 +55,10 @@ async function handleAuth(e, type) {
         setTimeout(() => {
           const u = data.user;
           const base = window.location.pathname.includes('/pages/') ? '' : 'pages/';
-          if (!u.trial_done)              window.location.href = base + 'essai-gratuit.html';
+          // Le personnel (admin / modérateur) accède directement au tableau de bord,
+          // sans passer par le tunnel d'essai / paiement / qualification.
+          if (u.role === 'admin' || u.role === 'moderator') window.location.href = base + 'admin/index.html';
+          else if (!u.trial_done)         window.location.href = base + 'essai-gratuit.html';
           else if (!u.payment_confirmed)  window.location.href = base + 'forfaits.html';
           else if (!u.qualification_done) window.location.href = base + 'qualification.html';
           else                            window.location.href = base + 'formation.html';

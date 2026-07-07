@@ -183,7 +183,9 @@ router.post('/login', authLimiter, async (req, res) => {
 
     // Determine redirect based on user status
     let redirect = '/';
-    if (!user.trial_done) redirect = '/test-positionnement';
+    const isStaff = user.role === 'admin' || user.role === 'moderator';
+    if (isStaff) redirect = '/admin';               // le personnel va au tableau de bord
+    else if (!user.trial_done) redirect = '/test-positionnement';
     else if (!user.payment_confirmed) redirect = '/plans';
     else if (!user.qualification_done) redirect = '/qualification';
     else if (!user.all_modules_done) redirect = '/formation';
@@ -351,7 +353,11 @@ router.get('/me', authMiddleware, (req, res) => {
 
     // Determine next step
     let nextStep = null;
-    if (!user.trial_done) nextStep = 'trial';
+    const isStaff = user.role === 'admin' || user.role === 'moderator';
+    if (isStaff) {
+      // Le personnel accède librement au contenu — aucune étape de tunnel imposée.
+      nextStep = null;
+    } else if (!user.trial_done) nextStep = 'trial';
     else if (!user.payment_confirmed) nextStep = 'plans';
     else if (expired) nextStep = 'renew';
     else if (!user.qualification_done) nextStep = 'qualification';

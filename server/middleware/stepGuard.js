@@ -52,6 +52,11 @@ function stepGuard(step) {
     if (!req.user) {
       return res.status(401).json({ success: false, message: 'Non authentifié.' });
     }
+    // Le personnel (admin / modérateur) accède à tout le contenu sans passer par
+    // le tunnel d'inscription/paiement/qualification réservé aux apprenants.
+    if (req.user.role === 'admin' || req.user.role === 'moderator') {
+      return next();
+    }
     const check = STEP_CHECKS[step];
     if (!check) {
       return res.status(500).json({ success: false, message: `Étape inconnue: ${step}` });
